@@ -5,13 +5,13 @@
 
 <p align="center"><img src="docs/previews/home-screen-label.svg" alt="Home screen" width="150"></p>
 
-<p align="center"><a href="resources/app_preview.png"><img src="docs/previews/app-preview-card.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%"></a></p>
+<p align="center"><a href="docs/screenshots/app_preview.png"><img src="docs/previews/app-preview-card.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%"></a></p>
 
 <p align="center"><img src="docs/previews/more-views-label.svg" alt="More views" width="150"></p>
 
-<p align="right"><a href="resources/details_hover_preview.png"><img src="docs/previews/details-hover-card.png" alt="ReWatched entry hover view with movie details and timeline" width="80%"></a></p>
+<p align="right"><a href="docs/screenshots/details_hover_preview.png"><img src="docs/previews/details-hover-card.png" alt="ReWatched entry hover view with movie details and timeline" width="80%"></a></p>
 
-<p align="left"><a href="resources/details_preview.png"><img src="docs/previews/details-page-card.png" alt="ReWatched full-screen movie details and watch timeline" width="90%"></a></p>
+<p align="left"><a href="docs/screenshots/details_preview.png"><img src="docs/previews/details-page-card.png" alt="ReWatched full-screen movie details and watch timeline" width="90%"></a></p>
 
 ## Keep your watching history
 
