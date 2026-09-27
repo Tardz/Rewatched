@@ -4,7 +4,7 @@ const path = require('node:path');
 
 const projectRoot = path.resolve(__dirname, '..');
 const pagesRoot = path.join(projectRoot, 'docs');
-const appFiles = ['index.html', 'app.js', 'main.css', 'rewatched-icon.svg'];
+const appFiles = ['index.html', 'app.js', 'main.css', 'rewatched-icon.svg', 'demo_vault.json'];
 const appFolders = ['css', 'js'];
 
 for (const file of appFiles) {

@@ -254,6 +254,59 @@ function importBackup() {
     `Imported ${entries.length} logged titles and ${watchlist.length} watchlist items.`;
 }
 
+/** Loads the bundled demo library after confirming replacement of current data. */
+async function loadDemoVault() {
+  const button = $('#load-demo-vault');
+  const status = $('#demo-vault-status');
+  if (!confirm('Replace your current library, watchlist, and folders with the demo vault? If a storage file is connected, the demo may be saved to that file.')) return;
+
+  button.disabled = true;
+  status.textContent = 'Loading demo vault…';
+  try {
+    const response = await fetch('demo_vault.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Could not load demo_vault.json.');
+    const demo = readBackup(await response.json());
+    const previousEntries = localStorage.getItem(STORAGE_KEY);
+    const previousWatchlist = localStorage.getItem(WATCHLIST_KEY);
+    const previousCollections = localStorage.getItem(COLLECTIONS_KEY);
+    const oldEntries = entries;
+    const oldWatchlist = watchlist;
+    const oldCollections = customCollections;
+
+    entries = demo.entries;
+    watchlist = demo.watchlist;
+    customCollections = demo.collections;
+    try {
+      save();
+    } catch (error) {
+      entries = oldEntries;
+      watchlist = oldWatchlist;
+      customCollections = oldCollections;
+      restoreStoredValue(STORAGE_KEY, previousEntries);
+      restoreStoredValue(WATCHLIST_KEY, previousWatchlist);
+      restoreStoredValue(COLLECTIONS_KEY, previousCollections);
+      throw error;
+    }
+
+    activeView = 'logged';
+    activeCollectionId = 'all';
+    activeFilter = 'all';
+    watchedYearFilter = 'all';
+    ratingFilter = 'all';
+    collectionSort = 'watched-desc';
+    collectionPage = 0;
+    bannerIndex = 0;
+    $('#library-search').value = '';
+    render();
+    updateBackupSummary();
+    status.textContent = `Demo vault loaded: ${entries.length} titles, ${watchlist.length} watchlist items, and ${customCollections.length} folders.`;
+  } catch (error) {
+    status.textContent = error.message || 'Could not load the demo vault.';
+  } finally {
+    button.disabled = false;
+  }
+}
+
 $('#export-backup').addEventListener('click', downloadBackup);
 $('#choose-backup').addEventListener('click', () => {
   $('#backup-file').value = '';
@@ -263,5 +316,6 @@ $('#backup-file').addEventListener('change', (event) => {
   chooseBackup(event.target.files[0]);
 });
 $('#import-backup').addEventListener('click', importBackup);
+$('#load-demo-vault').addEventListener('click', loadDemoVault);
 updateBackupSummary();
 /** Validates, imports, exports, and summarizes ReWatched backup data. */
