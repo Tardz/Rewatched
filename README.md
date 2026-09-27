@@ -38,6 +38,8 @@ npm start
 
 The app uses regular HTML, CSS, and JavaScript, so interface edits do not require a build step. While running in development, source changes reload the Electron window.
 
+GitHub Pages publishes the static app from `docs/`. After changing the app, run `npm run sync:pages` before committing so the published copy is updated.
+
 To run the web version, open `index.html` or serve the project folder locally:
 
 ```sh

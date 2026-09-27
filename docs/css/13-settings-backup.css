@@ -1,0 +1,148 @@
+/* Settings & Backup
+   Settings dialog plus backup/import options. */
+
+#settings-dialog {
+  width: min(440px, calc(100% - 28px));
+}
+
+.settings-dialog-content {
+  padding: 26px;
+}
+
+.settings-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface-raised);
+}
+
+.settings-option + .settings-option {
+  margin-top: 10px;
+}
+
+.settings-option strong {
+  display: block;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.settings-option small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.settings-option input {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  padding: 0;
+  accent-color: var(--red);
+}
+
+.settings-option select {
+  width: auto;
+  min-width: 92px;
+  flex: none;
+  padding: 7px 28px 7px 9px;
+  font-size: 12px;
+}
+
+#settings-dialog {
+  max-height: 85vh;
+  overflow: auto;
+}
+
+.backup-settings {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.backup-settings h3 {
+  margin: 0 0 7px;
+  font-size: 17px;
+}
+
+.backup-settings>p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.backup-settings .backup-summary {
+  margin: -6px 0 16px;
+  color: var(--blue);
+  font: 11px "DM Mono", monospace;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.backup-actions .button,
+.import-options .button {
+  font-size: 12px;
+}
+
+.import-options {
+  margin: 18px 0 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.import-options legend {
+  padding: 0 5px;
+  color: var(--text);
+  font-size: 12px;
+}
+
+.import-options label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 12px;
+}
+
+.import-options input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  padding: 0;
+  accent-color: var(--red);
+}
+
+.import-options .button {
+  margin-top: 8px;
+}
+
+.backup-settings .backup-status {
+  min-height: 1.2em;
+  margin: 14px 0 0;
+  color: var(--blue);
+  font-size: 12px;
+}
+
+.api-key-setting {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.api-key-setting .button {
+  font-size: 12px;
+}
+
+.backup-settings a {
+  color: var(--blue);
+}

@@ -1,0 +1,57 @@
+/* Buttons
+   Shared .button styles used across the app. */
+
+.button {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px 17px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.button-primary {
+  background: var(--red);
+  color: #170f12;
+}
+
+.button-primary:hover {
+  background: var(--status-danger);
+}
+
+.button-quiet {
+  background: #2a2d35;
+  color: #dedee5;
+}
+
+/* Shared shell for compact, boxed icon controls. */
+.icon-button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.icon-button:hover {
+  border-color: var(--border-accent-muted);
+  background: var(--surface-hover);
+}
+
+.icon-button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.icon-button-symbol {
+  display: block;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

@@ -1,0 +1,26 @@
+/* Global foundations and shared controls */
+@import "css/01-base.css";
+@import "css/02-utilities.css";
+@import "css/03-buttons.css";
+@import "css/04-sidebar.css";
+
+/* Dashboard, library, and entry cards */
+@import "css/05-spotlight-banner.css";
+@import "css/06-statsbar.css";
+@import "css/07-library-controls.css";
+@import "css/08-entry-cards.css";
+@import "css/15-statistics.css";
+
+/* Entry hover and fullscreen detail view */
+@import "css/12-detail-page.css";
+
+/* Dialogs, forms, and settings */
+@import "css/09-dialog-base.css";
+@import "css/10-poster-picker.css";
+@import "css/11-watch-form.css";
+@import "css/13-settings-backup.css";
+
+/* Motion and final responsive/theme overrides */
+@import "css/14-animations.css";
+@import "css/16-responsive.css";
+@import "css/17-light-theme.css";
