@@ -3,29 +3,15 @@
   <br>A customizable watch journal for films and shows.
 </p>
 
-<table align="center" cellpadding="8" cellspacing="0" style="border: 1px solid #454b57; border-radius: 10px; border-collapse: separate; background-color: #1d2028; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);">
-  <tr><td><strong>Home screen</strong></td></tr>
-</table>
+<p align="center"><img src="docs/previews/home-screen-label.svg" alt="Home screen" width="150"></p>
 
-<table align="center" cellpadding="8" cellspacing="8" style="border: 1px solid #454b57; border-radius: 16px; border-collapse: separate; background-color: #171a21; padding: 12px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);">
-  <tr>
-    <td colspan="2" style="border: 0;"><a href="resources/app_preview.png"><img src="resources/app_preview.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%" style="display: block; box-sizing: border-box; border: 2px solid #515b6d; border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);"></a></td>
-  </tr>
-</table>
+<p align="center"><a href="resources/app_preview.png"><img src="docs/previews/app-preview-card.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%"></a></p>
 
-<table align="center" cellpadding="8" cellspacing="0" style="border: 1px solid #454b57; border-radius: 10px; border-collapse: separate; background-color: #1d2028; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);">
-  <tr><td><strong>More views</strong></td></tr>
-</table>
+<p align="center"><img src="docs/previews/more-views-label.svg" alt="More views" width="150"></p>
 
-<table align="center" width="100%" cellpadding="8" cellspacing="8" style="border: 1px solid #454b57; border-radius: 16px; border-collapse: separate; background-color: #171a21; padding: 12px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);">
-  <tr>
-    <td colspan="2" align="right" style="border: 0;"><a href="resources/details_hover_preview.png"><img src="resources/details_hover_preview.png" alt="ReWatched entry hover view with movie details and timeline" width="80%" style="display: block; box-sizing: border-box; border: 2px solid #515b6d; border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);"></a></td>
-  </tr>
-  <tr>
-    <td width="90%" style="border: 0;"><a href="resources/details_preview.png"><img src="resources/details_preview.png" alt="ReWatched full-screen movie details and watch timeline" width="100%" style="display: block; box-sizing: border-box; border: 2px solid #515b6d; border-radius: 12px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);"></a></td>
-    <td width="10%" style="border: 0;"></td>
-  </tr>
-</table>
+<p align="right"><a href="resources/details_hover_preview.png"><img src="docs/previews/details-hover-card.png" alt="ReWatched entry hover view with movie details and timeline" width="80%"></a></p>
+
+<p align="left"><a href="resources/details_preview.png"><img src="docs/previews/details-page-card.png" alt="ReWatched full-screen movie details and watch timeline" width="90%"></a></p>
 
 ## Keep your watching history
 
