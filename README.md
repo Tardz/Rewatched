@@ -3,13 +3,15 @@
   <br>A customizable watch journal for films and shows.
 </p>
 
-<p align="center"><img src="docs/previews/home-screen-label-v2.svg" alt="Home screen" width="220"></p>
+<p align="center">
+  <img src="docs/previews/home-screen-label-v2.svg" alt="Home screen" width="220"><br>
+  <a href="docs/screenshots/app_preview.png"><img src="docs/previews/app-preview-card-v2.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%"></a>
+</p>
 
-<p align="center"><a href="docs/screenshots/app_preview.png"><img src="docs/previews/app-preview-card-v2.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%"></a></p>
-
-<p align="center"><img src="docs/previews/more-views-label-v2.svg" alt="More views" width="220"></p>
-
-<p align="center"><a href="docs/previews/details-gallery-card.png"><img src="docs/previews/details-gallery-card.png" alt="ReWatched hover entry and full-screen details arranged diagonally inside one framed gallery" width="100%"></a></p>
+<p align="center">
+  <img src="docs/previews/more-views-label-v2.svg" alt="More views" width="220"><br>
+  <a href="docs/previews/details-gallery-card.png"><img src="docs/previews/details-gallery-card.png" alt="ReWatched hover entry and full-screen details arranged diagonally inside one framed gallery" width="100%"></a>
+</p>
 
 ## Keep your watching history
 
