@@ -9,9 +9,7 @@
 
 <p align="center"><img src="docs/previews/more-views-label.svg" alt="More views" width="150"></p>
 
-<p align="right"><a href="docs/screenshots/details_hover_preview.png"><img src="docs/previews/details-hover-card.png" alt="ReWatched entry hover view with movie details and timeline" width="80%"></a></p>
-
-<p align="left"><a href="docs/screenshots/details_preview.png"><img src="docs/previews/details-page-card.png" alt="ReWatched full-screen movie details and watch timeline" width="90%"></a></p>
+<p align="center"><a href="docs/previews/details-gallery-card.png"><img src="docs/previews/details-gallery-card.png" alt="ReWatched hover entry and full-screen details arranged diagonally inside one framed gallery" width="100%"></a></p>
 
 ## Keep your watching history
 
