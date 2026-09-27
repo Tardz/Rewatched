@@ -4,13 +4,14 @@
 
 const FILE_DB_NAME = 'rerun-file-storage';
 const FILE_STORE_NAME = 'settings';
+const STORAGE_FILE_NAME_KEY = 'rerun-storage-file-name';
 let storageFileHandle = null;
 let fileSaveTimer = null;
 let pendingFileWrite = Promise.resolve();
 let suppressFileSave = false;
 let fileStorageReady = false;
 let useBasicFilePicker = false;
-let storageFileName = 'Browser Vault';
+let storageFileName = localStorage.getItem(STORAGE_FILE_NAME_KEY) || 'Browser Vault';
 window.__rewatchedDirty = false;
 
 // Ask for confirmation when the app is closed while a file save is pending.
@@ -190,13 +191,26 @@ function updateStorageIndicator() {
   $('#current-storage-name').textContent = storageFileName.replace(/\.[^.]+$/, '');
 }
 
+/** Remembers the selected file's name even when the browser cannot retain its handle. */
+function setStorageFileName(name) {
+  storageFileName = name || 'Browser Vault';
+  try {
+    if (storageFileName === 'Browser Vault') localStorage.removeItem(STORAGE_FILE_NAME_KEY);
+    else localStorage.setItem(STORAGE_FILE_NAME_KEY, storageFileName);
+  } catch (error) {
+    console.warn('Could not remember the selected storage file name.', error);
+  }
+}
+
 /** Displays a storage status or error message. */
 function fileStatus(message) {
   updateStorageIndicator();
   if (!storageFileHandle) storageSaveState('saved');
   $('#file-storage-status').textContent = message;
-  $('#reconnect-storage-file').hidden = !storageFileHandle;
-  $('#disconnect-storage-file').hidden = !storageFileHandle;
+  // In browsers without persistent file handles, reconnect means choosing the
+  // remembered file again through the regular file picker.
+  $('#reconnect-storage-file').hidden = !storageFileHandle && storageFileName === 'Browser Vault';
+  $('#disconnect-storage-file').hidden = !storageFileHandle && storageFileName === 'Browser Vault';
 }
 
 /** Opens the browser database used to persist file access handles. */
@@ -318,7 +332,7 @@ async function activateStorageFile(handle, library) {
   await pendingFileWrite;
   useFileLibrary(library);
   storageFileHandle = handle;
-  storageFileName = handle.name;
+  setStorageFileName(handle.name);
   await rememberedFileHandle(handle);
   const permission = await handle.queryPermission({ mode: 'readwrite' });
   fileStatus(permission === 'granted'
@@ -332,17 +346,21 @@ async function initializeFileStorage() {
   if (!window.showOpenFilePicker || !window.showSaveFilePicker || !window.indexedDB) {
     useBasicFilePicker = true;
     $('#create-storage-file').disabled = true;
-    fileStatus('You can choose a JSON file to load it. Automatic saving needs Chrome or Edge on localhost or HTTPS; use Export backup in this browser.');
+    fileStatus(storageFileName === 'Browser Vault'
+      ? 'Choose a JSON file to load it. This browser keeps a browser copy, but cannot reopen or save back to the selected file; use Export backup after changes.'
+      : `Browser copy loaded from ${storageFileName}. Choose the file again to reload it; this browser cannot reopen or save back to it automatically.`);
     return;
   }
   try {
     const handle = await rememberedFileHandle();
     if (!handle) {
-      fileStatus('No file selected. Your library is saved in this browser.');
+      fileStatus(storageFileName === 'Browser Vault'
+        ? 'No file selected. Your library is saved in this browser.'
+        : `Browser copy loaded from ${storageFileName}. Choose the file again to reconnect it.`);
       return;
     }
     storageFileHandle = handle;
-    storageFileName = handle.name;
+    setStorageFileName(handle.name);
     const readPermission = await handle.queryPermission({ mode: 'read' });
     if (readPermission !== 'granted') {
       fileStatus(`Reconnect ${handle.name} to load it. Your browser copy is shown for now.`);
@@ -401,7 +419,7 @@ async function loadBasicStorageFile(file) {
     clearTimeout(fileSaveTimer);
     await pendingFileWrite;
     storageFileHandle = null;
-    storageFileName = file.name;
+    setStorageFileName(file.name);
     if (window.indexedDB) await rememberedFileHandle(null);
     useFileLibrary(library);
     fileStatus(`Loaded ${file.name}. This browser cannot save back to it automatically; use Export backup after changes.`);
@@ -424,7 +442,7 @@ async function createStorageFile() {
     await writer.write(JSON.stringify(makeBackupSnapshot(), null, 2));
     await writer.close();
     storageFileHandle = handle;
-    storageFileName = handle.name;
+    setStorageFileName(handle.name);
     await rememberedFileHandle(handle);
     fileStatus(`Created ${handle.name}. Changes will save automatically.`);
   } catch (error) {
@@ -434,7 +452,10 @@ async function createStorageFile() {
 
 /** Reconnects access to the previously selected storage file. */
 async function reconnectStorageFile() {
-  if (!storageFileHandle) return;
+  if (!storageFileHandle) {
+    await chooseStorageFile();
+    return;
+  }
   try {
     const permission = await storageFileHandle.requestPermission({ mode: 'readwrite' });
     if (permission !== 'granted') {
@@ -455,10 +476,10 @@ async function reconnectStorageFile() {
 async function disconnectStorageFile() {
   clearTimeout(fileSaveTimer);
   await pendingFileWrite;
-  await rememberedFileHandle(null);
+  if (window.indexedDB) await rememberedFileHandle(null);
   const previousFileName = storageFileName;
   storageFileHandle = null;
-  storageFileName = 'Browser Vault';
+  setStorageFileName('Browser Vault');
   useFileLibrary({ entries: [], watchlist: [], collections: [] });
   fileStatus(`Stopped using ${previousFileName}. Started a new empty library; the file was left unchanged.`);
   showSaveToast('Started a new empty library');
