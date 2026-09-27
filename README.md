@@ -1,16 +1,16 @@
 <p align="center">
-  <img src="docs/rewatched-wordmark.svg" alt="Rewatched." width="370">
+  <img src="assets/rewatched-wordmark.svg" alt="Rewatched." width="370">
   <br>A customizable watch journal for films and shows.
 </p>
 
 <p align="center">
-  <img src="docs/previews/home-screen-label-v2.svg" alt="Home screen" width="220"><br>
-  <a href="docs/screenshots/app_preview.png"><img src="docs/previews/app-preview-card-v2.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%"></a>
+  <img src="assets/previews/home-screen-label-v2.svg" alt="Home screen" width="220"><br>
+  <a href="assets/screenshots/app_preview.png"><img src="assets/previews/app-preview-card-v2.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%"></a>
 </p>
 
 <p align="center">
-  <img src="docs/previews/more-views-label-v2.svg" alt="More views" width="220"><br>
-  <a href="docs/previews/details-gallery-card.png"><img src="docs/previews/details-gallery-card.png" alt="ReWatched hover entry and full-screen details arranged diagonally inside one framed gallery" width="100%"></a>
+  <img src="assets/previews/more-views-label-v2.svg" alt="More views" width="220"><br>
+  <a href="assets/previews/details-gallery-card.png"><img src="assets/previews/details-gallery-card.png" alt="ReWatched hover entry and full-screen details arranged diagonally inside one framed gallery" width="100%"></a>
 </p>
 
 ## Keep your watching history
@@ -38,7 +38,7 @@ npm start
 
 The app uses regular HTML, CSS, and JavaScript, so interface edits do not require a build step. While running in development, source changes reload the Electron window.
 
-GitHub Pages publishes the static app from `docs/`. After changing the app, run `npm run sync:pages` before committing so the published copy is updated.
+GitHub Pages serves the app directly from the repository root. In the repository’s **Settings → Pages**, choose **Deploy from a branch**, then select `main` and `/(root)`. The app files in the root are the published version, so there is no separate build or sync step.
 
 To run the web version, open `index.html` or serve the project folder locally:
 

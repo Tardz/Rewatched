@@ -7,7 +7,6 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron .",
-    "sync:pages": "node scripts/sync-pages.cjs",
     "postinstall": "node node_modules/electron/install.js"
   },
   "devDependencies": {
