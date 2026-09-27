@@ -1,0 +1,327 @@
+/* Watch Form
+   The "log a watch" dialog: form panels, score slider, poster section. */
+
+#watch-dialog {
+  max-height: min(90vh, 900px);
+  overflow: auto;
+}
+
+#poster-search-form {
+  padding: 0;
+}
+
+#watch-form {
+  position: relative;
+  padding: 28px;
+}
+
+#watch-form .dialog-heading {
+  position: absolute;
+  top: 25px;
+  right: 28px;
+  margin: 0;
+  z-index: 2;
+}
+
+#watch-form .form-entry-switcher {
+  margin-top: 0;
+  padding-right: 38px;
+}
+
+#watch-form .form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-panel {
+  width: 100%;
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-raised);
+}
+
+.form-panel h3 {
+  margin: 0 0 18px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.01em;
+}
+
+.form-panel-content {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.form-panel label {
+  min-width: 0;
+}
+
+.priority-field select {
+  margin-top: 7px;
+}
+
+.collection-picker {
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface-deep);
+}
+
+.collection-picker summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 13px;
+  box-sizing: border-box;
+  background: #242a34;
+  border-radius: 10px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text-muted-bright);
+  font-size: 11px;
+}
+
+.collection-picker summary::-webkit-details-marker { display: none; }
+.collection-picker summary::after { content: "⌄"; color: var(--blue); font-size: 15px; }
+.collection-picker[open] summary::after { transform: rotate(180deg); }
+
+.collection-picker summary small {
+  margin-left: auto;
+  color: var(--blue);
+  font: 10px "DM Mono", monospace;
+}
+
+.collection-checklist {
+  display: grid;
+  gap: 7px;
+  padding: 0 12px 12px;
+}
+
+.collection-checklist label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 9px;
+  border-radius: 8px;
+  background: #1b2028;
+  color: var(--text-control);
+  font-size: 12px;
+}
+
+.form-panel .collection-checklist input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  flex: none;
+  padding: 0;
+  accent-color: var(--blue);
+}
+
+.collection-checklist p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.form-panel input:not([type="range"]):not([type="file"]),
+.form-panel select {
+  min-height: 42px;
+}
+
+.form-panel input:required:invalid,
+.form-panel select:required:invalid {
+  border-color: #d85f68;
+  box-shadow: 0 0 0 2px #d85f6822;
+}
+
+.form-panel select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 38px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--icon-muted) 50%), linear-gradient(135deg, var(--icon-muted) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 18px, calc(100% - 12px) 18px;
+  background-size: 4px 4px;
+  background-repeat: no-repeat;
+}
+
+.watch-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 12px;
+}
+
+.watch-fields #date-label,
+.watch-fields #watch-year-label {
+  grid-column: 1/-1;
+}
+
+.form-panel textarea {
+  min-height: 110px;
+}
+
+.metadata-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+
+.metadata-row label {
+  min-width: 0;
+}
+
+.title-lookup-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 12px;
+}
+
+.title-lookup-row label {
+  min-width: 0;
+}
+
+.metadata-lookup-button {
+  min-height: 42px;
+  padding: 0 14px;
+  border-color: #f5a623;
+  background: #f5a623;
+  color: #17130c;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.metadata-lookup-button:hover:not(:disabled) {
+  border-color: #ffc04d;
+  background: #ffc04d;
+}
+
+#metadata-lookup-status {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.score-field>span:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.score-field {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: center;
+  column-gap: 14px;
+}
+
+.score-field .rating-slider {
+  position: relative;
+  min-width: 0;
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  height: 18px;
+}
+
+.score-field .rating-slider-meter {
+  position: absolute;
+  inset: 50% 0 auto;
+  width: auto;
+  height: 8px;
+  transform: translateY(-50%);
+}
+
+.score-field > span:first-child {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.score-field output {
+  color: var(--blue);
+  font: 500 14px "DM Mono", monospace;
+}
+
+#score-field-label {
+  display: none;
+}
+
+#score-value.score-value-with-star {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.score-field .score-scale {
+  display: none;
+}
+
+#score {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: auto;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: transparent;
+}
+
+#score::-webkit-slider-runnable-track {
+  height: 18px;
+  border: 0;
+  background: transparent;
+}
+
+#score::-moz-range-track {
+  height: 18px;
+  border: 0;
+  background: transparent;
+}
+
+#score::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--text);
+  border-radius: 50%;
+  background: var(--rating-color, var(--rating-neutral));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rating-color, var(--rating-neutral)) 25%, transparent), 0 2px 8px var(--shadow-black-50);
+  cursor: grab;
+}
+
+#score::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border: 3px solid var(--text);
+  border-radius: 50%;
+  background: var(--rating-color, var(--rating-neutral));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rating-color, var(--rating-neutral)) 25%, transparent), 0 2px 8px var(--shadow-black-50);
+  cursor: grab;
+}
+
+.score-scale {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font: 10px "DM Mono", monospace;
+}
+
+#watch-form .dialog-actions {
+  position: sticky;
+  bottom: -28px;
+  margin: 24px -28px -28px;
+  padding: 16px 28px;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+}

@@ -1,0 +1,48 @@
+flowchart TB
+  subgraph SHELL[App shell]
+    HTML["index.html<br/>DOM and script loading"]
+    APP["app.js<br/>Startup, events, navigation"]
+    VIEWS["views.js<br/>Active view renderer"]
+    HTML --> APP --> VIEWS
+  end
+
+  subgraph FEATURES[Screens and features]
+    direction LR
+    COLLECTION["collection.js<br/>Library, folders, cards"]
+    BANNER["banner.js<br/>Featured title and rotation"]
+    DETAIL["detail.js<br/>Entry details and timeline"]
+    FORM["form.js<br/>Add and edit dialogs"]
+    STATS["statistics.js<br/>Summary and charts"]
+    BACKUP["backup.js<br/>Backup import and export"]
+    POSTER["poster-search.js<br/>Poster search"]
+    UI["ui.js<br/>Shared display helpers"]
+  end
+
+  subgraph DATA[Shared data and storage]
+    direction LR
+    STATE["state.js<br/>Entries, settings, save helpers"]
+    STORAGE["file-storage.js<br/>Linked JSON file and autosave"]
+    JSON[(Linked JSON save file)]
+    STORAGE --> JSON
+  end
+
+  GOOGLE([Google Image Search])
+  OMDB([OMDb API])
+
+  VIEWS --> COLLECTION & BANNER & DETAIL & STATS
+  FEATURES -->|reads and updates| STATE
+  COLLECTION -. shared helpers .-> UI
+  FORM --> POSTER --> GOOGLE
+  FORM -->|fetches requested title details| OMDB
+  DETAIL -->|shows saved title details| OMDB
+
+  NOTE["Scripts share browser globals rather than ES module imports"]
+  APP -. startup loads saved data .-> STORAGE
+  NOTE -.-> STATE
+
+  classDef core fill:#eaf2ff,stroke:#6688bb,color:#17243a,stroke-width:1px
+  classDef feature fill:#f4f5f7,stroke:#9299a5,color:#252a32,stroke-width:1px
+  classDef external fill:#fff4df,stroke:#c58a32,color:#39270a,stroke-width:1px
+  class HTML,APP,VIEWS,STATE,STORAGE core
+  class COLLECTION,BANNER,DETAIL,FORM,STATS,BACKUP,POSTER,UI feature
+  class GOOGLE,OMDB,JSON external

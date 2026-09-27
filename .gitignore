@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# macOS and IDE files
+.DS_Store
+.idea/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local library files and backups
+rerun-library.json
+rerun-backup*.json
+vault*.json
+backups/
+data/

@@ -1,0 +1,32 @@
+/* @keyframes
+   Banner slide-transition animations. */
+
+@keyframes banner-slide-enter {
+  from {
+    transform: translateX(var(--banner-enter-offset));
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes banner-slide-leave {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(var(--banner-exit-offset));
+  }
+}
+
+@keyframes banner-morph-in {
+  from { opacity: 0; transform: scale(.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes banner-morph-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.03); }
+}
