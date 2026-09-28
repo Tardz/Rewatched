@@ -1,6 +1,10 @@
 /* Base / Reset
    Global resets, root variables, and element defaults. */
 
+:root[data-input-modality="pointer"] :focus-visible {
+  outline: none;
+}
+
 :root {
   font-family: "DM Sans", sans-serif;
   color: var(--text);
@@ -11,6 +15,14 @@
   --muted: #a3a9b5;
   --line: #303641;
   --panel: #1b1f27;
+  --surface-stats-outer: #13181d;
+  --surface-stats-inner: #1c1f27;
+  --surface-dashboard-outer: var(--surface-stats-outer);
+  --surface-dashboard-inner: var(--surface-stats-inner);
+  --poster-background-strength: 22%;
+  --glass-highlight: #ffffff24;
+  --glass-shadow: #00000035;
+  --glass-edge-shadow: #00000020;
   --surface-raised: #151920;
   --surface-deep: #111419;
   --surface-hover: #303b4b;
@@ -111,12 +123,12 @@ body {
   background:
     radial-gradient(
       ellipse at 16% 0%,
-      color-mix(in srgb, var(--app-poster-color-one, #26312f) 24%, var(--app-background)) 0%,
+      color-mix(in srgb, var(--app-poster-color-one, #26312f) var(--poster-background-strength), var(--app-background)) 0%,
       transparent 48%
     ),
     radial-gradient(
       ellipse at 88% 12%,
-      color-mix(in srgb, var(--app-poster-color-two, #28272d) 20%, var(--app-background)) 0%,
+      color-mix(in srgb, var(--app-poster-color-two, #28272d) var(--poster-background-strength), var(--app-background)) 0%,
       transparent 40%
     ),
     linear-gradient(155deg, #1a1d20 0%, #141619 58%, var(--app-background) 100%);

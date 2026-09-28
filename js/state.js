@@ -9,9 +9,16 @@ const ROTATION_KEY = 'rerun-banner-rotation';
 const OMDB_API_KEY = 'rerun-omdb-api-key';
 const THEME_KEY = 'rerun-theme-mode';
 const POSTER_BACKGROUND_KEY = 'rerun-poster-background';
+const POSTER_BACKGROUND_STRENGTH_KEY = 'rerun-poster-background-strength';
+const TACTILE_DASHBOARD_KEY = 'rerun-tactile-dashboard';
 const systemTheme = matchMedia('(prefers-color-scheme: light)');
 let themePreference = localStorage.getItem(THEME_KEY) || 'system';
 let posterBackgroundEnabled = localStorage.getItem(POSTER_BACKGROUND_KEY) !== 'false';
+const savedPosterBackgroundStrength = Number(localStorage.getItem(POSTER_BACKGROUND_STRENGTH_KEY));
+let posterBackgroundStrength = Number.isFinite(savedPosterBackgroundStrength)
+  ? Math.max(0, Math.min(50, savedPosterBackgroundStrength))
+  : 22;
+let tactileDashboardEnabled = localStorage.getItem(TACTILE_DASHBOARD_KEY) !== 'false';
 
 /** Applies the selected light or dark theme to the document. */
 function applyTheme() {
@@ -22,6 +29,8 @@ function applyTheme() {
 
 applyTheme();
 document.documentElement.dataset.posterBackground = posterBackgroundEnabled ? 'on' : 'off';
+document.documentElement.style.setProperty('--poster-background-strength', `${posterBackgroundStrength}%`);
+document.documentElement.dataset.dashboardTactile = tactileDashboardEnabled ? 'on' : 'off';
 /** Applies the operating system theme when the system preference changes. */
 const handleSystemThemeChange = () => {
   if (themePreference === 'system') applyTheme();

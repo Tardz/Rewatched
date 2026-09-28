@@ -10,6 +10,13 @@
   --muted: #687384;
   --line: #cbd3dd;
   --panel: #ffffff;
+  --surface-stats-outer: var(--panel);
+  --surface-stats-inner: #f4f6f9;
+  --surface-dashboard-outer: var(--surface-stats-outer);
+  --surface-dashboard-inner: var(--surface-stats-inner);
+  --glass-highlight: #ffffffc7;
+  --glass-shadow: #52677f24;
+  --glass-edge-shadow: #52677f16;
   --surface-raised: #f7f9fb;
   --surface-deep: #f1f4f8;
   --surface-hover: #e8edf2;
@@ -66,7 +73,25 @@
   --blue: #2376a8;
 }
 
-:root[data-theme="light"] body { background: var(--app-background); }
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(
+      ellipse at 16% 0%,
+      color-mix(in srgb, var(--app-poster-color-one, #dce5e9) var(--poster-background-strength), var(--app-background)) 0%,
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 88% 12%,
+      color-mix(in srgb, var(--app-poster-color-two, #e2e1e7) var(--poster-background-strength), var(--app-background)) 0%,
+      transparent 40%
+    ),
+    linear-gradient(155deg, #f5f7f9 0%, #f0f3f6 58%, var(--app-background) 100%);
+  background-attachment: fixed;
+}
+
+:root[data-theme="light"][data-poster-background="off"] body {
+  background: var(--app-background);
+}
 
 :root[data-theme="light"] .library-section .section-heading { background: var(--panel); }
 
@@ -95,9 +120,43 @@
 :root[data-theme="light"] .storage-save-indicator.is-pending { color: #b56b00; }
 :root[data-theme="light"] .storage-save-indicator.is-error { color: #c52d35; }
 
-:root[data-theme="light"] .dashboard-identity,
-:root[data-theme="light"] .dashboard-controls {
-  box-shadow: 0 12px 28px #52677f35, 0 3px 8px var(--shadow-light);
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity,
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-theme="light"] .dashboard-identity .brand,
+:root[data-theme="light"] .dashboard-identity .github-repo-link,
+:root[data-theme="light"] .dashboard-identity .app-version,
+:root[data-theme="light"] .dashboard-controls .settings-button,
+:root[data-theme="light"] .dashboard-controls .storage-check-button,
+:root[data-theme="light"] .dashboard-controls .storage-indicator {
+  background: var(--surface-dashboard-inner);
+}
+
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .brand,
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .github-repo-link,
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .app-version,
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .settings-button,
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-check-button,
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-indicator {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 16px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
 }
 
 :root[data-theme="light"] .library-search,
@@ -261,10 +320,6 @@
   box-shadow: 0 7px 16px #52677f30;
 }
 
-:root[data-theme="light"] .statsbar div:hover {
-  box-shadow: 0 11px 22px #52677f40;
-}
-
 :root[data-theme="light"] .entry:hover,
 :root[data-theme="light"] .entry:focus-within {
   border-color: var(--border-accent-muted);
@@ -341,4 +396,677 @@
   border-color: var(--line);
   background: #e9eef4;
   color: var(--text);
+}
+
+/* Restore the dashboard surface pairing after the shared light-theme card rules. */
+:root[data-theme="light"] .dashboard-identity,
+:root[data-theme="light"] .dashboard-controls {
+  background: var(--surface-dashboard-outer);
+}
+
+/* Keep the soft-glass treatment after the shared light-theme card rules. */
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity,
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-theme="light"] .dashboard-identity .brand,
+:root[data-theme="light"] .dashboard-identity .github-repo-link,
+:root[data-theme="light"] .dashboard-identity .app-version,
+:root[data-theme="light"] .dashboard-controls .settings-button,
+:root[data-theme="light"] .dashboard-controls .storage-check-button,
+:root[data-theme="light"] .dashboard-controls .storage-indicator {
+  border-color: var(--line);
+  border-radius: 14px;
+}
+
+:root[data-theme="light"][data-dashboard-tactile="on"] .statsbar {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-stats-outer) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-theme="light"][data-dashboard-tactile="on"] .statsbar > div {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-stats-inner) 76%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 16px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-input-modality="pointer"] :focus-visible {
+  outline: none;
+}
+
+/* Library surfaces share the dashboard palette and optional soft-glass finish. */
+.library-section {
+  background: var(--surface-dashboard-outer);
+}
+
+.library-section .section-heading {
+  background: var(--surface-dashboard-outer);
+  border-bottom: 0;
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.collection-filter-sort,
+.collection-pagination,
+.folder-picker-group::before,
+.library-view-switcher:hover,
+.library-view-switcher:focus-within,
+.media-type-filter-group:hover,
+.media-type-filter-group:focus-within {
+  background: var(--surface-dashboard-outer);
+}
+
+.collection-tab:not(:hover):not(.active),
+.collection-add:not(:hover),
+.library-view-option:not(:hover):not(.active),
+.media-type-filter:not(:hover):not(.active),
+.collection-filter-sort select:not(:hover):not(:focus):not(.active),
+.filter-sort-reset:not(:hover),
+.library-search:not(:hover):not(:focus-within):not(.has-query),
+.entry {
+  background-color: var(--surface-dashboard-inner);
+}
+
+:root[data-dashboard-tactile="on"] .library-section,
+:root[data-dashboard-tactile="on"] .collection-filter-sort,
+:root[data-dashboard-tactile="on"] .collection-pagination,
+:root[data-dashboard-tactile="on"] .folder-picker-group::before,
+:root[data-dashboard-tactile="on"] .library-view-switcher:hover,
+:root[data-dashboard-tactile="on"] .library-view-switcher:focus-within,
+:root[data-dashboard-tactile="on"] .media-type-filter-group:hover,
+:root[data-dashboard-tactile="on"] .media-type-filter-group:focus-within {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .collection-tab:not(:hover):not(.active),
+:root[data-dashboard-tactile="on"] .collection-add:not(:hover),
+:root[data-dashboard-tactile="on"] .library-view-option:not(:hover):not(.active),
+:root[data-dashboard-tactile="on"] .media-type-filter:not(:hover):not(.active),
+:root[data-dashboard-tactile="on"] .collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-dashboard-tactile="on"] .filter-sort-reset:not(:hover),
+:root[data-dashboard-tactile="on"] .library-search:not(:hover):not(:focus-within):not(.has-query),
+:root[data-dashboard-tactile="on"] .entry {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 16px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .section-add {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--red) 86%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+}
+
+/* Keep the accent glow on controls and cards that can actually be activated. */
+:root[data-dashboard-tactile="on"] .collection-tab:hover,
+:root[data-dashboard-tactile="on"] .collection-add:hover,
+:root[data-dashboard-tactile="on"] .library-view-option[data-view="logged"]:hover,
+:root[data-dashboard-tactile="on"] .collection-filter-sort select:hover,
+:root[data-dashboard-tactile="on"] .collection-filter-sort select:focus,
+:root[data-dashboard-tactile="on"] .filter-sort-reset:hover,
+:root[data-dashboard-tactile="on"] .collection-pagination button:hover:not(:disabled),
+:root[data-dashboard-tactile="on"] .library-search:hover:not(.is-escape-collapsed),
+:root[data-dashboard-tactile="on"] .library-search:focus-within:not(.is-escape-collapsed),
+:root[data-dashboard-tactile="on"] .entry:hover,
+:root[data-dashboard-tactile="on"] .entry:focus-within {
+  border-color: var(--border-accent-muted);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px color-mix(in srgb, var(--blue) 28%, transparent),
+    0 0 14px color-mix(in srgb, var(--blue) 20%, transparent),
+    0 8px 20px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .library-view-option[data-view="watchlist"]:hover {
+  border-color: var(--status-success-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--status-success) 22%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .media-type-filter:hover,
+:root[data-dashboard-tactile="on"] .library-search.has-query .library-search-clear:hover {
+  border-color: var(--status-danger-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--status-danger) 20%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .section-add:hover {
+  border-color: var(--status-danger-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--status-danger) 20%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+/* Folder tray internals stay glassy even when the selected folder has its own color. */
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 16px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden]))::before {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab:hover,
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab.active {
+  background-color: color-mix(in srgb, var(--surface-hover) 76%, transparent);
+}
+
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab:hover {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px color-mix(in srgb, var(--blue) 28%, transparent),
+    0 0 14px color-mix(in srgb, var(--blue) 20%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-theme="light"][data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden]))::before {
+  background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+/* Reuse the dashboard glass surfaces throughout the entry hover and page. */
+:root[data-dashboard-tactile="on"] .detail-page:not(.is-fullscreen) .detail-shell,
+:root[data-dashboard-tactile="on"] .detail-page .detail-hero,
+:root[data-dashboard-tactile="on"] .detail-page .detail-actors-panel,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-panel,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-panel {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-history h2,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-panel h3 {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 16px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-info-content,
+:root[data-dashboard-tactile="on"] .detail-page .detail-info-tabs,
+:root[data-dashboard-tactile="on"] .detail-page .detail-runtime,
+:root[data-dashboard-tactile="on"] .detail-page .detail-watch-count,
+:root[data-dashboard-tactile="on"] .detail-page .detail-actor-tag,
+:root[data-dashboard-tactile="on"] .detail-page .detail-timeline-content,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-content,
+:root[data-dashboard-tactile="on"] .detail-page .detail-timeline li {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 16px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab,
+:root[data-dashboard-tactile="on"] .detail-page .detail-window-button,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions button,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions button {
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  backdrop-filter: blur(10px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 14px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab:not(.active),
+:root[data-dashboard-tactile="on"] .detail-page .detail-window-button,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions button,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions button {
+  border-color: color-mix(in srgb, var(--line) 62%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 72%, transparent);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add {
+  background-color: color-mix(in srgb, var(--accent-orange) 12%, color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent));
+}
+
+/* Only interactive detail elements get the accent glow on hover. */
+:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab:hover,
+:root[data-dashboard-tactile="on"] .detail-page .detail-window-button:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions button:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions button:hover {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px color-mix(in srgb, var(--blue) 24%, transparent),
+    0 0 12px color-mix(in srgb, var(--blue) 18%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab:not(.active):hover,
+:root[data-dashboard-tactile="on"] .detail-page .detail-window-button:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions button:hover {
+  background-color: color-mix(in srgb, var(--surface-hover) 78%, transparent);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab.active {
+  background-color: color-mix(in srgb, var(--blue) 17%, var(--surface-dashboard-inner));
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add:hover {
+  background-color: color-mix(in srgb, var(--accent-orange) 22%, color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent));
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--accent-orange) 22%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-edit:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-save:hover {
+  background-color: color-mix(in srgb, var(--status-success-surface) 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--status-success) 20%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-remove:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover {
+  background-color: color-mix(in srgb, var(--status-danger-surface) 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--status-danger) 20%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-timeline li:hover,
+:root[data-dashboard-tactile="on"] .detail-page .detail-timeline li.is-selected {
+  border-color: color-mix(in srgb, var(--blue) 48%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-hover) 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px color-mix(in srgb, var(--blue) 24%, transparent),
+    0 0 12px color-mix(in srgb, var(--blue) 16%, transparent),
+    0 7px 18px var(--glass-shadow);
+}
+
+/* Apply the same optional glass finish to controls floating over cards. */
+:root[data-dashboard-tactile="on"] .banner-controls button,
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions button,
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-open-fullscreen {
+  border-color: color-mix(in srgb, var(--line) 58%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 72%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  backdrop-filter: blur(10px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 14px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .banner-controls button:hover,
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions button:hover,
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-open-fullscreen:hover {
+  border-color: var(--border-accent-muted);
+  background-color: color-mix(in srgb, var(--surface-blue-action) 78%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px color-mix(in srgb, var(--blue) 28%, transparent),
+    0 0 12px color-mix(in srgb, var(--blue) 20%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-rewatch:hover {
+  border-color: var(--border-warm-action);
+  background-color: color-mix(in srgb, var(--surface-warm-action) 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--accent-orange) 20%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-edit:hover {
+  border-color: var(--status-success-border);
+  background-color: color-mix(in srgb, var(--status-success-surface) 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--status-success) 20%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-folder:hover {
+  border-color: var(--border-blue-action);
+  background-color: color-mix(in srgb, var(--surface-accent) 82%, transparent);
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .remove-button:hover {
+  border-color: var(--status-danger-border);
+  background-color: color-mix(in srgb, var(--status-danger-surface) 82%, transparent);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--status-danger) 20%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+/* Glass treatment for the category chip and the stored IMDb badge. */
+:root[data-dashboard-tactile="on"] .entry-tag:not(.entry-tag-placeholder) {
+  border-color: hsl(var(--category-hue) 38% 58% / 72%);
+  background: color-mix(in srgb, hsl(var(--category-hue) 34% 29%) 78%, transparent);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
+  backdrop-filter: blur(8px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 3px 10px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-imdb {
+  border-color: color-mix(in srgb, #f5c518 45%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 78%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 5px 14px var(--glass-shadow);
+}
+
+/* Match each icon's border and glow to its meaning while the glass theme is on. */
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-edit:hover,
+:root[data-dashboard-tactile="on"] .detail-page .detail-window-button.detail-movie-edit:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-edit:hover {
+  border-color: var(--status-success-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--status-success) 30%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-edit:hover svg,
+:root[data-dashboard-tactile="on"] .detail-page .detail-window-button.detail-movie-edit:hover svg,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-edit:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-success) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .remove-button:hover,
+:root[data-dashboard-tactile="on"] .detail-page .detail-close-button:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-remove:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover {
+  border-color: var(--status-danger-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--status-danger) 30%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .remove-button:hover svg,
+:root[data-dashboard-tactile="on"] .detail-page .detail-close-button:hover svg,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-remove:hover svg,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-danger) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-open-fullscreen:hover,
+:root[data-dashboard-tactile="on"] .detail-page #detail-expand:hover {
+  border-color: color-mix(in srgb, var(--icon-muted) 78%, var(--glass-highlight));
+  color: var(--text-muted-strong);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--icon-muted) 26%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-open-fullscreen:hover svg,
+:root[data-dashboard-tactile="on"] .detail-page #detail-expand:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--icon-muted) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-rewatch:hover,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add:hover {
+  border-color: var(--accent-orange);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--accent-orange) 30%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-rewatch:hover svg,
+:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent-orange) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-folder:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--blue) 72%, transparent));
+}
+
+/* Dashboard icons use their own familiar status colors instead of one blue glow. */
+:root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:hover {
+  border-color: var(--red);
+  color: var(--red);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--red) 30%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--red) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-controls .settings-button:not(.theme-toggle-button):hover {
+  border-color: var(--icon-muted);
+  color: var(--text-muted-strong);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--icon-muted) 28%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-controls .settings-button:not(.theme-toggle-button):hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--icon-muted) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-controls .theme-toggle-button:hover {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--accent-orange) 30%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-controls .theme-toggle-button:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent-orange) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-check-button:hover {
+  border-color: var(--status-success-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--status-success) 30%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .storage-save-indicator.is-saved {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-success) 58%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-indicator:hover {
+  border-color: color-mix(in srgb, var(--white) 76%, var(--glass-highlight));
+  color: var(--white);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--white) 28%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+/* Give the poster-colored hero a light-glass sheen without muting its colors. */
+:root[data-dashboard-tactile="on"] .spotlight {
+  border-color: color-mix(in srgb, var(--line) 62%, var(--glass-highlight));
+  -webkit-backdrop-filter: saturate(120%);
+  backdrop-filter: saturate(120%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 14px 32px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .spotlight::after {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--glass-highlight) 72%, transparent);
+  border-radius: inherit;
+  background: linear-gradient(145deg, #ffffff12 0%, transparent 30%, transparent 74%, #ffffff08 100%);
+  content: "";
+  pointer-events: none;
+}
+
+:root[data-dashboard-tactile="on"] .spotlight:hover {
+  border-color: var(--border-accent-muted);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 0 16px color-mix(in srgb, var(--blue) 18%, transparent),
+    0 14px 32px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .detail-close-button:hover {
+  color: var(--status-danger);
+  text-shadow: 0 0 7px color-mix(in srgb, var(--status-danger) 70%, transparent);
+}
+
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-save:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-success) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-indicator:hover .storage-indicator-name {
+  text-shadow: 0 0 7px color-mix(in srgb, var(--white) 52%, transparent);
+}
+
+/* Add a restrained glass highlight to poster frames without a hover glow. */
+:root .entry-poster,
+:root .banner-poster,
+:root .detail-poster {
+  box-shadow:
+    0 5px 14px var(--shadow-black-25),
+    inset 0 1px 0 var(--shadow-inset);
+}
+
+:root .entry-tag:not(.entry-tag-placeholder) {
+  box-shadow:
+    0 3px 8px var(--shadow-black-20),
+    inset 0 1px 0 var(--shadow-inset);
+}
+
+:root .detail-page .detail-imdb {
+  box-shadow:
+    0 4px 12px var(--shadow-black-25),
+    inset 0 1px 0 var(--shadow-inset);
+}
+
+:root .detail-page .detail-imdb-fetched {
+  box-shadow: 0 4px 12px var(--shadow-black-25);
+}
+
+:root[data-dashboard-tactile="on"] .entry-poster,
+:root[data-dashboard-tactile="on"] .banner-poster,
+:root[data-dashboard-tactile="on"] .detail-poster {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid color-mix(in srgb, var(--glass-highlight) 62%, var(--line));
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 4px 12px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .entry-poster::after,
+:root[data-dashboard-tactile="on"] .banner-poster::after,
+:root[data-dashboard-tactile="on"] .detail-poster::after {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  border: 1px solid color-mix(in srgb, var(--glass-highlight) 72%, transparent);
+  border-radius: inherit;
+  background: linear-gradient(145deg, #ffffff18 0%, #ffffff08 18%, transparent 42%, transparent 78%, #ffffff0a 100%);
+  content: "";
+  pointer-events: none;
+}
+
+:root[data-dashboard-tactile="on"] .entry-poster img,
+:root[data-dashboard-tactile="on"] .banner-poster img,
+:root[data-dashboard-tactile="on"] .detail-poster-art {
+  position: relative;
+  z-index: 1;
 }

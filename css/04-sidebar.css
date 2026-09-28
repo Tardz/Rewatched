@@ -36,8 +36,80 @@
   padding: var(--dashboard-box-padding);
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: var(--surface-raised);
+  background: var(--surface-dashboard-outer);
   box-shadow: 0 12px 28px var(--shadow-black-31), 0 3px 8px var(--shadow-black-20);
+}
+
+.dashboard-identity .brand,
+.dashboard-identity .github-repo-link,
+.dashboard-identity .app-version,
+.dashboard-controls .settings-button,
+.dashboard-controls .storage-check-button,
+.dashboard-controls .storage-indicator {
+  background: var(--surface-dashboard-inner);
+  border-color: var(--line);
+  border-radius: 14px;
+}
+
+/* Optional soft-glass treatment for the dashboard panels and controls. */
+:root[data-dashboard-tactile="on"] .dashboard-identity,
+:root[data-dashboard-tactile="on"] .dashboard-controls {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow),
+    0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-identity .brand,
+:root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link,
+:root[data-dashboard-tactile="on"] .dashboard-identity .app-version,
+:root[data-dashboard-tactile="on"] .dashboard-controls .settings-button,
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-check-button,
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-indicator {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 5px 16px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+  transition:
+    box-shadow 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-identity .brand:hover,
+:root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:hover,
+:root[data-dashboard-tactile="on"] .dashboard-controls .settings-button:hover,
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-check-button:hover,
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-indicator:hover {
+  border-color: var(--border-accent-muted);
+  background: color-mix(in srgb, var(--surface-hover) 82%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px color-mix(in srgb, var(--blue) 28%, transparent),
+    0 0 14px color-mix(in srgb, var(--blue) 20%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-identity .brand:active,
+:root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:active,
+:root[data-dashboard-tactile="on"] .dashboard-controls .settings-button:active,
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-check-button:active,
+:root[data-dashboard-tactile="on"] .dashboard-controls .storage-indicator:active {
+  box-shadow:
+    inset 0 2px 6px var(--glass-shadow),
+    inset 0 0 0 1px color-mix(in srgb, var(--blue) 36%, transparent);
 }
 
 .storage-indicator {
@@ -215,7 +287,7 @@
   padding: var(--dashboard-box-padding);
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: var(--surface-raised);
+  background: var(--surface-dashboard-outer);
   box-shadow: 0 12px 28px var(--shadow-black-31), 0 3px 8px var(--shadow-black-20);
 }
 

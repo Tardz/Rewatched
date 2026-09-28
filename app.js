@@ -6,6 +6,17 @@ let libraryScrollPosition = Number(sessionStorage.getItem(LIBRARY_SCROLL_KEY)) |
 
 const themeToggle = $('#toggle-theme');
 
+// Retain focus rings for keyboard use, but avoid persistent rings after pointer clicks.
+document.addEventListener('pointerdown', () => {
+  document.documentElement.dataset.inputModality = 'pointer';
+});
+document.addEventListener('keydown', (event) => {
+  if (['Tab', 'Enter', ' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)
+    && !event.metaKey && !event.ctrlKey && !event.altKey) {
+    document.documentElement.dataset.inputModality = 'keyboard';
+  }
+});
+
 /** Updates the theme toggle to reflect the active theme. */
 function syncThemeToggle() {
   const isLight = document.documentElement.dataset.theme === 'light';
@@ -119,6 +130,10 @@ function openSettings() {
   syncRotationControls();
   $('#theme-mode').value = themePreference;
   $('#poster-background').checked = posterBackgroundEnabled;
+  $('#poster-background-strength').value = posterBackgroundStrength;
+  $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
+  $('#poster-background-strength').disabled = !posterBackgroundEnabled;
+  $('#tactile-dashboard').checked = tactileDashboardEnabled;
   updateBackupSummary();
   $('#omdb-api-key').value = localStorage.getItem(OMDB_API_KEY) || '';
   $('#settings-dialog').showModal();
@@ -136,6 +151,18 @@ $('#poster-background').addEventListener('change', (event) => {
   posterBackgroundEnabled = event.currentTarget.checked;
   localStorage.setItem(POSTER_BACKGROUND_KEY, String(posterBackgroundEnabled));
   document.documentElement.dataset.posterBackground = posterBackgroundEnabled ? 'on' : 'off';
+  $('#poster-background-strength').disabled = !posterBackgroundEnabled;
+});
+$('#poster-background-strength').addEventListener('input', (event) => {
+  posterBackgroundStrength = Number(event.currentTarget.value);
+  document.documentElement.style.setProperty('--poster-background-strength', `${posterBackgroundStrength}%`);
+  $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
+  localStorage.setItem(POSTER_BACKGROUND_STRENGTH_KEY, String(posterBackgroundStrength));
+});
+$('#tactile-dashboard').addEventListener('change', (event) => {
+  tactileDashboardEnabled = event.currentTarget.checked;
+  localStorage.setItem(TACTILE_DASHBOARD_KEY, String(tactileDashboardEnabled));
+  document.documentElement.dataset.dashboardTactile = tactileDashboardEnabled ? 'on' : 'off';
 });
 $('#save-omdb-key').addEventListener('click', () => {
   const key = $('#omdb-api-key').value.trim();

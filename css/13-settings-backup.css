@@ -45,6 +45,19 @@
   accent-color: var(--red);
 }
 
+.settings-option-range label {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.settings-option-range input[type="range"] {
+  width: 140px;
+  height: 22px;
+  flex: 0 1 140px;
+  padding: 0;
+  accent-color: var(--blue);
+}
+
 .settings-option select {
   width: auto;
   min-width: 92px;

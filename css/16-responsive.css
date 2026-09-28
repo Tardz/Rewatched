@@ -465,6 +465,55 @@ main:has(.dashboard-layout.layout-normal) {
   .media-type-filter { flex: 1; }
 }
 
+/* Give every hero poster a fixed 2:3 frame at each responsive size. The source
+   image and title never affect its dimensions; object-fit crops artwork to fit. */
+.spotlight {
+  --spotlight-poster-height: 256px;
+  padding: 16px 16px 16px 40px;
+}
+
+.spotlight .banner-poster {
+  align-self: center;
+  width: calc(var(--spotlight-poster-height) * 2 / 3);
+  height: var(--spotlight-poster-height);
+  flex: 0 0 calc(var(--spotlight-poster-height) * 2 / 3);
+}
+
+.dashboard-layout.layout-normal > .spotlight {
+  --spotlight-poster-height: 260px;
+  padding: 20px;
+}
+
+.dashboard-layout.layout-normal > .spotlight .banner-poster {
+  width: calc(var(--spotlight-poster-height) * 2 / 3);
+  height: var(--spotlight-poster-height);
+  flex-basis: calc(var(--spotlight-poster-height) * 2 / 3);
+}
+
+@media (max-width: 760px) {
+  .spotlight {
+    --spotlight-poster-height: 208px;
+    padding: 25px;
+  }
+
+  .dashboard-layout.layout-normal > .spotlight {
+    --spotlight-poster-height: 208px;
+    padding: 25px;
+  }
+}
+
+@media (max-width: 470px) {
+  .spotlight {
+    --spotlight-poster-height: 218px;
+    padding: 20px;
+  }
+
+  .dashboard-layout.layout-normal > .spotlight {
+    --spotlight-poster-height: 218px;
+    padding: 20px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .entry { transition: none; }
   .entry:hover,
