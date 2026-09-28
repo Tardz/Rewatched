@@ -36,6 +36,8 @@ function collapseFolderPicker() {
   if (currentFolder) folderList.prepend(currentFolder);
   folderPicker.classList.add('is-collapsed');
   folderPickerGroup.classList.remove('is-expanded');
+  folderPicker.style.removeProperty('width');
+  folderPickerGroup.style.removeProperty('width');
 
   requestAnimationFrame(() => {
     folderList.querySelectorAll('.collection-folder').forEach((folder) => {
@@ -53,14 +55,53 @@ function collapseFolderPicker() {
 
 /** Expands the folder picker to show available folders. */
 function expandFolderPicker() {
+  const folderCount = folderList.children.length;
+  if (!folderCount) return;
+  folderPicker.style.width = `${getFolderPickerWidth(folderCount)}px`;
   folderPicker.classList.remove('is-collapsed');
   folderPickerGroup.classList.add('is-expanded');
+
+  folderPickerGroup.style.width = `${getExpandedFolderGroupWidth()}px`;
+}
+
+/** Returns the final expanded group width without reading mid-animation sizes. */
+function getExpandedFolderGroupWidth() {
+  const rootStyle = getComputedStyle(document.documentElement);
+  const readPixels = (name) => parseFloat(rootStyle.getPropertyValue(name)) || 0;
+  // The group padding animates, so reading the group itself here can return
+  // an in-between value. Its token resolves to the root spacing unit.
+  const groupPaddingLeft = readPixels('--space-1');
+  const groupPaddingRight = groupPaddingLeft + readPixels('--folder-picker-list-padding-left');
+
+  return getFolderPickerWidth(folderList.children.length)
+    + 36 // Expanded add-folder button width.
+    + readPixels('--toolbar-control-gap-expanded')
+    + groupPaddingLeft
+    + groupPaddingRight;
+}
+
+/** Calculates the expanded tray width from its folders, capped at three visible items. */
+function getFolderPickerWidth(folderCount) {
+  const rootStyle = getComputedStyle(document.documentElement);
+  const readPixels = (name) => parseFloat(rootStyle.getPropertyValue(name)) || 0;
+  const maxWidth = readPixels('--folder-picker-width-expanded');
+  const itemWidth = readPixels('--toolbar-folder-item-width-expanded');
+  const itemGap = readPixels('--toolbar-control-gap-expanded');
+  const listPadding = readPixels('--folder-picker-list-padding-left')
+    + readPixels('--folder-picker-list-padding-right');
+  const maxVisible = Math.max(1, Math.floor((maxWidth - listPadding + itemGap) / (itemWidth + itemGap)));
+  const visibleCount = Math.min(folderCount, maxVisible);
+  const width = visibleCount * itemWidth + (visibleCount - 1) * itemGap + listPadding;
+  return Math.min(width, maxWidth);
 }
 
 folderPickerGroup.addEventListener('pointerenter', expandFolderPicker);
 folderPickerGroup.addEventListener('pointerleave', collapseFolderPicker);
 folderPickerGroup.addEventListener('focusin', expandFolderPicker);
 folderPickerGroup.addEventListener('focusout', collapseFolderPicker);
+window.addEventListener('resize', () => {
+  if (folderPickerGroup.classList.contains('is-expanded')) expandFolderPicker();
+});
 
 /** Updates active styling for library and watchlist view controls. */
 function updateViewTabs() {
@@ -106,7 +147,13 @@ function renderCollectionPicker() {
   list.replaceChildren();
 
   folderPicker.hidden = folders.length === 0;
-  if (!folders.length) return;
+  if (!folders.length) {
+    folderPicker.classList.add('is-collapsed');
+    folderPickerGroup.classList.remove('is-expanded');
+    folderPicker.style.removeProperty('width');
+    folderPickerGroup.style.removeProperty('width');
+    return;
+  }
 
   folders.forEach((folder, index) => {
     const button = document.createElement('button');
@@ -128,6 +175,8 @@ function renderCollectionPicker() {
     item.append(button);
     list.append(item);
   });
+
+  if (folderPickerGroup.classList.contains('is-expanded')) expandFolderPicker();
 }
 
 /** Preserves control order during expansion, then applies the compact order. */

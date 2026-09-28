@@ -45,7 +45,7 @@
   gap: var(--toolbar-control-gap);
   box-sizing: border-box;
   height: var(--toolbar-control-height);
-  transition: gap 180ms ease, padding 180ms ease;
+  transition: width 180ms ease, gap 180ms ease, padding 180ms ease;
 }
 
 .folder-picker-group::before {
@@ -100,6 +100,7 @@
 .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
   gap: var(--toolbar-control-gap-expanded);
   padding: var(--toolbar-group-padding);
+  padding-right: calc(var(--toolbar-group-padding) + var(--folder-picker-list-padding-left));
 }
 
 .folder-picker-group:has(#library-folder-picker:not([hidden])):not(.is-expanded) {
@@ -111,14 +112,15 @@
 }
 
 .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-picker {
-  width: var(--folder-picker-width-expanded) !important;
+  width: var(--folder-picker-width-expanded);
   height: var(--toolbar-control-height-compact);
   z-index: 3;
 }
 
 .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list {
+  gap: var(--toolbar-control-gap-expanded);
   height: var(--toolbar-control-height-compact);
-  padding: 0 16px 0 2px;
+  padding: 0 var(--folder-picker-list-padding-right) 0 var(--folder-picker-list-padding-left);
 }
 
 .folder-picker-group:has(#library-folder-picker:not([hidden])) #add-collection {

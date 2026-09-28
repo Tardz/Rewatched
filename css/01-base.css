@@ -79,8 +79,8 @@
   /* Collection toolbar controls share one size system. */
   --toolbar-control-height: 46px;
   --toolbar-control-height-compact: 36px;
-  --toolbar-control-gap: var(--space-3);
-  --toolbar-control-gap-expanded: var(--space-2);
+  --toolbar-control-gap: 8px;
+  --toolbar-control-gap-expanded: 6px;
   --toolbar-control-padding-inline: var(--space-6);
   --toolbar-control-padding-inline-compact: 14px;
   --toolbar-control-radius: 11px;
@@ -90,6 +90,8 @@
   --toolbar-folder-item-width: 112px;
   --toolbar-folder-item-width-expanded: 96px;
   --toolbar-folder-item-radius-expanded: var(--toolbar-control-radius-compact);
+  --folder-picker-list-padding-left: 2px;
+  --folder-picker-list-padding-right: 2px;
   --folder-picker-width: 112px;
   --folder-picker-width-expanded: 320px;
   --folder-picker-width-tablet: 224px;
