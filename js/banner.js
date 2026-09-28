@@ -89,24 +89,39 @@ function updateBannerPalette(source, { updatePage = true } = {}) {
       const context = canvas.getContext('2d', { willReadFrequently: true });
       context.drawImage(image, 0, 0, 16, 16);
       const pixels = context.getImageData(0, 0, 16, 16).data;
-      const sample = (start, end) => {
-        let red = 0; let green = 0; let blue = 0; let count = 0;
+      const sample = (start, end, favorColor = false) => {
+        let red = 0; let green = 0; let blue = 0; let totalWeight = 0;
         for (let y = 0; y < 16; y += 1) {
           for (let x = start; x < end; x += 1) {
             const offset = (y * 16 + x) * 4;
-            red += pixels[offset]; green += pixels[offset + 1]; blue += pixels[offset + 2]; count += 1;
+            const pixelRed = pixels[offset];
+            const pixelGreen = pixels[offset + 1];
+            const pixelBlue = pixels[offset + 2];
+            const brightness = (pixelRed + pixelGreen + pixelBlue) / 3;
+            const chroma = Math.max(pixelRed, pixelGreen, pixelBlue)
+              - Math.min(pixelRed, pixelGreen, pixelBlue);
+            const weight = favorColor
+              ? 0.15 + (brightness / 255) * 0.75 + (Math.max(0, chroma - 20) / 235) * 1.25
+              : 1;
+
+            red += pixelRed * weight;
+            green += pixelGreen * weight;
+            blue += pixelBlue * weight;
+            totalWeight += weight;
           }
         }
-        return `rgb(${Math.round(red / count)}, ${Math.round(green / count)}, ${Math.round(blue / count)})`;
+        return `rgb(${Math.round(red / totalWeight)}, ${Math.round(green / totalWeight)}, ${Math.round(blue / totalWeight)})`;
       };
       if (banner.dataset.paletteSource !== source) return;
       const firstColor = sample(0, 8);
       const secondColor = sample(8, 16);
+      const pageColorOne = sample(0, 8, true);
+      const pageColorTwo = sample(8, 16, true);
       banner.style.setProperty('--poster-color-one', firstColor);
       banner.style.setProperty('--poster-color-two', secondColor);
       if (updatePage && document.documentElement.dataset.pagePaletteSource === source) {
-        document.documentElement.style.setProperty('--app-poster-color-one', firstColor);
-        document.documentElement.style.setProperty('--app-poster-color-two', secondColor);
+        document.documentElement.style.setProperty('--app-poster-color-one', pageColorOne);
+        document.documentElement.style.setProperty('--app-poster-color-two', pageColorTwo);
       }
     } catch (error) {
       if (banner.dataset.paletteSource === source) {
