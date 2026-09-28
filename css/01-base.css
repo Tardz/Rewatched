@@ -21,7 +21,7 @@
   --surface-dashboard-inner: var(--surface-stats-inner);
   --poster-background-strength: 22%;
   --glass-highlight: #ffffff24;
-  --glass-shadow: #00000035;
+  --glass-shadow: #00000048;
   --glass-edge-shadow: #00000020;
   --surface-raised: #151920;
   --surface-deep: #111419;
@@ -67,13 +67,13 @@
   --priority-high: #ff7970;
   --shadow-inset-soft: #ffffff0a;
   --shadow-inset-strong: #ffffff0c;
-  --shadow-black-50: #0008;
+  --shadow-black-50: #0009;
   --shadow-light: #ffffff08;
-  --shadow-black-12: #0002;
-  --shadow-black-20: #0003;
-  --shadow-black-25: #0004;
-  --shadow-black-31: #0005;
-  --shadow-black-38: #0006;
+  --shadow-black-12: #0003;
+  --shadow-black-20: #0004;
+  --shadow-black-25: #0005;
+  --shadow-black-31: #0006;
+  --shadow-black-38: #0007;
   --shadow-inset: #ffffff08;
   --title-outline: #000000;
   --red: #ff6b67;
@@ -98,6 +98,7 @@
   --toolbar-control-radius: 11px;
   --toolbar-control-radius-compact: 9px;
   --toolbar-group-padding: var(--space-1);
+  --library-bar-shadow: inset 0 1px 0 var(--shadow-inset), 0 6px 16px var(--shadow-black-25);
   --toolbar-folder-padding-expanded: 10px;
   --toolbar-folder-item-width: 112px;
   --toolbar-folder-item-width-expanded: 96px;

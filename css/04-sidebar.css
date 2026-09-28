@@ -37,7 +37,7 @@
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--surface-dashboard-outer);
-  box-shadow: 0 12px 28px var(--shadow-black-31), 0 3px 8px var(--shadow-black-20);
+  box-shadow: 0 16px 36px #00000090, 0 4px 12px #00000068;
 }
 
 .dashboard-identity .brand,
@@ -61,8 +61,8 @@
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     inset 0 -1px 0 var(--glass-edge-shadow),
-    0 12px 28px var(--glass-shadow),
-    0 3px 8px var(--glass-edge-shadow);
+    0 16px 36px #00000080,
+    0 4px 12px #00000060;
 }
 
 :root[data-dashboard-tactile="on"] .dashboard-identity .brand,

@@ -421,7 +421,7 @@
   height: 34px;
   border: 0;
   border-radius: 7px;
-  background: transparent;
+  background: var(--surface-dashboard-inner);
   color: var(--muted);
   font-size: 23px;
   line-height: 1;

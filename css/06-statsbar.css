@@ -10,7 +10,7 @@
   border-radius: 20px;
   margin: 30px 0 70px;
   overflow: visible;
-  box-shadow: 0 14px 32px #00000045, inset 0 1px 0 #ffffff0d;
+  box-shadow: 0 16px 36px #00000090, 0 4px 12px #00000068, inset 0 1px 0 #ffffff0d;
 }
 
 .statsbar div {
@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: 0 8px 18px #00000048, inset 0 1px 0 #ffffff12;
+  box-shadow: 0 10px 22px #00000070, 0 2px 6px #00000050, inset 0 1px 0 #ffffff12;
   transition: box-shadow 160ms ease;
 }
 
@@ -33,8 +33,8 @@
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     inset 0 -1px 0 var(--glass-edge-shadow),
-    0 12px 28px var(--glass-shadow),
-    0 3px 8px var(--glass-edge-shadow);
+    0 16px 36px #00000080,
+    0 4px 12px #00000060;
 }
 
 :root[data-dashboard-tactile="on"] .statsbar > div {
@@ -45,8 +45,8 @@
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     inset 0 0 0 1px #ffffff0a,
-    0 5px 16px var(--glass-shadow),
-    0 1px 3px var(--glass-edge-shadow);
+    0 10px 22px #00000070,
+    0 2px 6px #00000050;
   transition: box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 

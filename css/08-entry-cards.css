@@ -213,7 +213,7 @@
 .entry {
   position: relative;
   min-height: 2px;
-  box-shadow: 0 7px 18px #00000038, inset 0 1px 0 var(--shadow-inset);
+  box-shadow: 0 10px 24px #00000050, 0 2px 6px #00000030, inset 0 1px 0 var(--shadow-inset);
   transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
 }
 
@@ -221,7 +221,7 @@
 .entry:focus-within {
   transform: translateY(-6px);
   border-color: var(--border-accent-muted);
-  box-shadow: 0 17px 34px #00000070, inset 0 1px 0 #ffffff10;
+  box-shadow: 0 20px 40px #00000080, 0 4px 10px #00000050, inset 0 1px 0 #ffffff10;
 }
 
 .entry.is-opening {
