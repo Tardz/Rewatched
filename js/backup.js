@@ -263,8 +263,8 @@ async function loadDemoVault() {
   button.disabled = true;
   status.textContent = 'Loading demo vault…';
   try {
-    const response = await fetch('demo_vault.json', { cache: 'no-store' });
-    if (!response.ok) throw new Error('Could not load demo_vault.json.');
+    const response = await fetch('assets/demo_vault.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error('Could not load assets/demo_vault.json.');
     const demo = readBackup(await response.json());
     const previousEntries = localStorage.getItem(STORAGE_KEY);
     const previousWatchlist = localStorage.getItem(WATCHLIST_KEY);
