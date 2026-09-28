@@ -338,17 +338,26 @@ function renderDetail() {
   $('#detail-runtime').hidden = !runtime || runtime === 'N/A';
   const actors = entry.metadata?.actors?.split(',').map((name) => name.trim()).filter(Boolean) || [];
   const actorList = $('#detail-actors');
-  actorList.replaceChildren(...actors.map((name) => {
+  const actorTags = actors.map((name) => {
     const tag = document.createElement('span');
     tag.className = 'detail-actor-tag';
     tag.textContent = name;
     return tag;
-  }));
+  });
+  if (!actors.length) {
+    const emptyMessage = document.createElement('p');
+    emptyMessage.className = 'detail-info-empty';
+    emptyMessage.textContent = 'Cast details has not been saved for this title yet.';
+    actorTags.push(emptyMessage);
+  }
+  actorList.replaceChildren(...actorTags);
   const plot = entry.metadata?.plot?.trim() || '';
-  $('#detail-plot').textContent = plot;
-  $('#detail-actors-tab').hidden = actors.length === 0;
-  $('#detail-plot-tab').hidden = !plot;
-  $('#detail-actors-panel').hidden = actors.length === 0 && !plot;
+  const plotText = $('#detail-plot');
+  plotText.textContent = plot || 'Plot has not been saved for this title yet.';
+  plotText.classList.toggle('detail-info-empty', !plot);
+  $('#detail-actors-tab').hidden = false;
+  $('#detail-plot-tab').hidden = false;
+  $('#detail-actors-panel').hidden = false;
   selectDetailInfoTab(actors.length ? 'actors' : 'plot');
   renderImdbRating(entry);
   $('#detail-title').textContent = entry.title;

@@ -160,6 +160,8 @@ a {
 }
 
 main {
+  container-name: app-content;
+  container-type: inline-size;
   max-width: 1180px;
   margin: auto;
   padding: 24px 24px 24px;

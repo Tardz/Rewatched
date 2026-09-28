@@ -101,13 +101,13 @@ main:has(.dashboard-layout.layout-normal) {
   background: var(--panel);
 }
 
-@media (min-width: 1100px) {
+@container app-content (min-width: 1100px) {
   .dashboard-layout.layout-normal {
     display: grid;
     grid-template-columns: max-content minmax(0, 3fr) minmax(125px, .45fr);
     align-items: stretch;
-    gap: 24px;
-    margin-bottom: 36px;
+    gap: var(--space-7);
+    margin-bottom: var(--space-7);
   }
   .dashboard-layout.layout-normal > .spotlight,
   .dashboard-layout.layout-normal > .statsbar { min-width: 0; }
@@ -134,7 +134,8 @@ main:has(.dashboard-layout.layout-normal) {
     justify-content: center;
   }
   .dashboard-layout.layout-normal .sidebar-brand .brand {
-    width: 100%;
+    width: auto;
+    flex: 0 0 auto;
     box-sizing: border-box;
     justify-content: center;
   }
@@ -205,76 +206,165 @@ main:has(.dashboard-layout.layout-normal) {
   }
 }
 
-@media (max-width: 1099px) {
+@container app-content (width < 1100px) {
   .dashboard-layout.layout-normal {
     display: grid;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    /* Keep the top boxes content-sized while leaving a flexible track for the
+       banner and stats bar to fill across the remaining row width. */
     grid-template-columns: max-content minmax(0, 1fr);
+    justify-content: start;
     align-items: start;
-    gap: 10px;
+    gap: var(--space-6);
+    margin-bottom: var(--space-7);
+  }
+  .dashboard-layout.layout-normal > * {
+    min-width: 0;
+    max-width: 100%;
   }
   .dashboard-layout.layout-normal .dashboard-sidebar,
   .dashboard-layout.layout-normal .sidebar { display: contents; }
   .dashboard-layout.layout-normal .dashboard-identity {
     grid-column: 1;
     grid-row: 1;
-    padding: 8px;
-  }
-  .dashboard-layout.layout-normal .dashboard-controls {
-    grid-column: 2;
-    grid-row: 1;
-    display: grid;
-    grid-template-columns: max-content minmax(52px, .6fr) minmax(100px, 1fr);
-    grid-template-rows: 58px;
+    justify-self: stretch;
+    width: max-content;
+    min-width: 0;
+    max-width: 100%;
+    grid-template-columns: max-content 134px;
     align-items: center;
     gap: 8px;
+    padding: var(--dashboard-box-padding);
+  }
+  .dashboard-layout.layout-normal .dashboard-controls {
+    --sidebar-control-size: 50px;
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    width: max-content;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    padding: var(--dashboard-box-padding);
+  }
+  .dashboard-layout.layout-normal .identity-meta {
+    justify-self: stretch;
+    width: 134px;
+    max-width: 100%;
+    grid-template-columns: var(--sidebar-control-size) minmax(0, 1fr);
+  }
+  .dashboard-layout.layout-normal .identity-meta .app-version {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .dashboard-layout.layout-normal .dashboard-control-buttons {
+    display: contents;
+    justify-content: flex-start;
+    gap: 6px;
+    width: auto;
+  }
+  .dashboard-layout.layout-normal #open-settings { order: 1; }
+  .dashboard-layout.layout-normal .dashboard-controls .storage-control { order: 2; }
+  .dashboard-layout.layout-normal #toggle-theme { order: 3; }
+  .dashboard-layout.layout-normal .dashboard-control-buttons .settings-button {
+    width: var(--sidebar-control-size);
+    height: var(--sidebar-control-size);
+    flex: 0 0 var(--sidebar-control-size);
+  }
+  .dashboard-layout.layout-normal .dashboard-controls .storage-indicator {
+    height: var(--sidebar-control-size);
+  }
+  .dashboard-layout.layout-normal .dashboard-controls .storage-check-button {
+    width: var(--sidebar-control-size);
+    height: var(--sidebar-control-size);
+    flex-basis: var(--sidebar-control-size);
+  }
+  .dashboard-layout.layout-normal .dashboard-controls .storage-control {
     width: auto;
     min-width: 0;
-    height: 58px;
-    margin: 0;
-    padding: 8px;
-    border-radius: 12px;
+    max-width: 100%;
+    flex: 0 1 auto;
   }
-  .dashboard-layout.layout-normal .app-version { height: 40px; }
-  .dashboard-layout.layout-normal .identity-meta {
-    --sidebar-control-size: 40px;
-    grid-template-columns: 40px max-content;
+  .dashboard-layout.layout-normal .dashboard-controls .storage-indicator {
+    box-sizing: border-box;
+    width: 190px;
+    min-width: 0;
+    max-width: 100%;
+    flex: 0 1 190px;
   }
-  .dashboard-layout.layout-normal .dashboard-control-buttons { gap: 6px; }
-  .dashboard-layout.layout-normal .dashboard-control-buttons .settings-button {
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
-  }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-indicator { height: 40px; }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-check-button {
-    width: 40px;
-    height: 40px;
-    flex-basis: 40px;
-  }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-control { min-width: 0; }
   .dashboard-layout.layout-normal > .spotlight,
-  .dashboard-layout.layout-normal > .statsbar { grid-column: 1 / -1; }
+  .dashboard-layout.layout-normal > .statsbar {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
   .dashboard-layout.layout-normal > .spotlight { grid-row: 2; }
   .dashboard-layout.layout-normal > .statsbar {
     grid-row: 3;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-template-rows: auto;
     height: auto;
     min-height: 0;
+    margin: 0;
   }
+}
+
+@container app-content (width < 1100px) {
   .collection { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-@media (max-width: 600px) {
-  .dashboard-layout.layout-normal { grid-template-columns: minmax(0, 1fr); gap: 8px; }
-  .dashboard-layout.layout-normal .dashboard-identity { grid-column: 1; grid-row: 1; width: 100%; }
+@container app-content (max-width: 600px) {
+  .dashboard-layout.layout-normal {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .dashboard-layout.layout-normal .dashboard-identity {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+  }
   .dashboard-layout.layout-normal .dashboard-controls {
     grid-column: 1;
     grid-row: 2;
-    grid-template-columns: max-content minmax(52px, .5fr) minmax(90px, 1fr);
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+  }
+  .dashboard-layout.layout-normal .dashboard-controls .storage-control {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+  .dashboard-layout.layout-normal .dashboard-controls .storage-indicator {
+    width: auto;
+    flex: 1 1 auto;
   }
   .dashboard-layout.layout-normal > .spotlight { grid-row: 3; }
-  .dashboard-layout.layout-normal > .statsbar { grid-row: 4; }
+  .dashboard-layout.layout-normal > .statsbar {
+    grid-row: 4;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dashboard-layout.is-entry-fullscreen .dashboard-controls {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .dashboard-layout.is-entry-fullscreen .storage-control {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+  .dashboard-layout.is-entry-fullscreen .storage-indicator {
+    width: auto;
+    flex: 1 1 auto;
+  }
 }
 
 @media (max-width: 760px) {
@@ -310,10 +400,14 @@ main:has(.dashboard-layout.layout-normal) {
   .form-grid { grid-template-columns: 1fr; }
 }
 
+@container app-content (width < 1100px) {
+  .dashboard-layout.is-entry-fullscreen .dashboard-sidebar { flex-wrap: wrap; }
+}
+
 @media (max-width: 600px) {
   .detail-page { padding: 16px; }
   .detail-shell { max-height: calc(100vh - 32px); }
-  .detail-page.is-fullscreen { padding: 12px 0 50px; }
+  .detail-page.is-fullscreen { padding: 0 0 50px; }
   .detail-page:not(.is-fullscreen) .detail-content-grid { grid-template-columns: minmax(0, 1fr); }
   .detail-page:not(.is-fullscreen) .detail-history { grid-column: 1; }
   .detail-page.is-fullscreen .detail-content-grid { grid-template-columns: minmax(0, 1fr); }
@@ -323,7 +417,7 @@ main:has(.dashboard-layout.layout-normal) {
   .detail-summary h1 { font-size: 30px; }
   .detail-actions { margin-top: 15px; }
   .detail-actions .button { padding: 9px 11px; font-size: 11px; }
-  .timeline-layout { grid-template-columns: 1fr; gap: 14px; }
+  .timeline-layout { grid-template-columns: 1fr; gap: var(--space-7); }
   .detail-timeline { margin: 0; padding-left: 22px; }
   .detail-timeline li { margin-left: 0; }
   .detail-timeline li::after { display: none; }
@@ -377,107 +471,68 @@ main:has(.dashboard-layout.layout-normal) {
   .entry:focus-within { transform: none; }
 }
 
-/* In a full entry page, reuse the dashboard header as one horizontal row. */
+/* The fullscreen entry page reuses the compact dashboard boxes and control order. */
 .dashboard-layout.layout-normal.is-entry-fullscreen {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-6);
 }
 
 .dashboard-layout.is-entry-fullscreen .dashboard-sidebar {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
-  gap: 12px;
+  gap: var(--space-6);
   width: 100%;
 }
 
-.dashboard-layout.is-entry-fullscreen .sidebar {
-  display: contents;
-}
+.dashboard-layout.is-entry-fullscreen .sidebar { display: contents; }
 
 .dashboard-layout.is-entry-fullscreen .dashboard-identity {
-  display: flex;
+  --sidebar-control-size: 50px;
+  display: grid;
+  grid-template-columns: max-content 134px;
   align-items: center;
   gap: 8px;
   width: max-content;
   max-width: none;
   flex: 0 0 auto;
-  padding: 10px;
+  padding: var(--dashboard-box-padding);
 }
 
 .dashboard-layout.is-entry-fullscreen .dashboard-controls {
   display: flex;
   align-items: center;
+  flex-wrap: nowrap;
   gap: 8px;
   width: max-content;
   margin: 0;
-  padding: 10px;
+  padding: var(--dashboard-box-padding);
 }
 
 .dashboard-layout.is-entry-fullscreen .sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  width: auto;
+  flex: 0 0 auto;
 }
 
-.dashboard-layout.is-entry-fullscreen .brand {
-  padding-inline: 2px !important;
-}
-
-.dashboard-layout.is-entry-fullscreen .app-version {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 140px;
-  min-width: 140px;
-  max-width: 140px;
-  flex: 0 0 140px;
-  height: 50px;
-  padding: 0 24px;
-  box-sizing: border-box;
-  font-size: 11px;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
+.dashboard-layout.is-entry-fullscreen .sidebar-brand .brand {
+  width: auto;
+  flex: 0 0 auto;
 }
 
 .dashboard-layout.is-entry-fullscreen .identity-meta {
-  --sidebar-control-size: 64px;
-  grid-template-columns: max-content;
-  width: max-content;
+  display: grid;
+  grid-template-columns: var(--sidebar-control-size) minmax(0, 1fr);
+  width: 134px;
+  min-width: 0;
 }
 
-.dashboard-layout.is-entry-fullscreen .github-repo-link {
-  display: none;
-}
-
-.dashboard-layout.is-entry-fullscreen .detail-back-icon,
-.dashboard-layout.is-entry-fullscreen .dashboard-control-buttons .settings-button,
-.dashboard-layout.is-entry-fullscreen .storage-check-button,
-.dashboard-layout.is-entry-fullscreen .storage-indicator {
-  box-shadow: inset 0 1px 0 #ffffff10, 0 6px 16px var(--shadow-black-38);
-}
-
-.dashboard-layout.is-entry-fullscreen .dashboard-control-buttons {
-  display: contents;
-}
-
-.dashboard-layout.is-entry-fullscreen #open-settings {
-  order: 1;
-}
-
-.dashboard-layout.is-entry-fullscreen .storage-control {
-  order: 2;
-}
-
-.dashboard-layout.is-entry-fullscreen #toggle-theme {
-  order: 3;
-}
-
-.dashboard-layout.is-entry-fullscreen .dashboard-controls {
-  flex-wrap: nowrap;
-}
+.dashboard-layout.is-entry-fullscreen .dashboard-control-buttons { display: contents; }
+.dashboard-layout.is-entry-fullscreen #open-settings { order: 1; }
+.dashboard-layout.is-entry-fullscreen .storage-control { order: 2; }
+.dashboard-layout.is-entry-fullscreen #toggle-theme { order: 3; }
 
 .dashboard-layout.is-entry-fullscreen #open-settings,
 .dashboard-layout.is-entry-fullscreen #toggle-theme {
@@ -487,13 +542,22 @@ main:has(.dashboard-layout.layout-normal) {
 .dashboard-layout.is-entry-fullscreen .storage-control {
   position: static;
   width: auto;
+  min-width: 0;
   flex: 0 1 auto;
   transform: none;
 }
 
-.dashboard-layout.is-entry-fullscreen .storage-indicator {
-  width: auto;
-  max-width: min(320px, 35vw);
+.dashboard-layout.layout-normal.is-entry-fullscreen #open-storage-settings {
+  box-sizing: border-box;
+  width: max-content;
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 1 auto;
+}
+
+.dashboard-layout.is-entry-fullscreen .storage-indicator-name {
+  flex: 0 1 auto;
+  text-align: left;
 }
 
 .dashboard-layout.is-entry-fullscreen .dashboard-control-buttons .settings-button,
@@ -502,79 +566,17 @@ main:has(.dashboard-layout.layout-normal) {
   height: var(--sidebar-control-size);
 }
 
-@media (max-width: 760px) {
-  .dashboard-layout.is-entry-fullscreen .dashboard-sidebar { gap: 8px; }
-  .dashboard-layout.is-entry-fullscreen .dashboard-identity,
-  .dashboard-layout.is-entry-fullscreen .dashboard-controls { gap: 6px; padding: 7px; }
-  .dashboard-layout.is-entry-fullscreen .sidebar-brand { gap: 6px; }
-  .dashboard-layout.is-entry-fullscreen .brand {
-    height: 42px;
-    padding: 6px 2px !important;
-    font-size: 20px;
-  }
-  .dashboard-layout.is-entry-fullscreen .brand-dot { font-size: 32px; }
-  .dashboard-layout.is-entry-fullscreen .app-version {
-    width: 124px;
-    min-width: 124px;
-    max-width: 124px;
-    flex-basis: 124px;
-    height: 42px;
-    padding: 0 20px;
-    font-size: 10px;
-  }
-  .dashboard-layout.is-entry-fullscreen .identity-meta {
-    --sidebar-control-size: 58px;
-    grid-template-columns: max-content;
-  }
-  .dashboard-layout.is-entry-fullscreen .detail-back-icon {
-    width: 40px;
-    height: 42px;
-  }
-  .dashboard-layout.is-entry-fullscreen .storage-indicator {
-    height: 42px;
-    max-width: min(200px, 24vw);
-    gap: 6px;
-    padding: 0 9px;
-    font-size: 9px;
-  }
-  .dashboard-layout.is-entry-fullscreen .settings-button {
-    width: 42px;
-    height: 42px;
-  }
-}
-
-@media (max-width: 420px) {
-  .dashboard-layout.is-entry-fullscreen .sidebar-brand { gap: 5px; }
-  .dashboard-layout.is-entry-fullscreen .dashboard-sidebar { align-items: flex-start; }
-  .dashboard-layout.is-entry-fullscreen .dashboard-identity,
-  .dashboard-layout.is-entry-fullscreen .dashboard-controls { gap: 4px; padding: 5px; }
-  .dashboard-layout.is-entry-fullscreen .brand {
-    padding: 5px 2px !important;
-    font-size: 17px;
-  }
-  .dashboard-layout.is-entry-fullscreen .brand-dot { font-size: 27px; }
-  .dashboard-layout.is-entry-fullscreen .app-version {
-    width: 112px;
-    min-width: 112px;
-    max-width: 112px;
-    flex-basis: 112px;
-    height: 42px;
-    padding: 0 18px;
-    font-size: 9px;
-  }
-  .dashboard-layout.is-entry-fullscreen .identity-meta {
-    --sidebar-control-size: 50px;
-    grid-template-columns: max-content;
-  }
-  .dashboard-layout.is-entry-fullscreen .detail-back-icon,
-  .dashboard-layout.is-entry-fullscreen .settings-button {
-    width: 36px;
-    height: 38px;
-  }
-  .dashboard-layout.is-entry-fullscreen .storage-indicator {
-    height: 38px;
+/* In the compact header it hugs the name; in the normal sidebar the shared
+   storage-control flex rule lets it fill the remaining row width. */
+@container app-content (width < 1100px) {
+  .dashboard-layout.layout-normal:not(.is-entry-fullscreen) #open-storage-settings {
+    width: max-content;
     max-width: 100%;
-    padding: 0 6px;
-    font-size: 8px;
+    flex: 0 1 auto;
+  }
+
+  .dashboard-layout.layout-normal:not(.is-entry-fullscreen) #current-storage-name {
+    flex: 0 1 auto;
+    text-align: left;
   }
 }

@@ -4,32 +4,7 @@
 const LIBRARY_SCROLL_KEY = 'rerun-library-scroll-position';
 let libraryScrollPosition = Number(sessionStorage.getItem(LIBRARY_SCROLL_KEY)) || 0;
 
-const dashboardLayout = $('.dashboard-layout');
 const themeToggle = $('#toggle-theme');
-const identityFrame = $('.dashboard-identity');
-const controlFrames = [$('.app-version'), $('.dashboard-controls')];
-const normalLayoutBreakpoint = window.matchMedia('(min-width: 1100px)');
-
-/** Keeps related control groups sized consistently as the window changes. */
-function syncControlFrameWidths() {
-  const isFullscreenEntry = dashboardLayout.classList.contains('is-entry-fullscreen');
-  const isNarrowViewport = !normalLayoutBreakpoint.matches;
-  if (isFullscreenEntry || isNarrowViewport) {
-    controlFrames.forEach((frame) => frame.style.removeProperty('width'));
-    return;
-  }
-
-  controlFrames[0].style.width = `${identityFrame.clientWidth - 20}px`;
-  controlFrames[1].style.width = `${identityFrame.getBoundingClientRect().width}px`;
-}
-
-syncControlFrameWidths();
-new ResizeObserver(syncControlFrameWidths).observe(identityFrame);
-normalLayoutBreakpoint.addEventListener('change', syncControlFrameWidths);
-new MutationObserver(syncControlFrameWidths).observe(dashboardLayout, {
-  attributes: true,
-  attributeFilter: ['class'],
-});
 
 /** Updates the theme toggle to reflect the active theme. */
 function syncThemeToggle() {
