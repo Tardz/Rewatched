@@ -545,7 +545,7 @@ function createStatisticsWatch({ entry, watch }, index, expanded = false, nextEv
     card.append(placeholder);
   }
 
-  const approximate = watch.precision === 'approximate' || watch.precision === 'approximate-month';
+  const approximate = ['approximate', 'approximate-month', 'approximate-date'].includes(watch.precision);
   const firstWatch = isFirstStatisticsWatch(entry, watch);
   const date = document.createElement('time');
   date.className = 'statistics-watch-date';

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, shell } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
@@ -8,6 +8,96 @@ let mainWindow;
 let reloadTimer;
 let localServer;
 let isQuitting = false;
+
+function storageSettingsPath() {
+  return path.join(app.getPath('userData'), 'storage-settings.json');
+}
+
+async function rememberedStoragePath() {
+  try {
+    const settings = JSON.parse(await fs.promises.readFile(storageSettingsPath(), 'utf8'));
+    return typeof settings.filePath === 'string' ? settings.filePath : null;
+  } catch (error) {
+    if (error.code !== 'ENOENT') console.warn('Could not read storage settings.', error);
+    return null;
+  }
+}
+
+async function rememberStoragePath(filePath) {
+  const settingsFile = storageSettingsPath();
+  await fs.promises.mkdir(path.dirname(settingsFile), { recursive: true });
+  await fs.promises.writeFile(settingsFile, JSON.stringify({ filePath }), 'utf8');
+}
+
+function validateVaultContents(contents) {
+  const data = JSON.parse(contents);
+  if (data?.format !== 'rerun-backup' || data.version !== 1 ||
+      !Array.isArray(data.entries) || !Array.isArray(data.watchlist)) {
+    throw new Error('Choose a Rewatched JSON file.');
+  }
+  return data;
+}
+
+async function readRememberedStorageFile() {
+  const filePath = await rememberedStoragePath();
+  if (!filePath) return null;
+  const contents = await fs.promises.readFile(filePath, 'utf8');
+  validateVaultContents(contents);
+  return { filePath, name: path.basename(filePath), contents };
+}
+
+function registerStorageHandlers() {
+  ipcMain.handle('storage:load', () => readRememberedStorageFile());
+
+  ipcMain.handle('storage:choose', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      title: 'Choose Rewatched storage file',
+      properties: ['openFile'],
+      filters: [{ name: 'Rewatched JSON', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePaths[0]) return null;
+    const filePath = result.filePaths[0];
+    const contents = await fs.promises.readFile(filePath, 'utf8');
+    validateVaultContents(contents);
+    return { filePath, name: path.basename(filePath), contents };
+  });
+
+  ipcMain.handle('storage:remember', async (_event, filePath) => {
+    if (typeof filePath !== 'string' || !path.isAbsolute(filePath)) throw new Error('Invalid storage file path.');
+    const contents = await fs.promises.readFile(filePath, 'utf8');
+    validateVaultContents(contents);
+    await rememberStoragePath(filePath);
+  });
+
+  ipcMain.handle('storage:create', async (_event, contents) => {
+    validateVaultContents(contents);
+    const result = await dialog.showSaveDialog(mainWindow, {
+      title: 'Create Rewatched storage file',
+      defaultPath: 'rewatched-library.json',
+      filters: [{ name: 'Rewatched JSON', extensions: ['json'] }],
+    });
+    if (result.canceled || !result.filePath) return null;
+    await fs.promises.writeFile(result.filePath, contents, 'utf8');
+    await rememberStoragePath(result.filePath);
+    return { filePath: result.filePath, name: path.basename(result.filePath) };
+  });
+
+  ipcMain.handle('storage:save', async (_event, contents) => {
+    validateVaultContents(contents);
+    const filePath = await rememberedStoragePath();
+    if (!filePath) throw new Error('No storage file is selected.');
+    const temporaryPath = `${filePath}.tmp-${process.pid}`;
+    try {
+      await fs.promises.writeFile(temporaryPath, contents, 'utf8');
+      await fs.promises.rename(temporaryPath, filePath);
+    } catch (error) {
+      await fs.promises.rm(temporaryPath, { force: true }).catch(() => {});
+      throw error;
+    }
+  });
+
+  ipcMain.handle('storage:forget', () => rememberStoragePath(null));
+}
 
 function startLocalServer() {
   return new Promise((resolve) => {
@@ -50,6 +140,7 @@ async function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      preload: path.join(__dirname, 'preload.cjs'),
     },
   });
 
@@ -88,6 +179,7 @@ function watchSourceFiles() {
 }
 
 app.whenReady().then(async () => {
+  registerStorageHandlers();
   await createWindow();
   watchSourceFiles();
 

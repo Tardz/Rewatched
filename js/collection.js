@@ -28,36 +28,27 @@ const folderPickerGroup = $('.folder-picker-group');
 
 /** Collapses the folder picker to its compact control. */
 function collapseFolderPicker() {
-  if (folderPickerGroup.matches(':hover, :focus-within')) return;
+  if (folderPickerGroup.matches(':hover, :focus-within') || folderPickerGroup.classList.contains('is-pointer-active')) return;
   const currentFolder = folderList.querySelector('.is-collapsed-current');
-  const previousPositions = new Map(
-    [...folderList.children].map((folder) => [folder, folder.getBoundingClientRect().left]),
-  );
+  folderList.scrollLeft = 0;
   if (currentFolder) folderList.prepend(currentFolder);
   folderPicker.classList.add('is-collapsed');
   folderPickerGroup.classList.remove('is-expanded');
   folderPicker.style.removeProperty('width');
+  folderList.style.removeProperty('width');
+  folderList.style.removeProperty('--entry-folder-options-width');
   folderPickerGroup.style.removeProperty('width');
-
-  requestAnimationFrame(() => {
-    folderList.querySelectorAll('.collection-folder').forEach((folder) => {
-      const previousLeft = previousPositions.get(folder);
-      if (previousLeft === undefined) return;
-      const offset = previousLeft - folder.getBoundingClientRect().left;
-      if (Math.abs(offset) < 1) return;
-      folder.animate(
-        [{ transform: `translateX(${offset}px)` }, { transform: 'translateX(0)' }],
-        { duration: 180, easing: 'ease' },
-      );
-    });
-  });
 }
 
 /** Expands the folder picker to show available folders. */
 function expandFolderPicker() {
   const folderCount = folderList.children.length;
   if (!folderCount) return;
-  folderPicker.style.width = `${getFolderPickerWidth(folderCount)}px`;
+  if (folderPicker.classList.contains('is-collapsed')) folderList.scrollLeft = 0;
+  const pickerWidth = getFolderPickerWidth(folderCount);
+  folderPicker.style.width = `${pickerWidth}px`;
+  folderList.style.width = `${pickerWidth}px`;
+  folderList.style.setProperty('--entry-folder-options-width', `${pickerWidth}px`);
   folderPicker.classList.remove('is-collapsed');
   folderPickerGroup.classList.add('is-expanded');
 
@@ -68,46 +59,66 @@ function expandFolderPicker() {
 function getExpandedFolderGroupWidth() {
   const rootStyle = getComputedStyle(document.documentElement);
   const readPixels = (name) => parseFloat(rootStyle.getPropertyValue(name)) || 0;
-  // The group padding animates, so reading the group itself here can return
-  // an in-between value. Its token resolves to the root spacing unit.
-  const groupPaddingLeft = readPixels('--space-1');
-  const groupPaddingRight = groupPaddingLeft + readPixels('--folder-picker-list-padding-left');
+  const compactControl = readPixels('--toolbar-control-height-compact');
+  const groupPadding = readPixels('--toolbar-group-padding');
+  const groupGap = readPixels('--space-1');
+  const dividerWidth = 3; // One-pixel divider plus one-pixel margins on each side.
 
   return getFolderPickerWidth(folderList.children.length)
-    + 36 // Expanded add-folder button width.
-    + readPixels('--toolbar-control-gap-expanded')
-    + groupPaddingLeft
-    + groupPaddingRight;
+    + compactControl // Folder icon.
+    + dividerWidth * 2
+    + compactControl // Expanded add-folder button.
+    + groupGap * 4
+    + groupPadding * 2
+    + 1 // Match the add button's inset to the divider's margin.
+    + 2; // Account for the outer border on both sides.
 }
 
-/** Calculates the expanded tray width from its folders, capped at three visible items. */
+/** Calculates the expanded tray width, showing at most two folder choices at once. */
 function getFolderPickerWidth(folderCount) {
   const rootStyle = getComputedStyle(document.documentElement);
   const readPixels = (name) => parseFloat(rootStyle.getPropertyValue(name)) || 0;
   const maxWidth = readPixels('--folder-picker-width-expanded');
-  const itemWidth = readPixels('--toolbar-folder-item-width-expanded');
+  const itemWidth = 84;
   const itemGap = readPixels('--toolbar-control-gap-expanded');
-  const listPadding = readPixels('--folder-picker-list-padding-left')
-    + readPixels('--folder-picker-list-padding-right');
-  const maxVisible = Math.max(1, Math.floor((maxWidth - listPadding + itemGap) / (itemWidth + itemGap)));
+  const listPadding = 0;
+  const fitCount = Math.max(1, Math.floor((maxWidth - listPadding + itemGap) / (itemWidth + itemGap)));
+  const maxVisible = Math.min(2, fitCount);
   const visibleCount = Math.min(folderCount, maxVisible);
   const width = visibleCount * itemWidth + (visibleCount - 1) * itemGap + listPadding;
   return Math.min(width, maxWidth);
 }
 
-folderPickerGroup.addEventListener('pointerenter', expandFolderPicker);
-folderPickerGroup.addEventListener('pointerleave', collapseFolderPicker);
 folderPickerGroup.addEventListener('focusin', expandFolderPicker);
 folderPickerGroup.addEventListener('focusout', collapseFolderPicker);
 window.addEventListener('resize', () => {
   if (folderPickerGroup.classList.contains('is-expanded')) expandFolderPicker();
 });
 
+const expandableSourceControls = [
+  $('#collection-source-controls .library-view-switcher'),
+  folderPickerGroup,
+  $('#media-type-filters'),
+];
+expandableSourceControls.forEach((control) => control.addEventListener('pointerenter', () => {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (control === folderPickerGroup && !folderList.children.length) return;
+  control.classList.add('is-pointer-active');
+  if (control === folderPickerGroup) expandFolderPicker();
+}));
+expandableSourceControls.forEach((control) => {
+  control.addEventListener('pointerleave', () => {
+    control.classList.remove('is-pointer-active');
+    if (control.contains(document.activeElement)) document.activeElement.blur();
+    if (control === folderPickerGroup) collapseFolderPicker();
+  });
+});
+
 /** Updates active styling for library and watchlist view controls. */
 function updateViewTabs() {
   const folderSelected = activeView === 'logged' && activeCollectionId !== 'all';
   const collapsedView = folderSelected ? folderReturnView : activeView;
-  document.querySelectorAll('.library-view-option').forEach((button) => {
+  document.querySelectorAll('#collection-source-controls .library-view-option').forEach((button) => {
     const selected = !folderSelected && button.dataset.view === activeView;
     button.classList.toggle('is-collapsed-current', folderSelected && button.dataset.view === collapsedView);
     button.classList.toggle('active', selected);
@@ -131,6 +142,7 @@ function renderCollectionPicker() {
   const folderPicker = $('#library-folder-picker');
   const selectedView = activeView;
   const preserveOrder = !folderPicker.classList.contains('is-collapsed');
+  const previousScrollLeft = preserveOrder ? list.scrollLeft : 0;
   const previousOrder = [...list.children].map((item) => item.dataset.folderId);
   let folders = [...customCollections];
   const hasSelectedFolder = selectedView === 'logged'
@@ -147,10 +159,15 @@ function renderCollectionPicker() {
   list.replaceChildren();
 
   folderPicker.hidden = folders.length === 0;
+  $('#library-folder-icon').hidden = folders.length === 0;
+  $('#library-folder-divider').hidden = folders.length === 0;
+  folderPickerGroup.classList.toggle('has-folder-selection', hasSelectedFolder);
   if (!folders.length) {
     folderPicker.classList.add('is-collapsed');
     folderPickerGroup.classList.remove('is-expanded');
     folderPicker.style.removeProperty('width');
+    folderList.style.removeProperty('width');
+    folderList.style.removeProperty('--entry-folder-options-width');
     folderPickerGroup.style.removeProperty('width');
     return;
   }
@@ -158,25 +175,23 @@ function renderCollectionPicker() {
   folders.forEach((folder, index) => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'collection-tab';
+    button.className = 'collection-tab entry-folder-option';
+    button.dataset.folderId = folder.id;
     button.textContent = folder.name;
     const selected = selectedView === 'logged' && activeCollectionId === folder.id;
     button.classList.toggle('active', selected);
     button.setAttribute('aria-pressed', selected ? 'true' : 'false');
     button.setAttribute('aria-label', `Open ${folder.name} folder`);
-    button.addEventListener('click', () => {
-      selectCollection(folder.id);
-    });
-    const item = document.createElement('div');
-    item.className = 'collection-folder';
-    item.dataset.folderId = folder.id;
-    item.setAttribute('role', 'listitem');
-    item.classList.toggle('is-collapsed-current', selected || (!hasSelectedFolder && index === 0));
-    item.append(button);
-    list.append(item);
+    button.title = folder.name;
+    button.classList.toggle('is-collapsed-current', selected || (!hasSelectedFolder && index === 0));
+    button.addEventListener('click', () => selectCollection(folder.id));
+    list.append(button);
   });
 
-  if (folderPickerGroup.classList.contains('is-expanded')) expandFolderPicker();
+  if (folderPickerGroup.classList.contains('is-expanded')) {
+    expandFolderPicker();
+    list.scrollLeft = previousScrollLeft;
+  }
 }
 
 /** Preserves control order during expansion, then applies the compact order. */
@@ -193,7 +208,7 @@ function keepControlOrderUntilCollapsed(group, buttonSelector) {
   const releaseOrderAfterCollapse = () => {
     clearTimeout(releaseOrderTimer);
     releaseOrderTimer = setTimeout(() => {
-      if (group.matches(':hover, :focus-within')) return;
+      if (group.matches(':hover, :focus-within') || group.classList.contains('is-pointer-active')) return;
       buttons().forEach((button) => button.style.removeProperty('order'));
     }, 200);
   };
@@ -386,8 +401,8 @@ function updateCollectionTools(isWatchlist) {
 
 /** Checks whether an entry passes the active collection filters. */
 function matchesCollectionFilters(entry, isWatchlist) {
+  if (activeView === 'logged' && activeCollectionId !== 'all' && !entryCollectionIds(entry).includes(activeCollectionId)) return false;
   if (isWatchlist) return true;
-  if (activeCollectionId !== 'all' && !entryCollectionIds(entry).includes(activeCollectionId)) return false;
   if (watchedYearFilter !== 'all' && !entry.watches.some((watch) => watchYear(watch) === watchedYearFilter)) return false;
   if (ratingFilter !== 'all' && Number(latest(entry).score) < Number(ratingFilter)) return false;
   return true;
@@ -401,10 +416,10 @@ function sortCollectionItems(items, isWatchlist) {
     if (collectionSort === 'title-asc') return a.title.localeCompare(b.title);
     if (collectionSort === 'release-desc') return Number(b.year || 0) - Number(a.year || 0);
     if (collectionSort === 'priority-desc') return Number(b.priority || 3) - Number(a.priority || 3) || left.index - right.index;
-    if (!isWatchlist && collectionSort === 'rating-desc') return Number(latest(b).score) - Number(latest(a).score);
-    if (!isWatchlist && collectionSort === 'rating-asc') return Number(latest(a).score) - Number(latest(b).score);
+    if (!isWatchlist && collectionSort === 'rating-desc') return Number(b.watches?.[0]?.score || 0) - Number(a.watches?.[0]?.score || 0);
+    if (!isWatchlist && collectionSort === 'rating-asc') return Number(a.watches?.[0]?.score || 0) - Number(b.watches?.[0]?.score || 0);
     if (!isWatchlist && collectionSort === 'watched-desc') {
-      const newestDate = (entry) => entry.watches.map((watch) => watch.date || '').sort().at(-1) || '';
+      const newestDate = (entry) => (entry.watches || []).map((watch) => watch.date || '').sort().at(-1) || '';
       return newestDate(b).localeCompare(newestDate(a));
     }
     return left.index - right.index;
@@ -454,14 +469,14 @@ function handleCollectionResize() {
 }
 
 /** Builds the card markup and actions for one entry. */
-function createEntryCard(entry, isWatchlist) {
+function createEntryCard(entry, isWatchlist, sourceView = activeView) {
   const watch = isWatchlist ? null : latest(entry);
   const card = document.createElement('article');
   card.className = `entry${isWatchlist ? ' is-watchlist' : ''}`;
 
   const link = document.createElement('a');
   link.className = 'entry-link';
-  link.href = `#entry/${activeView}/${encodeURIComponent(entry.id)}`;
+  link.href = `#entry/${sourceView}/${encodeURIComponent(entry.id)}`;
   link.setAttribute('aria-label', `Open ${entry.title} details`);
   link.addEventListener('click', (event) => {
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -515,7 +530,7 @@ function createEntryCard(entry, isWatchlist) {
     score.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
     const date = document.createElement('div');
     date.className = 'entry-date';
-    const approximate = watch.precision === 'approximate' || watch.precision === 'approximate-month';
+    const approximate = ['approximate', 'approximate-month', 'approximate-date'].includes(watch.precision);
     const watchLabel = entry.watches.length > 1
       ? `${approximate ? 'Approximate ' : ''}Rewatch`
       : `${approximate ? 'Approximate ' : ''}First watch`;
@@ -538,7 +553,7 @@ function createEntryCard(entry, isWatchlist) {
   const actions = document.createElement('div');
   actions.className = 'entry-actions';
   const actionList = isWatchlist
-    ? [['Edit', () => openDialog(entry.id, false, null, true)], ['Remove', () => removeEntry(entry, true)]]
+    ? [['Edit', () => openDialog(entry.id, false, null, true, 'watchlist')], ['Folder', () => openFolderPicker(entry)], ['Remove', () => removeEntry(entry, true)]]
     : [['Rewatch', () => openDialog(entry.id, true)], ['Edit', () => openDialog(entry.id, false, null, true)], ['Folder', () => openFolderPicker(entry)], ['Remove', () => removeEntry(entry, false)]];
 
   actionList.forEach(([label, action]) => {
@@ -554,7 +569,7 @@ function createEntryCard(entry, isWatchlist) {
   tools.append(actions, iconButton(
     `Open ${entry.title} fullscreen`,
     'Fullscreen',
-    () => openEntryFromCard(card, `#entry/${activeView}/${encodeURIComponent(entry.id)}/full`),
+    () => openEntryFromCard(card, `#entry/${sourceView}/${encodeURIComponent(entry.id)}/full`),
     'entry-open-fullscreen',
   ));
   card.append(info, tools);
@@ -565,7 +580,7 @@ function createEntryCard(entry, isWatchlist) {
 function openEntryFromCard(card, destination) {
   if (card.classList.contains('is-opening')) return;
   const hash = destination.startsWith('#') ? destination : new URL(destination).hash;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (reduceAnimationsEnabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     location.hash = hash;
     return;
   }
@@ -576,17 +591,56 @@ function openEntryFromCard(card, destination) {
   }, 60);
 }
 
+/** Opens the first visible result when Enter is pressed in the collection search. */
+$('#library-search').addEventListener('keydown', (event) => {
+  if (event.key !== 'Enter' || event.isComposing) return;
+  const firstCard = collection.querySelector('.entry');
+  if (!firstCard) return;
+
+  event.preventDefault();
+  const link = firstCard.querySelector('.entry-link');
+  if (link) openEntryFromCard(firstCard, link.href);
+});
+
+/** Moves keyboard focus through visible entry cards using the arrow keys. */
+collection.addEventListener('keydown', (event) => {
+  if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
+  const currentCard = event.target.closest('.entry');
+  if (!currentCard || !collection.contains(currentCard)) return;
+
+  const cards = [...collection.querySelectorAll('.entry')];
+  const currentIndex = cards.indexOf(currentCard);
+  const columns = getCollectionColumnCount();
+  const indexDelta = {
+    ArrowLeft: -1,
+    ArrowRight: 1,
+    ArrowUp: -columns,
+    ArrowDown: columns,
+  }[event.key];
+  const nextCard = cards[currentIndex + indexDelta];
+  if (!nextCard) return;
+
+  event.preventDefault();
+  nextCard.querySelector('.entry-link')?.focus({ preventScroll: true });
+});
+
 /** Filters, sorts, pages, and renders the active collection. */
 function renderCollection() {
   $('#library').hidden = false;
   collection.replaceChildren();
   const isWatchlist = activeView === 'watchlist';
+  const showingFolder = !isWatchlist && activeCollectionId !== 'all';
   renderCollectionPicker();
   updateCollectionTools(isWatchlist);
-  const items = isWatchlist ? watchlist : entries;
+  const items = isWatchlist ? watchlist : showingFolder
+    ? [...entries, ...watchlist.filter((entry) => entryCollectionIds(entry).includes(activeCollectionId))]
+    : entries;
   const query = $('#library-search').value.trim().toLocaleLowerCase();
   const shown = sortCollectionItems(
-    items.filter((entry) => matchesCollectionSearch(entry, query) && matchesCollectionFilters(entry, isWatchlist)),
+    items.filter((entry) => {
+      const entryIsWatchlist = watchlist.includes(entry);
+      return matchesCollectionSearch(entry, query) && matchesCollectionFilters(entry, entryIsWatchlist);
+    }),
     isWatchlist,
   );
   const watchlistEmpty = $('#watchlist-empty');
@@ -612,7 +666,11 @@ function renderCollection() {
   updateCollectionPagination(shown.length, pageSize);
   const pageStart = collectionPage * pageSize;
   shown.slice(pageStart, pageStart + pageSize)
-    .forEach((entry) => collection.append(createEntryCard(entry, isWatchlist)));
+    .forEach((entry) => {
+      const entryIsWatchlist = watchlist.includes(entry);
+      const sourceView = entryIsWatchlist ? 'watchlist' : 'logged';
+      collection.append(createEntryCard(entry, entryIsWatchlist, sourceView));
+    });
 
   collection.classList.remove('page-enter-forward', 'page-enter-backward');
   if (collectionPageDirection && collectionPageCount > 1) {

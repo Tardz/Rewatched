@@ -175,11 +175,15 @@ function openSettings() {
   syncRotationControls();
   syncAppearanceControls();
   $('#theme-mode').value = themePreference;
+  $('#reduce-animations').checked = reduceAnimationsEnabled;
   $('#poster-background').checked = posterBackgroundEnabled;
   $('#poster-background-strength').value = posterBackgroundStrength;
   $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
   $('#poster-background-strength').disabled = !posterBackgroundEnabled;
   $('#tactile-dashboard').checked = tactileDashboardEnabled;
+  $('#glass-surface-opacity').value = glassSurfaceOpacity;
+  $('#glass-surface-opacity-value').value = `${glassSurfaceOpacity}%`;
+  $('#glass-surface-opacity').disabled = !tactileDashboardEnabled;
   updateBackupSummary();
   updateOmdbCallCount();
   $('#omdb-api-key').value = localStorage.getItem(OMDB_API_KEY) || '';
@@ -189,11 +193,15 @@ function openSettings() {
 /** Synchronizes appearance options with the settings dialog controls. */
 function syncAppearanceControls() {
   $('#theme-mode').value = themePreference;
+  $('#reduce-animations').checked = reduceAnimationsEnabled;
   $('#poster-background').checked = posterBackgroundEnabled;
   $('#poster-background-strength').value = posterBackgroundStrength;
   $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
   $('#poster-background-strength').disabled = !posterBackgroundEnabled;
   $('#tactile-dashboard').checked = tactileDashboardEnabled;
+  $('#glass-surface-opacity').value = glassSurfaceOpacity;
+  $('#glass-surface-opacity-value').value = `${glassSurfaceOpacity}%`;
+  $('#glass-surface-opacity').disabled = !tactileDashboardEnabled;
 }
 $('#open-settings').addEventListener('click', openSettings);
 $('#open-storage-settings').addEventListener('click', openSettings);
@@ -206,6 +214,13 @@ function changeThemePreference(value) {
   syncAppearanceControls();
 }
 $('#theme-mode').addEventListener('change', (event) => changeThemePreference(event.currentTarget.value));
+function changeReduceAnimations(enabled) {
+  reduceAnimationsEnabled = enabled;
+  localStorage.setItem(REDUCE_ANIMATIONS_KEY, String(enabled));
+  document.documentElement.dataset.reduceAnimations = enabled ? 'on' : 'off';
+  syncAppearanceControls();
+}
+$('#reduce-animations').addEventListener('change', (event) => changeReduceAnimations(event.currentTarget.checked));
 function changePosterBackground(enabled) {
   posterBackgroundEnabled = enabled;
   localStorage.setItem(POSTER_BACKGROUND_KEY, String(posterBackgroundEnabled));
@@ -228,6 +243,14 @@ function changeTactileDashboard(enabled) {
   syncAppearanceControls();
 }
 $('#tactile-dashboard').addEventListener('change', (event) => changeTactileDashboard(event.currentTarget.checked));
+function changeGlassSurfaceOpacity(value) {
+  glassSurfaceOpacity = Math.max(60, Math.min(95, Math.round(Number(value) / 5) * 5));
+  document.documentElement.style.setProperty('--glass-surface-opacity', `${glassSurfaceOpacity}%`);
+  $('#glass-surface-opacity').value = glassSurfaceOpacity;
+  $('#glass-surface-opacity-value').value = `${glassSurfaceOpacity}%`;
+  localStorage.setItem(GLASS_SURFACE_OPACITY_KEY, String(glassSurfaceOpacity));
+}
+$('#glass-surface-opacity').addEventListener('input', (event) => changeGlassSurfaceOpacity(event.currentTarget.value));
 $('#save-omdb-key').addEventListener('click', () => {
   const key = $('#omdb-api-key').value.trim();
   if (!key) {
@@ -349,8 +372,8 @@ function updateLibrarySearchExpandedState() {
   const hasQuery = librarySearch.value.length > 0;
   librarySearchBox.classList.toggle('has-query', hasQuery);
   librarySearchClear.hidden = !hasQuery;
-  const expanded = hasQuery || (!librarySearchBox.classList.contains('is-escape-collapsed')
-    && librarySearchBox.matches(':hover, :focus-within'));
+  const expanded = hasQuery || librarySearchBox.classList.contains('is-keyboard-expanded')
+    || (!librarySearchBox.classList.contains('is-escape-collapsed') && librarySearchBox.matches(':focus-within'));
   librarySearchToggle.setAttribute('aria-expanded', String(expanded));
   librarySearchToggle.setAttribute('aria-label', 'Focus search field');
   librarySearchToggle.title = 'Search titles';
@@ -358,11 +381,8 @@ function updateLibrarySearchExpandedState() {
 
 librarySearchToggle.addEventListener('click', () => {
   librarySearchBox.classList.remove('is-escape-collapsed');
+  librarySearchBox.classList.add('is-keyboard-expanded');
   librarySearch.focus();
-});
-librarySearchBox.addEventListener('pointerenter', updateLibrarySearchExpandedState);
-librarySearchBox.addEventListener('pointerleave', () => {
-  librarySearchBox.classList.remove('is-escape-collapsed');
   updateLibrarySearchExpandedState();
 });
 librarySearchBox.addEventListener('focusin', updateLibrarySearchExpandedState);
@@ -439,7 +459,7 @@ window.addEventListener('hashchange', (event) => {
   else if (wasViewingEntry && (!isViewingEntry || wasFullscreen)) restoreLibraryScrollPosition();
 });
 
-document.querySelectorAll('.library-view-option').forEach((button) => {
+document.querySelectorAll('#collection-source-controls .library-view-option').forEach((button) => {
   button.addEventListener('click', () => {
     const folderSelected = activeView === 'logged' && activeCollectionId !== 'all';
     activeView = folderSelected
@@ -476,7 +496,6 @@ function resetBannerTimer() {
 }
 resetBannerTimer();
 
-populateYears();
 syncRotationControls();
 syncAppearanceControls();
 initializeFileStorage().finally(render);

@@ -1,12 +1,102 @@
 /** Form module. */
 // Entry form, poster upload, and watch submission.
 
-/** Fills year selectors with the supported year options. */
-function populateYears() {
+let formEntryMode = 'logged';
+
+/** Updates the create dialog's Library/Watchlist switcher appearance. */
+function updateEntryModeSwitcher() {
+  document.querySelectorAll('#entry-mode-switcher .library-view-option').forEach((button) => {
+    const selected = button.dataset.view === formEntryMode;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-selected', String(selected));
+  });
+}
+
+/** Switches the create dialog between a logged watch and a watchlist item. */
+function setFormEntryMode(mode) {
+  formEntryMode = mode;
+  if (mode === 'logged' && !$('#watch-year-input').value && !$('#watch-month').value && !$('#watch-day').value) {
+    const today = new Date();
+    $('#watch-year-input').value = String(today.getFullYear());
+    $('#watch-month').value = String(today.getMonth() + 1).padStart(2, '0');
+    $('#watch-day').value = String(today.getDate()).padStart(2, '0');
+  }
+  updateEntryModeSwitcher();
+  updateFormVisibility();
+  const isWatchlist = mode === 'watchlist';
+  const detailsOnly = form.dataset.detailsOnly === 'true';
+  $('#score').required = !isWatchlist && !detailsOnly;
+  $('#priority').required = isWatchlist && !detailsOnly;
+  if (!detailsOnly) {
+    const label = isWatchlist ? 'Add to watchlist' : 'Log a watch';
+    $('#save-entry').setAttribute('aria-label', label);
+    $('#save-entry').title = label;
+  }
+}
+
+/** Reads the year-only release input. */
+function releaseYearValue() {
+  return $('#year').value.trim();
+}
+
+/** Keeps the Movie/Show toolbar switcher in sync with the native select. */
+function updateMediaTypeSwitcher() {
+  const type = $('#type').value;
+  document.querySelectorAll('[data-media-type-option]').forEach((option) => {
+    const selected = option.dataset.mediaTypeOption === type;
+    option.classList.toggle('active', selected);
+    option.setAttribute('aria-selected', String(selected));
+  });
+}
+
+/** Shows a short form message in the bottom-right toast. */
+function showFormToast(message) {
+  const toast = $('#form-toast');
+  toast.textContent = message;
+  toast.hidden = false;
+  clearTimeout(showFormToast.timer);
+  showFormToast.timer = setTimeout(() => { toast.hidden = true; }, 3000);
+}
+
+/** Shows the selected genre as a chip using the library's genre hue. */
+function updateCategoryChip() {
+  const select = $('#category');
+  const chip = $('#category-chip');
+  const genre = select.value.trim();
+  chip.hidden = !genre;
+  chip.textContent = genre;
+
+  if (!genre) {
+    chip.style.removeProperty('--category-hue');
+    return;
+  }
+
+  let hue = 0;
+  for (const character of genre.toLocaleLowerCase()) {
+    hue = (hue * 31 + character.codePointAt(0)) % 360;
+  }
+  chip.style.setProperty('--category-hue', hue);
+}
+
+/** Expands a two-digit year and checks that the release year is supported. */
+function normalizeReleaseYear() {
+  const field = $('#year');
+  const value = releaseYearValue();
   const latestYear = new Date().getFullYear() + 1;
-  for (let year = latestYear; year >= 1888; year--) {
-    $('#year').add(new Option(year, year));
-    $('#watch-year').add(new Option(year, year));
+  field.setCustomValidity('');
+  if (!value) return;
+
+  if (/^\d{2}$/.test(value)) {
+    const shortYear = Number(value);
+    field.value = String(shortYear <= 29 ? 2000 + shortYear : 1900 + shortYear);
+  } else if (!/^\d{4}$/.test(value)) {
+    field.setCustomValidity('Enter a release year using two or four digits.');
+    return;
+  }
+
+  const year = Number(field.value);
+  if (year < 1888 || year > latestYear) {
+    field.setCustomValidity(`Enter a year between 1888 and ${latestYear}.`);
   }
 }
 
@@ -22,37 +112,30 @@ function selectGenre(genre) {
   }
 
   select.value = genre || '';
+  updateCategoryChip();
 }
 
-/** Updates the collection picker’s selected-items summary. */
-function updateCollectionPickerSummary() {
-  const selected = [...document.querySelectorAll('#entry-collections input:checked')];
-  $('#collection-picker-summary').textContent = selected.length
-    ? `${selected.length} selected`
-    : 'None selected';
-}
+let initialEntryFolderIds = [];
 
-/** Builds the collection selector and marks selected folders. */
-function populateCollectionPicker(selectedIds = []) {
-  const picker = $('#entry-collections');
-  if (!picker) return;
-  picker.replaceChildren();
+/** Populates the create dialog's folder dropdown. */
+function populateEntryFolderSwitcher(selectedIds = []) {
+  const select = $('#entry-folder-switcher');
+  initialEntryFolderIds = selectedIds.filter((id) => customCollections.some((folder) => folder.id === id));
+  select.replaceChildren(new Option('No folder', ''));
   customCollections.forEach((folder) => {
-    const label = document.createElement('label');
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.value = folder.id;
-    input.checked = selectedIds.includes(folder.id);
-    input.addEventListener('change', updateCollectionPickerSummary);
-    label.append(input, document.createTextNode(folder.name));
-    picker.append(label);
+    select.add(new Option(folder.name, folder.id));
   });
-  if (!customCollections.length) {
-    const empty = document.createElement('p');
-    empty.textContent = 'Create a collection above the library first.';
-    picker.append(empty);
-  }
-  updateCollectionPickerSummary();
+  select.value = initialEntryFolderIds[0] || '';
+  select.dataset.initialFolder = select.value;
+  select.parentElement.classList.toggle('has-folder-selection', Boolean(select.value));
+  select.title = select.selectedOptions[0]?.textContent || 'Choose folder';
+}
+
+/** Returns the selected folder IDs in the create dialog. */
+function selectedEntryFolderIds() {
+  const select = $('#entry-folder-switcher');
+  if (select.value === select.dataset.initialFolder) return initialEntryFolderIds;
+  return select.value ? [select.value] : [];
 }
 
 /** Refreshes the poster preview from the current form value. */
@@ -74,6 +157,7 @@ function updateScoreDisplay() {
   const ratingColor = ratingColorForScore(numericScore);
 
   $('#score-value').textContent = percentage;
+  $('#score-value').style.setProperty('--rating-color', ratingColor);
   $('#score').style.setProperty('--rating-color', ratingColor);
   const scoreFill = $('#score-meter-fill');
   scoreFill.style.width = percentage;
@@ -81,50 +165,162 @@ function updateScoreDisplay() {
   $('#score-value').setAttribute('aria-label', `Rating ${score} out of 10`);
 }
 
-/** Shows the date inputs required for the selected date precision. */
+/** Validates the entered watch date and derives its stored precision. */
 function updateWatchDateFields() {
-  const isWatchlist = activeView === 'watchlist';
-  document.querySelectorAll('[data-entry-mode]').forEach((button) => {
-    const selected = button.dataset.entryMode === activeView;
-    button.classList.toggle('active', selected);
-    button.setAttribute('aria-selected', selected ? 'true' : 'false');
+  const isWatchlist = formEntryMode === 'watchlist';
+  const yearField = $('#watch-year-input');
+  const monthField = $('#watch-month');
+  const dayField = $('#watch-day');
+  const dateModeButton = $('#date-mode');
+  const detailsOnly = form.dataset.detailsOnly === 'true';
+  const disabled = isWatchlist || detailsOnly;
+
+  [yearField, monthField, dayField].forEach((field) => {
+    field.disabled = disabled;
+    field.setCustomValidity('');
   });
-  const canUseYear = !isWatchlist;
-  const yearOnly = canUseYear && ['year', 'approximate'].includes($('#date-precision').value);
-  const unknown = $('#date-precision').value === 'unknown';
-  $('#date').type = ['month', 'approximate-month'].includes($('#date-precision').value) ? 'month' : 'date';
-  $('#date-precision-label').hidden = !canUseYear;
-  $('#date-label').hidden = isWatchlist || yearOnly || unknown;
-  $('#watch-year-label').hidden = !yearOnly;
-  $('#date').required = canUseYear && !yearOnly && !unknown;
-  $('#watch-year').required = yearOnly;
-  $('#date-field-label').textContent = form.dataset.rewatch === 'true' ? 'Date of rewatch' : 'Watched on';
+  yearField.required = false;
+  monthField.required = false;
+  dayField.required = false;
+  dateModeButton.disabled = isWatchlist || detailsOnly;
+
+  let year = yearField.value.trim();
+  if (/^\d{2}$/.test(year)) {
+    const shortYear = Number(year);
+    year = String(shortYear <= 29 ? 2000 + shortYear : 1900 + shortYear);
+  }
+  let month = monthField.value.trim();
+  const day = dayField.value.trim();
+  const isUnknown = !year && !month && !day;
+  const approximate = dateModeButton.getAttribute('aria-pressed') === 'true';
+  dateModeButton.setAttribute('aria-pressed', String(approximate));
+  $('#date-mode-symbol').textContent = approximate ? '≈' : '=';
+  dateModeButton.setAttribute('aria-label', approximate
+    ? 'Approximate date selected; press Enter to use a regular date'
+    : 'Regular date selected; press Enter to use an approximate date');
+  dateModeButton.title = approximate ? 'Approximate date' : 'Regular date';
+  const latestYear = new Date().getFullYear() + 1;
+
+  if (!disabled) {
+    if (year && !/^\d{4}$/.test(year)) {
+      yearField.setCustomValidity('Enter a year using two or four digits.');
+    } else if (year && (Number(year) < 1888 || Number(year) > latestYear)) {
+      yearField.setCustomValidity(`Enter a year between 1888 and ${latestYear}.`);
+    }
+
+    if (month && (!/^\d{1,2}$/.test(month) || Number(month) < 1 || Number(month) > 12)) {
+      monthField.setCustomValidity('Enter a month from 1 to 12.');
+    }
+    if ((month || day) && !year) yearField.setCustomValidity('Enter a year before the month or day.');
+    if (day && !month) dayField.setCustomValidity('Enter a month before the day.');
+    if (day && month && year && /^\d{4}$/.test(year)) {
+      const dayNumber = Number(day);
+      const monthNumber = Number(month);
+      const date = new Date(Number(year), monthNumber - 1, dayNumber);
+      if (!/^\d{1,2}$/.test(day) || date.getFullYear() !== Number(year) ||
+          date.getMonth() !== monthNumber - 1 || date.getDate() !== dayNumber) {
+        dayField.setCustomValidity('Enter a valid day for the selected month.');
+      }
+    }
+  }
+
+  let date = '';
+  let precision = 'unknown';
+  if (!isUnknown && !isWatchlist && year) {
+    if (month && day) {
+      date = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      precision = approximate ? 'approximate-date' : 'exact';
+    } else if (month) {
+      date = `${year}-${month.padStart(2, '0')}`;
+      precision = approximate ? 'approximate-month' : 'month';
+    } else {
+      date = year;
+      precision = approximate ? 'approximate' : 'year';
+    }
+  }
+  $('#date').value = date;
+  $('#date-precision').value = precision;
+}
+
+/** Expands short watch years when leaving the field. */
+function normalizeWatchedYear() {
+  const field = $('#watch-year-input');
+  const value = field.value.trim();
+  if (/^\d{2}$/.test(value)) {
+    const shortYear = Number(value);
+    field.value = String(shortYear <= 29 ? 2000 + shortYear : 1900 + shortYear);
+  }
+  updateWatchDateFields();
+}
+
+/** Pads a numeric month to two digits when leaving its field. */
+function normalizeWatchedMonth() {
+  const field = $('#watch-month');
+  const value = field.value.trim();
+  if (/^\d{1,2}$/.test(value) && Number(value) >= 1 && Number(value) <= 12) {
+    field.value = value.padStart(2, '0');
+  }
+  updateWatchDateFields();
+}
+
+/** Completes a partial date part on Enter, then advances on the next Enter. */
+function handleWatchedDateEnter(event) {
+  if (event.key !== 'Enter') return;
+  event.preventDefault();
+
+  const field = event.currentTarget;
+  const previousValue = field.value;
+  if (field.id === 'watch-year-input') {
+    if (/^\d{3}$/.test(field.value)) field.value += '0';
+    else normalizeWatchedYear();
+  } else if (/^\d$/.test(field.value)) {
+    field.value = field.value.padStart(2, '0');
+  }
+  updateWatchDateFields();
+
+  if (field.value !== previousValue) {
+    if (field.validationMessage) field.reportValidity();
+    return;
+  }
+  if (!field.reportValidity()) return;
+
+  const nextField = field.id === 'watch-year-input'
+    ? $('#watch-month')
+    : field.id === 'watch-month' ? $('#watch-day') : $('#score');
+  nextField.focus();
+}
+
+/** Clearing the year clears the rest of the date, making it unknown. */
+function handleWatchedYearInput() {
+  if (!$('#watch-year-input').value.trim()) {
+    $('#watch-month').value = '';
+    $('#watch-day').value = '';
+  }
+  updateWatchDateFields();
+}
+
+/** Clears a whole date part with one Backspace, revealing its dash placeholders. */
+function clearWatchedDatePart(event) {
+  if (event.key !== 'Backspace' || !event.currentTarget.value) return;
+  event.preventDefault();
+  event.currentTarget.value = '';
+  if (event.currentTarget.id === 'watch-year-input') {
+    $('#watch-month').value = '';
+    $('#watch-day').value = '';
+  }
+  updateWatchDateFields();
 }
 
 /** Shows or hides form sections for the selected entry type. */
 function updateFormVisibility() {
-  const isWatchlist = activeView === 'watchlist';
+  const isWatchlist = formEntryMode === 'watchlist';
+  form.classList.toggle('is-watchlist-mode', isWatchlist);
   document.querySelectorAll('.watch-only').forEach((field) => { field.hidden = isWatchlist; });
   document.querySelectorAll('.watchlist-only').forEach((field) => { field.hidden = !isWatchlist; });
   document.querySelectorAll('.logged-entry-only').forEach((field) => { field.hidden = isWatchlist; });
-  $('#notes-field-label').closest('label').hidden = isWatchlist;
-  $('#rating-panel-heading').textContent = isWatchlist ? 'Priority' : 'Rating & notes';
   $('#score').required = !isWatchlist;
   updateWatchDateFields();
 }
-
-document.querySelectorAll('[data-entry-mode]').forEach((button) => {
-  button.addEventListener('click', () => {
-    if (editingId || form.dataset.rewatch === 'true') return;
-    activeView = button.dataset.entryMode;
-    document.querySelectorAll('[data-entry-mode]').forEach((item) => {
-      const selected = item === button;
-      item.classList.toggle('active', selected);
-      item.setAttribute('aria-selected', selected ? 'true' : 'false');
-    });
-    updateFormVisibility();
-  });
-});
 
 /** Converts an uploaded image file into a storable poster value. */
 async function imageToPoster(file) {
@@ -154,9 +350,10 @@ async function imageToPoster(file) {
 // Watch dialog
 
 /** Opens and initializes the add, edit, or rewatch dialog. */
-function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly = false) {
+function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly = false, sourceView = activeView) {
   editingId = id;
-  const isWatchlist = activeView === 'watchlist';
+  formEntryMode = sourceView;
+  const isWatchlist = formEntryMode === 'watchlist';
 
   const entry = id
     ? (isWatchlist ? watchlist : entries).find((item) => item.id === id)
@@ -181,45 +378,47 @@ function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly =
     $('#form-heading').textContent = 'Log a watch';
   }
 
+  form.classList.remove('has-submission-attempt');
   form.reset();
-  $('#metadata-lookup-status').textContent = '';
+  $('#form-toast').hidden = true;
+  $('#form-toast').textContent = '';
+  clearTimeout(showFormToast.timer);
   form.dataset.omdbMetadata = entry?.metadata ? JSON.stringify(entry.metadata) : '';
 
   $('#title').value = entry?.title || '';
   $('#director').value = entry?.director || '';
   $('#type').value = entry?.type || 'Movie';
+  updateMediaTypeSwitcher();
   selectGenre(entry?.category);
   $('#year').value = entry?.year || '';
   const selectedCollections = entry
     ? entryCollectionIds(entry)
-    : activeCollectionId === 'all' ? [] : [activeCollectionId];
-  populateCollectionPicker(selectedCollections);
-  if ($('.collection-picker')) $('.collection-picker').open = false;
+    : formEntryMode === 'logged' && activeCollectionId !== 'all' ? [activeCollectionId] : [];
+  populateEntryFolderSwitcher(selectedCollections);
   $('#poster').value = entry?.poster || '';
   $('#poster-upload-status').textContent = '';
   updatePosterPreview();
 
-  const savedDate = watch?.date || '';
-  const savedYearOnly = /^\d{4}$/.test(savedDate);
-  $('#date').value = savedYearOnly ? '' : savedDate;
-  $('#watch-year').value = savedYearOnly ? savedDate : '';
-  if (rewatch || (!savedDate && activeView === 'logged')) {
+  let savedDate = watch?.date || '';
+  if (rewatch || (!watch && formEntryMode === 'logged')) {
     const today = new Date();
-    $('#date').value = [
+    savedDate = [
       today.getFullYear(),
       String(today.getMonth() + 1).padStart(2, '0'),
       String(today.getDate()).padStart(2, '0'),
     ].join('-');
   }
-  $('#score').value = rewatch && entry ? (latest(entry)?.score ?? 7) : (watch?.score ?? 7);
+  const savedDateParts = savedDate.match(/^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/);
+  $('#watch-year-input').value = savedDateParts?.[1] || '';
+  $('#watch-month').value = savedDateParts?.[2] || '';
+  $('#watch-day').value = savedDateParts?.[3] || '';
+  const savedPrecision = watch?.precision || (savedDateParts
+    ? savedDateParts[3] ? 'exact' : savedDateParts[2] ? 'month' : 'year'
+    : watch ? 'unknown' : 'exact');
+  $('#date-mode').setAttribute('aria-pressed', String(savedPrecision.startsWith('approximate')));
+  $('#score').value = rewatch && entry ? (latest(entry)?.score ?? 7) : (watch?.score ?? 8.5);
   $('#priority').value = String(entry?.priority || 3);
   updateScoreDisplay();
-  $('#notes').value = watch?.notes || '';
-  if (isWatchlist) $('#notes').value = entry?.notes || '';
-  $('#date-precision').value = watch?.precision || (savedYearOnly || (watch?.kind === 'previous' && !savedDate)
-    ? 'year'
-    : 'exact');
-
   document.querySelectorAll('.watch-only').forEach((field) => {
     field.hidden = isWatchlist;
   });
@@ -238,66 +437,104 @@ function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly =
   document.querySelectorAll('.title-details input, .title-details select, .title-details button').forEach((control) => {
     control.disabled = watchOnlyEdit;
   });
-  $('.form-entry-switcher').hidden = Boolean(rewatch || watchOnlyEdit || detailsOnly);
   $('#title').required = !rewatch && !watchOnlyEdit;
   form.dataset.rewatch = rewatch ? 'true' : 'false';
   form.dataset.watchOnlyEdit = watchOnlyEdit ? 'true' : 'false';
   form.dataset.detailsOnly = detailsOnly ? 'true' : 'false';
   form.dataset.watchIndex = watchIndex ?? '';
+  $('#entry-mode-switcher').hidden = Boolean(entry || rewatch || detailsOnly || watchOnlyEdit);
+  updateEntryModeSwitcher();
   updateWatchDateFields();
   $('#score-field-label').textContent = rewatch ? 'New rating' : 'Score';
-  $('#notes-field-label').textContent = rewatch ? 'Rewatch notes' : 'Notes';
-  $('#notes-field-label').closest('label').hidden = isWatchlist;
-  $('#rating-panel-heading').textContent = isWatchlist ? 'Priority' : 'Rating & notes';
   $('#score').required = !isWatchlist && !detailsOnly;
   $('#priority').required = isWatchlist && !detailsOnly;
-  $('#save-entry').textContent = detailsOnly
+  const saveLabel = detailsOnly
     ? 'Save details'
     : watchOnlyEdit ? 'Save watch'
       : isWatchlist ? 'Add to watchlist' : (rewatch ? 'Save rewatch' : 'Save entry');
-  if (isWatchlist && entry) $('#save-entry').textContent = 'Save changes';
+  const saveButton = $('#save-entry');
+  saveButton.setAttribute('aria-label', isWatchlist && entry ? 'Save changes' : saveLabel);
+  saveButton.title = isWatchlist && entry ? 'Save changes' : saveLabel;
 
   dialog.showModal();
   $('#title').focus();
 }
 
 $('#open-add').addEventListener('click', () => openDialog());
-$('#close-dialog').addEventListener('click', () => dialog.close());
+$('#entry-mode-switcher').addEventListener('click', (event) => {
+  const option = event.target.closest('.library-view-option');
+  if (!option) return;
+  const selectedMode = option.dataset.view;
+  const nextMode = selectedMode === formEntryMode
+    ? (formEntryMode === 'logged' ? 'watchlist' : 'logged')
+    : selectedMode;
+  setFormEntryMode(nextMode);
+});
+keepControlOrderUntilCollapsed($('#entry-mode-switcher'), '.library-view-option');
+$('#entry-folder-switcher').addEventListener('change', (event) => {
+  event.target.parentElement.classList.toggle('has-folder-selection', Boolean(event.target.value));
+  event.target.title = event.target.selectedOptions[0]?.textContent || 'Choose folder';
+});
+document.querySelectorAll('.form-entry-switcher, .entry-media-switcher').forEach((control) => {
+  control.addEventListener('pointerleave', () => {
+    if (control.contains(document.activeElement)) document.activeElement.blur();
+  });
+});
+form.addEventListener('invalid', () => {
+  form.classList.add('has-submission-attempt');
+}, true);
+dialog.addEventListener('click', (event) => {
+  if (event.target === dialog) dialog.close();
+});
 $('#cancel-dialog').addEventListener('click', () => dialog.close());
 $('#score').addEventListener('input', updateScoreDisplay);
 $('#poster').addEventListener('input', updatePosterPreview);
-$('#title').addEventListener('keydown', (event) => {
+$('#year').addEventListener('input', () => $('#year').setCustomValidity(''));
+$('#year').addEventListener('keydown', (event) => {
   if (event.key !== 'Enter') return;
   event.preventDefault();
+  normalizeReleaseYear();
+  $('#year').reportValidity();
+});
+$('#title').addEventListener('keydown', (event) => {
+  if (event.key === 'Backspace' && hasCurrentOmdbLookup()) {
+    event.preventDefault();
+    clearOmdbLookup();
+    return;
+  }
+  if (event.key !== 'Enter') return;
+  event.preventDefault();
+  if (hasCurrentOmdbLookup() && !$('#date-mode').disabled) {
+    $('#date-mode').focus();
+    return;
+  }
   $('#lookup-title-details').click();
 });
 $('#lookup-title-details').addEventListener('click', async (event) => {
   const title = $('#title').value.trim();
   const apiKey = localStorage.getItem(OMDB_API_KEY)?.trim();
-  const status = $('#metadata-lookup-status');
   const button = event.currentTarget;
   if (!title) {
-    status.textContent = 'Enter a title first.';
+    showFormToast('Enter a title first.');
     $('#title').focus();
     return;
   }
   if (!apiKey) {
-    status.textContent = 'Add your OMDb API key in Settings first.';
+    showFormToast('Add your OMDb API key in Settings first.');
     return;
   }
 
   const previousMetadata = safeOmdbMetadata();
   if (previousMetadata && previousMetadata.query?.title === title.toLocaleLowerCase() &&
-      previousMetadata.query?.type === $('#type').value &&
-      (!$('#year').value || previousMetadata.query?.year === $('#year').value)) {
-    status.textContent = `Details already saved from ${new Date(previousMetadata.fetchedAt).toLocaleDateString()}.`;
+      previousMetadata.query?.type === $('#type').value) {
+    showFormToast(`Details already saved from ${new Date(previousMetadata.fetchedAt).toLocaleDateString()}.`);
     return;
   }
 
   button.disabled = true;
-  status.textContent = 'Looking up details…';
+  showFormToast('Looking up details…');
   try {
-    const result = await requestOmdbTitle(apiKey, { title, year: $('#year').value, type: $('#type').value });
+    const result = await requestOmdbTitle(apiKey, { title, type: $('#type').value });
     if (result.Response !== 'True') throw new Error(result.Error || 'No matching title found.');
 
     const canonicalTitle = result.Title && result.Title !== 'N/A' ? result.Title.trim() : '';
@@ -306,17 +543,15 @@ $('#lookup-title-details').addEventListener('click', async (event) => {
     const genre = result.Genre && result.Genre !== 'N/A' ? result.Genre.split(',')[0].trim() : '';
     const director = result.Director && result.Director !== 'N/A' ? result.Director : '';
     const poster = result.Poster && result.Poster !== 'N/A' ? result.Poster : '';
-    if (releaseYear) $('#year').value = releaseYear;
-    if (genre) selectGenre(genre);
+    $('#year').value = releaseYear;
+    selectGenre(genre);
     $('#director').value = director;
-    if (poster) {
-      $('#poster').value = poster;
-      updatePosterPreview();
-    }
+    $('#poster').value = poster;
+    updatePosterPreview();
     form.dataset.omdbMetadata = JSON.stringify({
       source: 'OMDb',
       fetchedAt: new Date().toISOString(),
-      query: { title: (canonicalTitle || title).toLocaleLowerCase(), type: $('#type').value, year: releaseYear || $('#year').value },
+      query: { title: (canonicalTitle || title).toLocaleLowerCase(), type: $('#type').value, year: releaseYear || releaseYearValue() },
       imdbId: result.imdbID === 'N/A' ? '' : result.imdbID || '',
       imdbRating: result.imdbRating === 'N/A' ? '' : result.imdbRating || '',
       runtime: result.Runtime === 'N/A' ? '' : result.Runtime || '',
@@ -328,9 +563,9 @@ $('#lookup-title-details').addEventListener('click', async (event) => {
       year: releaseYear,
       poster,
     });
-    status.textContent = 'Details found. Check them before saving.';
+    showFormToast('Details found. Check them before saving.');
   } catch (error) {
-    status.textContent = error.message || 'Could not look up this title.';
+    showFormToast(error.message || 'Could not look up this title.');
   } finally {
     button.disabled = false;
   }
@@ -344,25 +579,90 @@ function safeOmdbMetadata() {
   }
 }
 
+/** Checks whether the current title/type already has a successful OMDb result. */
+function hasCurrentOmdbLookup() {
+  const metadata = safeOmdbMetadata();
+  return Boolean(metadata &&
+    metadata.query?.title === $('#title').value.trim().toLocaleLowerCase() &&
+    metadata.query?.type === $('#type').value);
+}
+
+/** Clears the movie fields and poster populated by OMDb for a fresh search. */
+function clearOmdbLookup() {
+  form.dataset.omdbMetadata = '';
+  $('#title').value = '';
+  $('#director').value = '';
+  $('#year').value = '';
+  selectGenre('');
+  $('#poster').value = '';
+  $('#poster-upload').value = '';
+  $('#poster-upload-status').textContent = '';
+  updatePosterPreview();
+  $('#title').focus();
+}
+
+$('#date-mode').addEventListener('keydown', (event) => {
+  if (event.key !== 'Backspace' || !hasCurrentOmdbLookup()) return;
+  event.preventDefault();
+  clearOmdbLookup();
+});
+
 ['#title', '#type', '#year'].forEach((selector) => {
   const invalidateFetchedMetadata = () => {
     const metadata = safeOmdbMetadata();
     if (!metadata) return;
     if (metadata.query?.title !== $('#title').value.trim().toLocaleLowerCase() ||
-        metadata.query?.type !== $('#type').value ||
-        (metadata.query?.year && metadata.query.year !== $('#year').value)) {
+        metadata.query?.type !== $('#type').value) {
       form.dataset.omdbMetadata = '';
-      $('#metadata-lookup-status').textContent = 'Title changed. Look up details again to refresh saved metadata.';
+      showFormToast('Title or type changed. Look up details again to refresh saved metadata.');
     }
   };
-  $(selector).addEventListener('input', invalidateFetchedMetadata);
-  $(selector).addEventListener('change', invalidateFetchedMetadata);
+  $(selector).addEventListener('input', () => {
+    if (selector === '#type') updateMediaTypeSwitcher();
+    invalidateFetchedMetadata();
+  });
+  $(selector).addEventListener('change', () => {
+    if (selector === '#type') updateMediaTypeSwitcher();
+    invalidateFetchedMetadata();
+  });
 });
 $('#poster-preview-image').addEventListener('error', () => {
   $('#poster-preview-image').hidden = true;
   $('#poster-preview-empty').hidden = false;
   $('#poster-preview-empty').textContent = 'Image unavailable';
 });
+$('#category').addEventListener('change', updateCategoryChip);
+$('#category').addEventListener('keydown', (event) => {
+  if (event.key !== 'Tab' || event.shiftKey || $('#date-mode').disabled) return;
+  event.preventDefault();
+  $('#date-mode').focus();
+});
+$('#watch-day').addEventListener('keydown', (event) => {
+  if (event.key !== 'Tab' || event.shiftKey) return;
+  event.preventDefault();
+  $('#score').focus();
+});
+$('#score').addEventListener('keydown', (event) => {
+  if (event.shiftKey || !['Enter', 'Tab'].includes(event.key)) return;
+  event.preventDefault();
+  $('#save-entry').focus();
+});
+$('#save-entry').addEventListener('keydown', (event) => {
+  if (event.key !== 'Tab' || event.shiftKey) return;
+  event.preventDefault();
+  $('#title').focus();
+});
+$('.entry-media-switcher').addEventListener('click', (event) => {
+  const option = event.target.closest('[data-media-type-option]');
+  if (!option) return;
+  const selectedType = option.dataset.mediaTypeOption;
+  $('#type').value = selectedType === $('#type').value
+    ? (selectedType === 'Movie' ? 'Show' : 'Movie')
+    : selectedType;
+  $('#type').dispatchEvent(new Event('change', { bubbles: true }));
+  document.querySelector(`.entry-media-option[data-media-type-option="${$('#type').value}"]`).focus();
+});
+keepControlOrderUntilCollapsed($('.entry-media-switcher'), '.entry-media-option');
 $('#poster-upload-button').addEventListener('click', () => $('#poster-upload').click());
 $('#poster-upload').addEventListener('change', async (event) => {
   const file = event.target.files[0];
@@ -377,29 +677,51 @@ $('#poster-upload').addEventListener('change', async (event) => {
     $('#poster-upload-status').textContent = error.message || 'Could not load that image.';
   }
 });
-$('#date-precision').addEventListener('change', updateWatchDateFields);
+$('#watch-year-input').addEventListener('input', handleWatchedYearInput);
+$('#watch-year-input').addEventListener('blur', normalizeWatchedYear);
+$('#watch-month').addEventListener('input', updateWatchDateFields);
+$('#watch-month').addEventListener('blur', normalizeWatchedMonth);
+$('#watch-day').addEventListener('input', updateWatchDateFields);
+['#watch-year-input', '#watch-month', '#watch-day'].forEach((selector) => {
+  $(selector).addEventListener('keydown', clearWatchedDatePart);
+  $(selector).addEventListener('keydown', handleWatchedDateEnter);
+});
+$('#date-mode').addEventListener('click', () => {
+  const button = $('#date-mode');
+  button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true'));
+  updateWatchDateFields();
+});
 
 
 // Form submission
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
+  normalizeReleaseYear();
+  if (!$('#year').reportValidity()) return;
+  normalizeWatchedYear();
+  const hasWatchDateParts = ['#watch-year-input', '#watch-month', '#watch-day']
+    .some((selector) => $(selector).value.trim());
+  if (formEntryMode !== 'watchlist' && form.dataset.detailsOnly !== 'true' && hasWatchDateParts) {
+    if (!$('#watch-year-input').reportValidity() ||
+        !$('#watch-month').reportValidity() || !$('#watch-day').reportValidity()) return;
+  }
   const previousEntries = structuredClone(entries);
   const previousWatchlist = structuredClone(watchlist);
 
-  if (activeView === 'watchlist') {
+  if (formEntryMode === 'watchlist') {
     const normalizedTitle = $('#title').value.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
     const duplicate = watchlist.some((item) => item.id !== editingId &&
       item.title.trim().replace(/\s+/g, ' ').toLocaleLowerCase() === normalizedTitle);
     if (duplicate) {
-      $('#metadata-lookup-status').textContent = 'This title is already on your watchlist.';
+      showFormToast('This title is already on your watchlist.');
       $('#title').focus();
       return;
     }
   }
 
   if (form.dataset.detailsOnly === 'true') {
-    const item = (activeView === 'watchlist' ? watchlist : entries)
+    const item = (formEntryMode === 'watchlist' ? watchlist : entries)
       .find((entry) => entry.id === editingId);
     if (!item) return;
     Object.assign(item, {
@@ -408,8 +730,9 @@ form.addEventListener('submit', (event) => {
       metadata: safeOmdbMetadata(),
       type: $('#type').value,
       category: $('#category').value.trim(),
-      year: $('#year').value,
+      year: releaseYearValue(),
       poster: $('#poster').value.trim(),
+      collectionIds: selectedEntryFolderIds(),
     });
     if (!saveFormChanges(previousEntries, previousWatchlist)) return;
     dialog.close();
@@ -417,16 +740,17 @@ form.addEventListener('submit', (event) => {
     return;
   }
 
-  if (activeView === 'watchlist') {
+  if (formEntryMode === 'watchlist') {
     const details = {
       title: $('#title').value.trim(),
       director: $('#director').value.trim(),
       metadata: safeOmdbMetadata(),
       type: $('#type').value,
       category: $('#category').value.trim(),
-      year: $('#year').value,
+      year: releaseYearValue(),
       poster: $('#poster').value.trim(),
       priority: Number($('#priority').value),
+      collectionIds: selectedEntryFolderIds(),
     };
 
     if (editingId) {
@@ -441,12 +765,13 @@ form.addEventListener('submit', (event) => {
     return;
   }
 
+  const existingWatch = editingId && form.dataset.rewatch !== 'true'
+    ? entries.find((entry) => entry.id === editingId)?.watches?.[Number(form.dataset.watchIndex || 0)]
+    : null;
   const watch = {
-    date: $('#date-precision-label').hidden || ['exact', 'month', 'approximate-month'].includes($('#date-precision').value)
-      ? $('#date').value
-      : $('#watch-year').value,
+    date: $('#date').value,
     score: Number($('#score').value),
-    notes: $('#notes').value.trim(),
+    notes: existingWatch?.notes || '',
     kind: form.dataset.rewatch === 'true' ? 'previous' : 'first',
     precision: $('#date-precision').value,
   };
@@ -456,9 +781,9 @@ form.addEventListener('submit', (event) => {
     metadata: safeOmdbMetadata(),
     type: $('#type').value,
     category: $('#category').value.trim(),
-    year: $('#year').value,
+    year: releaseYearValue(),
     poster: $('#poster').value.trim(),
-    collectionIds: [...document.querySelectorAll('#entry-collections input:checked')].map((input) => input.value),
+    collectionIds: selectedEntryFolderIds(),
   };
 
   if (editingId && form.dataset.rewatch === 'true') {

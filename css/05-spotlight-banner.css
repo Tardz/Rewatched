@@ -250,7 +250,10 @@
 
 .spotlight-meta .banner-rating-with-star {
   align-self: center;
+  font-family: "DM Mono", monospace;
   font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .1em;
 }
 
 .spotlight-meta .rating-meter {
@@ -259,7 +262,10 @@
 }
 .spotlight-meta strong.banner-rating-with-star {
   color: var(--muted);
+  font-family: "DM Mono", monospace;
   font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .1em;
 }
 
 .spotlight .banner-slide-ghost {

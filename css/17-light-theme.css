@@ -227,10 +227,6 @@
   box-shadow: 0 4px 10px var(--shadow-light);
 }
 
-:root[data-theme="light"] .library-folder-picker.is-collapsed .collection-tab {
-  box-shadow: 0 7px 18px var(--shadow-light-strong);
-}
-
 :root[data-theme="light"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab {
   box-shadow: 0 4px 10px var(--shadow-light);
 }
@@ -272,7 +268,7 @@
 :root[data-theme="light"] .media-type-filter-group:focus-within,
 :root[data-theme="light"] .library-view-switcher:hover,
 :root[data-theme="light"] .library-view-switcher:focus-within,
-:root[data-theme="light"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden]))::before {
+:root[data-theme="light"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
   border-color: var(--border-control);
   background: var(--panel);
   box-shadow: 0 7px 18px var(--shadow-light-strong), 0 2px 5px var(--shadow-light);
@@ -372,6 +368,10 @@
   border-color: #c1cad5;
   background: var(--surface-hover);
   color: #425064;
+}
+
+:root[data-theme="light"] #watch-form .form-header-actions .detail-window-button {
+  background: color-mix(in srgb, var(--surface-dashboard-inner) 78%, transparent);
 }
 
 :root[data-theme="light"] .entry-tag {
@@ -476,7 +476,7 @@
 
 .collection-filter-sort,
 .collection-pagination,
-.folder-picker-group::before,
+.folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])),
 .library-view-switcher:hover,
 .library-view-switcher:focus-within,
 .media-type-filter-group:hover,
@@ -498,9 +498,10 @@
 :root[data-dashboard-tactile="on"] .library-section,
 :root[data-dashboard-tactile="on"] .collection-filter-sort,
 :root[data-dashboard-tactile="on"] .collection-pagination,
-:root[data-dashboard-tactile="on"] .folder-picker-group::before,
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])),
 :root[data-dashboard-tactile="on"] .library-view-switcher:hover,
 :root[data-dashboard-tactile="on"] .library-view-switcher:focus-within,
+:root[data-dashboard-tactile="on"] #watch-form .library-view-switcher.is-pointer-active,
 :root[data-dashboard-tactile="on"] .media-type-filter-group:hover,
 :root[data-dashboard-tactile="on"] .media-type-filter-group:focus-within {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
@@ -619,7 +620,7 @@
     0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden]))::before {
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -644,7 +645,7 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden]))::before {
+:root[data-theme="light"][data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
   background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   box-shadow:
@@ -661,7 +662,7 @@
 :root[data-dashboard-tactile="on"] .detail-page .timeline-panel,
 :root[data-dashboard-tactile="on"] .detail-page .timeline-notes-panel {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
-  background-color: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  background-color: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-surface-opacity), transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
   backdrop-filter: blur(14px) saturate(120%);
   box-shadow:
@@ -672,7 +673,8 @@
 }
 
 :root[data-dashboard-tactile="on"] .detail-page .detail-history h2,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-panel h3 {
+:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-panel h3,
+:root[data-dashboard-tactile="on"] #watch-form .form-panel h3 {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -692,7 +694,7 @@
 :root[data-dashboard-tactile="on"] .detail-page .timeline-notes-content,
 :root[data-dashboard-tactile="on"] .detail-page .timeline-entry-card {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) calc(var(--glass-surface-opacity) - 6%), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -1113,7 +1115,7 @@
 :root .library-section .collection-source-controls .library-view-option,
 :root .library-section .collection-source-controls .collection-add,
 :root .library-section .collection-source-controls .collection-tab,
-:root .library-section .folder-picker-group::before,
+:root .library-section .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])),
 :root .library-section .folder-picker-group .collection-tab,
 :root .library-section .collection-filter-sort,
 :root .library-section .collection-filter-sort select,
@@ -1292,6 +1294,236 @@
     0 4px 12px var(--glass-edge-shadow);
 }
 
+:root[data-dashboard-tactile="on"] #watch-dialog {
+  border-color: color-mix(in srgb, var(--line) 62%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-outer) 82%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  backdrop-filter: blur(18px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 18px 48px var(--glass-shadow),
+    0 4px 12px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .form-panel,
+:root[data-dashboard-tactile="on"] #watch-form .title-search-box,
+:root[data-dashboard-tactile="on"] #watch-form .movie-credit-genre-row,
+:root[data-dashboard-tactile="on"] #watch-form .watch-details-components,
+:root[data-dashboard-tactile="on"] #watch-form .watch-rating-fields,
+:root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher.is-pointer-active {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-inner) 78%, transparent);
+  -webkit-backdrop-filter: blur(10px) saturate(125%);
+  backdrop-filter: blur(10px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 6px 18px var(--glass-shadow),
+    0 2px 5px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .form-header-actions .detail-window-button,
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown,
+:root[data-dashboard-tactile="on"] #watch-form .poster-buttons .button,
+:root[data-dashboard-tactile="on"] #watch-form .metadata-lookup-button,
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-icon,
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-option {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
+  backdrop-filter: blur(8px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 5px 14px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .form-header-actions #save-entry:hover {
+  border-color: var(--status-success-border);
+  background: var(--status-success-surface);
+  color: var(--status-success);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--status-success) 30%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .form-header-actions #save-entry:hover svg {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-success) 72%, transparent));
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .form-header-actions #cancel-dialog:hover {
+  border-color: var(--status-danger-border);
+  background: var(--status-danger-surface);
+  color: var(--status-danger);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--status-danger) 30%, transparent),
+    0 6px 16px var(--glass-shadow);
+  text-shadow: 0 0 7px color-mix(in srgb, var(--status-danger) 70%, transparent);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .metadata-lookup-button {
+  border-color: color-mix(in srgb, #ffc04d 68%, var(--line));
+  background: color-mix(in srgb, #f5a623 78%, transparent);
+  color: #17130c;
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown.has-folder-selection {
+  border-color: var(--status-warning-border);
+  background: color-mix(in srgb, var(--status-warning) 14%, var(--surface-dashboard-inner));
+  color: var(--status-warning);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown:is(:hover, :has(select:focus-visible)) {
+  border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--status-warning) 18%, var(--surface-dashboard-inner));
+  color: var(--status-warning);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--status-warning) 28%, transparent),
+    0 5px 14px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .metadata-lookup-button:hover:not(:disabled) {
+  border-color: color-mix(in srgb, #ffd477 78%, var(--line));
+  background: color-mix(in srgb, #ffc04d 82%, transparent);
+}
+
+/* Keep the create-entry folder switcher consistent with the library folder box. */
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-option.active,
+:root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher.has-folder-selection .entry-folder-icon {
+  border-color: color-mix(in srgb, var(--accent-orange) 72%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  color: var(--accent-orange);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--accent-orange) 22%, transparent),
+    0 5px 14px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+}
+
+/* Dashboard section buttons use the same glass surface and retain their accents. */
+:root[data-dashboard-tactile="on"] .dashboard-section-button {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-surface-opacity), transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 1px #ffffff0a,
+    0 6px 16px var(--glass-shadow),
+    0 2px 5px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library.is-active,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics.is-active,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity.is-active {
+  -webkit-backdrop-filter: blur(9px) saturate(130%);
+  backdrop-filter: blur(9px) saturate(130%);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library.is-active {
+  border-color: color-mix(in srgb, var(--blue) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--blue) 18%, transparent);
+  color: var(--blue);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--blue) 24%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics.is-active {
+  border-color: color-mix(in srgb, var(--accent-orange) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  color: var(--accent-orange);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--accent-orange) 24%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity.is-active {
+  border-color: color-mix(in srgb, var(--red) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--red) 18%, transparent);
+  color: var(--red);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--red) 24%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-theme="light"] #watch-form .entry-media-option[data-media-type-option="Movie"].active,
+:root[data-theme="light"] #watch-form .entry-media-option[data-media-type-option="Movie"]:hover {
+  border-color: var(--status-danger-border);
+  background: var(--surface-warm-action);
+  color: var(--status-danger);
+}
+
+:root[data-theme="light"] #watch-form .entry-media-option[data-media-type-option="Movie"].active,
+:root[data-theme="light"] #watch-form .entry-media-option[data-media-type-option="Movie"]:hover {
+  box-shadow:
+    inset 0 1px 0 var(--shadow-inset),
+    0 0 14px color-mix(in srgb, var(--status-danger) 28%, transparent),
+    0 6px 16px var(--shadow-black-20);
+}
+
+:root[data-theme="light"] #watch-form .entry-media-option[data-media-type-option="Show"].active,
+:root[data-theme="light"] #watch-form .entry-media-option[data-media-type-option="Show"]:hover {
+  border-color: color-mix(in srgb, var(--blue) 58%, var(--line));
+  background: var(--surface-blue-action);
+  color: var(--blue);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .entry-media-option[data-media-type-option="Movie"].active,
+:root[data-dashboard-tactile="on"] #watch-form .entry-media-option[data-media-type-option="Movie"]:hover {
+  border-color: var(--status-danger-border);
+  background: var(--status-danger-surface);
+  color: var(--status-danger);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .entry-media-option[data-media-type-option="Movie"].active {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--status-danger) 28%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .entry-media-option[data-media-type-option="Movie"]:hover {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--status-danger) 20%, transparent),
+    0 6px 18px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .form-panel input:not([type="range"]):not([type="file"]),
+:root[data-dashboard-tactile="on"] #watch-form .form-panel select,
+:root[data-dashboard-tactile="on"] #watch-form .form-panel textarea {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-deep) 76%, transparent);
+  -webkit-backdrop-filter: blur(7px) saturate(125%);
+  backdrop-filter: blur(7px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 45%, transparent),
+    0 3px 8px var(--glass-shadow),
+    0 1px 2px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .form-panel input:not([type="range"]):not([type="file"]):hover:not(:focus),
+:root[data-dashboard-tactile="on"] #watch-form .form-panel select:hover:not(:focus),
+:root[data-dashboard-tactile="on"] #watch-form .form-panel textarea:hover:not(:focus) {
+  border-color: color-mix(in srgb, var(--blue) 34%, var(--line));
+}
+
+:root[data-dashboard-tactile="on"] #watch-form.has-submission-attempt .form-panel input:required:invalid,
+:root[data-dashboard-tactile="on"] #watch-form.has-submission-attempt .form-panel select:required:invalid {
+  border-color: #d85f68;
+  box-shadow: inset 0 1px 0 var(--glass-highlight), 0 0 0 2px #d85f6822,
+    0 3px 8px var(--glass-shadow);
+}
+
 :root[data-dashboard-tactile="on"] .statistics-panel h2,
 :root[data-dashboard-tactile="on"] #statistics-grid article,
 :root[data-theme="light"][data-dashboard-tactile="on"] .statistics-panel h2,
@@ -1316,4 +1548,159 @@
     inset 0 1px 0 var(--glass-highlight),
     0 7px 16px var(--glass-shadow),
     0 2px 5px var(--glass-edge-shadow);
+}
+
+/* Let the poster-derived page background show through the main dashboard surfaces. */
+:root[data-dashboard-tactile="on"] .dashboard-identity,
+:root[data-dashboard-tactile="on"] .dashboard-controls,
+:root[data-dashboard-tactile="on"] .dashboard-sections,
+:root[data-dashboard-tactile="on"] .library-section {
+  background-color: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-surface-opacity), transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  backdrop-filter: blur(16px) saturate(125%);
+}
+
+:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar {
+  background-color: color-mix(in srgb, var(--surface-stats-outer) var(--glass-surface-opacity), transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  backdrop-filter: blur(16px) saturate(125%);
+}
+
+:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar > div {
+  background-color: color-mix(in srgb, var(--surface-stats-inner) calc(var(--glass-surface-opacity) - 6%), transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
+}
+
+:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner {
+  background-image: linear-gradient(
+    115deg,
+    color-mix(in srgb, var(--poster-color-one, var(--surface-banner-shade)) calc(var(--glass-surface-opacity) - 14%), transparent),
+    color-mix(in srgb, var(--poster-color-two, #202b3a) calc(var(--glass-surface-opacity) - 24%), transparent)
+  );
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
+}
+
+:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner.has-poster::before {
+  background: linear-gradient(
+    90deg,
+    #111722c8 0%,
+    color-mix(in srgb, var(--poster-color-one, #141a27) 24%, transparent) 48%,
+    #12172280 100%
+  );
+}
+
+/* Match the collection heading strip to the glass library container. */
+:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .library-section > .section-heading {
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Use the same glass surface across the create-entry and dashboard controls. */
+:root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher:is(:hover, :focus-within, .is-pointer-active) {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-surface-opacity), transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  backdrop-filter: blur(14px) saturate(120%);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 -1px 0 var(--glass-edge-shadow),
+    0 12px 28px var(--glass-shadow), 0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-option.active,
+:root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher.has-folder-selection .entry-folder-icon {
+  border-color: color-mix(in srgb, var(--accent-orange) 72%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  color: var(--accent-orange);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--accent-orange) 22%, transparent),
+    0 5px 14px var(--glass-shadow), 0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab.active {
+  border-color: color-mix(in srgb, var(--accent-orange) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  color: var(--accent-orange);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--accent-orange) 22%, transparent),
+    0 5px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-section-button {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-surface-opacity), transparent);
+  -webkit-backdrop-filter: blur(9px) saturate(125%);
+  backdrop-filter: blur(9px) saturate(125%);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 0 0 1px #ffffff0a,
+    0 6px 16px var(--glass-shadow), 0 2px 5px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library.is-active {
+  border-color: color-mix(in srgb, var(--blue) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--blue) 18%, transparent);
+  color: var(--blue);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--blue) 24%, transparent), 0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics.is-active {
+  border-color: color-mix(in srgb, var(--accent-orange) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
+  color: var(--accent-orange);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--accent-orange) 24%, transparent), 0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity:hover,
+:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity.is-active {
+  border-color: color-mix(in srgb, var(--red) 68%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--red) 18%, transparent);
+  color: var(--red);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--red) 24%, transparent), 0 6px 16px var(--glass-shadow);
+}
+
+/* Folder choices use their yellow accent instead of the generic blue tab hover. */
+.folder-picker-group .entry-folder-option:hover,
+.folder-picker-group .entry-folder-option.active {
+  border-color: var(--status-warning-border);
+  background: color-mix(in srgb, var(--status-warning) 16%, var(--surface-dashboard-inner));
+  color: var(--status-warning);
+  box-shadow: inset 0 1px 0 var(--shadow-inset),
+    0 0 12px color-mix(in srgb, var(--status-warning) 22%, transparent),
+    0 5px 14px var(--shadow-black-20);
+}
+
+:root[data-dashboard-tactile="on"] .folder-picker-group .entry-folder-option:hover,
+:root[data-dashboard-tactile="on"] .folder-picker-group .entry-folder-option.active {
+  border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--status-warning) 18%, transparent);
+  color: var(--status-warning);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--status-warning) 24%, transparent),
+    0 5px 16px var(--glass-shadow);
+}
+
+/* Match both the hovered and selected folder to the folder icon's yellow. */
+.folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .entry-folder-option:hover,
+.folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .entry-folder-option.active {
+  border-color: var(--status-warning-border);
+  background: color-mix(in srgb, var(--status-warning) 16%, var(--surface-dashboard-inner));
+  color: var(--status-warning);
+  box-shadow: inset 0 1px 0 var(--shadow-inset),
+    0 0 12px color-mix(in srgb, var(--status-warning) 22%, transparent),
+    0 5px 14px var(--shadow-black-20);
+}
+
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .entry-folder-option:hover,
+:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .entry-folder-option.active {
+  border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--status-warning) 18%, transparent);
+  color: var(--status-warning);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--status-warning) 24%, transparent),
+    0 5px 16px var(--glass-shadow);
 }

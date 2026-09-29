@@ -132,7 +132,7 @@ function createTimelineItem(entry, watch, index) {
   const score = document.createElement('span');
   const date = document.createElement('time');
 
-  const approximate = watch.precision === 'approximate' || watch.precision === 'approximate-month';
+  const approximate = ['approximate', 'approximate-month', 'approximate-date'].includes(watch.precision);
   const isFirstWatch = index === entry.watches.length - 1;
   title.textContent = isFirstWatch
     ? (approximate ? 'Approximate first watch' : 'First watch')
@@ -151,7 +151,7 @@ function createTimelineItem(entry, watch, index) {
     }
   }
   date.className = 'timeline-date';
-  const approximatePrefix = watch.precision === 'approximate' || watch.precision === 'approximate-month' ? '~' : '';
+  const approximatePrefix = approximate ? '~' : '';
   const formattedDate = formatDate(watch.date);
   const dateWithYear = formattedDate.match(/^(.*\s)(\d{4})$/);
   if (!$('#detail').classList.contains('is-fullscreen') && dateWithYear) {

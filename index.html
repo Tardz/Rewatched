@@ -191,10 +191,15 @@
               <button class="library-view-option active" type="button" data-view="logged" role="tab" aria-selected="true">Library</button>
               <button class="library-view-option" type="button" data-view="watchlist" role="tab" aria-selected="false">Watchlist</button>
             </div>
-            <div class="folder-picker-group">
+            <div class="folder-picker-group form-folder-switcher">
+              <span class="library-view-option entry-folder-icon" id="library-folder-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 6.5h6l2 2h9v9.8a1.7 1.7 0 0 1-1.7 1.7H5.2a1.7 1.7 0 0 1-1.7-1.7z"></path><path d="M3.5 8.5V5.7A1.7 1.7 0 0 1 5.2 4h4.1l2 2h4.2"></path></svg>
+              </span>
+              <span class="entry-folder-divider" id="library-folder-divider" aria-hidden="true"></span>
               <div class="library-folder-picker is-collapsed" id="library-folder-picker" hidden>
-                <div id="library-folder-list" class="library-folder-list" role="list" aria-label="Folders"></div>
+                <div id="library-folder-list" class="library-folder-list entry-folder-options" role="group" aria-label="Folders"></div>
               </div>
+              <span class="entry-folder-divider" id="library-folder-add-divider" aria-hidden="true"></span>
               <button id="add-collection" class="collection-add" type="button" aria-label="Create folder" title="Create folder">+</button>
             </div>
           </div>
@@ -428,6 +433,13 @@
           <option value="dark">Dark</option>
         </select>
       </label>
+      <label class="settings-option" for="reduce-animations">
+        <span>
+          <strong>Reduce animations</strong>
+          <small>Shorten motion and transitions throughout the app.</small>
+        </span>
+        <input id="reduce-animations" type="checkbox">
+      </label>
       <label class="settings-option" for="poster-background">
         <span>
           <strong>Use poster colors in the background</strong>
@@ -449,6 +461,13 @@
         </span>
         <input id="tactile-dashboard" type="checkbox" checked>
       </label>
+      <div class="settings-option settings-option-range">
+        <label for="glass-surface-opacity">
+          <strong>Glass panel opacity</strong>
+          <small>Higher values are less transparent: <output id="glass-surface-opacity-value">80%</output></small>
+        </label>
+        <input id="glass-surface-opacity" type="range" min="60" max="95" step="5" value="80">
+      </div>
       <section class="backup-settings" aria-labelledby="google-settings-heading">
         <h3 id="google-settings-heading">Google Image Search</h3>
         <p>Enter your Programmable Search Engine ID (cx) to choose posters from Google Images.</p>
@@ -493,57 +512,102 @@
   <!-- Add or edit a logged watch or watchlist item -->
   <dialog id="watch-dialog">
     <form id="watch-form" method="dialog">
-      <div class="dialog-heading"><div><h2 id="form-heading" class="visually-hidden">Entry</h2></div><button type="button" class="close" id="close-dialog" aria-label="Close">×</button></div>
-      <div class="form-entry-switcher" role="tablist" aria-label="Entry type">
-        <button type="button" class="collection-tab active" data-entry-mode="logged" role="tab" aria-selected="true">Log a watch</button>
-        <button type="button" class="collection-tab" data-entry-mode="watchlist" role="tab" aria-selected="false">Add to watchlist</button>
-      </div>
+      <h2 id="form-heading" class="visually-hidden">Entry</h2>
       <div class="form-grid">
-        <section class="form-panel title-details" aria-labelledby="details-panel-heading">
-          <h3 id="details-panel-heading">Movie details</h3>
+      <div class="form-dialog-toolbar">
+        <div class="form-toolbar-groups">
+          <div class="form-destination-controls">
+            <div id="entry-mode-switcher" class="library-view-switcher form-entry-switcher" role="tablist" aria-label="Add to library or watchlist">
+              <button class="library-view-option active" type="button" data-view="logged" role="tab" aria-selected="true">Library</button>
+              <button class="library-view-option" type="button" data-view="watchlist" role="tab" aria-selected="false">Watchlist</button>
+            </div>
+            <div class="library-view-switcher entry-media-switcher" role="tablist" aria-label="Media type">
+              <button type="button" class="collection-tab entry-media-option active" data-media-type-option="Movie" role="tab" aria-selected="true" aria-label="Movie" title="Movie">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="2.2"></circle><path d="M7.4 7.4a6.5 6.5 0 0 1 3-1.7M16.6 16.6a6.5 6.5 0 0 1-3 1.7"></path></svg>
+              </button>
+              <button type="button" class="collection-tab entry-media-option" data-media-type-option="Show" role="tab" aria-selected="false" aria-label="Show" title="Show">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5 12 7l5-3.5"></path><rect x="3" y="7" width="18" height="13" rx="2"></rect><rect x="5.5" y="9.5" width="10" height="8" rx="1"></rect><circle cx="18.2" cy="12" r=".8"></circle><circle cx="18.2" cy="15.5" r=".8"></circle></svg>
+              </button>
+            </div>
+            <div class="entry-folder-dropdown">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10V7a1.5 1.5 0 0 1 1.5-1.5h4.3l2 2H19a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M4.5 10h16a1.5 1.5 0 0 1 1.4 2l-2.7 7a1.5 1.5 0 0 1-1.4 1H3.3a1.5 1.5 0 0 1-1.4-2l2.7-7A1.5 1.5 0 0 1 6 10"></path></svg>
+              <select id="entry-folder-switcher" aria-label="Add to folder" title="Choose folder"></select>
+            </div>
+          </div>
+        </div>
+        <div class="form-header-actions">
+          <button type="button" class="detail-window-button detail-close-button" id="cancel-dialog" aria-label="Cancel" title="Cancel">×</button>
+          <button class="detail-window-button detail-save-button" id="save-entry" type="submit" aria-label="Save entry" title="Save entry">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+          </button>
+        </div>
+      </div>
+        <section class="form-panel title-details movie-details-panel" aria-label="Movie details">
+          <div id="form-toast" class="save-toast" role="status" aria-live="polite" hidden></div>
+          <select id="type" class="visually-hidden" tabindex="-1" aria-hidden="true"><option>Movie</option><option>Show</option></select>
           <div class="form-panel-content">
-            <div class="title-lookup-row">
-              <label for="title">Title <input id="title" required placeholder="What did you watch?"></label>
-              <button id="lookup-title-details" class="button metadata-lookup-button" type="button">Find details</button>
-              <span id="metadata-lookup-status" role="status"></span>
-            </div>
-            <label>Director <input id="director" placeholder="Director (optional)"></label>
-            <div class="metadata-row">
-              <label>Type <select id="type"><option>Movie</option><option>Show</option></select></label>
-              <label>Genre <select id="category" required><option value="">Choose a genre</option><option>Action</option><option>Adventure</option><option>Animation</option><option>Comedy</option><option>Crime</option><option>Documentary</option><option>Drama</option><option>Family</option><option>Fantasy</option><option>History</option><option>Horror</option><option>Music</option><option>Mystery</option><option>Romance</option><option>Science Fiction</option><option>Thriller</option><option>War</option><option>Western</option><option>Other</option></select></label>
-              <label>Release year <select id="year" required><option value="">Choose a year</option></select></label>
-            </div>
-            <div class="poster-section">
-              <div class="poster-preview" id="poster-preview"><img id="poster-preview-image" alt="Selected poster preview" hidden><span id="poster-preview-empty">No poster selected</span></div>
-              <div class="poster-options">
-                <strong>Poster</strong>
-                <p>Choose an image from search or upload one from your device.</p>
-                <div class="poster-buttons"><button id="poster-search" class="button button-quiet" type="button">Search images</button><button id="poster-upload-button" class="button button-quiet" type="button">Upload image</button></div>
-                <input id="poster-upload" type="file" accept="image/*" hidden>
-                <label class="poster-url-label">Or paste an image URL <input id="poster" type="url" placeholder="https://…"></label>
-                <p id="poster-upload-status" class="poster-upload-status" role="status"></p>
+            <div class="title-search-box" role="group" aria-label="Title lookup controls">
+              <div class="title-lookup-row">
+                <label for="title"><span class="visually-hidden">Movie title</span><input id="title" required placeholder="Movie title"></label>
+                <label for="year"><span class="visually-hidden">Release year</span><input id="year" type="text" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]{2}|[0-9]{4}" placeholder="Year" required></label>
+                <button id="lookup-title-details" class="button metadata-lookup-button" type="button">Find details</button>
               </div>
             </div>
+            <div class="movie-credit-genre-row">
+              <label><span class="visually-hidden">Director</span><input id="director" placeholder="Director"></label>
+              <label><span class="visually-hidden">Genre</span><span class="category-select-control"><span id="category-chip" class="entry-tag" aria-hidden="true" hidden></span><select id="category" required><option value="">Genre</option><option>Action</option><option>Adventure</option><option>Animation</option><option>Comedy</option><option>Crime</option><option>Documentary</option><option>Drama</option><option>Family</option><option>Fantasy</option><option>History</option><option>Horror</option><option>Music</option><option>Mystery</option><option>Romance</option><option>Science Fiction</option><option>Thriller</option><option>War</option><option>Western</option><option>Other</option></select></span></label>
+            </div>
           </div>
         </section>
-        <section class="form-panel watch-only" aria-labelledby="timing-panel-heading">
-          <h3 id="timing-panel-heading">When you watched</h3>
-          <div class="watch-fields">
-            <label class="watch-only" id="date-precision-label">Date detail <select id="date-precision"><option value="exact">Exact date</option><option value="month">Year and month</option><option value="year">Year only</option><option value="approximate">Approximate year</option><option value="approximate-month">Approximate month</option><option value="unknown">Unknown</option></select></label>
-            <label class="watch-only" id="date-label"><span id="date-field-label">Watched on</span><input id="date" type="date"></label>
-            <label class="watch-only" id="watch-year-label">Year watched <select id="watch-year"></select></label>
+        <section class="form-panel title-details poster-panel" aria-label="Poster">
+          <div class="poster-url-tools">
+            <label class="poster-url-label"><span class="visually-hidden">Poster URL</span><input id="poster" type="url" placeholder="Poster URL"></label>
+          </div>
+          <div class="poster-preview" id="poster-preview">
+            <img id="poster-preview-image" alt="Selected poster preview" hidden>
+            <span id="poster-preview-empty">No poster selected</span>
+            <div class="poster-buttons">
+              <button id="poster-search" class="button button-quiet" type="button" aria-label="Search images" title="Search images">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"></circle><path d="m15.5 15.5 4.2 4.2"></path></svg>
+              </button>
+              <button id="poster-upload-button" class="button button-quiet" type="button" aria-label="Choose image file" title="Choose image file">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.75h7l4 4v12.5H7z"></path><path d="M14 3.75v4h4M10 12h5M10 15h5"></path></svg>
+              </button>
+            </div>
+          </div>
+          <div class="poster-options">
+            <input id="poster-upload" type="file" accept="image/*" hidden>
+            <p id="poster-upload-status" class="poster-upload-status" role="status"></p>
           </div>
         </section>
-        <section class="form-panel" aria-labelledby="rating-panel-heading">
-          <h3 id="rating-panel-heading">Rating &amp; notes</h3>
-          <div class="form-panel-content">
-            <label class="watch-only score-field"><span><span id="score-field-label">Score</span> <output id="score-value" class="score-value-with-star" for="score">7.0</output></span><div class="rating-slider"><span class="rating-meter rating-slider-meter"><span id="score-meter-fill" class="rating-meter-fill"></span></span><input id="score" type="range" min="0" max="10" step="0.5" value="7"></div><span class="score-scale"><span>0</span><span>5</span><span>10</span></span></label>
-            <label class="watchlist-only priority-field">Priority <select id="priority"><option value="1">1 · Low</option><option value="2">2</option><option value="3" selected>3 · Medium</option><option value="4">4</option><option value="5">5 · High</option></select></label>
-            <label><span id="notes-field-label">Notes</span><textarea id="notes" rows="4" placeholder="What stayed with you?"></textarea></label>
+        <section class="form-panel watch-rating-panel" aria-label="Watch details">
+          <div class="watch-details-components">
+            <div class="watch-fields">
+              <div class="watch-only watch-date-field" id="watch-date-field">
+                <div class="watch-date-layout">
+                  <button id="date-mode" class="date-mode-button" type="button" aria-label="Use exact date" aria-pressed="false" title="Toggle approximate date">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M7.5 3.5v3M16.5 3.5v3M4 9.5h16M8 13h2M14 13h2M8 16.5h2"></path></svg>
+                    <span id="date-mode-symbol" aria-hidden="true">=</span>
+                  </button>
+                  <div class="watch-date-parts">
+                    <label><span class="visually-hidden">Year watched</span><input id="watch-year-input" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="----" aria-label="Year watched"></label>
+                    <label><span class="visually-hidden">Month watched</span><input id="watch-month" type="text" inputmode="numeric" maxlength="2" autocomplete="off" placeholder="--" aria-label="Month watched"></label>
+                    <label><span class="visually-hidden">Day watched</span><input id="watch-day" type="text" inputmode="numeric" maxlength="2" autocomplete="off" placeholder="--" aria-label="Day watched"></label>
+                  </div>
+                </div>
+                <input id="date" type="hidden">
+                <select id="date-precision" class="visually-hidden" aria-hidden="true" tabindex="-1">
+                  <option value="exact">Exact date</option><option value="month">Year and month</option><option value="year">Year only</option><option value="approximate">Approximate year</option><option value="approximate-month">Approximate month</option><option value="approximate-date">Approximate date</option><option value="unknown">Unknown</option>
+                </select>
+              </div>
+            </div>
+            <div class="watch-rating-fields">
+              <label class="watch-only score-field"><span><span id="score-field-label">Score</span> <output id="score-value" class="score-value-with-star" for="score">85%</output></span><div class="rating-slider"><span class="rating-meter rating-slider-meter"><span id="score-meter-fill" class="rating-meter-fill"></span></span><input id="score" type="range" min="0" max="10" step="0.5" value="8.5"></div><span class="score-scale"><span>0</span><span>5</span><span>10</span></span></label>
+              <label class="watchlist-only priority-field"><span class="visually-hidden">Priority</span><select id="priority"><option value="1">1 · Low</option><option value="2">2</option><option value="3" selected>3 · Medium</option><option value="4">4</option><option value="5">5 · High</option></select></label>
+            </div>
           </div>
         </section>
       </div>
-      <div class="dialog-actions"><button type="button" class="button button-quiet" id="cancel-dialog">Cancel</button><button class="button button-primary" id="save-entry" type="submit">Save entry</button></div>
     </form>
   </dialog>
 

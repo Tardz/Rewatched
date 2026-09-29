@@ -12,7 +12,10 @@ const THEME_KEY = 'rerun-theme-mode';
 const POSTER_BACKGROUND_KEY = 'rerun-poster-background';
 const POSTER_BACKGROUND_STRENGTH_KEY = 'rerun-poster-background-strength';
 const TACTILE_DASHBOARD_KEY = 'rerun-tactile-dashboard';
+const GLASS_SURFACE_OPACITY_KEY = 'rerun-glass-surface-opacity';
+const REDUCE_ANIMATIONS_KEY = 'rerun-reduce-animations';
 const systemTheme = matchMedia('(prefers-color-scheme: light)');
+const reduceMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let themePreference = localStorage.getItem(THEME_KEY) || 'system';
 let posterBackgroundEnabled = localStorage.getItem(POSTER_BACKGROUND_KEY) !== 'false';
 const savedPosterBackgroundStrength = Number(localStorage.getItem(POSTER_BACKGROUND_STRENGTH_KEY));
@@ -20,6 +23,14 @@ let posterBackgroundStrength = Number.isFinite(savedPosterBackgroundStrength)
   ? Math.round(Math.max(0, Math.min(100, savedPosterBackgroundStrength)) / 5) * 5
   : 20;
 let tactileDashboardEnabled = localStorage.getItem(TACTILE_DASHBOARD_KEY) !== 'false';
+const savedGlassSurfaceOpacity = Number(localStorage.getItem(GLASS_SURFACE_OPACITY_KEY));
+let glassSurfaceOpacity = Number.isFinite(savedGlassSurfaceOpacity)
+  ? Math.max(60, Math.min(95, Math.round(savedGlassSurfaceOpacity / 5) * 5))
+  : 80;
+const savedReduceAnimations = localStorage.getItem(REDUCE_ANIMATIONS_KEY);
+let reduceAnimationsEnabled = savedReduceAnimations === null
+  ? reduceMotionPreference.matches
+  : savedReduceAnimations === 'true';
 
 /** Applies the selected light or dark theme to the document. */
 function applyTheme() {
@@ -32,6 +43,8 @@ applyTheme();
 document.documentElement.dataset.posterBackground = posterBackgroundEnabled ? 'on' : 'off';
 document.documentElement.style.setProperty('--poster-background-strength', `${posterBackgroundStrength}%`);
 document.documentElement.dataset.dashboardTactile = tactileDashboardEnabled ? 'on' : 'off';
+document.documentElement.style.setProperty('--glass-surface-opacity', `${glassSurfaceOpacity}%`);
+document.documentElement.dataset.reduceAnimations = reduceAnimationsEnabled ? 'on' : 'off';
 /** Applies the operating system theme when the system preference changes. */
 const handleSystemThemeChange = () => {
   if (themePreference === 'system') applyTheme();
@@ -139,9 +152,16 @@ let lastSwipeAt = 0;
 /** Marks the current app state as changed and persists it when possible. */
 function save() {
   entries.forEach(sortEntryWatches);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-  localStorage.setItem(WATCHLIST_KEY, JSON.stringify(watchlist));
-  localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(customCollections));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    localStorage.setItem(WATCHLIST_KEY, JSON.stringify(watchlist));
+    localStorage.setItem(COLLECTIONS_KEY, JSON.stringify(customCollections));
+  } catch (error) {
+    // A linked JSON file (or the IndexedDB recovery copy) can hold more data
+    // than the browser's small localStorage quota.
+    if (typeof storageFileName === 'undefined' || storageFileName === 'Browser Vault') throw error;
+    console.warn('Could not update the localStorage copy; file storage will continue.', error);
+  }
   // Keep the Electron quit prompt and save indicator aware of folder changes too.
   window.__rewatchedDirty = true;
   queueFileSave();
