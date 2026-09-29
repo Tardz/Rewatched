@@ -96,25 +96,57 @@ function getPosterPalette(source) {
         const pixels = context.getImageData(0, 0, 16, 16).data;
         const sample = (start, end, favorColor = false) => {
           let red = 0; let green = 0; let blue = 0; let totalWeight = 0;
+          const candidates = [];
           for (let y = 0; y < 16; y += 1) {
             for (let x = start; x < end; x += 1) {
               const offset = (y * 16 + x) * 4;
               const pixelRed = pixels[offset];
               const pixelGreen = pixels[offset + 1];
               const pixelBlue = pixels[offset + 2];
-              const brightness = (pixelRed + pixelGreen + pixelBlue) / 3;
-              const chroma = Math.max(pixelRed, pixelGreen, pixelBlue)
-                - Math.min(pixelRed, pixelGreen, pixelBlue);
-              const weight = favorColor
-                ? 0.15 + (brightness / 255) * 0.75 + (Math.max(0, chroma - 20) / 235) * 1.25
-                : 1;
+              const brightest = Math.max(pixelRed, pixelGreen, pixelBlue);
+              const darkest = Math.min(pixelRed, pixelGreen, pixelBlue);
+              const chroma = brightest - darkest;
+              const brightness = pixelRed * 0.2126 + pixelGreen * 0.7152 + pixelBlue * 0.0722;
 
-              red += pixelRed * weight;
-              green += pixelGreen * weight;
-              blue += pixelBlue * weight;
-              totalWeight += weight;
+              if (favorColor) {
+                // Ignore most near-black pixels so a dark background cannot drown out poster accents.
+                const colorScore = chroma * (0.4 + brightness / 255)
+                  + Math.max(0, brightness - 35) * 0.08;
+                candidates.push({ pixelRed, pixelGreen, pixelBlue, chroma, colorScore });
+                continue;
+              }
+
+              red += pixelRed;
+              green += pixelGreen;
+              blue += pixelBlue;
+              totalWeight += 1;
             }
           }
+
+          if (favorColor) {
+            const strongestColor = Math.max(...candidates.map((pixel) => pixel.colorScore));
+            const accents = candidates.filter((pixel) =>
+              pixel.chroma >= 18 && pixel.colorScore >= strongestColor * 0.42);
+            const selectedPixels = accents.length ? accents : candidates;
+
+            selectedPixels.forEach((pixel) => {
+              const weight = 0.2 + (pixel.colorScore / Math.max(1, strongestColor)) ** 1.5;
+              red += pixel.pixelRed * weight;
+              green += pixel.pixelGreen * weight;
+              blue += pixel.pixelBlue * weight;
+              totalWeight += weight;
+            });
+
+            const average = [red, green, blue].map((value) => value / totalWeight);
+            const luminance = average[0] * 0.2126 + average[1] * 0.7152 + average[2] * 0.0722;
+            const saturated = average.map((value) =>
+              Math.max(0, Math.min(255, luminance + (value - luminance) * 1.4)));
+            const saturatedLuminance = saturated[0] * 0.2126
+              + saturated[1] * 0.7152 + saturated[2] * 0.0722;
+            const lift = Math.min(0.3, Math.max(0, (108 - saturatedLuminance) / 320));
+            return saturated.map((value) => Math.round(value + (255 - value) * lift));
+          }
+
           return [red, green, blue].map((value) => Math.round(value / totalWeight));
         };
 
