@@ -300,6 +300,8 @@ $('#lookup-title-details').addEventListener('click', async (event) => {
     const result = await requestOmdbTitle(apiKey, { title, year: $('#year').value, type: $('#type').value });
     if (result.Response !== 'True') throw new Error(result.Error || 'No matching title found.');
 
+    const canonicalTitle = result.Title && result.Title !== 'N/A' ? result.Title.trim() : '';
+    if (canonicalTitle) $('#title').value = canonicalTitle;
     const releaseYear = result.Year?.match(/\d{4}/)?.[0] || '';
     const genre = result.Genre && result.Genre !== 'N/A' ? result.Genre.split(',')[0].trim() : '';
     const director = result.Director && result.Director !== 'N/A' ? result.Director : '';
@@ -314,7 +316,7 @@ $('#lookup-title-details').addEventListener('click', async (event) => {
     form.dataset.omdbMetadata = JSON.stringify({
       source: 'OMDb',
       fetchedAt: new Date().toISOString(),
-      query: { title: title.toLocaleLowerCase(), type: $('#type').value, year: releaseYear || $('#year').value },
+      query: { title: (canonicalTitle || title).toLocaleLowerCase(), type: $('#type').value, year: releaseYear || $('#year').value },
       imdbId: result.imdbID === 'N/A' ? '' : result.imdbID || '',
       imdbRating: result.imdbRating === 'N/A' ? '' : result.imdbRating || '',
       runtime: result.Runtime === 'N/A' ? '' : result.Runtime || '',

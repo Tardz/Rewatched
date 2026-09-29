@@ -17,6 +17,7 @@ async function requestOmdbTitle(apiKey, entry, includeYear = true) {
   url.searchParams.set('t', entry.title);
   if (includeYear && entry.year) url.searchParams.set('y', entry.year);
   if (entry.type) url.searchParams.set('type', entry.type === 'Show' ? 'series' : 'movie');
+  recordOmdbApiCall();
   const response = await fetch(url);
   if (!response.ok) throw new Error(`Request failed (${response.status}).`);
   return response.json();

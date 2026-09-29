@@ -181,6 +181,7 @@ function openSettings() {
   $('#poster-background-strength').disabled = !posterBackgroundEnabled;
   $('#tactile-dashboard').checked = tactileDashboardEnabled;
   updateBackupSummary();
+  updateOmdbCallCount();
   $('#omdb-api-key').value = localStorage.getItem(OMDB_API_KEY) || '';
   $('#settings-dialog').showModal();
 }

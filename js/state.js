@@ -7,6 +7,7 @@ const COLLECTIONS_KEY = 'rerun-starter-collections';
 const GOOGLE_SEARCH_ID_KEY = 'rerun-google-search-id';
 const ROTATION_KEY = 'rerun-banner-rotation';
 const OMDB_API_KEY = 'rerun-omdb-api-key';
+const OMDB_DAILY_USAGE_KEY = 'rerun-omdb-daily-usage';
 const THEME_KEY = 'rerun-theme-mode';
 const POSTER_BACKGROUND_KEY = 'rerun-poster-background';
 const POSTER_BACKGROUND_STRENGTH_KEY = 'rerun-poster-background-strength';
@@ -68,6 +69,33 @@ try {
 
 /** Finds the first document element matching a CSS selector. */
 const $ = (selector) => document.querySelector(selector);
+
+/** Returns today’s OMDb request count, using the device’s local calendar day. */
+function getOmdbCallsToday() {
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  try {
+    const usage = JSON.parse(localStorage.getItem(OMDB_DAILY_USAGE_KEY) || 'null');
+    return usage?.date === today ? Math.max(0, Number(usage.count) || 0) : 0;
+  } catch {
+    return 0;
+  }
+}
+
+/** Refreshes the OMDb usage count shown in Settings. */
+function updateOmdbCallCount() {
+  const count = $('#omdb-calls-today');
+  if (count) count.textContent = String(getOmdbCallsToday());
+}
+
+/** Records an OMDb request for today and updates the Settings display. */
+function recordOmdbApiCall() {
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const count = getOmdbCallsToday() + 1;
+  localStorage.setItem(OMDB_DAILY_USAGE_KEY, JSON.stringify({ date: today, count }));
+  updateOmdbCallCount();
+}
 
 /** Creates a percentage meter with the color for its rating. */
 function createRatingMeter(fill, color, className = 'rating-meter') {

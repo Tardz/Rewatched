@@ -75,8 +75,10 @@ function resetBannerPalette({ updatePage = false } = {}) {
 function resetPagePalette() {
   const root = document.documentElement;
   delete root.dataset.pagePaletteSource;
+  delete root.dataset.pagePaletteFallback;
   root.style.removeProperty('--app-poster-color-one');
   root.style.removeProperty('--app-poster-color-two');
+  root.style.removeProperty('--app-poster-image');
 }
 
 /** Returns cached left/right poster colors for the banner and app background. */
@@ -89,17 +91,17 @@ function getPosterPalette(source) {
     image.onload = () => {
       try {
         const canvas = document.createElement('canvas');
-        canvas.width = 16;
-        canvas.height = 16;
+        canvas.width = 32;
+        canvas.height = 32;
         const context = canvas.getContext('2d', { willReadFrequently: true });
-        context.drawImage(image, 0, 0, 16, 16);
-        const pixels = context.getImageData(0, 0, 16, 16).data;
+        context.drawImage(image, 0, 0, 32, 32);
+        const pixels = context.getImageData(0, 0, 32, 32).data;
         const sample = (start, end, favorColor = false) => {
           let red = 0; let green = 0; let blue = 0; let totalWeight = 0;
           const candidates = [];
-          for (let y = 0; y < 16; y += 1) {
+          for (let y = 0; y < 32; y += 1) {
             for (let x = start; x < end; x += 1) {
-              const offset = (y * 16 + x) * 4;
+              const offset = (y * 32 + x) * 4;
               const pixelRed = pixels[offset];
               const pixelGreen = pixels[offset + 1];
               const pixelBlue = pixels[offset + 2];
@@ -109,10 +111,10 @@ function getPosterPalette(source) {
               const brightness = pixelRed * 0.2126 + pixelGreen * 0.7152 + pixelBlue * 0.0722;
 
               if (favorColor) {
-                // Ignore most near-black pixels so a dark background cannot drown out poster accents.
-                const colorScore = chroma * (0.4 + brightness / 255)
-                  + Math.max(0, brightness - 35) * 0.08;
-                candidates.push({ pixelRed, pixelGreen, pixelBlue, chroma, colorScore });
+                const bucket = [pixelRed, pixelGreen, pixelBlue]
+                  .map((value) => Math.floor(value / 32))
+                  .join(':');
+                candidates.push({ pixelRed, pixelGreen, pixelBlue, chroma, brightness, bucket });
                 continue;
               }
 
@@ -124,26 +126,48 @@ function getPosterPalette(source) {
           }
 
           if (favorColor) {
-            const strongestColor = Math.max(...candidates.map((pixel) => pixel.colorScore));
-            const accents = candidates.filter((pixel) =>
-              pixel.chroma >= 18 && pixel.colorScore >= strongestColor * 0.42);
-            const selectedPixels = accents.length ? accents : candidates;
+            // Pick the most common visible color groups; only slightly favor brighter, richer bins.
+            const buckets = new Map();
+            candidates.forEach((pixel) => {
+              if (pixel.brightness < 24) return;
+              const bucket = buckets.get(pixel.bucket) || { count: 0, chroma: 0, brightness: 0 };
+              bucket.count += 1;
+              bucket.chroma += pixel.chroma;
+              bucket.brightness += pixel.brightness;
+              buckets.set(pixel.bucket, bucket);
+            });
+            const dominantBuckets = [...buckets.entries()]
+              .map(([key, bucket]) => ({
+                key,
+                score: bucket.count * (
+                  1 + (bucket.chroma / bucket.count / 255) * 0.12
+                    + (bucket.brightness / bucket.count / 255) * 0.1
+                ),
+              }))
+              .sort((a, b) => b.score - a.score)
+              .slice(0, 3);
+            const dominantKeys = new Set(dominantBuckets.map((bucket) => bucket.key));
+            const selectedPixels = candidates.filter((pixel) => dominantKeys.has(pixel.bucket));
+            const colorPixels = selectedPixels.length ? selectedPixels : candidates;
 
-            selectedPixels.forEach((pixel) => {
-              const weight = 0.2 + (pixel.colorScore / Math.max(1, strongestColor)) ** 1.5;
-              red += pixel.pixelRed * weight;
-              green += pixel.pixelGreen * weight;
-              blue += pixel.pixelBlue * weight;
-              totalWeight += weight;
+            colorPixels.forEach((pixel) => {
+              red += pixel.pixelRed;
+              green += pixel.pixelGreen;
+              blue += pixel.pixelBlue;
+              totalWeight += 1;
             });
 
             const average = [red, green, blue].map((value) => value / totalWeight);
             const luminance = average[0] * 0.2126 + average[1] * 0.7152 + average[2] * 0.0722;
+            const averageChroma = colorPixels.reduce((sum, pixel) => sum + pixel.chroma, 0)
+              / colorPixels.length;
+            const mutedness = Math.max(0, Math.min(1, (90 - averageChroma) / 90));
+            const saturationBoost = 1 + mutedness * 0.2;
             const saturated = average.map((value) =>
-              Math.max(0, Math.min(255, luminance + (value - luminance) * 1.4)));
+              Math.max(0, Math.min(255, luminance + (value - luminance) * saturationBoost)));
             const saturatedLuminance = saturated[0] * 0.2126
               + saturated[1] * 0.7152 + saturated[2] * 0.0722;
-            const lift = Math.min(0.3, Math.max(0, (108 - saturatedLuminance) / 320));
+            const lift = Math.min(0.48, Math.max(0, (132 - saturatedLuminance) / 220));
             return saturated.map((value) => Math.round(value + (255 - value) * lift));
           }
 
@@ -151,10 +175,10 @@ function getPosterPalette(source) {
         };
 
         resolve({
-          bannerOne: sample(0, 8),
-          bannerTwo: sample(8, 16),
-          pageOne: sample(0, 8, true),
-          pageTwo: sample(8, 16, true),
+          bannerOne: sample(0, 16),
+          bannerTwo: sample(16, 32),
+          pageOne: sample(0, 16, true),
+          pageTwo: sample(16, 32, true),
         });
       } catch (error) {
         resolve(null);
@@ -168,6 +192,11 @@ function getPosterPalette(source) {
     posterPaletteCache.delete(posterPaletteCache.keys().next().value);
   }
   posterPaletteCache.set(source, palettePromise);
+  palettePromise.then((palette) => {
+    if (!palette && posterPaletteCache.get(source) === palettePromise) {
+      posterPaletteCache.delete(source);
+    }
+  });
   return palettePromise;
 }
 
@@ -176,14 +205,22 @@ function updateBannerPalette(source, { updatePage = true } = {}) {
   const banner = $('#banner');
   const root = document.documentElement;
   banner.dataset.paletteSource = source;
-  if (updatePage) root.dataset.pagePaletteSource = source;
+  if (updatePage) {
+    root.dataset.pagePaletteSource = source;
+    delete root.dataset.pagePaletteFallback;
+    root.style.setProperty('--app-poster-image', `url(${JSON.stringify(source)})`);
+  }
 
   getPosterPalette(source).then((palette) => {
     if (banner.dataset.paletteSource !== source) return;
     if (!palette) {
       banner.style.removeProperty('--poster-color-one');
       banner.style.removeProperty('--poster-color-two');
-      if (updatePage && root.dataset.pagePaletteSource === source) resetPagePalette();
+      if (updatePage && root.dataset.pagePaletteSource === source) {
+        root.dataset.pagePaletteFallback = 'image';
+        root.style.removeProperty('--app-poster-color-one');
+        root.style.removeProperty('--app-poster-color-two');
+      }
       return;
     }
 
@@ -191,6 +228,8 @@ function updateBannerPalette(source, { updatePage = true } = {}) {
     banner.style.setProperty('--poster-color-one', colorString(palette.bannerOne));
     banner.style.setProperty('--poster-color-two', colorString(palette.bannerTwo));
     if (updatePage && root.dataset.pagePaletteSource === source) {
+      delete root.dataset.pagePaletteFallback;
+      root.style.removeProperty('--app-poster-image');
       root.style.setProperty('--app-poster-color-one', colorString(palette.pageOne));
       root.style.setProperty('--app-poster-color-two', colorString(palette.pageTwo));
     }

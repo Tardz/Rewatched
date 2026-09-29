@@ -147,6 +147,8 @@ html {
 }
 
 body {
+  position: relative;
+  isolation: isolate;
   margin: 0;
   background:
     radial-gradient(
@@ -163,6 +165,25 @@ body {
   background-attachment: fixed;
   backdrop-filter: none;
 }
+
+/* Use the poster itself as a soft color wash when canvas sampling is blocked. */
+body::before {
+  position: fixed;
+  z-index: -1;
+  inset: -12%;
+  background: var(--app-poster-image) center / cover no-repeat;
+  content: "";
+  filter: blur(96px) saturate(1.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
+}
+
+:root[data-poster-background="on"][data-page-palette-fallback="image"] body::before {
+  opacity: var(--poster-background-strength);
+}
+
+:root[data-poster-background="off"] body::before { opacity: 0; }
 
 :root[data-poster-background="off"] body {
   background: var(--app-background);

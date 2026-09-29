@@ -156,6 +156,24 @@
   font-size: 12px;
 }
 
+.api-usage-counter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 0 !important;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-raised);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.api-usage-counter strong {
+  color: var(--text);
+  font: 600 13px "DM Mono", monospace;
+}
+
 .backup-settings a {
   color: var(--blue);
 }

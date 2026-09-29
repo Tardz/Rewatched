@@ -34,7 +34,13 @@ function updateStatisticsBackgroundFromTimeline(timeline) {
 
   const viewport = timeline.getBoundingClientRect();
   const center = viewport.left + timeline.clientLeft + timeline.clientWidth / 2;
-  const visibleNodes = [...timeline.querySelectorAll('.statistics-watch-node.is-visible:not(.statistics-watch-total)')];
+  const visibleNodes = [...timeline.querySelectorAll('.statistics-watch-node:not(.statistics-watch-total)')]
+    .filter((node) => {
+      const marker = node.querySelector('.statistics-watch-marker');
+      if (!marker) return false;
+      const bounds = marker.getBoundingClientRect();
+      return bounds.right >= viewport.left && bounds.left <= viewport.right;
+    });
   const nearestNode = visibleNodes.reduce((nearest, node) => {
     const marker = node.querySelector('.statistics-watch-marker');
     if (!marker) return nearest;
@@ -47,11 +53,25 @@ function updateStatisticsBackgroundFromTimeline(timeline) {
   if (!source || source === statisticsRequestedPaletteSource) return;
 
   statisticsRequestedPaletteSource = source;
+  const root = document.documentElement;
+  const banner = $('#banner');
+  root.style.setProperty('--app-poster-image', `url(${JSON.stringify(source)})`);
+  delete root.dataset.pagePaletteFallback;
   getPosterPalette(source).then((palette) => {
-    if (!palette || source !== statisticsRequestedPaletteSource
-      || document.documentElement.dataset.dashboardSection !== 'statistics') return;
-    const root = document.documentElement;
-    const banner = $('#banner');
+    if (source !== statisticsRequestedPaletteSource
+      || root.dataset.dashboardSection !== 'statistics') return;
+    if (!palette) {
+      // Avoid leaving the previous poster's colors in place if this image cannot be sampled.
+      root.dataset.pagePaletteFallback = 'image';
+      root.style.removeProperty('--app-poster-color-one');
+      root.style.removeProperty('--app-poster-color-two');
+      banner.style.removeProperty('--poster-color-one');
+      banner.style.removeProperty('--poster-color-two');
+      statisticsRequestedPaletteSource = '';
+      return;
+    }
+
+    delete root.dataset.pagePaletteFallback;
     root.style.setProperty('--app-poster-color-one', `rgb(${palette.pageOne.join(', ')})`);
     root.style.setProperty('--app-poster-color-two', `rgb(${palette.pageTwo.join(', ')})`);
     banner.style.setProperty('--poster-color-one', `rgb(${palette.bannerOne.join(', ')})`);
@@ -370,6 +390,7 @@ function renderRecentWatchesTimeline() {
   requestAnimationFrame(() => {
     timeline.scrollLeft = timeline.scrollWidth;
     updateStatisticsTimelineEdges(timeline);
+    updateStatisticsBackgroundFromTimeline(timeline);
   });
 }
 
