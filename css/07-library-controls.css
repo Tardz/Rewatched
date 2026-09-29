@@ -347,6 +347,13 @@
   border-color: var(--border-accent);
 }
 
+.library-view-option[data-view="logged"].active {
+  box-shadow:
+    inset 0 1px 0 var(--shadow-inset),
+    0 0 14px color-mix(in srgb, var(--blue) 28%, transparent),
+    0 6px 16px var(--shadow-black-20);
+}
+
 .library-view-option[data-view="watchlist"].active,
 .library-view-option[data-view="watchlist"]:hover {
   background: var(--status-success-surface);
@@ -357,6 +364,13 @@
 .library-view-option[data-view="watchlist"].active:hover {
   background: var(--status-success-surface);
   color: var(--status-success);
+}
+
+.library-view-option[data-view="watchlist"].active {
+  box-shadow:
+    inset 0 1px 0 var(--shadow-inset),
+    0 0 14px color-mix(in srgb, var(--status-success) 28%, transparent),
+    0 6px 16px var(--shadow-black-20);
 }
 
 .media-type-filter-group {
@@ -390,6 +404,13 @@
 
 .media-type-filter.active {
   order: 2;
+}
+
+.media-type-filter.active {
+  box-shadow:
+    inset 0 1px 0 var(--shadow-inset),
+    0 0 14px color-mix(in srgb, var(--status-danger) 28%, transparent),
+    0 6px 16px var(--shadow-black-20);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -615,7 +636,9 @@
 }
 
 .library-section {
-  padding: var(--space-7);
+  --library-section-padding: var(--space-7);
+  padding-block: var(--library-section-padding);
+  padding-inline: var(--library-toolbar-inset);
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--surface-raised);
@@ -623,7 +646,9 @@
 }
 
 .library-section .section-heading {
-  padding-bottom: var(--space-6);
+  margin-top: calc(var(--library-toolbar-inset) - var(--library-section-padding));
+  margin-inline: 0;
+  padding: 0;
   margin-bottom: var(--space-6);
   border-bottom: 1px solid var(--line);
   background: var(--surface-raised);

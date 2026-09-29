@@ -5,6 +5,30 @@
   outline: none;
 }
 
+@property --app-poster-color-one {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #26312f;
+}
+
+@property --app-poster-color-two {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #28272d;
+}
+
+@property --poster-color-one {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #303944;
+}
+
+@property --poster-color-two {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #202b3a;
+}
+
 :root {
   font-family: "DM Sans", sans-serif;
   color: var(--text);
@@ -87,6 +111,9 @@
   --space-5: 16px;
   --space-6: 20px;
   --space-7: 24px;
+  --timeline-marker-radius: var(--toolbar-control-radius-compact);
+  --dashboard-box-padding: 10px;
+  --library-toolbar-inset: calc(var(--dashboard-box-padding) + 4px);
 
   /* Collection toolbar controls share one size system. */
   --toolbar-control-height: 46px;

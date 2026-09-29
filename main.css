@@ -2,7 +2,7 @@
 @import "css/01-base.css";
 @import "css/02-utilities.css";
 @import "css/03-buttons.css";
-@import "css/04-sidebar.css";
+@import "css/04-dashboard-controls.css";
 
 /* Dashboard, library, and entry cards */
 @import "css/05-spotlight-banner.css";

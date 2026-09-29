@@ -101,39 +101,39 @@ main:has(.dashboard-layout.layout-normal) {
   background: var(--panel);
 }
 
-@container app-content (min-width: 1100px) {
+@container app-content (min-width: 950px) {
   .dashboard-layout.layout-normal {
     display: grid;
-    grid-template-columns: max-content minmax(0, 3fr) minmax(125px, .45fr);
+    grid-template-columns: max-content minmax(0, 3fr) minmax(112px, .4fr);
     align-items: stretch;
     gap: var(--space-7);
     margin-bottom: var(--space-7);
   }
   .dashboard-layout.layout-normal > .spotlight,
   .dashboard-layout.layout-normal > .statsbar { min-width: 0; }
-  .dashboard-layout.layout-normal > .dashboard-sidebar {
-    --dashboard-sidebar-width: 210px;
+  .dashboard-layout.layout-normal > .dashboard-rail {
+    --dashboard-rail-width: 200px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     gap: 14px;
-    width: var(--dashboard-sidebar-width);
+    width: var(--dashboard-rail-width);
     min-width: 0;
     min-height: 0;
     align-self: stretch;
   }
-  .dashboard-layout.layout-normal .sidebar { display: contents; }
+  .dashboard-layout.layout-normal .dashboard-header { display: contents; }
   .dashboard-layout.layout-normal .dashboard-identity {
     width: 100%;
     max-width: none;
     box-sizing: border-box;
     grid-template-columns: minmax(0, 1fr);
   }
-  .dashboard-layout.layout-normal .sidebar-brand {
+  .dashboard-layout.layout-normal .dashboard-brand-group {
     width: 100%;
     justify-content: center;
   }
-  .dashboard-layout.layout-normal .sidebar-brand .brand {
+  .dashboard-layout.layout-normal .dashboard-brand-group .brand {
     width: auto;
     flex: 0 0 auto;
     box-sizing: border-box;
@@ -154,7 +154,7 @@ main:has(.dashboard-layout.layout-normal) {
     box-sizing: border-box;
   }
   .dashboard-layout.layout-normal .identity-meta .github-repo-link {
-    flex: 0 0 var(--sidebar-control-size);
+    flex: 0 0 var(--dashboard-control-size);
   }
   .dashboard-layout.layout-normal .identity-meta .app-version {
     flex: 1 1 0;
@@ -188,129 +188,148 @@ main:has(.dashboard-layout.layout-normal) {
     min-height: 302px;
     margin: 0;
   }
-  .dashboard-layout.layout-normal > .statsbar div { padding: 7px 12px; }
+  .dashboard-layout.layout-normal > .statsbar div { padding: 4px 6px; }
   .dashboard-layout.layout-normal > .statsbar .stat-label { margin-bottom: 3px; }
-  .dashboard-layout.layout-normal > .statsbar #stat-average.stats-average-with-meter {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-    width: 100%;
-  }
-  .dashboard-layout.layout-normal > .statsbar #stat-average.stats-average-with-meter > .rating-meter {
-    order: 2;
-    width: 100%;
-    max-width: 132px;
-    height: 6px;
-    margin: 1px 0 0;
-  }
 }
 
-@container app-content (width < 1100px) {
+@container app-content (width < 950px) {
   .dashboard-layout.layout-normal {
+    --dashboard-panel-gap: 14px;
     display: grid;
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    /* Keep the top boxes content-sized while leaving a flexible track for the
-       banner and stats bar to fill across the remaining row width. */
-    grid-template-columns: max-content minmax(0, 1fr);
-    justify-content: start;
-    align-items: start;
+    grid-template-columns: 200px minmax(0, 1fr);
+    align-items: stretch;
     gap: var(--space-6);
     margin-bottom: var(--space-7);
   }
-  .dashboard-layout.layout-normal > * {
-    min-width: 0;
-    max-width: 100%;
-  }
-  .dashboard-layout.layout-normal .dashboard-sidebar,
-  .dashboard-layout.layout-normal .sidebar { display: contents; }
-  .dashboard-layout.layout-normal .dashboard-identity {
+
+  .dashboard-layout.layout-normal > .dashboard-rail {
     grid-column: 1;
     grid-row: 1;
-    justify-self: stretch;
-    width: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--dashboard-panel-gap);
+    width: 200px;
+    min-width: 0;
+    min-height: 0;
+    align-self: stretch;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal {
+    --dashboard-control-size: 50px;
+    position: relative;
+    display: block;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .dashboard-rail {
+    display: flex;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal .dashboard-main-controls {
+    display: flex;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .statsbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: calc(200px + var(--space-6));
+    width: auto;
+    margin: 0;
+    box-shadow: 0 8px 18px #00000050, 0 2px 6px #00000038, inset 0 1px 0 #ffffff0d;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .statsbar > div {
+    box-shadow: 0 5px 12px #00000048, 0 1px 4px #00000030, inset 0 1px 0 #ffffff12;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .spotlight {
+    --spotlight-poster-height: 237px;
+    position: absolute;
+    top: calc(var(--dashboard-control-size) + var(--dashboard-box-padding) + 9px + var(--dashboard-panel-gap));
+    bottom: 0;
+    right: 0;
+    left: calc(200px + var(--space-6));
+    width: auto;
+    height: auto;
+    max-width: none;
+    min-height: 0;
+  }
+
+  .dashboard-layout.layout-normal .dashboard-header { display: contents; }
+
+  .dashboard-layout.layout-normal .dashboard-identity {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dashboard-layout.layout-normal .dashboard-brand-group {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dashboard-layout.layout-normal .dashboard-brand-group .brand {
+    width: auto;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+
+  .dashboard-layout.layout-normal .dashboard-controls {
+    --dashboard-control-size: 50px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(2, var(--dashboard-control-size));
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: auto;
+  }
+
+  .dashboard-layout.layout-normal .dashboard-control-buttons {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .dashboard-layout.layout-normal .dashboard-sections { width: 100%; }
+
+  .dashboard-layout.layout-normal .identity-meta {
+    display: flex;
+    width: 100%;
     min-width: 0;
     max-width: 100%;
-    grid-template-columns: max-content 134px;
-    align-items: center;
+    margin-inline: 0;
     gap: 8px;
-    padding: var(--dashboard-box-padding);
+    box-sizing: border-box;
   }
-  .dashboard-layout.layout-normal .dashboard-controls {
-    --sidebar-control-size: 50px;
+
+  .dashboard-layout.layout-normal .identity-meta .github-repo-link {
+    flex: 0 0 var(--dashboard-control-size);
+  }
+
+  .dashboard-layout.layout-normal .identity-meta .app-version {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .dashboard-layout.layout-normal > .spotlight {
     grid-column: 2;
     grid-row: 1;
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 8px;
-    width: max-content;
-    min-width: 0;
-    max-width: 100%;
-    margin: 0;
-    padding: var(--dashboard-box-padding);
-  }
-  .dashboard-layout.layout-normal .identity-meta {
-    justify-self: stretch;
-    width: 134px;
-    max-width: 100%;
-    grid-template-columns: var(--sidebar-control-size) minmax(0, 1fr);
-  }
-  .dashboard-layout.layout-normal .identity-meta .app-version {
-    min-width: 0;
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .dashboard-layout.layout-normal .dashboard-control-buttons {
-    display: contents;
-    justify-content: flex-start;
-    gap: 6px;
-    width: auto;
-  }
-  .dashboard-layout.layout-normal #open-settings { order: 1; }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-control { order: 2; }
-  .dashboard-layout.layout-normal #toggle-theme { order: 3; }
-  .dashboard-layout.layout-normal .dashboard-control-buttons .settings-button {
-    width: var(--sidebar-control-size);
-    height: var(--sidebar-control-size);
-    flex: 0 0 var(--sidebar-control-size);
-  }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-indicator {
-    height: var(--sidebar-control-size);
-  }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-check-button {
-    width: var(--sidebar-control-size);
-    height: var(--sidebar-control-size);
-    flex-basis: var(--sidebar-control-size);
-  }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-control {
-    width: auto;
-    min-width: 0;
-    max-width: 100%;
-    flex: 0 1 auto;
-  }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-indicator {
-    box-sizing: border-box;
-    width: 190px;
-    min-width: 0;
-    max-width: 100%;
-    flex: 0 1 190px;
-  }
-  .dashboard-layout.layout-normal > .spotlight,
-  .dashboard-layout.layout-normal > .statsbar {
-    grid-column: 1 / -1;
     width: 100%;
     min-width: 0;
     max-width: 100%;
   }
-  .dashboard-layout.layout-normal > .spotlight { grid-row: 2; }
+
   .dashboard-layout.layout-normal > .statsbar {
-    grid-row: 3;
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-template-rows: auto;
     height: auto;
@@ -328,29 +347,52 @@ main:has(.dashboard-layout.layout-normal) {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
   }
-  .dashboard-layout.layout-normal .dashboard-identity {
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal {
+    position: static;
+    display: grid;
+  }
+
+  .dashboard-layout.layout-normal > .dashboard-rail {
     grid-column: 1;
+    grid-row: 1;
+    width: 200px;
+    max-width: 100%;
+    justify-self: start;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .dashboard-rail {
+    display: flex;
+    grid-row: 2;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal .dashboard-main-controls {
+    display: flex;
+  }
+
+  .dashboard-layout.layout-normal > .spotlight {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .dashboard-layout.layout-normal > .statsbar {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .statsbar {
+    position: static;
+    grid-column: 1 / -1;
     grid-row: 1;
     width: 100%;
   }
-  .dashboard-layout.layout-normal .dashboard-controls {
-    grid-column: 1;
-    grid-row: 2;
-    display: flex;
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .spotlight {
+    position: static;
+    grid-row: 3;
     width: 100%;
-    flex-wrap: nowrap;
   }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-control {
-    width: 100%;
-    flex: 1 1 auto;
-  }
-  .dashboard-layout.layout-normal .dashboard-controls .storage-indicator {
-    width: auto;
-    flex: 1 1 auto;
-  }
-  .dashboard-layout.layout-normal > .spotlight { grid-row: 3; }
+
   .dashboard-layout.layout-normal > .statsbar {
-    grid-row: 4;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .dashboard-layout.is-entry-fullscreen .dashboard-controls {
@@ -379,8 +421,8 @@ main:has(.dashboard-layout.layout-normal) {
   .spotlight h2 { margin: 0 -2px 13px; }
   .statsbar { margin-bottom: 30px; }
 
-  .library-section { padding: 18px; border-radius: 17px; }
-  .library-section .section-heading { padding-bottom: 18px; }
+  .library-section { --library-section-padding: 18px; padding-block: var(--library-section-padding); padding-inline: var(--library-toolbar-inset); border-radius: 17px; }
+  .library-section .section-heading { padding: 0; }
   .section-heading { align-items: start; flex-direction: column; gap: 18px; }
   .library-heading-left,
   .collection-view-controls { width: 100%; }
@@ -401,7 +443,7 @@ main:has(.dashboard-layout.layout-normal) {
 }
 
 @container app-content (width < 1100px) {
-  .dashboard-layout.is-entry-fullscreen .dashboard-sidebar { flex-wrap: wrap; }
+  .dashboard-layout.is-entry-fullscreen .dashboard-rail { flex-wrap: wrap; }
 }
 
 @media (max-width: 600px) {
@@ -419,17 +461,20 @@ main:has(.dashboard-layout.layout-normal) {
   .detail-actions .button { padding: 9px 11px; font-size: 11px; }
   .timeline-layout { grid-template-columns: 1fr; gap: var(--space-7); }
   .detail-timeline { margin: 0; padding-left: 22px; }
-  .detail-timeline li { margin-left: 0; }
+  .detail-timeline li { display: block; margin-left: 0; }
+  .detail-timeline li::before,
   .detail-timeline li::after { display: none; }
-  .detail-timeline li::before { left: -30px; }
+  .detail-page:not(.is-fullscreen) .detail-timeline .detail-watch-number,
+  .detail-page.is-fullscreen .detail-timeline .detail-watch-number { left: -39px; }
+  .timeline-entry-card { width: max-content; margin-left: auto; }
   .detail-page.is-fullscreen .detail-timeline { padding-left: 22px; }
-  .detail-page.is-fullscreen .detail-timeline li::before { left: -30px; }
   .timeline-date {
     position: static;
     display: block;
     width: auto;
     margin: 0 0 8px;
     font-size: 10px;
+    text-align: right;
     transform: none;
   }
 }
@@ -458,8 +503,8 @@ main:has(.dashboard-layout.layout-normal) {
   .banner-poster { width: 105px; flex-basis: 105px; }
   .spotlight-meta strong { font-size: 27px; }
   .statsbar { grid-template-columns: 1fr 1fr; }
-  .statsbar div { padding: 14px; }
-  .library-section { padding: 15px; border-radius: 14px; }
+  .statsbar div { padding: 6px; }
+  .library-section { --library-section-padding: 15px; padding-block: var(--library-section-padding); padding-inline: var(--library-toolbar-inset); border-radius: 14px; }
   .collection { grid-template-columns: 1fr; }
   .media-type-filter-group { width: 100%; }
   .media-type-filter { flex: 1; }
@@ -469,7 +514,10 @@ main:has(.dashboard-layout.layout-normal) {
    image and title never affect its dimensions; object-fit crops artwork to fit. */
 .spotlight {
   --spotlight-poster-height: 256px;
+  --spotlight-frame-space: 16px;
   padding: 16px 16px 16px 40px;
+  height: calc(var(--spotlight-poster-height) + var(--spotlight-frame-space) + var(--spotlight-frame-space));
+  min-height: 0;
 }
 
 .spotlight .banner-poster {
@@ -481,6 +529,7 @@ main:has(.dashboard-layout.layout-normal) {
 
 .dashboard-layout.layout-normal > .spotlight {
   --spotlight-poster-height: 260px;
+  --spotlight-frame-space: 20px;
   padding: 20px;
 }
 
@@ -493,11 +542,13 @@ main:has(.dashboard-layout.layout-normal) {
 @media (max-width: 760px) {
   .spotlight {
     --spotlight-poster-height: 208px;
+    --spotlight-frame-space: 25px;
     padding: 25px;
   }
 
   .dashboard-layout.layout-normal > .spotlight {
     --spotlight-poster-height: 208px;
+    --spotlight-frame-space: 25px;
     padding: 25px;
   }
 }
@@ -505,12 +556,23 @@ main:has(.dashboard-layout.layout-normal) {
 @media (max-width: 470px) {
   .spotlight {
     --spotlight-poster-height: 218px;
+    --spotlight-frame-space: 20px;
     padding: 20px;
   }
 
   .dashboard-layout.layout-normal > .spotlight {
     --spotlight-poster-height: 218px;
+    --spotlight-frame-space: 20px;
     padding: 20px;
+  }
+}
+
+@container app-content (min-width: 950px) {
+  .dashboard-layout.layout-normal > .spotlight {
+    --spotlight-frame-space: 20px;
+    padding-right: 20px;
+    height: 100%;
+    min-height: 302px;
   }
 }
 
@@ -526,7 +588,7 @@ main:has(.dashboard-layout.layout-normal) {
   margin-bottom: var(--space-6);
 }
 
-.dashboard-layout.is-entry-fullscreen .dashboard-sidebar {
+.dashboard-layout.is-entry-fullscreen .dashboard-rail {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -534,10 +596,10 @@ main:has(.dashboard-layout.layout-normal) {
   width: 100%;
 }
 
-.dashboard-layout.is-entry-fullscreen .sidebar { display: contents; }
+.dashboard-layout.is-entry-fullscreen .dashboard-header { display: contents; }
 
 .dashboard-layout.is-entry-fullscreen .dashboard-identity {
-  --sidebar-control-size: 50px;
+  --dashboard-control-size: 50px;
   display: grid;
   grid-template-columns: max-content 134px;
   align-items: center;
@@ -558,7 +620,7 @@ main:has(.dashboard-layout.layout-normal) {
   padding: var(--dashboard-box-padding);
 }
 
-.dashboard-layout.is-entry-fullscreen .sidebar-brand {
+.dashboard-layout.is-entry-fullscreen .dashboard-brand-group {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -566,14 +628,14 @@ main:has(.dashboard-layout.layout-normal) {
   flex: 0 0 auto;
 }
 
-.dashboard-layout.is-entry-fullscreen .sidebar-brand .brand {
+.dashboard-layout.is-entry-fullscreen .dashboard-brand-group .brand {
   width: auto;
   flex: 0 0 auto;
 }
 
 .dashboard-layout.is-entry-fullscreen .identity-meta {
   display: grid;
-  grid-template-columns: var(--sidebar-control-size) minmax(0, 1fr);
+  grid-template-columns: var(--dashboard-control-size) minmax(0, 1fr);
   width: 134px;
   min-width: 0;
 }
@@ -585,7 +647,12 @@ main:has(.dashboard-layout.layout-normal) {
 
 .dashboard-layout.is-entry-fullscreen #open-settings,
 .dashboard-layout.is-entry-fullscreen #toggle-theme {
-  flex: 0 0 var(--sidebar-control-size);
+  flex: 0 0 var(--dashboard-control-size);
+}
+
+.dashboard-layout.is-entry-fullscreen #open-settings {
+  width: calc(var(--dashboard-control-size) + 4px);
+  flex-basis: calc(var(--dashboard-control-size) + 4px);
 }
 
 .dashboard-layout.is-entry-fullscreen .storage-control {
@@ -611,11 +678,15 @@ main:has(.dashboard-layout.layout-normal) {
 
 .dashboard-layout.is-entry-fullscreen .dashboard-control-buttons .settings-button,
 .dashboard-layout.is-entry-fullscreen .dashboard-control-buttons .theme-toggle-button {
-  width: var(--sidebar-control-size);
-  height: var(--sidebar-control-size);
+  width: var(--dashboard-control-size);
+  height: var(--dashboard-control-size);
 }
 
-/* In the compact header it hugs the name; in the normal sidebar the shared
+body.is-detail-view .dashboard-layout .dashboard-controls {
+  display: none;
+}
+
+/* In the compact header it hugs the name; in the normal dashboard rail the shared
    storage-control flex rule lets it fill the remaining row width. */
 @container app-content (width < 1100px) {
   .dashboard-layout.layout-normal:not(.is-entry-fullscreen) #open-storage-settings {

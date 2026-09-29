@@ -123,7 +123,10 @@ function removeWatch(entry, index) {
 /** Builds one timeline node and its watch details/actions. */
 function createTimelineItem(entry, watch, index) {
   const item = document.createElement('li');
+  const watchNumber = watchNumberForEntry(entry, watch);
+  item.style.setProperty('--watch-color', ratingColorForScore(watch.score));
   const heading = document.createElement('div');
+  heading.className = 'timeline-entry-card';
   const title = document.createElement('strong');
   const score = document.createElement('span');
   const date = document.createElement('time');
@@ -147,8 +150,25 @@ function createTimelineItem(entry, watch, index) {
     }
   }
   date.className = 'timeline-date';
-  date.textContent = `${watch.precision === 'approximate' || watch.precision === 'approximate-month' ? '~' : ''}${formatDate(watch.date)}`;
+  const approximatePrefix = watch.precision === 'approximate' || watch.precision === 'approximate-month' ? '~' : '';
+  const formattedDate = formatDate(watch.date);
+  const dateWithYear = formattedDate.match(/^(.*\s)(\d{4})$/);
+  if (!$('#detail').classList.contains('is-fullscreen') && dateWithYear) {
+    date.append(
+      document.createTextNode(`${approximatePrefix}${dateWithYear[1]}`),
+      document.createElement('br'),
+      document.createTextNode(dateWithYear[2]),
+    );
+  } else {
+    date.textContent = `${approximatePrefix}${formattedDate}`;
+  }
   if (watch.date) date.dateTime = watch.date;
+
+  const numberMarker = document.createElement('span');
+  numberMarker.className = 'statistics-watch-marker detail-watch-number';
+  numberMarker.textContent = String(watchNumber);
+  numberMarker.setAttribute('role', 'img');
+  numberMarker.setAttribute('aria-label', `Watch ${watchNumber}`);
 
   const actions = document.createElement('div');
   actions.className = 'timeline-actions';
@@ -159,7 +179,7 @@ function createTimelineItem(entry, watch, index) {
   ratingRow.className = 'timeline-rating-row';
   ratingRow.append(actions, score);
   heading.append(title, ratingRow);
-  item.append(date, heading);
+  item.append(numberMarker, date, heading);
 
   item.tabIndex = 0;
   item.setAttribute('aria-pressed', 'false');
@@ -181,15 +201,46 @@ function updateTimelineConnectorLengths() {
   const timeline = $('#detail-timeline');
   timeline.querySelectorAll('.timeline-date').forEach((date) => {
     const item = date.closest('li');
-    if (item) item.style.setProperty('--timeline-date-width', `${date.getBoundingClientRect().width}px`);
-  });
+    if (!item) return;
+    const card = item.querySelector('.timeline-entry-card');
+    const marker = item.querySelector('.detail-watch-number');
+    if (!card || !marker) return;
 
+    const itemBounds = item.getBoundingClientRect();
+    const dateBounds = date.getBoundingClientRect();
+    const cardBounds = card.getBoundingClientRect();
+    const markerBounds = marker.getBoundingClientRect();
+    const dateLeft = (markerBounds.right + cardBounds.left) / 2
+      - itemBounds.left - dateBounds.width / 2;
+
+    item.style.setProperty('--timeline-date-left', `${dateLeft}px`);
+    item.style.setProperty('--timeline-date-width', `${dateBounds.width}px`);
+    item.style.setProperty('--timeline-card-width', `${cardBounds.width}px`);
+    item.style.setProperty('--timeline-marker-right', `${markerBounds.right - itemBounds.left - 1}px`);
+  });
   const oldestWatch = timeline.lastElementChild;
   const timelineTop = timeline.getBoundingClientRect().top;
+  const totalCount = $('#detail-watch-count');
+  const spineTop = totalCount.hidden
+    ? -8
+    : totalCount.getBoundingClientRect().bottom - timelineTop;
   const spineHeight = oldestWatch
     ? oldestWatch.getBoundingClientRect().top + oldestWatch.getBoundingClientRect().height / 2 - timelineTop
     : 0;
+  timeline.style.setProperty('--timeline-spine-top', `${spineTop}px`);
   timeline.style.setProperty('--timeline-spine-height', `${Math.max(0, spineHeight)}px`);
+  const lineStart = totalCount.hidden ? timelineTop - 8 : totalCount.getBoundingClientRect().bottom;
+  const lineEnd = oldestWatch
+    ? oldestWatch.getBoundingClientRect().top + oldestWatch.getBoundingClientRect().height / 2
+    : lineStart;
+  const lineLength = Math.max(1, lineEnd - lineStart);
+  const colorStops = [`var(--blue) 0%`];
+  timeline.querySelectorAll('.detail-watch-number').forEach((marker) => {
+    const markerBounds = marker.getBoundingClientRect();
+    const position = Math.max(0, Math.min(100, ((markerBounds.top + markerBounds.height / 2 - lineStart) / lineLength) * 100));
+    colorStops.push(`${getComputedStyle(marker).color} ${position}%`);
+  });
+  timeline.style.setProperty('--timeline-spine-background', `linear-gradient(to bottom, ${colorStops.join(', ')})`);
 }
 
 const timelineResizeObserver = new ResizeObserver(updateTimelineConnectorLengths);
@@ -197,6 +248,7 @@ timelineResizeObserver.observe($('#detail-timeline'));
 
 /** Selects a watch record and displays its details. */
 function selectTimelineWatch(entry, index) {
+  $('#detail').dataset.selectedWatchIndex = String(index);
   document.querySelectorAll('.detail-timeline li').forEach((item, itemIndex) => {
     const selected = itemIndex === index;
     item.classList.toggle('is-selected', selected);
@@ -281,21 +333,49 @@ function selectTimelineWatch(entry, index) {
 /** Closes the entry detail view and returns to the collection. */
 function hideDetail() {
   const detail = $('#detail');
+  document.body.classList.remove('is-detail-view');
   $('.dashboard-layout').classList.remove('is-entry-fullscreen');
   detail.hidden = true;
   detail.classList.remove('is-fullscreen');
   delete detail.dataset.entryId;
   $('#detail-back').hidden = true;
-  $('#statistics-panel').hidden = false;
-  $('#library').hidden = false;
+  $('#statistics-panel').hidden = !$('.section-statistics').classList.contains('is-active');
+  $('#library').hidden = !$('.section-library').classList.contains('is-active');
   $('.statsbar').hidden = false;
   $('#banner').hidden = entries.length === 0;
+}
+
+/** Applies poster-derived colors to the hover detail without changing the page palette. */
+function updateDetailPosterPalette(entry) {
+  const detail = $('#detail');
+  detail.style.removeProperty('--detail-poster-color-one');
+  detail.style.removeProperty('--detail-poster-color-two');
+  detail.style.removeProperty('--detail-poster-image');
+  delete detail.dataset.posterPaletteSource;
+  delete detail.dataset.posterPaletteFallback;
+  if (!entry.poster) return;
+
+  detail.dataset.posterPaletteSource = entry.poster;
+  detail.dataset.posterPaletteFallback = 'image';
+  detail.style.setProperty('--detail-poster-image', `url(${JSON.stringify(entry.poster)})`);
+
+  getPosterPalette(entry.poster).then((palette) => {
+    if (detail.hidden
+        || detail.dataset.entryId !== String(entry.id)
+        || detail.dataset.posterPaletteSource !== entry.poster) return;
+    if (!palette) return;
+
+    delete detail.dataset.posterPaletteFallback;
+    detail.style.setProperty('--detail-poster-color-one', `rgb(${palette.pageOne.join(', ')})`);
+    detail.style.setProperty('--detail-poster-color-two', `rgb(${palette.pageTwo.join(', ')})`);
+  });
 }
 
 /** Renders the entry banner, timeline, notes, and metadata panels. */
 function renderDetail() {
   const match = /^#entry\/(logged|watchlist)\/([^/]+)(?:\/(full))?$/.exec(location.hash);
   if (!match) return hideDetail();
+  if (typeof closeAppSidebar === 'function') closeAppSidebar();
 
   const view = match[1];
   const id = decodeURIComponent(match[2]);
@@ -307,6 +387,18 @@ function renderDetail() {
   }
 
   const detail = $('#detail');
+  const sameEntryAlreadyOpen = detail.dataset.entryId === id;
+  const previousSelectedIndex = sameEntryAlreadyOpen
+    ? Number(detail.dataset.selectedWatchIndex)
+    : 0;
+  const requestedSelection = pendingDetailWatchSelection?.entryId === id
+    ? pendingDetailWatchSelection.watchIndex
+    : null;
+  if (requestedSelection !== null) pendingDetailWatchSelection = null;
+  const selectedWatchIndex = Number.isInteger(requestedSelection)
+    ? requestedSelection
+    : Number.isInteger(previousSelectedIndex) ? previousSelectedIndex : 0;
+  document.body.classList.add('is-detail-view');
   $('.dashboard-layout').classList.toggle('is-entry-fullscreen', fullscreen);
   activeView = view;
   updateViewTabs();
@@ -315,12 +407,13 @@ function renderDetail() {
   detail.classList.toggle('is-fullscreen', fullscreen);
   detail.hidden = false;
   $('#detail-back').hidden = !fullscreen;
-  $('#statistics-panel').hidden = fullscreen;
-  $('#library').hidden = fullscreen;
+  $('#statistics-panel').hidden = fullscreen || !$('.section-statistics').classList.contains('is-active');
+  $('#library').hidden = fullscreen || !$('.section-library').classList.contains('is-active');
   $('.statsbar').hidden = fullscreen;
   $('#banner').hidden = fullscreen || entries.length === 0;
 
   $('#detail-poster').replaceChildren(posterElement(entry, 'detail-poster-art'));
+  updateDetailPosterPalette(entry);
   $('#detail-backdrop').hidden = !entry.poster;
   $('.detail-hero').classList.toggle('has-poster', Boolean(entry.poster));
   if (entry.poster) {
@@ -406,6 +499,7 @@ function renderDetail() {
   const history = $('#detail-history');
   const timeline = $('#detail-timeline');
   timeline.replaceChildren();
+  timeline.style.removeProperty('--timeline-spine-top');
   history.hidden = view === 'watchlist';
   detail.querySelector('.detail-note')?.remove();
 
@@ -420,7 +514,9 @@ function renderDetail() {
   }
   entry.watches.forEach((watch, index) => timeline.append(createTimelineItem(entry, watch, index)));
   updateTimelineConnectorLengths();
-  if (entry.watches.length) selectTimelineWatch(entry, 0);
+  if (entry.watches.length) {
+    selectTimelineWatch(entry, Math.max(0, Math.min(selectedWatchIndex, entry.watches.length - 1)));
+  }
   else $('#timeline-notes-panel').replaceChildren();
 }
 

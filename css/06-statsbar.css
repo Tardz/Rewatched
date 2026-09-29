@@ -17,12 +17,17 @@
   background: var(--surface-stats-inner);
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 10px 12px;
+  padding: 4px 6px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   box-shadow: 0 10px 22px #00000070, 0 2px 6px #00000050, inset 0 1px 0 #ffffff12;
   transition: box-shadow 160ms ease;
+}
+
+.statsbar > div {
+  align-items: center;
+  text-align: center;
 }
 
 :root[data-dashboard-tactile="on"] .statsbar {

@@ -1,17 +1,19 @@
 /* 
   Spotlight Banner
-  The rotating hero banner at the top of the page. 
+  The rotating hero banner at the top of the page.
 */
 
 .eyebrow {
   margin: 0 0 13px;
   color: var(--blue);
   font: 500 10px "DM Mono", monospace;
+  font-size: clamp(8px, 1.2cqi, 10px);
   letter-spacing: .15em;
   text-transform: uppercase;
 }
 
 .spotlight {
+  container-type: inline-size;
   min-height: 290px;
   display: flex;
   align-items: center;
@@ -41,6 +43,7 @@
   position: relative;
   left: -4px;
   font-size: 52px;
+  font-size: clamp(30px, calc(5.5cqi + 10px), 52px);
   line-height: 1.02;
   letter-spacing: -.06em;
   max-width: 650px;
@@ -54,6 +57,7 @@
   margin: 0 0 14px;
   color: var(--muted);
   font-size: 15px;
+  font-size: clamp(11px, 1.8cqi, 15px);
   line-height: 1.3;
 }
 
@@ -63,6 +67,7 @@
   margin: 0 0 20px;
   color: #c1c9d4;
   font: 500 16px "DM Mono", monospace;
+  font-size: clamp(12px, 2cqi, 16px);
 }
 
 .spotlight-meta {
@@ -71,6 +76,7 @@
   gap: 10px;
   color: var(--muted);
   font: 13px "DM Mono", monospace;
+  font-size: clamp(10px, 1.6cqi, 13px);
 }
 
 .spotlight-meta strong {
@@ -138,8 +144,21 @@
 .banner-controls .pause {
   margin-left: 8px;
   color: var(--muted);
-  font-size: 10px;
+  display: grid;
+  width: 32px;
+  height: 30px;
+  padding: 5px;
+  place-items: center;
 }
+
+.banner-controls .pause svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.banner-controls .pause svg[hidden] { display: none; }
 
 .spotlight {
   position: relative;
@@ -179,8 +198,7 @@
 
 .banner-rating-with-star,
 .entry-rating-with-star,
-.detail-rating-with-star,
-.stats-average-with-meter {
+.detail-rating-with-star {
   color: var(--muted);
   font-size: 11px;
   display: inline-flex;
@@ -189,11 +207,13 @@
 }
 
 .rating-meter {
+  position: relative;
+  isolation: isolate;
   display: inline-block;
   flex: 0 0 auto;
   width: 88px;
   height: 7px;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 999px;
   background: var(--rating-neutral);
   box-shadow: inset 0 0 0 1px #ffffff20;
@@ -201,11 +221,14 @@
 }
 
 .rating-meter-fill {
+  position: relative;
+  z-index: 1;
   display: block;
   height: 100%;
   min-width: 0;
   border-radius: 999px;
-  transition: width 180ms ease;
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--rating-color, var(--rating-neutral)) 38%, transparent);
+  transition: width 180ms ease, box-shadow 180ms ease;
 }
 
 .banner-priority-rating::before {

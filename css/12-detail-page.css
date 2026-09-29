@@ -23,8 +23,34 @@
   overflow: auto;
   border: 1px solid var(--border-strong);
   border-radius: 22px;
-  background: var(--surface-detail);
+  background:
+    radial-gradient(
+      ellipse at 14% 0%,
+      color-mix(in srgb, var(--detail-poster-color-one, #26312f) var(--poster-background-strength), var(--surface-detail)) 0%,
+      transparent 54%
+    ),
+    radial-gradient(
+      ellipse at 88% 12%,
+      color-mix(in srgb, var(--detail-poster-color-two, #28272d) var(--poster-background-strength), var(--surface-detail)) 0%,
+      transparent 48%
+    ),
+    var(--surface-detail);
   box-shadow: 0 28px 90px #000c;
+  transition: background 1500ms cubic-bezier(.22, .61, .36, 1);
+  isolation: isolate;
+}
+
+/* Keep the hover detail poster-specific even when a remote poster blocks canvas sampling. */
+.detail-shell[data-poster-palette-fallback="image"]::before {
+  position: absolute;
+  z-index: -1;
+  inset: -36px;
+  border-radius: inherit;
+  background: var(--detail-poster-image) center / cover no-repeat;
+  content: "";
+  filter: blur(42px) saturate(1.45);
+  opacity: 0.14;
+  pointer-events: none;
 }
 
 .detail-page:not(.is-fullscreen) .detail-shell {
@@ -734,23 +760,12 @@
 
 .detail-watch-count {
   position: relative;
-  left: 0;
-  width: max-content;
-  max-width: 100%;
-  min-width: 34px;
-  min-height: 30px;
-  display: inline-grid;
-  place-items: center;
-  padding: 4px 9px;
-  border: 1px solid color-mix(in srgb, var(--blue) 38%, var(--line));
-  border-radius: 9px;
-  background: color-mix(in srgb, var(--blue) 10%, var(--panel));
-  color: var(--blue);
-  font: 600 13px "DM Mono", monospace;
+  left: 1px;
+  font: 700 15px/1 "DM Mono", monospace;
   text-align: center;
   margin: 0 0 16px;
-  transform: translateX(-50%);
-  box-shadow: 0 4px 12px var(--shadow-black-20), inset 0 1px 0 var(--shadow-inset-soft);
+  transform: translate(-50%, -6px);
+  --watch-color: var(--blue);
 }
 
 .timeline-layout {
@@ -769,21 +784,18 @@
   padding-left: 124px;
 }
 
-.detail-page:not(.is-fullscreen) .detail-timeline li::before {
-  left: -148px;
-}
-
-.detail-page:not(.is-fullscreen) .detail-timeline li,
-.detail-page.is-fullscreen .detail-timeline li {
-  --timeline-date-left: -122px;
-  --timeline-date-width: 100px;
+.detail-page:not(.is-fullscreen) .detail-timeline .detail-watch-number {
+  left: -157px;
 }
 
 .detail-page:not(.is-fullscreen) .timeline-date {
   top: 50%;
-  left: -122px;
+  left: var(--timeline-date-left, -106px);
+  right: auto;
   width: max-content;
   max-width: 100px;
+  white-space: normal;
+  text-align: center;
   transform: translateY(-50%);
 }
 
@@ -795,21 +807,24 @@
   padding-left: 124px;
 }
 
-.detail-page.is-fullscreen .detail-timeline li::before {
-  left: -148px;
+.detail-page.is-fullscreen .detail-timeline .detail-watch-number {
+  left: -157px;
 }
 
 .detail-page.is-fullscreen .timeline-date {
   top: 50%;
-  left: -122px;
+  left: var(--timeline-date-left, -106px);
+  right: auto;
   width: max-content;
   max-width: 100px;
+  text-align: center;
   transform: translateY(-50%);
 }
 
 
 .detail-timeline {
   position: relative;
+  isolation: isolate;
   list-style: none;
   min-width: 0;
   margin: 0;
@@ -820,11 +835,27 @@
 .detail-timeline::before {
   content: "";
   position: absolute;
-  top: -8px;
+  z-index: 0;
+  top: var(--timeline-spine-top, -8px);
   left: 0;
   width: 2px;
-  height: calc(var(--timeline-spine-height, 0px) + 8px);
-  background: color-mix(in srgb, var(--blue) 48%, var(--line));
+  height: calc(var(--timeline-spine-height, 0px) - var(--timeline-spine-top, -8px));
+  background: var(--timeline-spine-background, color-mix(in srgb, var(--blue) 48%, var(--line)));
+  filter: drop-shadow(0 1px 2px #00000055);
+}
+
+.detail-timeline::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: var(--timeline-spine-top, -8px);
+  left: -3px;
+  width: 8px;
+  height: calc(var(--timeline-spine-height, 0px) - var(--timeline-spine-top, -8px));
+  background: var(--timeline-spine-background, color-mix(in srgb, var(--blue) 48%, var(--line)));
+  filter: blur(4px);
+  opacity: .34;
+  pointer-events: none;
 }
 
 .detail-timeline-content,
@@ -838,20 +869,34 @@
 }
 
 .detail-timeline-content {
+  padding: 25px 35px 25px 35px;
   width: calc(100% + 49px);
   margin-left: -49px;
 }
 
 .detail-timeline-inner {
-  margin-left: 49px;
+  margin-left: 16px;
 }
 
 .detail-timeline-content .detail-watch-count { margin-top: 0; }
 
 .detail-timeline li {
+  display: flex;
+  justify-content: flex-end;
   position: relative;
+  z-index: 1;
+  --timeline-date-line-gap: 6px;
   margin: 0 0 14px;
   margin-left: 16px;
+  padding: 0;
+}
+
+.timeline-entry-card {
+  position: relative;
+  z-index: 1;
+  width: max-content;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 12px 16px;
   border: 1px solid color-mix(in srgb, var(--line) 86%, var(--blue));
   border-radius: 14px;
@@ -860,55 +905,82 @@
   transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease;
 }
 
-.detail-timeline li:hover {
-  border-color: color-mix(in srgb, var(--blue) 48%, var(--line));
-  background: color-mix(in srgb, var(--panel) 92%, var(--blue));
-  box-shadow: 0 9px 22px #00000030, inset 0 1px 0 var(--shadow-inset-strong);
+.detail-timeline li:hover .timeline-entry-card {
+  border-color: color-mix(in srgb, var(--watch-color) 48%, var(--line));
+  background: color-mix(in srgb, var(--panel) 92%, var(--watch-color));
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--watch-color) 34%, transparent),
+    0 9px 22px #00000030,
+    inset 0 1px 0 var(--shadow-inset-strong);
 }
 
-.detail-timeline li.is-selected {
-  border-color: color-mix(in srgb, var(--blue) 58%, var(--line));
+.detail-timeline li.is-selected .timeline-entry-card {
+  border-color: color-mix(in srgb, var(--watch-color) 58%, var(--line));
+  background: color-mix(in srgb, var(--panel) 92%, var(--watch-color));
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--watch-color) 34%, transparent),
+    0 6px 18px #00000020,
+    inset 0 1px 0 var(--shadow-inset);
 }
 
-.detail-timeline li.is-selected::before {
-  box-shadow: 0 0 0 4px var(--panel), 0 0 16px color-mix(in srgb, var(--blue) 65%, transparent);
-}
+.detail-timeline li:last-child { margin-bottom: 0; }
 
-.detail-timeline li::before {
-  content: "";
+.detail-watch-number {
   position: absolute;
-  left: -108px;
+  z-index: 2;
+  left: -157px;
   top: 50%;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--blue);
-  box-shadow: 0 0 0 4px var(--panel), 0 0 12px color-mix(in srgb, var(--blue) 45%, transparent);
+  width: 36px;
+  height: 30px;
+  font-size: 13px;
+  box-shadow:
+    0 4px 10px #00000065,
+    0 0 12px 2px color-mix(in srgb, var(--watch-color) 42%, transparent);
   transform: translateY(-50%);
 }
 
+.detail-timeline li::before,
 .detail-timeline li::after {
   content: "";
   position: absolute;
+  z-index: 0;
   top: 50%;
-  left: calc(var(--timeline-date-left, -122px) + var(--timeline-date-width, 100px) + 12px);
-  right: calc(100% + 12px);
   height: 2px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--blue) 65%, transparent);
-  box-shadow: 0 0 5px color-mix(in srgb, var(--blue) 45%, transparent);
+  background: var(--watch-color);
+  box-shadow:
+    0 1px 3px #00000070,
+    0 0 9px 2px color-mix(in srgb, var(--watch-color) 52%, transparent);
   transform: translateY(-50%);
+}
+
+.detail-timeline li::before {
+  /* End before the centered date; the marker overlaps the segment by 1px. */
+  left: var(--timeline-marker-right, -122px);
+  right: calc(100% - var(--timeline-date-left, -106px) + var(--timeline-date-line-gap, 20px));
+}
+
+.detail-timeline li::after {
+  /* Start after the centered date and run 1px beneath the entry card. */
+  left: calc(var(--timeline-date-left, -106px) + var(--timeline-date-width, 74px) + var(--timeline-date-line-gap, 20px));
+  right: calc(var(--timeline-card-width, 0px) - 1px);
 }
 
 .timeline-date {
   position: absolute;
+  z-index: 3;
+  isolation: isolate;
   top: 50%;
-  left: -106px;
+  left: var(--timeline-date-left, -106px);
   width: 66px;
-  color: var(--muted);
-  font: 500 12px "DM Mono", monospace;
-  line-height: 1.35;
-  text-align: left;
+  box-sizing: content-box;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text);
+  font: 500 12px/1.2 "DM Mono", monospace;
+  text-align: center;
   white-space: nowrap;
   transform: translateY(-50%);
 }
@@ -919,12 +991,12 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
+  gap: 6px;
 }
 
 .detail-timeline li>div > strong {
   min-width: 0;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
 }
 
 .timeline-rating-row {

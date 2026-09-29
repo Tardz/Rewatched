@@ -11,8 +11,8 @@ const ACTION_ICONS = {
 
 /** Returns the color associated with a score on the rating scale. */
 function ratingColorForScore(score) {
-  const hue = Math.max(0, (Number(score) - 3) * 17.14);
-  return `hsl(${hue} 68% 56%)`;
+  const hue = Math.min(140, Math.max(0, (Number(score) - 3) * 20));
+  return `hsl(${hue} 72% 64%)`;
 }
 
 /** Creates poster markup for an entry, including its fallback state. */

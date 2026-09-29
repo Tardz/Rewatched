@@ -6,6 +6,44 @@ let libraryScrollPosition = Number(sessionStorage.getItem(LIBRARY_SCROLL_KEY)) |
 
 const themeToggle = $('#toggle-theme');
 
+/** Switches between the library and its statistics panel. */
+function setDashboardSection(section) {
+  const showStatistics = section === 'statistics';
+  const dashboard = $('.dashboard-layout');
+  const collectionFilters = $('.collection-filter-sort');
+  const libraryButton = $('.section-library');
+  const statisticsButton = $('.section-statistics');
+
+  $('#library').hidden = showStatistics;
+  $('#statistics-panel').hidden = !showStatistics;
+  if (showStatistics) {
+    $('#statistics-panel').prepend(collectionFilters);
+    updateCollectionTools(activeView === 'watchlist');
+  } else {
+    $('.library-search').after(collectionFilters);
+  }
+  dashboard.classList.toggle('is-statistics-view', showStatistics);
+  document.documentElement.dataset.dashboardSection = showStatistics ? 'statistics' : 'library';
+
+  libraryButton.classList.toggle('is-active', !showStatistics);
+  statisticsButton.classList.toggle('is-active', showStatistics);
+  libraryButton.toggleAttribute('aria-current', !showStatistics);
+  statisticsButton.toggleAttribute('aria-current', showStatistics);
+
+  if (showStatistics) {
+    clearTimeout(bannerTimer);
+    statisticsRequestedPaletteSource = '';
+    resetPagePalette();
+    renderStatisticsPanel();
+  } else {
+    renderBanner();
+    resetBannerTimer();
+  }
+}
+
+$('.section-library').addEventListener('click', () => setDashboardSection('library'));
+$('.section-statistics').addEventListener('click', () => setDashboardSection('statistics'));
+
 // Retain focus rings for keyboard use, but avoid persistent rings after pointer clicks.
 document.addEventListener('pointerdown', () => {
   document.documentElement.dataset.inputModality = 'pointer';
@@ -36,6 +74,7 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem(THEME_KEY, themePreference);
   applyTheme();
   syncThemeToggle();
+  syncAppearanceControls();
 });
 systemTheme.addEventListener?.('change', syncThemeToggle);
 if (!systemTheme.addEventListener) systemTheme.addListener(syncThemeToggle);
@@ -67,18 +106,21 @@ function restoreLibraryScrollPosition() {
 
 // Banner controls
 
-$('#previous').addEventListener('click', () => {
+$('#previous').addEventListener('click', (event) => {
+  event.stopPropagation();
   slideBanner(-1);
 });
 
-$('#next').addEventListener('click', () => {
+$('#next').addEventListener('click', (event) => {
+  event.stopPropagation();
   slideBanner(1);
 });
 
 /** Opens the entry currently featured in the banner. */
 function openBannerEntry() {
-  const entry = entries.slice(0, 5)[bannerIndex];
-  if (entry) location.hash = `#entry/logged/${encodeURIComponent(entry.id)}`;
+  if ($('.section-statistics').classList.contains('is-active')) return;
+  const entry = bannerEntries()[bannerIndex];
+  if (entry) location.hash = `#entry/${activeView}/${encodeURIComponent(entry.id)}`;
 }
 
 $('#banner').addEventListener('click', (event) => {
@@ -94,6 +136,8 @@ $('#banner').addEventListener('keydown', (event) => {
 });
 
 $('#banner').addEventListener('wheel', (event) => {
+  if ($('.section-statistics').classList.contains('is-active')
+    || event.target.closest('#statistics-timeline')) return;
   if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || bannerEntries().length < 2) return;
   event.preventDefault();
 
@@ -109,8 +153,11 @@ $('#banner').addEventListener('wheel', (event) => {
 
 /** Synchronizes banner rotation controls with the current setting. */
 function syncRotationControls() {
-  $('#pause').textContent = paused ? 'Play' : 'Pause';
-  $('#pause').setAttribute('aria-label', paused ? 'Resume rotation' : 'Pause rotation');
+  const button = $('#pause');
+  button.querySelector('.pause-icon').hidden = paused;
+  button.querySelector('.play-icon').hidden = !paused;
+  button.setAttribute('aria-label', paused ? 'Resume rotation' : 'Pause rotation');
+  button.title = paused ? 'Resume rotation' : 'Pause rotation';
   $('#auto-rotate').checked = !paused;
 }
 
@@ -121,13 +168,12 @@ function setRotation(enabled) {
   syncRotationControls();
 }
 
-$('#pause').addEventListener('click', () => {
-  setRotation(paused);
-});
+$('#pause').addEventListener('click', () => setRotation(paused));
 
 /** Opens the settings dialog. */
 function openSettings() {
   syncRotationControls();
+  syncAppearanceControls();
   $('#theme-mode').value = themePreference;
   $('#poster-background').checked = posterBackgroundEnabled;
   $('#poster-background-strength').value = posterBackgroundStrength;
@@ -139,31 +185,48 @@ function openSettings() {
   $('#settings-dialog').showModal();
 }
 
+/** Synchronizes appearance options with the settings dialog controls. */
+function syncAppearanceControls() {
+  $('#theme-mode').value = themePreference;
+  $('#poster-background').checked = posterBackgroundEnabled;
+  $('#poster-background-strength').value = posterBackgroundStrength;
+  $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
+  $('#poster-background-strength').disabled = !posterBackgroundEnabled;
+  $('#tactile-dashboard').checked = tactileDashboardEnabled;
+}
 $('#open-settings').addEventListener('click', openSettings);
 $('#open-storage-settings').addEventListener('click', openSettings);
 $('#close-settings').addEventListener('click', () => $('#settings-dialog').close());
-$('#theme-mode').addEventListener('change', (event) => {
-  themePreference = event.currentTarget.value;
+$('#auto-rotate').addEventListener('change', (event) => setRotation(event.currentTarget.checked));
+function changeThemePreference(value) {
+  themePreference = value;
   localStorage.setItem(THEME_KEY, themePreference);
   applyTheme();
-});
-$('#poster-background').addEventListener('change', (event) => {
-  posterBackgroundEnabled = event.currentTarget.checked;
+  syncAppearanceControls();
+}
+$('#theme-mode').addEventListener('change', (event) => changeThemePreference(event.currentTarget.value));
+function changePosterBackground(enabled) {
+  posterBackgroundEnabled = enabled;
   localStorage.setItem(POSTER_BACKGROUND_KEY, String(posterBackgroundEnabled));
   document.documentElement.dataset.posterBackground = posterBackgroundEnabled ? 'on' : 'off';
-  $('#poster-background-strength').disabled = !posterBackgroundEnabled;
-});
-$('#poster-background-strength').addEventListener('input', (event) => {
-  posterBackgroundStrength = Number(event.currentTarget.value);
+  syncAppearanceControls();
+}
+$('#poster-background').addEventListener('change', (event) => changePosterBackground(event.currentTarget.checked));
+function changePosterBackgroundStrength(value) {
+  posterBackgroundStrength = Number(value);
   document.documentElement.style.setProperty('--poster-background-strength', `${posterBackgroundStrength}%`);
+  $('#poster-background-strength').value = posterBackgroundStrength;
   $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
   localStorage.setItem(POSTER_BACKGROUND_STRENGTH_KEY, String(posterBackgroundStrength));
-});
-$('#tactile-dashboard').addEventListener('change', (event) => {
-  tactileDashboardEnabled = event.currentTarget.checked;
+}
+$('#poster-background-strength').addEventListener('input', (event) => changePosterBackgroundStrength(event.currentTarget.value));
+function changeTactileDashboard(enabled) {
+  tactileDashboardEnabled = enabled;
   localStorage.setItem(TACTILE_DASHBOARD_KEY, String(tactileDashboardEnabled));
   document.documentElement.dataset.dashboardTactile = tactileDashboardEnabled ? 'on' : 'off';
-});
+  syncAppearanceControls();
+}
+$('#tactile-dashboard').addEventListener('change', (event) => changeTactileDashboard(event.currentTarget.checked));
 $('#save-omdb-key').addEventListener('click', () => {
   const key = $('#omdb-api-key').value.trim();
   if (!key) {
@@ -241,11 +304,6 @@ document.addEventListener('keydown', (event) => {
     location.hash = '#library';
   }
 });
-$('#auto-rotate').addEventListener('change', (event) => {
-  setRotation(event.currentTarget.checked);
-});
-
-
 // Filters and view tabs
 
 document.querySelectorAll('.media-type-filter').forEach((button) => {
@@ -419,5 +477,6 @@ resetBannerTimer();
 
 populateYears();
 syncRotationControls();
+syncAppearanceControls();
 initializeFileStorage().finally(render);
 /** App entry point: wires UI events, navigation, settings, keyboard shortcuts, and startup behavior. */

@@ -16,8 +16,8 @@ let themePreference = localStorage.getItem(THEME_KEY) || 'system';
 let posterBackgroundEnabled = localStorage.getItem(POSTER_BACKGROUND_KEY) !== 'false';
 const savedPosterBackgroundStrength = Number(localStorage.getItem(POSTER_BACKGROUND_STRENGTH_KEY));
 let posterBackgroundStrength = Number.isFinite(savedPosterBackgroundStrength)
-  ? Math.max(0, Math.min(50, savedPosterBackgroundStrength))
-  : 22;
+  ? Math.round(Math.max(0, Math.min(100, savedPosterBackgroundStrength)) / 5) * 5
+  : 20;
 let tactileDashboardEnabled = localStorage.getItem(TACTILE_DASHBOARD_KEY) !== 'false';
 
 /** Applies the selected light or dark theme to the document. */
@@ -41,6 +41,7 @@ else systemTheme.addListener(handleSystemThemeChange);
 let entries = [];
 let watchlist = [];
 let customCollections = [];
+let pendingDetailWatchSelection = null;
 
 /** Orders an entry’s watch records chronologically. */
 function sortEntryWatches(entry) {
@@ -77,6 +78,7 @@ function createRatingMeter(fill, color, className = 'rating-meter') {
   progress.className = 'rating-meter-fill';
   progress.style.width = fill;
   progress.style.backgroundColor = color;
+  meter.style.setProperty('--rating-color', color);
   meter.append(progress);
   return meter;
 }
@@ -104,8 +106,6 @@ let paused = savedRotation === null
 let bannerSliding = false;
 let swipeDistance = 0;
 let lastSwipeAt = 0;
-
-
 // Helpers
 
 /** Marks the current app state as changed and persists it when possible. */

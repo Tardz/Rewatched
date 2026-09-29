@@ -26,10 +26,11 @@
   <main>
     <!-- The dashboard groups the left controls, featured title, and summary stats. -->
     <div class="dashboard-layout layout-normal">
-      <div class="dashboard-sidebar">
+      <div class="dashboard-rail">
+        <div class="dashboard-main-controls">
         <div class="dashboard-identity">
-          <header class="sidebar">
-            <div class="sidebar-brand">
+          <header class="dashboard-header">
+            <div class="dashboard-brand-group">
               <button
                 id="detail-back"
                 class="icon-button detail-back-icon"
@@ -85,23 +86,44 @@
           </div>
 
           <div class="storage-control">
-            <button id="open-storage-check" class="icon-button storage-check-button" type="button" title="Storage Consistency Check" aria-label="Open Storage Consistency Check">
-              <span
-                id="storage-save-indicator"
-                class="storage-save-indicator is-saved"
-                role="status"
-                aria-label="All changes saved"
-                title="All changes saved"
-              ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M5 3h12l4 4v14H3V5a2 2 0 0 1 2-2Z" />
-                  <path d="M7 3v6h10V3M7 21v-8h10v8M9 16h6" />
-                </svg></span>
+            <button class="icon-button activity-button" type="button" aria-label="Activity" title="Activity">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 8a9 9 0 1 1-.2 8" />
+                <path d="M3 3v5h5M12 7v5l3 2" />
+              </svg>
             </button>
-            <button id="open-storage-settings" class="storage-indicator" type="button" title="Open storage settings">
-              <span id="current-storage-name" class="storage-indicator-name">Browser Vault</span>
-            </button>
+            <div class="storage-file-control">
+              <button id="open-storage-check" class="icon-button storage-check-button" type="button" title="Storage Consistency Check" aria-label="Open Storage Consistency Check">
+                <span
+                  id="storage-save-indicator"
+                  class="storage-save-indicator is-saved"
+                  role="status"
+                  aria-label="All changes saved"
+                  title="All changes saved"
+                ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M5 3h12l4 4v14H3V5a2 2 0 0 1 2-2Z" />
+                    <path d="M7 3v6h10V3M7 21v-8h10v8M9 16h6" />
+                  </svg></span>
+              </button>
+              <button id="open-storage-settings" class="storage-indicator" type="button" title="Open storage settings">
+                <span id="current-storage-name" class="storage-indicator-name">Browser Vault</span>
+              </button>
+            </div>
           </div>
         </div>
+
+        </div>
+        <nav class="dashboard-sections" aria-label="Main sections">
+          <button class="dashboard-section-button section-library is-active" type="button" aria-current="page" aria-label="Library" title="Library">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h3v14H4zM10.5 3.5h3V19h-3zM17 6h3v13h-3zM3 20h18" /></svg>
+          </button>
+          <button class="dashboard-section-button section-statistics" type="button" aria-label="Statistics" title="Statistics">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 12V3M12 12l7.8-4.5" />
+            </svg>
+          </button>
+        </nav>
       </div>
 
     <!-- Featured title and summary statistics -->
@@ -122,13 +144,22 @@
           <button type="button" id="previous" aria-label="Previous title">←</button>
           <span id="banner-count"></span>
           <button type="button" id="next" aria-label="Next title">→</button>
-          <button type="button" id="pause" class="pause" aria-label="Pause rotation">Pause</button>
+          <button type="button" id="pause" class="pause" aria-label="Pause rotation" title="Pause rotation">
+            <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4.5" height="16" rx="2.25" /><rect x="13.5" y="4" width="4.5" height="16" rx="2.25" /></svg>
+            <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7.25 5.1c0-.88.96-1.42 1.72-.96l11.1 6.72a1.32 1.32 0 0 1 0 2.28l-11.1 6.72a1.12 1.12 0 0 1-1.72-.96z" /></svg>
+          </button>
         </div>
       </div>
       <div class="banner-poster">
         <img id="banner-image" alt="" hidden>
         <span id="banner-placeholder">Add a poster<br>to see it here</span>
       </div>
+      <section id="statistics-recent-watches" class="statistics-recent-watches" aria-label="Watch history" hidden>
+        <ol id="statistics-timeline" class="statistics-timeline" aria-label="Watch history, oldest to newest"></ol>
+        <button id="statistics-timeline-expand" class="entry-open-fullscreen statistics-timeline-expand" type="button" aria-label="Open full watch timeline" title="Open full watch timeline">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M3 16v5h5" /></svg>
+        </button>
+      </section>
     </section>
 
     <section class="statsbar" aria-label="Library summary">
@@ -228,10 +259,25 @@
       <div id="collection" class="collection"></div>
     </section>
 
-    <div id="statistics-panel" class="statistics-panel" aria-labelledby="statistics-title">
-      <h2 id="statistics-title">Statistics</h2>
+    <div id="statistics-panel" class="statistics-panel" aria-labelledby="statistics-title" hidden>
+      <h2 id="statistics-title" class="visually-hidden">Statistics</h2>
       <div id="statistics-grid"></div>
     </div>
+
+    <dialog id="statistics-timeline-dialog" aria-labelledby="statistics-timeline-dialog-title">
+      <div class="statistics-timeline-dialog-content">
+        <div class="dialog-heading">
+          <h2 id="statistics-timeline-dialog-title">Watch history</h2>
+          <button id="close-statistics-timeline" class="close" type="button" aria-label="Close watch history">×</button>
+        </div>
+        <div id="statistics-timeline-scroll" class="statistics-timeline-scroll" tabindex="0" aria-label="Scrollable watch history">
+          <div id="statistics-full-timeline-canvas" class="statistics-full-timeline-canvas">
+            <svg class="statistics-full-timeline-path" aria-hidden="true"><path></path></svg>
+            <ol id="statistics-full-timeline" class="statistics-full-timeline" aria-label="Watch history, newest to oldest"></ol>
+          </div>
+        </div>
+      </div>
+    </dialog>
 
 
 
@@ -296,7 +342,7 @@
                 </div>
                 <div class="detail-timeline-content">
                   <div class="detail-timeline-inner">
-                    <p id="detail-watch-count" class="detail-watch-count" hidden></p>
+                    <p id="detail-watch-count" class="detail-watch-count statistics-watch-marker statistics-watch-total-box" hidden></p>
                     <ol id="detail-timeline" class="detail-timeline"></ol>
                   </div>
                 </div>
@@ -394,7 +440,7 @@
           <strong>Poster gradient strength</strong>
           <small>Adjust the poster color tint: <output id="poster-background-strength-value">22%</output></small>
         </label>
-        <input id="poster-background-strength" type="range" min="0" max="50" step="1" value="22">
+        <input id="poster-background-strength" type="range" min="0" max="100" step="5" value="20">
       </div>
       <label class="settings-option" for="tactile-dashboard">
         <span>

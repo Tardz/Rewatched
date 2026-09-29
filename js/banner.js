@@ -1,6 +1,8 @@
 /** Banner module. */
 // The rotating spotlight banner.
 
+const posterPaletteCache = new Map();
+
 /** Renders the active featured entry and its banner details. */
 function renderBanner() {
   const source = bannerEntries();
@@ -49,7 +51,10 @@ function renderBanner() {
     $('#banner-image').src = entry.poster;
     $('#banner-image').alt = `${entry.title} poster`;
     $('#banner-backdrop-image').src = entry.poster;
-    updateBannerPalette(entry.poster, { updatePage: !location.hash.endsWith('/full') });
+    updateBannerPalette(entry.poster, {
+      updatePage: !location.hash.endsWith('/full')
+        && !$('.section-statistics')?.classList.contains('is-active'),
+    });
   } else {
     $('#banner-image').removeAttribute('src');
     $('#banner-backdrop-image').removeAttribute('src');
@@ -74,71 +79,90 @@ function resetPagePalette() {
   root.style.removeProperty('--app-poster-color-two');
 }
 
+/** Returns cached left/right poster colors for the banner and app background. */
+function getPosterPalette(source) {
+  if (posterPaletteCache.has(source)) return posterPaletteCache.get(source);
+
+  const palettePromise = new Promise((resolve) => {
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+        context.drawImage(image, 0, 0, 16, 16);
+        const pixels = context.getImageData(0, 0, 16, 16).data;
+        const sample = (start, end, favorColor = false) => {
+          let red = 0; let green = 0; let blue = 0; let totalWeight = 0;
+          for (let y = 0; y < 16; y += 1) {
+            for (let x = start; x < end; x += 1) {
+              const offset = (y * 16 + x) * 4;
+              const pixelRed = pixels[offset];
+              const pixelGreen = pixels[offset + 1];
+              const pixelBlue = pixels[offset + 2];
+              const brightness = (pixelRed + pixelGreen + pixelBlue) / 3;
+              const chroma = Math.max(pixelRed, pixelGreen, pixelBlue)
+                - Math.min(pixelRed, pixelGreen, pixelBlue);
+              const weight = favorColor
+                ? 0.15 + (brightness / 255) * 0.75 + (Math.max(0, chroma - 20) / 235) * 1.25
+                : 1;
+
+              red += pixelRed * weight;
+              green += pixelGreen * weight;
+              blue += pixelBlue * weight;
+              totalWeight += weight;
+            }
+          }
+          return [red, green, blue].map((value) => Math.round(value / totalWeight));
+        };
+
+        resolve({
+          bannerOne: sample(0, 8),
+          bannerTwo: sample(8, 16),
+          pageOne: sample(0, 8, true),
+          pageTwo: sample(8, 16, true),
+        });
+      } catch (error) {
+        resolve(null);
+      }
+    };
+    image.onerror = () => resolve(null);
+    image.src = source;
+  });
+
+  if (posterPaletteCache.size >= 128) {
+    posterPaletteCache.delete(posterPaletteCache.keys().next().value);
+  }
+  posterPaletteCache.set(source, palettePromise);
+  return palettePromise;
+}
+
 /** Extracts and applies colors from the banner poster. */
 function updateBannerPalette(source, { updatePage = true } = {}) {
   const banner = $('#banner');
+  const root = document.documentElement;
   banner.dataset.paletteSource = source;
-  if (updatePage) document.documentElement.dataset.pagePaletteSource = source;
-  const image = new Image();
-  image.crossOrigin = 'anonymous';
-  image.onload = () => {
-    try {
-      const canvas = document.createElement('canvas');
-      canvas.width = 16;
-      canvas.height = 16;
-      const context = canvas.getContext('2d', { willReadFrequently: true });
-      context.drawImage(image, 0, 0, 16, 16);
-      const pixels = context.getImageData(0, 0, 16, 16).data;
-      const sample = (start, end, favorColor = false) => {
-        let red = 0; let green = 0; let blue = 0; let totalWeight = 0;
-        for (let y = 0; y < 16; y += 1) {
-          for (let x = start; x < end; x += 1) {
-            const offset = (y * 16 + x) * 4;
-            const pixelRed = pixels[offset];
-            const pixelGreen = pixels[offset + 1];
-            const pixelBlue = pixels[offset + 2];
-            const brightness = (pixelRed + pixelGreen + pixelBlue) / 3;
-            const chroma = Math.max(pixelRed, pixelGreen, pixelBlue)
-              - Math.min(pixelRed, pixelGreen, pixelBlue);
-            const weight = favorColor
-              ? 0.15 + (brightness / 255) * 0.75 + (Math.max(0, chroma - 20) / 235) * 1.25
-              : 1;
+  if (updatePage) root.dataset.pagePaletteSource = source;
 
-            red += pixelRed * weight;
-            green += pixelGreen * weight;
-            blue += pixelBlue * weight;
-            totalWeight += weight;
-          }
-        }
-        return `rgb(${Math.round(red / totalWeight)}, ${Math.round(green / totalWeight)}, ${Math.round(blue / totalWeight)})`;
-      };
-      if (banner.dataset.paletteSource !== source) return;
-      const firstColor = sample(0, 8);
-      const secondColor = sample(8, 16);
-      const pageColorOne = sample(0, 8, true);
-      const pageColorTwo = sample(8, 16, true);
-      banner.style.setProperty('--poster-color-one', firstColor);
-      banner.style.setProperty('--poster-color-two', secondColor);
-      if (updatePage && document.documentElement.dataset.pagePaletteSource === source) {
-        document.documentElement.style.setProperty('--app-poster-color-one', pageColorOne);
-        document.documentElement.style.setProperty('--app-poster-color-two', pageColorTwo);
-      }
-    } catch (error) {
-      if (banner.dataset.paletteSource === source) {
-        banner.style.removeProperty('--poster-color-one');
-        banner.style.removeProperty('--poster-color-two');
-      }
-      if (updatePage && document.documentElement.dataset.pagePaletteSource === source) resetPagePalette();
-    }
-  };
-  image.onerror = () => {
-    if (banner.dataset.paletteSource === source) {
+  getPosterPalette(source).then((palette) => {
+    if (banner.dataset.paletteSource !== source) return;
+    if (!palette) {
       banner.style.removeProperty('--poster-color-one');
       banner.style.removeProperty('--poster-color-two');
+      if (updatePage && root.dataset.pagePaletteSource === source) resetPagePalette();
+      return;
     }
-    if (updatePage && document.documentElement.dataset.pagePaletteSource === source) resetPagePalette();
-  };
-  image.src = source;
+
+    const colorString = (color) => `rgb(${color.join(', ')})`;
+    banner.style.setProperty('--poster-color-one', colorString(palette.bannerOne));
+    banner.style.setProperty('--poster-color-two', colorString(palette.bannerTwo));
+    if (updatePage && root.dataset.pagePaletteSource === source) {
+      root.style.setProperty('--app-poster-color-one', colorString(palette.pageOne));
+      root.style.setProperty('--app-poster-color-two', colorString(palette.pageTwo));
+    }
+  });
 }
 
 /** Returns the ordered entries eligible for banner rotation. */
