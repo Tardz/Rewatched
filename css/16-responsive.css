@@ -197,7 +197,6 @@ main:has(.dashboard-layout.layout-normal) {
     margin: 0;
   }
   .dashboard-layout.layout-normal > .statsbar div { padding: 4px 6px; }
-  .dashboard-layout.layout-normal > .statsbar .stat-label { margin-bottom: 3px; }
 }
 
 @container app-content (width < 950px) {
@@ -492,10 +491,11 @@ main:has(.dashboard-layout.layout-normal) {
 
 @media (max-width: 520px) {
   #watch-form { padding: 20px; }
-  .form-header-actions { gap: 6px; }
-  .form-header-actions .button { padding-inline: 10px; }
+  .watch-dialog-actions { gap: 6px; }
   .form-panel { padding: 16px; }
-  .form-panel h3 { margin-bottom: 15px; }
+  .form-panel h3 { margin-bottom: var(--space-4); }
+  .poster-panel > h3,
+  .watch-panel-heading > h3 { margin-bottom: 0; }
   .movie-credit-genre-row { grid-template-columns: 1fr; }
   .watch-fields { grid-template-columns: 1fr; }
   .poster-preview { min-width: 0; }

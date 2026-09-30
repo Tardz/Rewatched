@@ -36,124 +36,51 @@
   z-index: 2;
 }
 
-.folder-picker-group {
-  position: relative;
+.library-folder-control {
   display: flex;
   flex: none;
   align-items: center;
-  gap: 0;
-  box-sizing: border-box;
-  height: var(--toolbar-control-height);
-  transition: width 180ms ease;
+  gap: var(--toolbar-control-gap);
 }
 
-.library-folder-picker {
-  position: relative;
-  flex: 0 0 auto;
-  height: var(--toolbar-control-height);
-  width: 0;
-  min-width: 0;
-  overflow: visible;
-  border-radius: var(--toolbar-control-radius-compact);
-  transition: width 180ms ease, height 180ms ease;
-  z-index: 1;
+.library-folder-dropdown {
+  z-index: 5;
+}
+
+.library-folder-menu {
+  width: max-content;
 }
 
 .library-folder-list {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  gap: var(--toolbar-control-gap);
-  box-sizing: border-box;
-  width: 0;
-  height: var(--toolbar-control-height-compact);
-  padding: 0;
-  border-radius: var(--toolbar-control-radius-compact);
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline: 0;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-  transition: width 180ms ease, height 180ms ease, padding 180ms ease;
+  display: grid;
+  gap: 4px;
 }
 
-.library-folder-list::-webkit-scrollbar {
-  display: none;
+.library-folder-choice {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  transition: background-color 150ms ease, border-color 150ms ease,
+    color 150ms ease, box-shadow 150ms ease;
 }
 
-.folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
-  gap: var(--space-1);
-  padding: var(--toolbar-group-padding);
-  padding-right: calc(var(--toolbar-group-padding) + 1px);
-  border: 1px solid var(--line);
-  border-radius: var(--toolbar-control-radius);
+.library-folder-choice:hover,
+.library-folder-choice.active {
+  border-color: var(--status-warning-border);
+  background: color-mix(in srgb, var(--status-warning) 15%, var(--surface-raised));
+  color: var(--status-warning);
 }
 
-.folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-picker {
-  width: var(--folder-picker-width-expanded);
-  height: var(--toolbar-control-height-compact);
-  z-index: 3;
+.library-folder-choice.active {
+  box-shadow: 0 0 10px color-mix(in srgb, var(--status-warning) 18%, transparent);
 }
 
-.folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list {
-  gap: var(--toolbar-control-gap-expanded);
-  height: var(--toolbar-control-height-compact);
-  padding: 0;
-}
-
-.folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .entry-folder-option {
-  flex-basis: 84px;
-  width: 84px;
-  max-width: 84px;
-  height: var(--toolbar-control-height-compact);
-  padding-inline: 4px;
-  border-radius: var(--toolbar-control-radius-compact);
+.library-folder-empty {
+  padding: 7px 8px;
+  color: var(--muted);
   font-size: 13px;
-}
-
-.folder-picker-group:has(#library-folder-picker:not([hidden])) #add-collection {
-  transition: width 180ms ease, height 180ms ease, opacity 140ms ease,
-    padding 180ms ease, border-radius 180ms ease, font-size 180ms ease;
-}
-
-.folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) #add-collection {
-  width: 36px;
-  height: var(--toolbar-control-height-compact);
-  border-radius: var(--toolbar-control-radius-compact);
-  font-size: 22px;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.folder-picker-group:has(#library-folder-picker:not([hidden])):not(.is-expanded) #add-collection {
-  width: 0;
-  height: 36px;
-  padding: 0;
-  font-size: 0;
-  border-width: 0;
-  opacity: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-@media (max-width: 760px) {
-  :root { --folder-picker-width-expanded: var(--folder-picker-width-tablet); }
-}
-
-@media (max-width: 520px) {
-  :root { --folder-picker-width-expanded: var(--folder-picker-width-compact); }
-}
-
-.folder-picker-group .library-folder-picker[hidden],
-.folder-picker-group [hidden] {
-  display: none !important;
-}
-
-.collection-source-controls:has(#library-folder-picker:not([hidden])) #add-collection {
-  position: relative;
 }
 
 
@@ -328,9 +255,33 @@
 }
 
 .media-type-filter {
+  display: grid;
+  place-items: center;
   position: relative;
   z-index: 1;
   order: 1;
+  width: 52px;
+  min-width: 52px;
+  padding: 0;
+}
+
+.media-type-filter svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.media-type-filter-group:is(:hover, :focus-within, .is-pointer-active) .media-type-filter {
+  flex-basis: var(--toolbar-control-height-compact);
+  width: var(--toolbar-control-height-compact);
+  min-width: var(--toolbar-control-height-compact);
+  max-width: var(--toolbar-control-height-compact);
+  padding: 5px;
 }
 
 .media-type-filter.active,
@@ -355,9 +306,7 @@
   .collection-source-controls:has(.library-view-switcher:hover),
   .collection-source-controls:has(.library-view-switcher:focus-within),
   .collection-source-controls:has(.library-view-switcher.is-pointer-active),
-  .collection-source-controls:has(.folder-picker-group.is-pointer-active),
-  .collection-source-controls:has(.library-folder-picker:hover),
-  .collection-source-controls:has(.library-folder-picker:focus-within) {
+  .collection-source-controls:has(.library-folder-dropdown.is-open) {
     gap: var(--toolbar-control-gap);
   }
 }

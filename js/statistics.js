@@ -93,9 +93,13 @@ function renderStatsbar() {
   const averageElement = $('#stat-average');
   averageElement.textContent = watches.length ? `${Number(average) * 10}%` : '—';
   if (watches.length) {
+    averageElement.classList.add('rating-value-chip');
+    averageElement.style.setProperty('--rating-color', ratingColorForScore(average));
     averageElement.setAttribute('aria-label', `Average rating ${average} out of 10`);
     averageElement.style.color = ratingColorForScore(average);
   } else {
+    averageElement.classList.remove('rating-value-chip');
+    averageElement.style.removeProperty('--rating-color');
     averageElement.removeAttribute('aria-label');
     averageElement.style.removeProperty('color');
   }
@@ -171,7 +175,10 @@ function createAverageRatingCard(average, watchCount) {
   const value = document.createElement('strong');
   value.className = 'stat-rating-value';
   value.textContent = watchCount ? `${percentage}%` : '—';
-  if (watchCount) value.style.color = ratingColorForScore(average);
+  if (watchCount) {
+    value.classList.add('rating-value-chip');
+    value.style.setProperty('--rating-color', ratingColorForScore(average));
+  }
 
   const track = document.createElement('div');
   track.className = 'stat-rating-track';

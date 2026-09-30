@@ -45,6 +45,16 @@
   outline-offset: 3px;
 }
 
+/* Keep the app's outlined button icons in the same rounded stroke style as
+   the Movie and Show media icons. Filled playback symbols keep their own style. */
+button svg:not(.play-icon):not(.pause-icon) {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .icon-button-symbol {
   display: block;
   width: 18px;
@@ -55,3 +65,21 @@
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+/* Compact score and priority labels share one app-wide chip treatment. */
+.rating-value-chip,
+.priority-value-chip {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border: 1px solid color-mix(in srgb, var(--value-chip-color) 42%, var(--line));
+  border-radius: var(--toolbar-control-radius-compact);
+  background: color-mix(in srgb, var(--value-chip-color) 9%, var(--surface-deep));
+  box-shadow: 0 3px 8px var(--shadow-black-20);
+  color: var(--value-chip-color);
+  font: 500 14px "DM Mono", monospace;
+}
+
+.rating-value-chip { --value-chip-color: var(--rating-color, var(--rating-neutral)); }
+.priority-value-chip { --value-chip-color: var(--priority-color, var(--priority-medium)); }

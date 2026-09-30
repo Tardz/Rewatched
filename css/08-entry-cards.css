@@ -96,6 +96,12 @@
   gap: 7px;
 }
 
+.entry-score .rating-value-chip {
+  padding: 2px 5px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
 .entry-date {
   color: var(--muted);
   font: 10px "DM Mono", monospace;
@@ -103,6 +109,7 @@
 }
 
 .entry-priority {
+  --priority-color: var(--priority-low);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -113,14 +120,20 @@
 .entry-priority::before {
   content: "P" attr(data-priority);
   margin-right: 2px;
-  color: var(--priority-low);
-  font: 10px "DM Mono", monospace;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 5px;
+  border: 1px solid color-mix(in srgb, var(--priority-color) 42%, var(--line));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--priority-color) 9%, var(--surface-deep));
+  box-shadow: 0 3px 8px var(--shadow-black-20);
+  color: var(--priority-color);
+  font: 500 11px "DM Mono", monospace;
 }
 
-.entry-priority[data-priority="3"]::before { color: var(--priority-medium); }
-.entry-priority[data-priority="4"]::before,
-.entry-priority[data-priority="5"]::before { color: var(--priority-high); }
+.entry-priority[data-priority="3"] { --priority-color: var(--priority-medium); }
+.entry-priority[data-priority="4"],
+.entry-priority[data-priority="5"] { --priority-color: var(--priority-high); }
 
 .entry-priority span {
   width: 8px;

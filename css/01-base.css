@@ -59,6 +59,8 @@
   --glass-shadow: #00000048;
   --glass-edge-shadow: #00000020;
   --glass-surface-opacity: 80%;
+  /* Inner surfaces reveal the background more than the outer glass panels. */
+  --glass-inner-opacity: max(20%, calc(var(--glass-surface-opacity) - 40%));
   --surface-raised: #151920;
   --surface-deep: #111419;
   --surface-hover: #303b4b;

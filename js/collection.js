@@ -24,93 +24,41 @@ function getCollectionColumnCount() {
 
 const folderPicker = $('#library-folder-picker');
 const folderList = $('#library-folder-list');
-const folderPickerGroup = $('.folder-picker-group');
+const folderDropdown = $('#library-folder-dropdown');
+const folderButton = $('#library-folder-button');
 
-/** Collapses the folder picker to its compact control. */
-function collapseFolderPicker() {
-  if (folderPickerGroup.matches(':hover, :focus-within') || folderPickerGroup.classList.contains('is-pointer-active')) return;
-  const currentFolder = folderList.querySelector('.is-collapsed-current');
-  folderList.scrollLeft = 0;
-  if (currentFolder) folderList.prepend(currentFolder);
-  folderPicker.classList.add('is-collapsed');
-  folderPickerGroup.classList.remove('is-expanded');
-  folderPicker.style.removeProperty('width');
-  folderList.style.removeProperty('width');
-  folderList.style.removeProperty('--entry-folder-options-width');
-  folderPickerGroup.style.removeProperty('width');
+/** Opens or closes the library folder menu. */
+function setFolderMenuOpen(isOpen) {
+  folderPicker.hidden = !isOpen;
+  folderDropdown.classList.toggle('is-open', isOpen);
+  folderButton.setAttribute('aria-expanded', String(isOpen));
 }
 
-/** Expands the folder picker to show available folders. */
-function expandFolderPicker() {
-  const folderCount = folderList.children.length;
-  if (!folderCount) return;
-  if (folderPicker.classList.contains('is-collapsed')) folderList.scrollLeft = 0;
-  const pickerWidth = getFolderPickerWidth(folderCount);
-  folderPicker.style.width = `${pickerWidth}px`;
-  folderList.style.width = `${pickerWidth}px`;
-  folderList.style.setProperty('--entry-folder-options-width', `${pickerWidth}px`);
-  folderPicker.classList.remove('is-collapsed');
-  folderPickerGroup.classList.add('is-expanded');
+folderButton.addEventListener('click', () => setFolderMenuOpen(folderPicker.hidden));
 
-  folderPickerGroup.style.width = `${getExpandedFolderGroupWidth()}px`;
-}
+document.addEventListener('click', (event) => {
+  if (!folderDropdown.contains(event.target)) setFolderMenuOpen(false);
+});
 
-/** Returns the final expanded group width without reading mid-animation sizes. */
-function getExpandedFolderGroupWidth() {
-  const rootStyle = getComputedStyle(document.documentElement);
-  const readPixels = (name) => parseFloat(rootStyle.getPropertyValue(name)) || 0;
-  const compactControl = readPixels('--toolbar-control-height-compact');
-  const groupPadding = readPixels('--toolbar-group-padding');
-  const groupGap = readPixels('--space-1');
-  const dividerWidth = 3; // One-pixel divider plus one-pixel margins on each side.
-
-  return getFolderPickerWidth(folderList.children.length)
-    + compactControl // Folder icon.
-    + dividerWidth * 2
-    + compactControl // Expanded add-folder button.
-    + groupGap * 4
-    + groupPadding * 2
-    + 1 // Match the add button's inset to the divider's margin.
-    + 2; // Account for the outer border on both sides.
-}
-
-/** Calculates the expanded tray width, showing at most two folder choices at once. */
-function getFolderPickerWidth(folderCount) {
-  const rootStyle = getComputedStyle(document.documentElement);
-  const readPixels = (name) => parseFloat(rootStyle.getPropertyValue(name)) || 0;
-  const maxWidth = readPixels('--folder-picker-width-expanded');
-  const itemWidth = 84;
-  const itemGap = readPixels('--toolbar-control-gap-expanded');
-  const listPadding = 0;
-  const fitCount = Math.max(1, Math.floor((maxWidth - listPadding + itemGap) / (itemWidth + itemGap)));
-  const maxVisible = Math.min(2, fitCount);
-  const visibleCount = Math.min(folderCount, maxVisible);
-  const width = visibleCount * itemWidth + (visibleCount - 1) * itemGap + listPadding;
-  return Math.min(width, maxWidth);
-}
-
-folderPickerGroup.addEventListener('focusin', expandFolderPicker);
-folderPickerGroup.addEventListener('focusout', collapseFolderPicker);
-window.addEventListener('resize', () => {
-  if (folderPickerGroup.classList.contains('is-expanded')) expandFolderPicker();
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || folderPicker.hidden) return;
+  event.preventDefault();
+  setFolderMenuOpen(false);
+  folderButton.focus();
 });
 
 const expandableSourceControls = [
   $('#collection-source-controls .library-view-switcher'),
-  folderPickerGroup,
   $('#media-type-filters'),
 ];
 expandableSourceControls.forEach((control) => control.addEventListener('pointerenter', () => {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  if (control === folderPickerGroup && !folderList.children.length) return;
   control.classList.add('is-pointer-active');
-  if (control === folderPickerGroup) expandFolderPicker();
 }));
 expandableSourceControls.forEach((control) => {
   control.addEventListener('pointerleave', () => {
     control.classList.remove('is-pointer-active');
     if (control.contains(document.activeElement)) document.activeElement.blur();
-    if (control === folderPickerGroup) collapseFolderPicker();
   });
 });
 
@@ -139,59 +87,39 @@ function renderWithoutScrollCollapse() {
 /** Renders the selectable list of collections. */
 function renderCollectionPicker() {
   const list = $('#library-folder-list');
-  const folderPicker = $('#library-folder-picker');
-  const selectedView = activeView;
-  const preserveOrder = !folderPicker.classList.contains('is-collapsed');
-  const previousScrollLeft = preserveOrder ? list.scrollLeft : 0;
-  const previousOrder = [...list.children].map((item) => item.dataset.folderId);
-  let folders = [...customCollections];
-  const hasSelectedFolder = selectedView === 'logged'
-    && folders.some((candidate) => candidate.id === activeCollectionId);
-
-  if (preserveOrder && previousOrder.length) {
-    const positions = new Map(previousOrder.map((id, index) => [id, index]));
-    folders.sort((a, b) => (positions.get(a.id) ?? Infinity) - (positions.get(b.id) ?? Infinity));
-  } else {
-    const collapsedFolderId = hasSelectedFolder ? activeCollectionId : folders[0]?.id;
-    folders.sort((a, b) => Number(b.id === collapsedFolderId) - Number(a.id === collapsedFolderId));
-  }
-
+  const selectedFolder = activeView === 'logged'
+    ? customCollections.find((folder) => folder.id === activeCollectionId)
+    : null;
+  folderDropdown.classList.toggle('has-folder-selection', Boolean(selectedFolder));
+  folderButton.setAttribute('aria-label', selectedFolder ? `Folder: ${selectedFolder.name}` : 'Choose a folder');
+  folderButton.title = selectedFolder ? `Folder: ${selectedFolder.name}` : 'Choose a folder';
   list.replaceChildren();
 
-  folderPicker.hidden = folders.length === 0;
-  $('#library-folder-icon').hidden = folders.length === 0;
-  $('#library-folder-divider').hidden = folders.length === 0;
-  folderPickerGroup.classList.toggle('has-folder-selection', hasSelectedFolder);
-  if (!folders.length) {
-    folderPicker.classList.add('is-collapsed');
-    folderPickerGroup.classList.remove('is-expanded');
-    folderPicker.style.removeProperty('width');
-    folderList.style.removeProperty('width');
-    folderList.style.removeProperty('--entry-folder-options-width');
-    folderPickerGroup.style.removeProperty('width');
+  if (!customCollections.length) {
+    const empty = document.createElement('div');
+    empty.className = 'library-folder-empty';
+    empty.textContent = 'No folders yet';
+    list.append(empty);
     return;
   }
 
-  folders.forEach((folder, index) => {
+  customCollections.forEach((folder) => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'collection-tab entry-folder-option';
+    button.className = 'entry-folder-choice library-folder-choice';
     button.dataset.folderId = folder.id;
     button.textContent = folder.name;
-    const selected = selectedView === 'logged' && activeCollectionId === folder.id;
+    const selected = selectedFolder?.id === folder.id;
     button.classList.toggle('active', selected);
     button.setAttribute('aria-pressed', selected ? 'true' : 'false');
     button.setAttribute('aria-label', `Open ${folder.name} folder`);
     button.title = folder.name;
-    button.classList.toggle('is-collapsed-current', selected || (!hasSelectedFolder && index === 0));
-    button.addEventListener('click', () => selectCollection(folder.id));
+    button.addEventListener('click', () => {
+      setFolderMenuOpen(false);
+      selectCollection(folder.id);
+    });
     list.append(button);
   });
-
-  if (folderPickerGroup.classList.contains('is-expanded')) {
-    expandFolderPicker();
-    list.scrollLeft = previousScrollLeft;
-  }
 }
 
 /** Preserves control order during expansion, then applies the compact order. */
@@ -526,7 +454,11 @@ function createEntryCard(entry, isWatchlist, sourceView = activeView) {
     score.className = 'entry-score entry-rating-with-star';
     const scoreFill = `${Number(watch.score) * 10}%`;
     const scoreColor = ratingColorForScore(watch.score);
-    score.append(document.createTextNode(scoreFill), createRatingMeter(scoreFill, scoreColor));
+    const scoreValue = document.createElement('span');
+    scoreValue.className = 'rating-value-chip';
+    scoreValue.textContent = scoreFill;
+    scoreValue.style.setProperty('--rating-color', scoreColor);
+    score.append(scoreValue, createRatingMeter(scoreFill, scoreColor));
     score.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
     const date = document.createElement('div');
     date.className = 'entry-date';

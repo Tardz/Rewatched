@@ -34,14 +34,22 @@ function renderGoogleResults(name, query, promotions, results, resultsDiv) {
   return true;
 }
 
+/** Adds the poster keyword once so it stays visible in the search field. */
+function addPosterKeyword(query) {
+  const trimmedQuery = query.trim();
+  return /\bposter$/i.test(trimmedQuery) ? trimmedQuery : `${trimmedQuery} poster`;
+}
+
 /** Runs an image search using the query entered in the poster picker. */
 function runPosterSearch() {
   const query = $('#poster-query').value.trim();
   if (!query) return;
+  const searchQuery = addPosterKeyword(query);
+  $('#poster-query').value = searchQuery;
 
   const search = window.google?.search?.cse?.element?.getElement('poster-images');
   if (search) {
-    search.execute(query);
+    search.execute(searchQuery);
   } else {
     $('#poster-status').textContent = 'Google Image Search is still loading. Try again in a moment.';
   }
@@ -115,9 +123,9 @@ function loadGoogleSearch() {
 }
 
 $('#poster-search').addEventListener('click', () => {
-  $('#poster-query').value = $('#title').value.trim();
+  const title = $('#title').value.trim();
+  $('#poster-query').value = title ? addPosterKeyword(title) : '';
   $('#google-search-id').value = localStorage.getItem(GOOGLE_SEARCH_ID_KEY) || '';
-  $('.google-setup').open = !$('#google-search-id').value;
   $('#poster-status').textContent = '';
   posterDialog.showModal();
   if ($('#google-search-id').value) loadGoogleSearch();
@@ -135,4 +143,9 @@ $('#poster-search-form').addEventListener('submit', (event) => {
   loadGoogleSearch();
 });
 $('#close-poster-dialog').addEventListener('click', () => posterDialog.close());
+$('#poster-google-settings').addEventListener('click', () => {
+  posterDialog.close();
+  openSettings();
+  $('#google-search-id').focus();
+});
 /** Searches Google Images and renders selectable poster results. */

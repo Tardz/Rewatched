@@ -5,6 +5,9 @@ let formEntryMode = 'logged';
 
 /** Updates the create dialog's Library/Watchlist switcher appearance. */
 function updateEntryModeSwitcher() {
+  const destination = formEntryMode === 'watchlist' ? 'watchlist' : 'library';
+  $('.watch-panel-heading h3').textContent = `Log to ${destination}`;
+  $('.watch-rating-panel').setAttribute('aria-label', `Log to ${destination}`);
   document.querySelectorAll('#entry-mode-switcher .library-view-option').forEach((button) => {
     const selected = button.dataset.view === formEntryMode;
     button.classList.toggle('active', selected);
@@ -42,6 +45,13 @@ function releaseYearValue() {
 /** Keeps the Movie/Show toolbar switcher in sync with the native select. */
 function updateMediaTypeSwitcher() {
   const type = $('#type').value;
+  const isShow = type === 'Show';
+  const titleLabel = isShow ? 'Show title' : 'Movie title';
+  $('#movie-details-heading').textContent = isShow ? 'Show details' : 'Movie details';
+  $('.movie-details-panel').setAttribute('aria-label', isShow ? 'Show details' : 'Movie details');
+  $('#title').placeholder = titleLabel;
+  $('#title').setAttribute('aria-label', titleLabel);
+  $('label[for="title"] .visually-hidden').textContent = titleLabel;
   document.querySelectorAll('[data-media-type-option]').forEach((option) => {
     const selected = option.dataset.mediaTypeOption === type;
     option.classList.toggle('active', selected);
@@ -49,11 +59,16 @@ function updateMediaTypeSwitcher() {
   });
 }
 
-/** Shows a short form message in the bottom-right toast. */
+/** Shows a short form message above the create-entry dialog. */
 function showFormToast(message) {
   const toast = $('#form-toast');
   toast.textContent = message;
   toast.hidden = false;
+  const dialog = $('#watch-dialog');
+  const dialogRect = dialog.getBoundingClientRect();
+  const toastRect = toast.getBoundingClientRect();
+  toast.style.left = `${dialogRect.left}px`;
+  toast.style.top = `${Math.max(8, dialogRect.top - toastRect.height - 10)}px`;
   clearTimeout(showFormToast.timer);
   showFormToast.timer = setTimeout(() => { toast.hidden = true; }, 3000);
 }
@@ -115,27 +130,56 @@ function selectGenre(genre) {
   updateCategoryChip();
 }
 
-let initialEntryFolderIds = [];
-
-/** Populates the create dialog's folder dropdown. */
+/** Populates the create dialog's multi-select folder menu. */
 function populateEntryFolderSwitcher(selectedIds = []) {
-  const select = $('#entry-folder-switcher');
-  initialEntryFolderIds = selectedIds.filter((id) => customCollections.some((folder) => folder.id === id));
-  select.replaceChildren(new Option('No folder', ''));
+  const menu = $('#entry-folder-options');
+  const selected = new Set(selectedIds);
+  menu.replaceChildren();
+
   customCollections.forEach((folder) => {
-    select.add(new Option(folder.name, folder.id));
+    const label = document.createElement('label');
+    label.className = 'entry-folder-choice';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = folder.id;
+    checkbox.checked = selected.has(folder.id);
+
+    const name = document.createElement('span');
+    name.textContent = folder.name;
+    label.append(checkbox, name);
+    menu.append(label);
   });
-  select.value = initialEntryFolderIds[0] || '';
-  select.dataset.initialFolder = select.value;
-  select.parentElement.classList.toggle('has-folder-selection', Boolean(select.value));
-  select.title = select.selectedOptions[0]?.textContent || 'Choose folder';
+
+  if (!customCollections.length) {
+    const empty = document.createElement('span');
+    empty.className = 'entry-folder-empty';
+    empty.textContent = 'No folders yet';
+    menu.append(empty);
+  }
+
+  updateEntryFolderSelectionState();
 }
 
 /** Returns the selected folder IDs in the create dialog. */
 function selectedEntryFolderIds() {
-  const select = $('#entry-folder-switcher');
-  if (select.value === select.dataset.initialFolder) return initialEntryFolderIds;
-  return select.value ? [select.value] : [];
+  return Array.from($('#entry-folder-options').querySelectorAll('input:checked'), (input) => input.value);
+}
+
+/** Reflects the selected folders in the folder button and its tooltip. */
+function updateEntryFolderSelectionState() {
+  const picker = $('#entry-folder-picker');
+  const button = $('#entry-folder-button');
+  const selectedNames = Array.from(
+    $('#entry-folder-options').querySelectorAll('input:checked'),
+    (input) => input.parentElement.querySelector('span').textContent,
+  );
+  picker.classList.toggle('has-folder-selection', selectedNames.length > 0);
+  const title = selectedNames.length ? selectedNames.join(', ') : 'Choose folders';
+  button.title = title;
+  button.setAttribute('aria-label', selectedNames.length
+    ? `Choose folders. Selected: ${selectedNames.join(', ')}`
+    : 'Choose folders');
 }
 
 /** Refreshes the poster preview from the current form value. */
@@ -165,6 +209,69 @@ function updateScoreDisplay() {
   $('#score-value').setAttribute('aria-label', `Rating ${score} out of 10`);
 }
 
+/** Updates the watchlist priority slider's label and tier color. */
+function updatePriorityDisplay() {
+  const priority = Number($('#priority').value);
+  const label = priority <= 2 ? 'Low' : priority === 3 ? 'Medium' : 'High';
+  const colorName = priority <= 2 ? '--priority-low' : priority === 3 ? '--priority-medium' : '--priority-high';
+  const color = getComputedStyle(document.documentElement).getPropertyValue(colorName).trim();
+  const progress = `${((priority - 1) / 4) * 100}%`;
+
+  $('#priority-value').textContent = `P${priority}`;
+  $('#priority-value').style.setProperty('--priority-color', color);
+  $('#priority').setAttribute('aria-valuetext', `${priority}, ${label} priority`);
+  $('#priority').style.setProperty('--priority-color', color);
+  $('#priority-meter-fill').style.width = progress;
+  $('#priority-meter-fill').style.backgroundColor = color;
+  $('#priority-meter-fill').style.setProperty('--rating-color', color);
+}
+
+/** Lets pointer drags anywhere on a slider track set its value continuously. */
+function enableTrackDragging(trackSelector, inputSelector) {
+  const track = $(trackSelector);
+  const input = $(inputSelector);
+  let pointerId = null;
+
+  const updateFromPointer = (event) => {
+    const bounds = track.getBoundingClientRect();
+    const thumbInset = 9;
+    const usableWidth = Math.max(1, bounds.width - thumbInset * 2);
+    const progress = Math.min(1, Math.max(0, (event.clientX - bounds.left - thumbInset) / usableWidth));
+    const min = Number(input.min);
+    const max = Number(input.max);
+    const step = Number(input.step) || 1;
+    const steppedValue = min + Math.round((progress * (max - min)) / step) * step;
+    const precision = (String(step).split('.')[1] || '').length;
+
+    input.value = String(Number(Math.min(max, Math.max(min, steppedValue)).toFixed(precision)));
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+
+  track.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0 || input.disabled) return;
+    event.preventDefault();
+    pointerId = event.pointerId;
+    track.setPointerCapture(pointerId);
+    input.focus({ preventScroll: true });
+    updateFromPointer(event);
+  });
+
+  track.addEventListener('pointermove', (event) => {
+    if (event.pointerId === pointerId) updateFromPointer(event);
+  });
+
+  const stopDragging = (event) => {
+    if (event.pointerId !== pointerId) return;
+    pointerId = null;
+    if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
+  };
+  track.addEventListener('pointerup', stopDragging);
+  track.addEventListener('pointercancel', stopDragging);
+}
+
+enableTrackDragging('.rating-slider', '#score');
+enableTrackDragging('.priority-slider', '#priority');
+
 /** Validates the entered watch date and derives its stored precision. */
 function updateWatchDateFields() {
   const isWatchlist = formEntryMode === 'watchlist';
@@ -172,6 +279,8 @@ function updateWatchDateFields() {
   const monthField = $('#watch-month');
   const dayField = $('#watch-day');
   const dateModeButton = $('#date-mode');
+  const datePickerButton = $('#watch-date-picker-button');
+  const datePicker = $('#watch-date-picker');
   const detailsOnly = form.dataset.detailsOnly === 'true';
   const disabled = isWatchlist || detailsOnly;
 
@@ -183,6 +292,8 @@ function updateWatchDateFields() {
   monthField.required = false;
   dayField.required = false;
   dateModeButton.disabled = isWatchlist || detailsOnly;
+  datePickerButton.disabled = isWatchlist || detailsOnly;
+  datePicker.disabled = isWatchlist || detailsOnly;
 
   let year = yearField.value.trim();
   if (/^\d{2}$/.test(year)) {
@@ -238,6 +349,11 @@ function updateWatchDateFields() {
       precision = approximate ? 'approximate' : 'year';
     }
   }
+  const pickerMonth = /^\d{1,2}$/.test(month) && Number(month) >= 1 && Number(month) <= 12
+    ? month.padStart(2, '0') : '01';
+  const pickerDay = /^\d{1,2}$/.test(day) && Number(day) >= 1 && Number(day) <= 31
+    ? day.padStart(2, '0') : '01';
+  datePicker.value = /^\d{4}$/.test(year) ? `${year}-${pickerMonth}-${pickerDay}` : '';
   $('#date').value = date;
   $('#date-precision').value = precision;
 }
@@ -315,6 +431,7 @@ function clearWatchedDatePart(event) {
 function updateFormVisibility() {
   const isWatchlist = formEntryMode === 'watchlist';
   form.classList.toggle('is-watchlist-mode', isWatchlist);
+  $('.watch-details-components').hidden = isWatchlist;
   document.querySelectorAll('.watch-only').forEach((field) => { field.hidden = isWatchlist; });
   document.querySelectorAll('.watchlist-only').forEach((field) => { field.hidden = !isWatchlist; });
   document.querySelectorAll('.logged-entry-only').forEach((field) => { field.hidden = isWatchlist; });
@@ -419,9 +536,11 @@ function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly =
   $('#score').value = rewatch && entry ? (latest(entry)?.score ?? 7) : (watch?.score ?? 8.5);
   $('#priority').value = String(entry?.priority || 3);
   updateScoreDisplay();
+  updatePriorityDisplay();
   document.querySelectorAll('.watch-only').forEach((field) => {
     field.hidden = isWatchlist;
   });
+  $('.watch-details-components').hidden = isWatchlist;
   document.querySelectorAll('.watchlist-only').forEach((field) => {
     field.hidden = !isWatchlist;
   });
@@ -471,10 +590,35 @@ $('#entry-mode-switcher').addEventListener('click', (event) => {
   setFormEntryMode(nextMode);
 });
 keepControlOrderUntilCollapsed($('#entry-mode-switcher'), '.library-view-option');
-$('#entry-folder-switcher').addEventListener('change', (event) => {
-  event.target.parentElement.classList.toggle('has-folder-selection', Boolean(event.target.value));
-  event.target.title = event.target.selectedOptions[0]?.textContent || 'Choose folder';
+const entryFolderPicker = $('#entry-folder-picker');
+const entryFolderMenu = $('#entry-folder-options');
+const entryFolderButton = $('#entry-folder-button');
+
+entryFolderButton.addEventListener('click', () => {
+  const isOpening = entryFolderMenu.hidden;
+  entryFolderMenu.hidden = !isOpening;
+  entryFolderPicker.classList.toggle('is-open', isOpening);
+  entryFolderButton.setAttribute('aria-expanded', String(isOpening));
 });
+
+entryFolderMenu.addEventListener('change', updateEntryFolderSelectionState);
+
+document.addEventListener('click', (event) => {
+  if (entryFolderPicker.contains(event.target)) return;
+  entryFolderMenu.hidden = true;
+  entryFolderPicker.classList.remove('is-open');
+  entryFolderButton.setAttribute('aria-expanded', 'false');
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || entryFolderMenu.hidden) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  entryFolderMenu.hidden = true;
+  entryFolderPicker.classList.remove('is-open');
+  entryFolderButton.setAttribute('aria-expanded', 'false');
+  entryFolderButton.focus();
+}, true);
 document.querySelectorAll('.form-entry-switcher, .entry-media-switcher').forEach((control) => {
   control.addEventListener('pointerleave', () => {
     if (control.contains(document.activeElement)) document.activeElement.blur();
@@ -488,6 +632,7 @@ dialog.addEventListener('click', (event) => {
 });
 $('#cancel-dialog').addEventListener('click', () => dialog.close());
 $('#score').addEventListener('input', updateScoreDisplay);
+$('#priority').addEventListener('input', updatePriorityDisplay);
 $('#poster').addEventListener('input', updatePosterPreview);
 $('#year').addEventListener('input', () => $('#year').setCustomValidity(''));
 $('#year').addEventListener('keydown', (event) => {
@@ -635,7 +780,7 @@ $('#category').addEventListener('change', updateCategoryChip);
 $('#category').addEventListener('keydown', (event) => {
   if (event.key !== 'Tab' || event.shiftKey || $('#date-mode').disabled) return;
   event.preventDefault();
-  $('#date-mode').focus();
+  $('#watch-date-picker-button').focus();
 });
 $('#watch-day').addEventListener('keydown', (event) => {
   if (event.key !== 'Tab' || event.shiftKey) return;
@@ -688,7 +833,35 @@ $('#watch-day').addEventListener('input', updateWatchDateFields);
 });
 $('#date-mode').addEventListener('click', () => {
   const button = $('#date-mode');
-  button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true'));
+  const approximate = button.getAttribute('aria-pressed') !== 'true';
+  button.setAttribute('aria-pressed', String(approximate));
+  if (approximate) {
+    $('#watch-year-input').value = '';
+    $('#watch-month').value = '';
+    $('#watch-day').value = '';
+  }
+  updateWatchDateFields();
+});
+
+$('#watch-date-picker-button').addEventListener('click', () => {
+  const picker = $('#watch-date-picker');
+  if ($('#date-mode').getAttribute('aria-pressed') === 'true') {
+    $('#date-mode').setAttribute('aria-pressed', 'false');
+    updateWatchDateFields();
+  }
+  try {
+    picker.showPicker();
+  } catch {
+    picker.click();
+  }
+});
+
+$('#watch-date-picker').addEventListener('change', (event) => {
+  const [year, month, day] = event.target.value.split('-');
+  if (!year || !month || !day) return;
+  $('#watch-year-input').value = year;
+  $('#watch-month').value = month;
+  $('#watch-day').value = day;
   updateWatchDateFields();
 });
 

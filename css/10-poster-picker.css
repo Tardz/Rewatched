@@ -2,42 +2,91 @@
    The poster search/upload dialog and results grid. */
 
 #poster-dialog {
-  width: min(850px, calc(100% - 28px));
+  width: min(520px, calc(100% - 28px));
   max-height: 85vh;
   overflow: auto;
 }
 
 .poster-dialog-content {
-  padding: 28px;
+  padding: 20px;
+}
+
+.poster-dialog-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.poster-dialog-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--toolbar-control-radius);
+  background: var(--surface-dashboard-inner);
+  box-shadow: 0 5px 14px var(--shadow-black-20);
+  font-size: 20px;
+  letter-spacing: -.04em;
+}
+
+.google-word {
+  display: inline-flex;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+.google-word span:nth-child(1),
+.google-word span:nth-child(4) { color: #4285f4; }
+.google-word span:nth-child(2),
+.google-word span:nth-child(6) { color: #ea4335; }
+.google-word span:nth-child(3) { color: #fbbc05; }
+.google-word span:nth-child(5) { color: #34a853; }
+
+.poster-dialog-close {
+  flex: none;
+  margin-left: auto;
+}
+
+.poster-google-settings {
+  flex: none;
+}
+
+.poster-google-settings svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.poster-google-settings:hover {
+  border-color: var(--border-accent);
+  background: var(--surface-hover);
+  color: var(--blue);
+}
+
+.poster-dialog-close:hover {
+  border-color: var(--status-danger-border);
+  background: var(--status-danger-surface);
+  color: var(--status-danger);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--status-danger) 26%, transparent),
+    0 5px 14px var(--shadow-black-38);
 }
 
 .poster-search-form {
-  display: flex;
-  align-items: end;
-  gap: 10px;
+  display: block;
 }
 
-.poster-search-form label {
-  flex: 1;
-}
-
-.google-setup {
-  margin: 18px 0;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.google-setup summary {
-  cursor: pointer;
-}
-
-.google-setup label {
-  margin-top: 12px;
-}
-
-.google-setup a {
-  color: var(--blue);
-  text-decoration: underline;
+.poster-search-form input {
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .poster-status {
@@ -88,14 +137,20 @@
   --poster-content-width: min(100%, 224px);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  grid-template-areas: "url-tools" "preview" "options";
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  grid-template-areas: "heading" "preview" "url-tools" "options";
   gap: 12px;
 }
 
 .poster-panel:not(:has(.poster-upload-status:not(:empty))) {
-  grid-template-rows: auto minmax(0, 1fr);
-  grid-template-areas: "url-tools" "preview";
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas: "heading" "preview" "url-tools";
+}
+
+.form-panel.poster-panel > h3 {
+  grid-area: heading;
+  justify-self: start;
+  margin: 0;
 }
 
 .poster-panel:not(:has(.poster-upload-status:not(:empty))) .poster-options {
@@ -121,7 +176,7 @@
   text-align: center;
   color: var(--muted);
   font-size: 11px;
-  padding: 16px;
+  padding: 12px;
 }
 
 .poster-preview img {
@@ -131,8 +186,8 @@
   display: block;
   width: auto;
   height: auto;
-  max-width: calc(100% - 40px);
-  max-height: calc(100% - 40px);
+  max-width: calc(100% - 24px);
+  max-height: calc(100% - 24px);
   object-fit: contain;
   border-radius: 10px;
   transform: translate(-50%, -50%);
@@ -162,23 +217,65 @@
 .poster-buttons {
   position: absolute;
   z-index: 1;
-  top: 8px;
+  top: auto;
+  bottom: 8px;
   right: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
-.poster-buttons .button {
+@media (hover: hover) and (pointer: fine) {
+  .poster-preview .poster-buttons {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(5px);
+    pointer-events: none;
+    transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+  }
+
+  .poster-preview:is(:hover, :focus-within) .poster-buttons {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
+
+.poster-buttons .icon-button {
   display: grid;
-  flex: 0 0 32px;
+  flex: 0 0 36px;
   place-items: center;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  padding: 6px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  padding: 7px;
+  border-radius: var(--toolbar-control-radius);
+  background: var(--panel);
+  color: var(--text-on-surface);
+  box-shadow: inset 0 1px 0 var(--shadow-inset), 0 6px 16px var(--shadow-black-25);
   line-height: 1;
+  transition: color 150ms ease, background-color 150ms ease,
+    border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.poster-buttons #poster-search:hover,
+.poster-buttons #poster-search:focus-visible {
+  border-color: var(--border-accent);
+  background: var(--surface-accent);
+  color: var(--blue);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--blue) 26%, transparent),
+    0 5px 14px var(--shadow-black-38);
+}
+
+.poster-buttons #poster-upload-button:hover,
+.poster-buttons #poster-upload-button:focus-visible {
+  border-color: var(--status-success-border);
+  background: var(--status-success-surface);
+  color: var(--status-success);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--status-success) 26%, transparent),
+    0 5px 14px var(--shadow-black-38);
 }
 
 #poster-search svg {

@@ -495,14 +495,6 @@
   top: calc(50% + 14px);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .statistics-timeline .statistics-watch-node {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
-}
-
 @media (max-width: 600px) {
   .statistics-timeline {
     --statistics-timeline-poster-height: 64px;
@@ -572,6 +564,14 @@
 .stat-average .stat-rating-value {
   margin-bottom: 10px !important;
   font-family: "DM Mono", monospace;
+}
+
+#statistics-grid .stat-average .stat-rating-value.rating-value-chip {
+  display: inline-flex;
+  width: fit-content;
+  padding: 1px 4px;
+  border-radius: 6px;
+  font-size: 10px;
 }
 
 .stat-rating-track {

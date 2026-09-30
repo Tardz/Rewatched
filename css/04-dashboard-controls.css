@@ -76,11 +76,12 @@
 :root[data-dashboard-tactile="on"] .dashboard-identity .brand,
 :root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link,
 :root[data-dashboard-tactile="on"] .dashboard-identity .app-version,
+:root[data-dashboard-tactile="on"] .dashboard-identity .detail-back-icon,
 :root[data-dashboard-tactile="on"] .dashboard-controls .settings-button,
 :root[data-dashboard-tactile="on"] .dashboard-controls .activity-button,
 :root[data-dashboard-tactile="on"] .dashboard-controls .storage-file-control {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -96,6 +97,7 @@
 
 :root[data-dashboard-tactile="on"] .dashboard-identity .brand:hover,
 :root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:hover,
+:root[data-dashboard-tactile="on"] .dashboard-identity .detail-back-icon:hover,
 :root[data-dashboard-tactile="on"] .dashboard-controls .settings-button:hover,
 :root[data-dashboard-tactile="on"] .dashboard-controls .activity-button:hover,
 :root[data-dashboard-tactile="on"] .dashboard-controls .storage-file-control:hover {
@@ -112,6 +114,7 @@
 
 :root[data-dashboard-tactile="on"] .dashboard-identity .brand:active,
 :root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:active,
+:root[data-dashboard-tactile="on"] .dashboard-identity .detail-back-icon:active,
 :root[data-dashboard-tactile="on"] .dashboard-controls .settings-button:active,
 :root[data-dashboard-tactile="on"] .dashboard-controls .activity-button:active,
 :root[data-dashboard-tactile="on"] .dashboard-controls .storage-file-control:active {
@@ -418,7 +421,7 @@ body:not(.is-detail-view) .dashboard-layout.layout-normal .dashboard-rail > .das
 
 :root[data-dashboard-tactile="on"] .dashboard-section-button {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
 }
@@ -584,7 +587,7 @@ body.is-detail-view .dashboard-controls .activity-button { display: none; }
 
 :root[data-dashboard-tactile="on"] .dashboard-controls .storage-file-control {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 0 0 1px #ffffff0a,

@@ -28,6 +28,7 @@
 .statsbar > div {
   align-items: center;
   text-align: center;
+  gap: 5px;
 }
 
 :root[data-dashboard-tactile="on"] .statsbar {
@@ -44,7 +45,7 @@
 
 :root[data-dashboard-tactile="on"] .statsbar > div {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-stats-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -61,7 +62,7 @@
   font: 10px "DM Mono", monospace;
   text-transform: uppercase;
   letter-spacing: .06em;
-  margin-bottom: 5px;
+  margin-bottom: 0;
 }
 
 .statsbar strong {
@@ -72,6 +73,12 @@
 
 .statsbar #stat-average {
   color: inherit;
+}
+
+.statsbar #stat-average.rating-value-chip {
+  padding: 3px 7px;
+  border-radius: var(--toolbar-control-radius-compact);
+  font-size: 17px;
 }
 
 .statsbar {

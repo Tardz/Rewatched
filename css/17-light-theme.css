@@ -145,11 +145,12 @@
 :root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .brand,
 :root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .github-repo-link,
 :root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .app-version,
+:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .detail-back-icon,
 :root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .settings-button,
 :root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-check-button,
 :root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-indicator {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -370,8 +371,16 @@
   color: #425064;
 }
 
-:root[data-theme="light"] #watch-form .form-header-actions .detail-window-button {
-  background: color-mix(in srgb, var(--surface-dashboard-inner) 78%, transparent);
+:root[data-theme="light"] #watch-dialog .watch-dialog-actions #save-entry {
+  border-color: var(--status-success-border);
+  background: var(--status-success-surface);
+  color: var(--status-success);
+}
+
+:root[data-theme="light"] #watch-dialog .watch-dialog-actions #cancel-dialog {
+  border-color: var(--status-danger-border);
+  background: var(--status-danger-surface);
+  color: var(--status-danger);
 }
 
 :root[data-theme="light"] .entry-tag {
@@ -448,7 +457,7 @@
 
 :root[data-theme="light"][data-dashboard-tactile="on"] .statsbar > div {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-stats-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -524,7 +533,7 @@
 :root[data-dashboard-tactile="on"] .library-search:not(:hover):not(:focus-within):not(.has-query),
 :root[data-dashboard-tactile="on"] .entry {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -610,7 +619,7 @@
 /* Folder tray internals stay glassy even when the selected folder has its own color. */
 :root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -676,7 +685,7 @@
 :root[data-dashboard-tactile="on"] .detail-page .timeline-notes-panel h3,
 :root[data-dashboard-tactile="on"] #watch-form .form-panel h3 {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background-color: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -694,9 +703,9 @@
 :root[data-dashboard-tactile="on"] .detail-page .timeline-notes-content,
 :root[data-dashboard-tactile="on"] .detail-page .timeline-entry-card {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background-color: color-mix(in srgb, var(--surface-dashboard-inner) calc(var(--glass-surface-opacity) - 6%), transparent);
-  -webkit-backdrop-filter: blur(9px) saturate(125%);
-  backdrop-filter: blur(9px) saturate(125%);
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     inset 0 0 0 1px #ffffff0a,
@@ -727,7 +736,7 @@
 }
 
 :root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add {
-  background-color: color-mix(in srgb, var(--accent-orange) 12%, color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent));
+  background-color: color-mix(in srgb, var(--accent-orange) 12%, color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent));
 }
 
 /* Only interactive detail elements get the accent glow on hover. */
@@ -753,7 +762,7 @@
 }
 
 :root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add:hover {
-  background-color: color-mix(in srgb, var(--accent-orange) 22%, color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent));
+  background-color: color-mix(in srgb, var(--accent-orange) 22%, color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent));
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 0 12px color-mix(in srgb, var(--accent-orange) 22%, transparent),
@@ -1109,7 +1118,7 @@
 }
 
 :root[data-dashboard-tactile="on"] .library-section .collection-pagination button:not(:hover) {
-  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
 }
 
 :root .library-section .collection-source-controls .library-view-option,
@@ -1166,7 +1175,7 @@
 
 :root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-section-button {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
 }
 
 :root[data-theme="light"] .dashboard-section-button.section-library:hover,
@@ -1237,7 +1246,7 @@
 
 :root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-file-control {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-dashboard-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   box-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 0 0 1px #ffffff0a,
     0 5px 16px var(--glass-shadow), 0 1px 3px var(--glass-edge-shadow);
 }
@@ -1294,7 +1303,7 @@
     0 4px 12px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-dialog {
+:root[data-dashboard-tactile="on"] #watch-form {
   border-color: color-mix(in srgb, var(--line) 62%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) 82%, transparent);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
@@ -1311,6 +1320,8 @@
 :root[data-dashboard-tactile="on"] #watch-form .movie-credit-genre-row,
 :root[data-dashboard-tactile="on"] #watch-form .watch-details-components,
 :root[data-dashboard-tactile="on"] #watch-form .watch-rating-fields,
+:root[data-dashboard-tactile="on"] #watch-form .priority-field,
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-menu,
 :root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher.is-pointer-active {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-inner) 78%, transparent);
@@ -1323,7 +1334,7 @@
     0 2px 5px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .form-header-actions .detail-window-button,
+:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions .detail-window-button,
 :root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown,
 :root[data-dashboard-tactile="on"] #watch-form .poster-buttons .button,
 :root[data-dashboard-tactile="on"] #watch-form .metadata-lookup-button,
@@ -1338,7 +1349,27 @@
     0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .form-header-actions #save-entry:hover {
+:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions #save-entry:not(:hover) {
+  border-color: var(--status-success-border);
+  background: var(--status-success-surface);
+  color: var(--status-success);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 10px color-mix(in srgb, var(--status-success) 18%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions #cancel-dialog:not(:hover) {
+  border-color: var(--status-danger-border);
+  background: var(--status-danger-surface);
+  color: var(--status-danger);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 10px color-mix(in srgb, var(--status-danger) 18%, transparent),
+    0 6px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions #save-entry:hover {
   border-color: var(--status-success-border);
   background: var(--status-success-surface);
   color: var(--status-success);
@@ -1348,11 +1379,7 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .form-header-actions #save-entry:hover svg {
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-success) 72%, transparent));
-}
-
-:root[data-dashboard-tactile="on"] #watch-form .form-header-actions #cancel-dialog:hover {
+:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions #cancel-dialog:hover {
   border-color: var(--status-danger-border);
   background: var(--status-danger-surface);
   color: var(--status-danger);
@@ -1375,7 +1402,7 @@
   color: var(--status-warning);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown:is(:hover, :has(select:focus-visible)) {
+:root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown:is(:hover, .is-open, :has(.entry-folder-trigger:focus-visible)) {
   border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
   background: color-mix(in srgb, var(--status-warning) 18%, var(--surface-dashboard-inner));
   color: var(--status-warning);
@@ -1529,7 +1556,7 @@
 :root[data-theme="light"][data-dashboard-tactile="on"] .statistics-panel h2,
 :root[data-theme="light"][data-dashboard-tactile="on"] #statistics-grid article {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
-  background: color-mix(in srgb, var(--surface-stats-inner) 76%, transparent);
+  background: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
   backdrop-filter: blur(9px) saturate(125%);
   box-shadow:
@@ -1556,20 +1583,21 @@
 :root[data-dashboard-tactile="on"] .dashboard-sections,
 :root[data-dashboard-tactile="on"] .library-section {
   background-color: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-surface-opacity), transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(125%);
-  backdrop-filter: blur(16px) saturate(125%);
+  -webkit-backdrop-filter: blur(12px) saturate(118%);
+  backdrop-filter: blur(12px) saturate(118%);
 }
 
 :root[data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar {
   background-color: color-mix(in srgb, var(--surface-stats-outer) var(--glass-surface-opacity), transparent);
-  -webkit-backdrop-filter: blur(16px) saturate(125%);
-  backdrop-filter: blur(16px) saturate(125%);
+  -webkit-backdrop-filter: blur(12px) saturate(118%);
+  backdrop-filter: blur(12px) saturate(118%);
 }
 
 :root[data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar > div {
-  background-color: color-mix(in srgb, var(--surface-stats-inner) calc(var(--glass-surface-opacity) - 6%), transparent);
-  -webkit-backdrop-filter: blur(12px) saturate(125%);
-  backdrop-filter: blur(12px) saturate(125%);
+  background-color: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 58%, transparent);
 }
 
 :root[data-dashboard-tactile="on"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner {
@@ -1703,4 +1731,162 @@
   box-shadow: inset 0 1px 0 var(--glass-highlight),
     0 0 12px color-mix(in srgb, var(--status-warning) 24%, transparent),
     0 5px 16px var(--glass-shadow);
+}
+
+/* Library folder picker reuses the Create Entry folder dropdown surfaces. */
+:root[data-dashboard-tactile="on"] .library-folder-dropdown {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-inner) 78%, transparent);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
+  backdrop-filter: blur(8px) saturate(125%);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 5px 14px var(--glass-shadow), 0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .library-folder-dropdown.has-folder-selection {
+  border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--status-warning) 18%, transparent);
+  color: var(--status-warning);
+}
+
+:root[data-dashboard-tactile="on"] .library-folder-dropdown:is(:hover, .is-open, :has(.entry-folder-trigger:focus-visible)) {
+  border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--status-warning) 18%, var(--surface-dashboard-inner));
+  color: var(--status-warning);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 14px color-mix(in srgb, var(--status-warning) 28%, transparent),
+    0 5px 14px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .library-folder-menu {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 12px 28px var(--glass-shadow), 0 3px 8px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .library-folder-choice {
+  border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
+  backdrop-filter: blur(8px) saturate(125%);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 5px 14px var(--glass-shadow), 0 1px 3px var(--glass-edge-shadow);
+}
+
+:root[data-dashboard-tactile="on"] .library-folder-choice:hover,
+:root[data-dashboard-tactile="on"] .library-folder-choice.active {
+  border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--status-warning) 18%, transparent);
+  color: var(--status-warning);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 12px color-mix(in srgb, var(--status-warning) 24%, transparent),
+    0 5px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .poster-buttons #poster-search:hover,
+:root[data-dashboard-tactile="on"] #watch-form .poster-buttons #poster-search:focus-visible {
+  border-color: color-mix(in srgb, var(--blue) 72%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--blue) 18%, transparent);
+  color: var(--blue);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--blue) 26%, transparent),
+    0 5px 16px var(--glass-shadow);
+}
+
+:root[data-dashboard-tactile="on"] #watch-form .poster-buttons #poster-upload-button:hover,
+:root[data-dashboard-tactile="on"] #watch-form .poster-buttons #poster-upload-button:focus-visible {
+  border-color: color-mix(in srgb, var(--status-success) 72%, var(--glass-highlight));
+  background: color-mix(in srgb, var(--status-success) 18%, transparent);
+  color: var(--status-success);
+  box-shadow: inset 0 1px 0 var(--glass-highlight),
+    0 0 13px color-mix(in srgb, var(--status-success) 26%, transparent),
+    0 5px 16px var(--glass-shadow);
+}
+
+/* Keep inset controls readable while letting the parent panels carry the glass blur. */
+:root[data-theme][data-dashboard-tactile="on"] :is(
+  .dashboard-identity .brand,
+  .dashboard-identity .github-repo-link,
+  .dashboard-identity .app-version,
+  .dashboard-identity .detail-back-icon,
+  .dashboard-controls .settings-button,
+  .dashboard-controls .activity-button,
+  .dashboard-controls .storage-file-control,
+  .dashboard-section-button:not(.is-active),
+  .library-section .library-view-option,
+  .library-section .media-type-filter,
+  .library-section .collection-tab:not(.active),
+  .library-section .collection-add,
+  .library-section .collection-filter-sort select,
+  .library-section .filter-sort-reset,
+  .library-section .library-search,
+  .library-section .library-search-clear,
+  .library-section .collection-pagination,
+  .library-section .entry,
+  .library-section .library-folder-dropdown:not(.has-folder-selection),
+  .library-section .library-folder-choice:not(.active),
+  .detail-page .detail-history h2,
+  .detail-page .timeline-notes-panel h3,
+  .detail-page .detail-info-content,
+  .detail-page .detail-info-tabs,
+  .detail-page .detail-runtime,
+  .detail-page .detail-actor-tag,
+  .detail-page .detail-timeline-content,
+  .detail-page .timeline-notes-content,
+  .detail-page .timeline-entry-card
+):not(:hover):not(:focus-within):not(:focus-visible):not(.active):not(.is-active):not(.has-query) {
+  border-color: color-mix(in srgb, var(--line) 52%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 86%, transparent),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 4px 12px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+:root[data-theme][data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar > div {
+  border-color: color-mix(in srgb, var(--line) 52%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 86%, transparent),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 4px 12px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+/* Use the same outer/inner glass layers for the library and its toolbar groups. */
+:root[data-theme][data-dashboard-tactile="on"] body:not(.is-detail-view) .library-section {
+  border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-surface-opacity), transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(118%);
+  backdrop-filter: blur(12px) saturate(118%);
+}
+
+:root[data-theme][data-dashboard-tactile="on"] body:not(.is-detail-view) .library-section :is(
+  .collection-filter-sort,
+  .collection-pagination,
+  .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])),
+  .library-view-switcher:hover,
+  .library-view-switcher:focus-within,
+  .media-type-filter-group:hover,
+  .media-type-filter-group:focus-within
+) {
+  border-color: color-mix(in srgb, var(--line) 52%, var(--glass-highlight));
+  background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
+  -webkit-backdrop-filter: blur(8px) saturate(125%);
+  backdrop-filter: blur(8px) saturate(125%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 86%, transparent),
+    inset 0 -1px 0 var(--glass-edge-shadow),
+    0 4px 12px var(--glass-shadow),
+    0 1px 3px var(--glass-edge-shadow);
 }

@@ -54,6 +54,7 @@
 }
 
 .detail-page:not(.is-fullscreen) .detail-shell {
+  translate: 8px -8px;
   animation: detail-popup-enter 160ms cubic-bezier(.2, .75, .25, 1) both;
 }
 
@@ -348,7 +349,6 @@
 .detail-page.is-watchlist .detail-imdb:focus-visible {
   filter: blur(0);
 }
-.detail-imdb small { color: var(--muted); font: 10px "DM Mono", monospace; }
 .detail-imdb-fetched {
   position: absolute;
   z-index: 5;
@@ -373,7 +373,6 @@
 }
 .detail-imdb.has-error { border-color: #a75a6066; }
 .detail-imdb.has-error span { color: var(--status-danger); }
-.detail-imdb.has-error small { color: #d7a3a6; }
 
 #detail-meta {
   color: var(--muted);
@@ -442,10 +441,20 @@
   order: 2;
 }
 
+#detail-rating-value.rating-value-chip,
+.detail-timeline .rating-value-chip {
+  padding: 2px 5px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--rating-color, var(--muted));
+}
+
 .detail-latest-date { color: var(--muted); order: 3; }
 
 .detail-rating-with-star.rating-improved { color: #72c98b !important; }
 .detail-rating-with-star.rating-declined { color: #e56b68 !important; }
+.detail-rating-with-star.rating-improved .rating-value-chip { --rating-color: #72c98b !important; }
+.detail-rating-with-star.rating-declined .rating-value-chip { --rating-color: #e56b68 !important; }
 .detail-rating-with-star.rating-improved::before,
 .detail-rating-with-star.rating-declined::before {
   content: attr(data-change);

@@ -30,11 +30,34 @@ function renderBanner() {
   const scoreColor = activeView === 'watchlist'
     ? priority <= 2 ? '#7edb9a' : priority === 3 ? '#8fc9ff' : '#ff7970'
     : ratingColorForScore(watch.score);
-  bannerScore.textContent = `${Number(watch.score) * 10}%`;
+  bannerScore.replaceChildren();
   bannerScore.classList.toggle('banner-priority-rating', activeView === 'watchlist');
   $('#banner-score').dataset.priority = priority;
-  if (activeView !== 'watchlist') bannerScore.append(createRatingMeter(scoreFill, scoreColor));
-  bannerScore.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
+  if (activeView === 'watchlist') {
+    bannerScore.style.setProperty('--priority-color', scoreColor);
+    const priorityValue = document.createElement('span');
+    priorityValue.className = 'priority-value-chip';
+    priorityValue.textContent = `P${priority}`;
+    priorityValue.style.setProperty('--priority-color', scoreColor);
+    const priorityDots = document.createElement('span');
+    priorityDots.className = 'banner-priority-dots';
+    priorityDots.setAttribute('aria-hidden', 'true');
+    for (let dot = 1; dot <= 5; dot++) {
+      const marker = document.createElement('span');
+      marker.classList.toggle('is-filled', dot <= priority);
+      priorityDots.append(marker);
+    }
+    bannerScore.append(priorityValue, priorityDots);
+    bannerScore.setAttribute('aria-label', `Priority ${priority} out of 5`);
+  } else {
+    bannerScore.style.removeProperty('--priority-color');
+    const ratingValue = document.createElement('span');
+    ratingValue.className = 'rating-value-chip';
+    ratingValue.textContent = `${Number(watch.score) * 10}%`;
+    ratingValue.style.setProperty('--rating-color', scoreColor);
+    bannerScore.append(ratingValue, createRatingMeter(scoreFill, scoreColor));
+    bannerScore.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
+  }
   $('#banner-year').textContent = '';
   $('#banner-year').hidden = true;
   $('#banner-date').textContent = activeView === 'watchlist' ? '' : formatDate(watch.date);

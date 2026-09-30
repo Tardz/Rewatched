@@ -1,12 +1,10 @@
 /** Detail module. */
 // Entry preview, full-page view, and watch timeline actions.
 
-/** Displays an OMDb rating or a status message in the rating badge. */
-function showImdbRating(rating, message = '/ 10', isError = false) {
+/** Displays an OMDb rating in the IMDb badge. */
+function showImdbRating(rating) {
   $('#detail-imdb-score').textContent = rating;
-  $('#detail-imdb-message').textContent = message;
-  $('#detail-imdb').classList.toggle('has-error', isError);
-  $('#detail-imdb').setAttribute('aria-label', `IMDb rating ${rating} ${message}`);
+  $('#detail-imdb').setAttribute('aria-label', `IMDb rating ${rating}`);
   $('#detail-imdb').hidden = false;
 }
 
@@ -30,7 +28,7 @@ function renderImdbRating(entry) {
   const metadata = entry.metadata;
   if (!metadata?.imdbRating) return;
   const fetched = metadata.fetchedAt ? new Date(metadata.fetchedAt).toLocaleDateString() : '';
-  showImdbRating(metadata.imdbRating, '/ 10');
+  showImdbRating(metadata.imdbRating);
   $('#detail-imdb-fetched').textContent = fetched ? `Fetched ${fetched}` : '';
 }
 
@@ -140,7 +138,11 @@ function createTimelineItem(entry, watch, index) {
   score.className = 'detail-rating-with-star';
   const scoreFill = `${Number(watch.score) * 10}%`;
   const scoreColor = ratingColorForScore(watch.score);
-  score.append(document.createTextNode(scoreFill), createRatingMeter(scoreFill, scoreColor, 'rating-meter timeline-rating-meter'));
+  const scoreValue = document.createElement('span');
+  scoreValue.className = 'rating-value-chip';
+  scoreValue.textContent = scoreFill;
+  scoreValue.style.setProperty('--rating-color', scoreColor);
+  score.append(scoreValue, createRatingMeter(scoreFill, scoreColor, 'rating-meter timeline-rating-meter'));
   score.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
   const olderWatch = entry.watches[index + 1];
   if (olderWatch) {
@@ -460,7 +462,10 @@ function renderDetail() {
   $('#detail-rating-value').textContent = '';
   $('#detail-latest-date').textContent = '';
   if (latestWatch) {
-    $('#detail-rating-value').textContent = `${Number(latestWatch.score) * 10}%`;
+    const ratingValue = $('#detail-rating-value');
+    ratingValue.textContent = `${Number(latestWatch.score) * 10}%`;
+    ratingValue.classList.add('rating-value-chip');
+    ratingValue.style.setProperty('--rating-color', ratingColorForScore(latestWatch.score));
     $('#detail-latest-date').textContent = `Watched ${formatDate(latestWatch.date)}`;
   }
   detailMeta.hidden = !latestWatch;

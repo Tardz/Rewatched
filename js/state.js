@@ -97,9 +97,16 @@ function getOmdbCallsToday() {
 
 /** Refreshes the OMDb usage count shown in Settings. */
 function updateOmdbCallCount() {
+  const callsToday = getOmdbCallsToday();
   const count = $('#omdb-calls-today');
-  if (count) count.textContent = String(getOmdbCallsToday());
+  if (count) count.textContent = String(callsToday);
+  const lookupButton = $('#lookup-title-details');
+  if (lookupButton) {
+    lookupButton.title = `Look up movie or show details with OMDb.\nAPI calls made today: ${callsToday}`;
+  }
 }
+
+updateOmdbCallCount();
 
 /** Records an OMDb request for today and updates the Settings display. */
 function recordOmdbApiCall() {
