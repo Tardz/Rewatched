@@ -61,6 +61,7 @@ function updateStatisticsBackgroundFromTimeline(timeline) {
     if (source !== statisticsRequestedPaletteSource
       || root.dataset.dashboardSection !== 'statistics') return;
     if (!palette) {
+      updateGlassOpacityForPagePalette(null);
       // Avoid leaving the previous poster's colors in place if this image cannot be sampled.
       root.dataset.pagePaletteFallback = 'image';
       root.style.removeProperty('--app-poster-color-one');
@@ -72,6 +73,7 @@ function updateStatisticsBackgroundFromTimeline(timeline) {
     }
 
     delete root.dataset.pagePaletteFallback;
+    updateGlassOpacityForPagePalette(palette);
     root.style.setProperty('--app-poster-color-one', `rgb(${palette.pageOne.join(', ')})`);
     root.style.setProperty('--app-poster-color-two', `rgb(${palette.pageTwo.join(', ')})`);
     banner.style.setProperty('--poster-color-one', `rgb(${palette.bannerOne.join(', ')})`);

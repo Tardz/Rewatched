@@ -2,6 +2,25 @@
 // The rotating spotlight banner.
 
 const posterPaletteCache = new Map();
+let currentPagePalette = null;
+
+/** Tones down very bright poster gradients and preserves panel contrast. */
+function updateGlassOpacityForPagePalette(palette = currentPagePalette) {
+  currentPagePalette = palette;
+  const averageColor = palette?.pageOne.map((value, index) =>
+    (value + palette.pageTwo[index]) / 2);
+  const brightness = averageColor
+    ? averageColor[0] * 0.2126 + averageColor[1] * 0.7152 + averageColor[2] * 0.0722
+    : 0;
+  const requestedStrength = posterBackgroundEnabled ? posterBackgroundStrength : 0;
+  const brightColorDamping = averageColor
+    ? Math.min(0.35, Math.max(0, (brightness - 145) / 200))
+    : 0;
+  const strength = Math.round(requestedStrength * (1 - brightColorDamping));
+  document.documentElement.style.setProperty('--poster-background-strength', `${strength}%`);
+  const boost = Math.min(12, Math.max(0, Math.round((brightness - 130) * strength / 350)));
+  document.documentElement.style.setProperty('--glass-brightness-boost', `${boost}%`);
+}
 
 /** Renders the active featured entry and its banner details. */
 function renderBanner() {
@@ -17,9 +36,16 @@ function renderBanner() {
     ? { score: Number(entry.priority || 3) * 2, date: '' }
     : latest(entry);
 
-  $('#banner-label').textContent = activeView === 'watchlist'
-    ? `${entry.type.toUpperCase()} · WATCHLIST${entry.year ? ` · ${entry.year}` : ''}`
-    : `${entry.type.toUpperCase()} · RECENTLY RATED${entry.year ? ` · ${entry.year}` : ''}`;
+  const bannerLabel = $('#banner-label');
+  const mediaChip = document.createElement('span');
+  mediaChip.className = `banner-media-chip is-${entry.type.toLowerCase()}`;
+  mediaChip.textContent = entry.type.toUpperCase();
+  const labelContext = document.createElement('span');
+  labelContext.className = 'banner-label-context';
+  labelContext.textContent = activeView === 'watchlist'
+    ? `WATCHLIST${entry.year ? ` · ${entry.year}` : ''}`
+    : `RECENTLY RATED${entry.year ? ` · ${entry.year}` : ''}`;
+  bannerLabel.replaceChildren(mediaChip, labelContext);
   $('#banner-title').textContent = entry.title;
   const director = $('#banner-director');
   director.textContent = entry.director ? `by ${entry.director}` : '';
@@ -102,6 +128,7 @@ function resetPagePalette() {
   root.style.removeProperty('--app-poster-color-one');
   root.style.removeProperty('--app-poster-color-two');
   root.style.removeProperty('--app-poster-image');
+  updateGlassOpacityForPagePalette(null);
 }
 
 /** Returns cached left/right poster colors for the banner and app background. */
@@ -240,6 +267,7 @@ function updateBannerPalette(source, { updatePage = true } = {}) {
       banner.style.removeProperty('--poster-color-one');
       banner.style.removeProperty('--poster-color-two');
       if (updatePage && root.dataset.pagePaletteSource === source) {
+        updateGlassOpacityForPagePalette(null);
         root.dataset.pagePaletteFallback = 'image';
         root.style.removeProperty('--app-poster-color-one');
         root.style.removeProperty('--app-poster-color-two');
@@ -251,8 +279,8 @@ function updateBannerPalette(source, { updatePage = true } = {}) {
     banner.style.setProperty('--poster-color-one', colorString(palette.bannerOne));
     banner.style.setProperty('--poster-color-two', colorString(palette.bannerTwo));
     if (updatePage && root.dataset.pagePaletteSource === source) {
+      updateGlassOpacityForPagePalette(palette);
       delete root.dataset.pagePaletteFallback;
-      root.style.removeProperty('--app-poster-image');
       root.style.setProperty('--app-poster-color-one', colorString(palette.pageOne));
       root.style.setProperty('--app-poster-color-two', colorString(palette.pageTwo));
     }

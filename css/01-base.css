@@ -48,19 +48,54 @@
   --text: #f4f1eb;
   --app-background: #111318;
   --muted: #a3a9b5;
+  --empty-inset-shadow: #000000a0;
+  --empty-inset-highlight: #ffffff25;
   --line: #303641;
   --panel: #1b1f27;
-  --surface-stats-outer: #13181d;
-  --surface-stats-inner: #1c1f27;
+  --surface-stats-outer: #222326;
+  --surface-stats-inner: #3d3e41;
   --surface-dashboard-outer: var(--surface-stats-outer);
   --surface-dashboard-inner: var(--surface-stats-inner);
+  /* Shared surface hierarchy: panels, tiles/toolbar groups, nested controls. */
+  --box-level-1-color: var(--surface-dashboard-outer);
+  --box-level-2-color: var(--surface-dashboard-inner);
+  --box-level-3-color: #55555b;
   --poster-background-strength: 22%;
+  --poster-gradient-white-tint: 0%;
   --glass-highlight: #ffffff24;
   --glass-shadow: #00000048;
   --glass-edge-shadow: #00000020;
   --glass-surface-opacity: 80%;
+  --glass-brightness-boost: 0%;
+  --glass-panel-opacity: min(100%, calc(var(--glass-surface-opacity) + var(--glass-brightness-boost)));
+  --glass-menu-opacity: min(100%, calc(var(--glass-panel-opacity) + 8%));
   /* Inner surfaces reveal the background more than the outer glass panels. */
   --glass-inner-opacity: max(20%, calc(var(--glass-surface-opacity) - 40%));
+  --box-level-1-opacity: var(--glass-panel-opacity);
+  --box-level-2-opacity: var(--glass-inner-opacity);
+  /* Nested glass reveals its parent; keep its own tint almost clear. */
+  --box-level-3-opacity: max(4%, calc(var(--glass-inner-opacity) - 39%));
+  --box-level-1-background: color-mix(in srgb, var(--box-level-1-color) var(--box-level-1-opacity), transparent);
+  --box-level-2-background: color-mix(in srgb, var(--box-level-2-color) var(--box-level-2-opacity), transparent);
+  --box-level-3-background: color-mix(in srgb, var(--box-level-3-color) var(--box-level-3-opacity), transparent);
+  --box-level-3-hover-background: color-mix(in srgb, color-mix(in srgb, var(--box-level-3-color) 90%, white) var(--box-level-3-opacity), transparent);
+  --box-level-1-radius: 20px;
+  --box-level-2-radius: 14px;
+  --box-level-3-radius: 10px;
+  --box-level-1-border: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
+  --box-level-2-border: color-mix(in srgb, var(--line) 52%, var(--glass-highlight));
+  --box-level-3-border: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
+  --box-level-3-hover-border: color-mix(in srgb, var(--box-level-3-border) 75%, var(--glass-highlight));
+  --box-level-1-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 -1px 0 var(--glass-edge-shadow), 0 16px 36px var(--glass-shadow), 0 4px 12px var(--glass-edge-shadow);
+  --box-level-2-shadow: inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 86%, transparent), inset 0 -1px 0 var(--glass-edge-shadow), 0 3px 5px var(--raised-contact-shadow), 0 6px 16px var(--glass-shadow), 0 2px 5px var(--glass-edge-shadow);
+  --box-level-2-hover-background: color-mix(in srgb, color-mix(in srgb, var(--box-level-2-color) 90%, white) var(--box-level-2-opacity), transparent);
+  --box-level-2-hover-border: color-mix(in srgb, var(--box-level-2-border) 75%, var(--glass-highlight));
+  --box-level-2-hover-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 -1px 0 var(--glass-edge-shadow), 0 3px 5px var(--raised-contact-shadow), 0 9px 20px var(--glass-shadow), 0 3px 7px var(--glass-edge-shadow);
+  --box-level-3-shadow: inset 0 1px 0 var(--glass-highlight), 0 3px 8px var(--glass-shadow);
+  --box-level-3-hover-shadow: inset 0 1px 0 var(--glass-highlight), 0 6px 14px var(--glass-shadow);
+  --box-level-1-blur: blur(12px) saturate(118%);
+  --box-level-2-blur: none;
+  --box-level-3-blur: none;
   --surface-raised: #151920;
   --surface-deep: #111419;
   --surface-hover: #303b4b;
@@ -141,7 +176,7 @@
   --toolbar-control-gap-expanded: 6px;
   --toolbar-control-padding-inline: var(--space-6);
   --toolbar-control-padding-inline-compact: 14px;
-  --toolbar-control-radius: 11px;
+  --toolbar-control-radius: 14px;
   --toolbar-control-radius-compact: 9px;
   --toolbar-group-padding: var(--space-1);
   --library-bar-shadow: inset 0 1px 0 var(--shadow-inset), 0 6px 16px var(--shadow-black-25);
@@ -171,12 +206,20 @@ body {
   background:
     radial-gradient(
       ellipse at 16% 0%,
-      color-mix(in srgb, var(--app-poster-color-one, #26312f) var(--poster-background-strength), var(--app-background)) 0%,
+      color-mix(
+        in srgb,
+        color-mix(in srgb, var(--app-poster-color-one, #26312f) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-strength),
+        var(--app-background)
+      ) 0%,
       transparent 48%
     ),
     radial-gradient(
       ellipse at 88% 12%,
-      color-mix(in srgb, var(--app-poster-color-two, #28272d) var(--poster-background-strength), var(--app-background)) 0%,
+      color-mix(
+        in srgb,
+        color-mix(in srgb, var(--app-poster-color-two, #28272d) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-strength),
+        var(--app-background)
+      ) 0%,
       transparent 40%
     ),
     linear-gradient(155deg, #1a1d20 0%, #141619 58%, var(--app-background) 100%);
@@ -197,7 +240,7 @@ body::before {
   transition: opacity 900ms ease;
 }
 
-:root[data-poster-background="on"][data-page-palette-fallback="image"] body::before {
+:root[data-poster-background="on"] body::before {
   opacity: var(--poster-background-strength);
 }
 

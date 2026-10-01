@@ -5,6 +5,23 @@
   width: min(440px, calc(100% - 28px));
 }
 
+/* Keep the page visible while adjusting the live appearance sliders. */
+#settings-dialog::backdrop {
+  background: #07090e24;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:root[data-theme="light"] #settings-dialog::backdrop {
+  background: #52607220;
+}
+
+@media (min-width: 900px) {
+  #settings-dialog {
+    margin-inline: auto 24px;
+  }
+}
+
 .settings-dialog-content {
   padding: 26px;
 }

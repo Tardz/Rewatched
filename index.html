@@ -38,9 +38,11 @@
                 aria-label="Back to library"
                 title="Back to library"
                 hidden
-              >←</button>
+              ><img class="app-icon" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
               <a class="brand" href="#" aria-label="Rewatched home">
-                <span>Rewatched</span><span class="brand-dot">.</span>
+                <span class="brand-full-name">Rewatched</span>
+                <span class="brand-fullscreen-mark" aria-hidden="true">R</span>
+                <span class="brand-dot">.</span>
               </a>
             </div>
           </header>
@@ -54,9 +56,7 @@
               aria-label="Open Rewatched on GitHub"
               title="ReWatched on GitHub"
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path fill="currentColor" d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.1c-3.14.68-3.8-1.33-3.8-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.73 2.65 1.23 3.3.94.1-.73.4-1.23.72-1.51-2.5-.28-5.13-1.25-5.13-5.56 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.08 1.16a10.7 10.7 0 0 1 5.6 0c2.13-1.45 3.08-1.16 3.08-1.16.61 1.55.23 2.69.11 2.98.72.79 1.16 1.8 1.16 3.03 0 4.32-2.63 5.27-5.14 5.55.41.36.77 1.03.77 2.08v3.1c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z" />
-              </svg>
+              <img class="app-icon" data-app-icon="github" src="assets/icons/color/github.png" alt="" aria-hidden="true">
             </a>
             <div class="app-version" aria-label="Version 1.0.0">v1.0.0</div>
           </div>
@@ -65,10 +65,7 @@
         <div class="dashboard-controls">
           <div class="dashboard-control-buttons">
             <button id="open-settings" class="icon-button settings-button" type="button" aria-label="Settings" title="Settings">
-              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M10.5 2.7h3l.5 2.1a7.8 7.8 0 0 1 1.8.8l1.9-1.1 2.1 2.1-1.1 1.9a7.8 7.8 0 0 1 .8 1.8l2.1.5v3l-2.1.5a7.8 7.8 0 0 1-.8 1.8l1.1 1.9-2.1 2.1-1.9-1.1a7.8 7.8 0 0 1-1.8.8l-.5 2.1h-3l-.5-2.1a7.8 7.8 0 0 1-1.8-.8l-1.9 1.1-2.1-2.1 1.1-1.9a7.8 7.8 0 0 1-.8-1.8l-2.1-.5v-3l2.1-.5a7.8 7.8 0 0 1 .8-1.8L4.2 6.6l2.1-2.1 1.9 1.1a7.8 7.8 0 0 1 1.8-.8z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
+              <img class="app-icon" data-app-icon="settings" src="assets/icons/color/settings.png" alt="" aria-hidden="true">
             </button>
             <button
               id="toggle-theme"
@@ -78,19 +75,13 @@
               title="Switch to light mode"
               aria-pressed="false"
             >
-              <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l-1.42-1.42m11.3-11.3 1.42-1.42" />
-              </svg>
+              <img class="app-icon" data-app-icon="light_mode" src="assets/icons/color/light_mode.png" alt="" aria-hidden="true">
             </button>
           </div>
 
           <div class="storage-control">
             <button class="icon-button activity-button" type="button" aria-label="Activity" title="Activity">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M3 8a9 9 0 1 1-.2 8" />
-                <path d="M3 3v5h5M12 7v5l3 2" />
-              </svg>
+              <img class="app-icon" data-app-icon="history" src="assets/icons/color/history.png" alt="" aria-hidden="true">
             </button>
             <div class="storage-file-control">
               <button id="open-storage-check" class="icon-button storage-check-button" type="button" title="Storage Consistency Check" aria-label="Open Storage Consistency Check">
@@ -100,10 +91,7 @@
                   role="status"
                   aria-label="All changes saved"
                   title="All changes saved"
-                ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M5 3h12l4 4v14H3V5a2 2 0 0 1 2-2Z" />
-                    <path d="M7 3v6h10V3M7 21v-8h10v8M9 16h6" />
-                  </svg></span>
+                ><img class="app-icon" data-app-icon="save" src="assets/icons/color/save.png" alt="" aria-hidden="true"></span>
               </button>
               <button id="open-storage-settings" class="storage-indicator" type="button" title="Open storage settings">
                 <span id="current-storage-name" class="storage-indicator-name">Browser Vault</span>
@@ -115,13 +103,10 @@
         </div>
         <nav class="dashboard-sections" aria-label="Main sections">
           <button class="dashboard-section-button section-library is-active" type="button" aria-current="page" aria-label="Library" title="Library">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h3v14H4zM10.5 3.5h3V19h-3zM17 6h3v13h-3zM3 20h18" /></svg>
+            <img class="app-icon" data-app-icon="library" src="assets/icons/color/Library.png" alt="" aria-hidden="true">
           </button>
           <button class="dashboard-section-button section-statistics" type="button" aria-label="Statistics" title="Statistics">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 12V3M12 12l7.8-4.5" />
-            </svg>
+            <img class="app-icon" data-app-icon="statistics" src="assets/icons/color/piechart.png" alt="" aria-hidden="true">
           </button>
         </nav>
       </div>
@@ -141,12 +126,12 @@
           <span id="banner-date"></span>
         </div>
         <div class="banner-controls">
-          <button type="button" id="previous" aria-label="Previous title">←</button>
+          <button type="button" id="previous" aria-label="Previous title"><img class="app-icon" data-app-icon-original-text="‹" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
           <span id="banner-count"></span>
-          <button type="button" id="next" aria-label="Next title">→</button>
+          <button type="button" id="next" aria-label="Next title"><img class="app-icon" data-app-icon-original-text="›" data-app-icon="arrow-right" src="assets/icons/black/arrow-right.png" alt="" aria-hidden="true"></button>
           <button type="button" id="pause" class="pause" aria-label="Pause rotation" title="Pause rotation">
-            <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="4.5" height="16" rx="2.25" /><rect x="13.5" y="4" width="4.5" height="16" rx="2.25" /></svg>
-            <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7.25 5.1c0-.88.96-1.42 1.72-.96l11.1 6.72a1.32 1.32 0 0 1 0 2.28l-11.1 6.72a1.12 1.12 0 0 1-1.72-.96z" /></svg>
+            <img class="pause-icon app-icon" data-app-icon="pause" src="assets/icons/black/pause.png" alt="" aria-hidden="true">
+            <img class="play-icon app-icon" data-app-icon="play" src="assets/icons/black/play.png" alt="" aria-hidden="true" hidden>
           </button>
         </div>
       </div>
@@ -194,25 +179,26 @@
             <div class="library-folder-control">
               <div class="entry-folder-dropdown library-folder-dropdown" id="library-folder-dropdown">
                 <button class="entry-folder-trigger" id="library-folder-button" type="button" aria-label="Choose a folder" aria-expanded="false" aria-controls="library-folder-picker" title="Choose a folder">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10V7a1.5 1.5 0 0 1 1.5-1.5h4.3l2 2H19a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M4.5 10h16a1.5 1.5 0 0 1 1.4 2l-2.7 7a1.5 1.5 0 0 1-1.4 1H3.3a1.5 1.5 0 0 1-1.4-2l2.7-7A1.5 1.5 0 0 1 6 10"></path></svg>
+                  <img class="app-icon folder-icon" data-app-icon="folder" src="assets/icons/color/folder.png" alt="" aria-hidden="true">
                 </button>
                 <div class="entry-folder-menu library-folder-menu" id="library-folder-picker" role="group" aria-label="Choose a folder" hidden>
                   <div id="library-folder-list" class="library-folder-list"></div>
+                  <button id="add-collection" class="collection-add" type="button" aria-label="Create folder" title="Create folder">+ Add folder</button>
                 </div>
               </div>
-              <button id="add-collection" class="collection-add" type="button" aria-label="Create folder" title="Create folder">+</button>
             </div>
           </div>
-          <div class="library-search">
+          <div class="library-search" id="library-search-box">
             <button id="library-search-toggle" class="library-search-toggle" type="button" aria-label="Open search" aria-expanded="false" title="Search">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"></circle><path d="m15.5 15.5 4.2 4.2"></path></svg>
+              <img class="app-icon" data-app-icon="search" src="assets/icons/color/search.png" alt="" aria-hidden="true">
             </button>
             <input id="library-search" type="search" aria-label="Search this view" placeholder="Search titles…" autocomplete="off">
             <button id="library-search-clear" class="library-search-clear" type="button" aria-label="Clear search" title="Clear search" hidden>
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
             </button>
           </div>
-          <div class="collection-filter-sort" aria-label="Filter and sort collection">
+        </div>
+        <div class="collection-filter-sort" id="collection-filter-sort" aria-label="Filter and sort collection">
             <label class="logged-collection-tool">
               <span class="visually-hidden">Filter by watched year</span>
               <select id="watched-year-filter" aria-label="Filter by watched year">
@@ -240,24 +226,29 @@
               <select id="collection-sort" aria-label="Sort collection"></select>
             </label>
             <button id="reset-collection-filter-sort" class="filter-sort-reset" type="button" aria-label="Reset filters and sorting" title="Reset filters and sorting">↺</button>
-          </div>
         </div>
         <div class="collection-view-controls">
           <div class="media-type-filter-group" id="media-type-filters">
             <button class="media-type-filter active" type="button" data-filter="all" aria-label="All" title="All">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"></rect><rect x="14" y="3" width="7" height="7" rx="2"></rect><rect x="3" y="14" width="7" height="7" rx="2"></rect><rect x="14" y="14" width="7" height="7" rx="2"></rect></svg>
+              <img class="app-icon" data-app-icon="all" src="assets/icons/color/all.png" alt="" aria-hidden="true">
             </button>
             <button class="media-type-filter" type="button" data-filter="Movie" aria-label="Movies" title="Movies">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="2.2"></circle><path d="M7.4 7.4a6.5 6.5 0 0 1 3-1.7M16.6 16.6a6.5 6.5 0 0 1-3 1.7"></path></svg>
+              <img class="app-icon" data-app-icon="movie" src="assets/icons/color/dvd.png" alt="" aria-hidden="true">
             </button>
             <button class="media-type-filter" type="button" data-filter="Show" aria-label="Shows" title="Shows">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5 12 7l5-3.5"></path><rect x="3" y="7" width="18" height="13" rx="2"></rect><rect x="5.5" y="9.5" width="10" height="8" rx="1"></rect><circle cx="18.2" cy="12" r=".8"></circle><circle cx="18.2" cy="15.5" r=".8"></circle></svg>
+              <img class="app-icon" data-app-icon="show" src="assets/icons/color/tv.png" alt="" aria-hidden="true">
+            </button>
+            <button class="media-type-filter" type="button" data-filter="Game" aria-label="Games" title="Games">
+              <img class="app-icon" data-app-icon="game" src="assets/icons/color/game-controller.png" alt="" aria-hidden="true">
+            </button>
+            <button class="media-type-filter" type="button" data-filter="Book" aria-label="Books" title="Books">
+              <img class="app-icon" data-app-icon="book" src="assets/icons/color/book.png" alt="" aria-hidden="true">
             </button>
           </div>
           <div class="collection-pagination" id="collection-pagination" aria-label="Collection pages" hidden>
-            <button id="collection-page-previous" type="button" aria-label="Previous page" title="Previous page">‹</button>
+            <button id="collection-page-previous" type="button" aria-label="Previous page" title="Previous page"><img class="app-icon" data-app-icon-original-text="‹" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
             <span id="collection-page-status" aria-live="polite">1 / 1</span>
-            <button id="collection-page-next" type="button" aria-label="Next page" title="Next page">›</button>
+            <button id="collection-page-next" type="button" aria-label="Next page" title="Next page"><img class="app-icon" data-app-icon-original-text="›" data-app-icon="arrow-right" src="assets/icons/black/arrow-right.png" alt="" aria-hidden="true"></button>
           </div>
           <button class="button button-primary section-add" id="open-add" type="button" aria-label="Log a watch" title="Add item">+</button>
         </div>
@@ -438,6 +429,18 @@
           <option value="dark">Dark</option>
         </select>
       </label>
+      <label class="settings-option" for="icon-style">
+        <span>
+          <strong>Icon style</strong>
+          <small>Choose color, black, filled, or original app icons.</small>
+        </span>
+        <select id="icon-style">
+          <option value="color">Color icons</option>
+          <option value="black">Black icons</option>
+          <option value="filled">Filled icons</option>
+          <option value="original">Original icons</option>
+        </select>
+      </label>
       <label class="settings-option" for="reduce-animations">
         <span>
           <strong>Reduce animations</strong>
@@ -466,12 +469,19 @@
         </span>
         <input id="tactile-dashboard" type="checkbox" checked>
       </label>
+      <label class="settings-option" for="disable-glass-transparency">
+        <span>
+          <strong>Disable glass transparency</strong>
+          <small>Use solid surfaces instead of translucent glass.</small>
+        </span>
+        <input id="disable-glass-transparency" type="checkbox">
+      </label>
       <div class="settings-option settings-option-range">
         <label for="glass-surface-opacity">
           <strong>Glass panel opacity</strong>
           <small>Higher values are less transparent: <output id="glass-surface-opacity-value">80%</output></small>
         </label>
-        <input id="glass-surface-opacity" type="range" min="60" max="95" step="5" value="80">
+        <input id="glass-surface-opacity" type="range" min="60" max="100" step="5" value="80">
       </div>
       <section class="backup-settings" aria-labelledby="google-settings-heading">
         <h3 id="google-settings-heading">Google Image Search</h3>
@@ -529,15 +539,15 @@
             </div>
             <div class="library-view-switcher entry-media-switcher" role="tablist" aria-label="Media type">
               <button type="button" class="collection-tab entry-media-option active" data-media-type-option="Movie" role="tab" aria-selected="true" aria-label="Movie" title="Movie">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="2.2"></circle><path d="M7.4 7.4a6.5 6.5 0 0 1 3-1.7M16.6 16.6a6.5 6.5 0 0 1-3 1.7"></path></svg>
+                <img class="app-icon" data-app-icon="movie" src="assets/icons/color/dvd.png" alt="" aria-hidden="true">
               </button>
               <button type="button" class="collection-tab entry-media-option" data-media-type-option="Show" role="tab" aria-selected="false" aria-label="Show" title="Show">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.5 12 7l5-3.5"></path><rect x="3" y="7" width="18" height="13" rx="2"></rect><rect x="5.5" y="9.5" width="10" height="8" rx="1"></rect><circle cx="18.2" cy="12" r=".8"></circle><circle cx="18.2" cy="15.5" r=".8"></circle></svg>
+                <img class="app-icon" data-app-icon="show" src="assets/icons/color/tv.png" alt="" aria-hidden="true">
               </button>
             </div>
             <div class="entry-folder-dropdown" id="entry-folder-picker">
               <button class="entry-folder-trigger" id="entry-folder-button" type="button" aria-label="Choose folders" aria-expanded="false" aria-controls="entry-folder-options" title="Choose folders">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10V7a1.5 1.5 0 0 1 1.5-1.5h4.3l2 2H19a1.5 1.5 0 0 1 1.5 1.5v1"></path><path d="M4.5 10h16a1.5 1.5 0 0 1 1.4 2l-2.7 7a1.5 1.5 0 0 1-1.4 1H3.3a1.5 1.5 0 0 1-1.4-2l2.7-7A1.5 1.5 0 0 1 6 10"></path></svg>
+                <img class="app-icon folder-icon" data-app-icon="folder" src="assets/icons/color/folder.png" alt="" aria-hidden="true">
               </button>
               <div class="entry-folder-menu" id="entry-folder-options" role="group" aria-label="Folders to add this entry to" hidden></div>
             </div>
@@ -571,7 +581,7 @@
             <span id="poster-preview-empty">No poster selected</span>
             <div class="poster-buttons">
               <button id="poster-search" class="button icon-button" type="button" aria-label="Search images" title="Search images">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"></circle><path d="m15.5 15.5 4.2 4.2"></path></svg>
+                <img class="app-icon" data-app-icon="search" src="assets/icons/color/search.png" alt="" aria-hidden="true">
               </button>
               <button id="poster-upload-button" class="button icon-button" type="button" aria-label="Choose image file" title="Choose image file">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.75h7l4 4v12.5H7z"></path><path d="M14 3.75v4h4M10 12h5M10 15h5"></path></svg>

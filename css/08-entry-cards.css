@@ -40,7 +40,7 @@
   gap: 15px;
   background: var(--panel);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--toolbar-control-radius);
   padding: 12px;
   min-width: 0;
 }

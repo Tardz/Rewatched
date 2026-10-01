@@ -20,7 +20,11 @@ function setDashboardSection(section) {
     $('#statistics-panel').prepend(collectionFilters);
     updateCollectionTools(activeView === 'watchlist');
   } else {
-    $('.library-search').after(collectionFilters);
+    // Restore the filter box beside the heading controls. Placing it after
+    // the search input puts it inside .library-heading-left and breaks the
+    // toolbar's flex expansion after returning from Statistics.
+    $('.library-heading-left').after(collectionFilters);
+    updateCollectionTools(activeView === 'watchlist');
   }
   dashboard.classList.toggle('is-statistics-view', showStatistics);
   document.documentElement.dataset.dashboardSection = showStatistics ? 'statistics' : 'library';
@@ -63,9 +67,8 @@ function syncThemeToggle() {
   themeToggle.setAttribute('aria-pressed', String(isLight));
   themeToggle.setAttribute('aria-label', label);
   themeToggle.title = label;
-  themeToggle.innerHTML = switchTo === 'dark'
-    ? '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.4 15.2A8.5 8.5 0 0 1 8.8 3.6 8.5 8.5 0 1 0 20.4 15.2Z" /></svg>'
-    : '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>';
+  themeToggle.innerHTML = appIconMarkup(switchTo === 'dark' ? 'dark_mode' : 'light_mode');
+  refreshAppIcons();
 }
 
 syncThemeToggle();
@@ -154,11 +157,23 @@ $('#banner').addEventListener('wheel', (event) => {
 /** Synchronizes banner rotation controls with the current setting. */
 function syncRotationControls() {
   const button = $('#pause');
-  button.querySelector('.pause-icon').hidden = paused;
-  button.querySelector('.play-icon').hidden = !paused;
-  button.setAttribute('aria-label', paused ? 'Resume rotation' : 'Pause rotation');
-  button.title = paused ? 'Resume rotation' : 'Pause rotation';
-  $('#auto-rotate').checked = !paused;
+  if (button) {
+    button.dataset.rotationState = paused ? 'paused' : 'playing';
+    const pauseIcon = button.querySelector('.pause-icon');
+    const playIcon = button.querySelector('.play-icon');
+    if (pauseIcon) {
+      pauseIcon.hidden = paused;
+      pauseIcon.style.display = paused ? 'none' : '';
+    }
+    if (playIcon) {
+      playIcon.hidden = !paused;
+      playIcon.style.display = paused ? '' : 'none';
+    }
+    button.setAttribute('aria-label', paused ? 'Resume rotation' : 'Pause rotation');
+    button.title = paused ? 'Resume rotation' : 'Pause rotation';
+  }
+  const autoRotate = $('#auto-rotate');
+  if (autoRotate) autoRotate.checked = !paused;
 }
 
 /** Enables or disables automatic banner rotation. */
@@ -176,6 +191,7 @@ function openSettings() {
   syncAppearanceControls();
   $('#theme-mode').value = themePreference;
   $('#reduce-animations').checked = reduceAnimationsEnabled;
+  $('#icon-style').value = iconStylePreference;
   $('#poster-background').checked = posterBackgroundEnabled;
   $('#poster-background-strength').value = posterBackgroundStrength;
   $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
@@ -183,7 +199,8 @@ function openSettings() {
   $('#tactile-dashboard').checked = tactileDashboardEnabled;
   $('#glass-surface-opacity').value = glassSurfaceOpacity;
   $('#glass-surface-opacity-value').value = `${glassSurfaceOpacity}%`;
-  $('#glass-surface-opacity').disabled = !tactileDashboardEnabled;
+  $('#disable-glass-transparency').checked = !glassTransparencyEnabled;
+  $('#glass-surface-opacity').disabled = !tactileDashboardEnabled || !glassTransparencyEnabled;
   updateBackupSummary();
   updateOmdbCallCount();
   $('#omdb-api-key').value = localStorage.getItem(OMDB_API_KEY) || '';
@@ -194,6 +211,7 @@ function openSettings() {
 function syncAppearanceControls() {
   $('#theme-mode').value = themePreference;
   $('#reduce-animations').checked = reduceAnimationsEnabled;
+  $('#icon-style').value = iconStylePreference;
   $('#poster-background').checked = posterBackgroundEnabled;
   $('#poster-background-strength').value = posterBackgroundStrength;
   $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
@@ -201,7 +219,8 @@ function syncAppearanceControls() {
   $('#tactile-dashboard').checked = tactileDashboardEnabled;
   $('#glass-surface-opacity').value = glassSurfaceOpacity;
   $('#glass-surface-opacity-value').value = `${glassSurfaceOpacity}%`;
-  $('#glass-surface-opacity').disabled = !tactileDashboardEnabled;
+  $('#disable-glass-transparency').checked = !glassTransparencyEnabled;
+  $('#glass-surface-opacity').disabled = !tactileDashboardEnabled || !glassTransparencyEnabled;
 }
 $('#open-settings').addEventListener('click', openSettings);
 $('#open-storage-settings').addEventListener('click', openSettings);
@@ -221,16 +240,25 @@ function changeReduceAnimations(enabled) {
   syncAppearanceControls();
 }
 $('#reduce-animations').addEventListener('change', (event) => changeReduceAnimations(event.currentTarget.checked));
+function changeIconStyle(style) {
+  iconStylePreference = style;
+  localStorage.setItem(ICON_STYLE_KEY, style);
+  refreshAppIcons();
+  syncAppearanceControls();
+}
+$('#icon-style').addEventListener('change', (event) => changeIconStyle(event.currentTarget.value));
 function changePosterBackground(enabled) {
   posterBackgroundEnabled = enabled;
   localStorage.setItem(POSTER_BACKGROUND_KEY, String(posterBackgroundEnabled));
   document.documentElement.dataset.posterBackground = posterBackgroundEnabled ? 'on' : 'off';
+  updateGlassOpacityForPagePalette();
   syncAppearanceControls();
 }
 $('#poster-background').addEventListener('change', (event) => changePosterBackground(event.currentTarget.checked));
 function changePosterBackgroundStrength(value) {
   posterBackgroundStrength = Number(value);
   document.documentElement.style.setProperty('--poster-background-strength', `${posterBackgroundStrength}%`);
+  updateGlassOpacityForPagePalette();
   $('#poster-background-strength').value = posterBackgroundStrength;
   $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
   localStorage.setItem(POSTER_BACKGROUND_STRENGTH_KEY, String(posterBackgroundStrength));
@@ -244,13 +272,22 @@ function changeTactileDashboard(enabled) {
 }
 $('#tactile-dashboard').addEventListener('change', (event) => changeTactileDashboard(event.currentTarget.checked));
 function changeGlassSurfaceOpacity(value) {
-  glassSurfaceOpacity = Math.max(60, Math.min(95, Math.round(Number(value) / 5) * 5));
+  glassSurfaceOpacity = Math.max(60, Math.min(100, Math.round(Number(value) / 5) * 5));
   document.documentElement.style.setProperty('--glass-surface-opacity', `${glassSurfaceOpacity}%`);
+  document.documentElement.dataset.glassOpaque = !glassTransparencyEnabled || glassSurfaceOpacity === 100 ? 'on' : 'off';
   $('#glass-surface-opacity').value = glassSurfaceOpacity;
   $('#glass-surface-opacity-value').value = `${glassSurfaceOpacity}%`;
   localStorage.setItem(GLASS_SURFACE_OPACITY_KEY, String(glassSurfaceOpacity));
 }
 $('#glass-surface-opacity').addEventListener('input', (event) => changeGlassSurfaceOpacity(event.currentTarget.value));
+function changeGlassTransparency(enabled) {
+  glassTransparencyEnabled = enabled;
+  localStorage.setItem(GLASS_TRANSPARENCY_KEY, String(enabled));
+  document.documentElement.dataset.glassTransparency = enabled ? 'on' : 'off';
+  document.documentElement.dataset.glassOpaque = !enabled || glassSurfaceOpacity === 100 ? 'on' : 'off';
+  syncAppearanceControls();
+}
+$('#disable-glass-transparency').addEventListener('change', (event) => changeGlassTransparency(!event.currentTarget.checked));
 $('#save-omdb-key').addEventListener('click', () => {
   const key = $('#omdb-api-key').value.trim();
   if (!key) {

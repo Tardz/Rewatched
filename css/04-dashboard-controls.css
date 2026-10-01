@@ -186,9 +186,9 @@
 
 .storage-save-indicator {
   display: grid;
-  width: 18px;
-  height: 18px;
-  flex: 0 0 18px;
+  width: var(--app-icon-size, 22px);
+  height: var(--app-icon-size, 22px);
+  flex: 0 0 var(--app-icon-size, 22px);
   place-items: center;
   color: var(--white);
   transition: color 160ms ease, filter 160ms ease;
