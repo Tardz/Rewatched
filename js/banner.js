@@ -37,19 +37,37 @@ function renderBanner() {
     : latest(entry);
 
   const bannerLabel = $('#banner-label');
-  const mediaChip = document.createElement('span');
-  mediaChip.className = `banner-media-chip is-${entry.type.toLowerCase()}`;
-  mediaChip.textContent = entry.type.toUpperCase();
+  const mediaIcon = document.createElement('span');
+  mediaIcon.className = `banner-media-type-icon is-${entry.type.toLowerCase()}`;
+  mediaIcon.setAttribute('role', 'img');
+  mediaIcon.setAttribute('aria-label', entry.type);
+  mediaIcon.innerHTML = appIconMarkup(entry.type.toLowerCase() === 'movie' ? 'movie' : 'show', 'app-icon banner-media-type-icon-image');
   const labelContext = document.createElement('span');
   labelContext.className = 'banner-label-context';
   labelContext.textContent = activeView === 'watchlist'
     ? `WATCHLIST${entry.year ? ` · ${entry.year}` : ''}`
-    : `RECENTLY RATED${entry.year ? ` · ${entry.year}` : ''}`;
-  bannerLabel.replaceChildren(mediaChip, labelContext);
-  $('#banner-title').textContent = entry.title;
+    : entry.year || '';
   const director = $('#banner-director');
-  director.textContent = entry.director ? `by ${entry.director}` : '';
+  director.textContent = entry.director || '';
   director.hidden = !entry.director;
+  const labelParts = [mediaIcon];
+  if (labelContext.textContent) {
+    const mediaSeparator = document.createElement('span');
+    mediaSeparator.className = 'banner-label-separator';
+    mediaSeparator.setAttribute('aria-hidden', 'true');
+    mediaSeparator.textContent = '·';
+    labelParts.push(mediaSeparator, labelContext);
+  }
+  if (entry.director) {
+    const separator = document.createElement('span');
+    separator.className = 'banner-label-separator';
+    separator.setAttribute('aria-hidden', 'true');
+    separator.textContent = '·';
+    labelParts.push(separator, director);
+  }
+  bannerLabel.replaceChildren(...labelParts);
+  const bannerTitle = $('#banner-title');
+  bannerTitle.textContent = entry.title;
   const bannerScore = $('#banner-score');
   const scoreFill = `${Number(watch.score) * 10}%`;
   const priority = Math.min(5, Math.max(1, Number(entry.priority) || 3));

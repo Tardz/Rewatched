@@ -433,7 +433,26 @@
 }
 
 :root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner.has-poster::before {
-  background: linear-gradient(90deg, #d1dbe38c 0%, #d1dbe359 52%, #d1dbe326 100%) !important;
+  background: linear-gradient(90deg, #d1dbe359 0%, #d1dbe326 52%, #d1dbe30d 100%) !important;
+}
+
+/* Keep banner copy readable over the changing poster colors in light mode. */
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .spotlight-copy {
+  color: #202733;
+  text-shadow: 0 1px 2px #ffffff9c;
+}
+
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .eyebrow,
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .banner-director,
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .banner-release-year,
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .spotlight-meta,
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner #banner-date,
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner #banner-date::before {
+  color: #303b49 !important;
+}
+
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .spotlight-meta strong {
+  color: #155d89;
 }
 
 :root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .eyebrow {
@@ -444,29 +463,13 @@
   color: var(--text-muted-bright);
 }
 
-:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .banner-media-chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 22px;
-  padding: 3px 8px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  background: #f7f9fc;
-  color: var(--text);
-  font: inherit;
-  line-height: 1;
-  letter-spacing: .1em;
-}
-
-:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .banner-media-chip.is-movie {
-  border-color: #d77979;
-  background: #fae9e8;
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .banner-media-type-icon.is-movie {
+  --app-icon-state-color: #9b3035;
   color: #9b3035;
 }
 
-:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .banner-media-chip.is-show {
-  border-color: #7fa9c3;
-  background: #dcecf6;
+:root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner .banner-media-type-icon.is-show {
+  --app-icon-state-color: #155d89;
   color: #155d89;
 }
 
@@ -507,7 +510,7 @@
 
   /* Dashboard/topbar controls: adjust these to resize that icon group. */
   --dashboard-icon-size: 16px;
-  --dashboard-icon-png-size: 12px;
+  --dashboard-icon-png-size: 22px;
   --dashboard-icon-filled-size: 22px;
 
   /* Create-entry controls: increase these without affecting other screens. */
@@ -731,6 +734,55 @@ span.app-icon[data-app-icon] { display: grid; place-items: center; font-size: 18
   --app-icon-filled-size: var(--banner-icon-filled-size);
 }
 
+/* Give the detail timeline more depth in dark mode, where its existing soft
+   shadows disappear against the dark shell. */
+:root[data-theme="dark"] .detail-page {
+  --detail-timeline-line-shadow: 0 2px 5px #000000c9, 0 0 12px 3px color-mix(in srgb, var(--watch-color, var(--blue)) 58%, transparent);
+  --detail-timeline-card-shadow: 0 9px 24px #00000075, 0 2px 6px #00000060, inset 0 1px 0 var(--shadow-inset);
+}
+
+:root[data-theme="dark"] .detail-page .detail-timeline-content {
+  box-shadow: 0 12px 28px #00000078, 0 3px 8px #0000005c, inset 0 1px 0 var(--shadow-inset);
+}
+
+:root[data-theme="dark"] .detail-page .timeline-entry-card {
+  box-shadow: var(--detail-timeline-card-shadow);
+}
+
+:root[data-theme="dark"] .detail-page .detail-timeline li:hover .timeline-entry-card,
+:root[data-theme="dark"] .detail-page .detail-timeline li.is-selected .timeline-entry-card {
+  box-shadow:
+    0 0 12px color-mix(in srgb, var(--watch-color) 38%, transparent),
+    0 10px 26px #00000085,
+    0 2px 6px #00000065,
+    inset 0 1px 0 var(--shadow-inset-strong);
+}
+
+:root[data-theme="dark"] .detail-page .detail-timeline::before {
+  filter: drop-shadow(0 1px 3px #000000c9) drop-shadow(0 0 4px color-mix(in srgb, var(--blue) 35%, transparent));
+}
+
+:root[data-theme="dark"] .detail-page .detail-timeline li::before,
+:root[data-theme="dark"] .detail-page .detail-timeline li::after {
+  box-shadow: var(--detail-timeline-line-shadow);
+}
+
+:root[data-theme="dark"] .detail-page .detail-watch-number {
+  box-shadow:
+    0 5px 14px #000000b8,
+    0 1px 4px #00000090,
+    0 0 14px 3px color-mix(in srgb, var(--watch-color) 50%, transparent);
+}
+
+/* The total-watch marker needs a real cast shadow in light mode as well as its
+   ranking-color glow, so it reads as the timeline's terminal box. */
+:root[data-theme="light"] .detail-page .statistics-watch-total-box {
+  box-shadow:
+    0 4px 10px #2732412b,
+    0 1px 3px #27324120,
+    0 0 9px color-mix(in srgb, currentColor 24%, transparent);
+}
+
 /* Blend the light banner into the page by softening its two visible outlines. */
 :root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner,
 :root[data-theme="light"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner:hover {
@@ -788,14 +840,12 @@ span.app-icon[data-app-icon] { display: grid; place-items: center; font-size: 18
     0 6px 16px var(--glass-shadow) !important;
 }
 
-/* In light mode, keep the storage outline and save button but let the app
-   background show through the shared frame and filename control. */
+/* Keep the filename text itself clear, while the frame and save key use their
+   shared level 2 and level 3 surfaces. */
 :root[data-theme="light"] body .dashboard-controls .storage-file-control:has(> #open-storage-settings) {
-  background: transparent !important;
-  background-color: transparent !important;
+  background: var(--box-level-2-background) !important;
+  background-color: var(--box-level-2-background) !important;
   background-image: none !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
 }
 
 :root[data-theme="light"] body .dashboard-controls .storage-file-control > #open-storage-settings,
@@ -810,4 +860,178 @@ span.app-icon[data-app-icon] { display: grid; place-items: center; font-size: 18
   box-shadow: none !important;
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
+}
+
+:root[data-theme="light"] body .dashboard-controls .storage-file-control .storage-check-button {
+  border: 1px solid var(--box-level-3-border) !important;
+  border-radius: var(--box-level-3-radius) !important;
+  background: var(--box-level-3-background) !important;
+  box-shadow: var(--box-level-3-shadow) !important;
+  -webkit-backdrop-filter: var(--box-level-3-blur) !important;
+  backdrop-filter: var(--box-level-3-blur) !important;
+}
+
+/* Active controls get a restrained halo in the same color as their label/icon. */
+:root[data-theme][data-dashboard-tactile="on"] body button:is(
+  .active, .is-active, .is-collapsed-current, [aria-pressed="true"]
+):not(:hover):not(:focus-visible) {
+  box-shadow:
+    var(--box-level-2-shadow),
+    0 0 7px color-mix(in srgb, currentColor 24%, transparent) !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+:root[data-theme][data-dashboard-tactile="on"] body button:is(
+  .active, .is-active, .is-collapsed-current, [aria-pressed="true"]
+):not(:hover):not(:focus-visible) :is(svg, img.app-icon, .app-icon) {
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+/* Active navigation/filter controls retain a faint accent glow in light mode. */
+:root[data-theme="light"][data-dashboard-tactile="on"] body button:is(
+  .active, .is-active, .is-collapsed-current, [aria-pressed="true"]
+):not(.storage-check-button):not(:hover):not(:focus-visible) {
+  text-shadow: 0 0 5px color-mix(in srgb, var(--selected-icon-glow, currentColor) 34%, transparent) !important;
+}
+
+:root[data-theme="light"][data-dashboard-tactile="on"] body button:is(
+  .active, .is-active, .is-collapsed-current, [aria-pressed="true"]
+):not(.storage-check-button):not(:hover):not(:focus-visible) :is(svg, img.app-icon, .app-icon) {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--selected-icon-glow, currentColor) 42%, transparent)) !important;
+}
+
+:root[data-theme="dark"][data-dashboard-tactile="on"] body button:is(
+  .active, .is-active, .is-collapsed-current, [aria-pressed="true"]
+):not(.storage-check-button):not(:hover):not(:focus-visible) {
+  text-shadow: 0 0 5px color-mix(in srgb, var(--selected-icon-glow, currentColor) 34%, transparent) !important;
+}
+
+:root[data-theme="dark"][data-dashboard-tactile="on"] body button:is(
+  .active, .is-active, .is-collapsed-current, [aria-pressed="true"]
+):not(.storage-check-button):not(:hover):not(:focus-visible) :is(svg, img.app-icon, .app-icon) {
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--selected-icon-glow, currentColor) 42%, transparent)) !important;
+}
+
+/* Keep every expanded switcher on the same corner-radius scale as the rest
+   of the app: level 2 frame, level 3 options. */
+:root body :is(
+  .library-section .library-view-switcher,
+  .library-section .media-type-filter-group,
+  #watch-form .form-entry-switcher,
+  #watch-form .form-folder-switcher,
+  #watch-form .entry-media-switcher
+):is(:hover, :focus-within, .is-pointer-active) {
+  border-radius: var(--box-level-2-radius) !important;
+}
+
+:root body :is(
+  .library-section .library-view-switcher,
+  .library-section .media-type-filter-group,
+  #watch-form .form-entry-switcher,
+  #watch-form .form-folder-switcher,
+  #watch-form .entry-media-switcher
+):is(:hover, :focus-within, .is-pointer-active) :is(
+  .library-view-option, .media-type-filter, .entry-media-option,
+  .entry-folder-icon, .entry-folder-options, .entry-folder-option
+) {
+  border-radius: var(--box-level-3-radius) !important;
+}
+
+/* These wrappers keep their final radius even while collapsed; only their
+   padding, border, and surface animate when the options expand. */
+:root body :is(
+  .library-section .library-view-switcher,
+  .library-section .media-type-filter-group,
+  #watch-form .form-entry-switcher,
+  #watch-form .form-folder-switcher,
+  #watch-form .entry-media-switcher
+) {
+  border-radius: var(--box-level-2-radius) !important;
+  transition: gap 180ms ease, padding 180ms ease,
+    background-color 180ms ease, box-shadow 180ms ease !important;
+}
+
+/* The expanded media picker is a level-2 frame containing level-3 options. */
+:root[data-theme][data-dashboard-tactile="on"] body .library-section .media-type-filter-group:is(
+  :hover, :focus-within, .is-pointer-active
+) {
+  background: var(--box-level-2-background) !important;
+  border-color: var(--box-level-2-border) !important;
+  border-radius: var(--box-level-2-radius) !important;
+  box-shadow: var(--box-level-2-shadow) !important;
+  -webkit-backdrop-filter: var(--box-level-2-blur) !important;
+  backdrop-filter: var(--box-level-2-blur) !important;
+}
+
+:root[data-theme][data-dashboard-tactile="on"] body .library-section .media-type-filter-group:is(
+  :hover, :focus-within, .is-pointer-active
+) .media-type-filter:not(.active):not(:hover) {
+  background: var(--box-level-3-background) !important;
+  border-color: var(--box-level-3-border) !important;
+  border-radius: var(--box-level-3-radius) !important;
+  box-shadow: var(--box-level-3-shadow) !important;
+  -webkit-backdrop-filter: var(--box-level-3-blur) !important;
+  backdrop-filter: var(--box-level-3-blur) !important;
+}
+
+:root[data-theme][data-dashboard-tactile="on"] body .library-section .media-type-filter-group:is(
+  :hover, :focus-within, .is-pointer-active
+) .media-type-filter:not(.active):hover {
+  background: var(--box-level-3-hover-background) !important;
+  border-color: var(--box-level-3-hover-border) !important;
+  border-radius: var(--box-level-3-radius) !important;
+  box-shadow: var(--box-level-3-hover-shadow) !important;
+}
+
+:root[data-theme][data-dashboard-tactile="on"] body .library-section .media-type-filter-group:is(
+  :hover, :focus-within, .is-pointer-active
+) .media-type-filter.active {
+  background: color-mix(in srgb, currentColor 12%, var(--box-level-3-background)) !important;
+  border-color: color-mix(in srgb, currentColor 62%, var(--box-level-3-border)) !important;
+  border-radius: var(--box-level-3-radius) !important;
+  box-shadow: var(--box-level-3-shadow),
+    0 0 7px color-mix(in srgb, currentColor 24%, transparent) !important;
+  -webkit-backdrop-filter: var(--box-level-3-blur) !important;
+  backdrop-filter: var(--box-level-3-blur) !important;
+}
+
+/* Match the selected Library/Watchlist treatment: glow the glyph, not its tile. */
+:root[data-theme] body .library-section :is(
+  .library-view-option.active,
+  .media-type-filter.active
+) {
+  box-shadow: var(--box-level-2-shadow) !important;
+  text-shadow:
+    0 0 6px color-mix(in srgb, currentColor 82%, transparent),
+    0 0 13px color-mix(in srgb, currentColor 58%, transparent) !important;
+}
+
+:root[data-theme] body .library-section .media-type-filter.active {
+  box-shadow: var(--box-level-3-shadow) !important;
+}
+
+:root[data-theme][data-dashboard-tactile="on"] body .library-section .media-type-filter-group:is(
+  :hover, :focus-within, .is-pointer-active
+) .media-type-filter.active {
+  box-shadow: var(--box-level-3-shadow) !important;
+}
+
+:root[data-theme] body .library-section :is(
+  .library-view-option.active,
+  .media-type-filter.active
+) :is(svg, img.app-icon, .app-icon) {
+  filter:
+    drop-shadow(0 0 4px color-mix(in srgb, currentColor 90%, transparent))
+    drop-shadow(0 0 9px color-mix(in srgb, currentColor 62%, transparent)) !important;
+}
+
+:root[data-icon-style="filled"] body .library-section :is(
+  .library-view-option.active,
+  .media-type-filter.active
+) .filled-icon {
+  filter:
+    drop-shadow(0 0 4px color-mix(in srgb, var(--app-icon-state-color, currentColor) 95%, transparent))
+    drop-shadow(0 0 11px color-mix(in srgb, var(--app-icon-state-color, currentColor) 72%, transparent)) !important;
 }

@@ -190,9 +190,9 @@ main:has(.dashboard-layout.layout-normal) {
     align-self: center;
     display: flex;
     flex-direction: column;
-    height: 258px;
+    height: var(--spotlight-poster-height);
   }
-  .dashboard-layout.layout-normal > .spotlight .banner-controls { margin-top: auto; }
+  .dashboard-layout.layout-normal > .spotlight .banner-controls { margin-top: 0; }
   .dashboard-layout.layout-normal > .spotlight .banner-poster {
     width: 188px;
     flex-basis: 188px;
@@ -437,7 +437,7 @@ main:has(.dashboard-layout.layout-normal) {
   .spotlight h2 { margin: 0 -2px 13px; }
   .statsbar { margin-bottom: 30px; }
 
-  .library-section { --library-section-padding: 18px; padding-block: var(--library-section-padding); padding-inline: var(--library-toolbar-inset); border-radius: 17px; }
+  .library-section { --library-section-padding: 18px; padding-top: var(--library-toolbar-inset); padding-bottom: var(--library-section-padding); padding-inline: var(--library-toolbar-inset); border-radius: 17px; }
   .library-section .section-heading { padding: 0; }
   .section-heading { align-items: start; flex-direction: column; gap: 18px; }
   .library-heading-left,
@@ -529,33 +529,36 @@ main:has(.dashboard-layout.layout-normal) {
   .spotlight-meta strong { font-size: 27px; }
   .statsbar { grid-template-columns: 1fr 1fr; }
   .statsbar div { padding: 6px; }
-  .library-section { --library-section-padding: 15px; padding-block: var(--library-section-padding); padding-inline: var(--library-toolbar-inset); border-radius: 14px; }
+  .library-section { --library-section-padding: 15px; padding-top: var(--library-toolbar-inset); padding-bottom: var(--library-section-padding); padding-inline: var(--library-toolbar-inset); border-radius: 14px; }
   .collection { grid-template-columns: 1fr; }
   .media-type-filter-group { width: 100%; }
   .media-type-filter { flex: 1; }
 }
 
-/* Give every hero poster a fixed 2:3 frame at each responsive size. The source
-   image and title never affect its dimensions; object-fit crops artwork to fit. */
+/* Keep poster dimensions stable between titles and size the poster itself
+   independently from the banner's height. */
 .spotlight {
-  --spotlight-poster-height: 256px;
+  --spotlight-poster-height: 296px;
   --spotlight-frame-space: 16px;
-  padding: 16px 16px 16px 40px;
-  height: calc(var(--spotlight-poster-height) + var(--spotlight-frame-space) + var(--spotlight-frame-space));
-  min-height: 0;
+  --spotlight-padding: 20px;
+  padding: var(--spotlight-padding);
 }
 
 .spotlight .banner-poster {
   align-self: center;
+  box-sizing: border-box;
   width: calc(var(--spotlight-poster-height) * 2 / 3);
+  min-width: calc(var(--spotlight-poster-height) * 2 / 3);
   height: var(--spotlight-poster-height);
+  min-height: var(--spotlight-poster-height);
   flex: 0 0 calc(var(--spotlight-poster-height) * 2 / 3);
 }
 
 .dashboard-layout.layout-normal > .spotlight {
-  --spotlight-poster-height: 260px;
+  --spotlight-poster-height: 318px;
   --spotlight-frame-space: 20px;
-  padding: 20px;
+  --spotlight-padding: 16px;
+  padding: var(--spotlight-padding);
 }
 
 .dashboard-layout.layout-normal > .spotlight .banner-poster {
@@ -566,38 +569,51 @@ main:has(.dashboard-layout.layout-normal) {
 
 @media (max-width: 760px) {
   .spotlight {
-    --spotlight-poster-height: 208px;
+    --spotlight-poster-height: 228px;
     --spotlight-frame-space: 25px;
-    padding: 25px;
+    --spotlight-padding: 29px;
+    padding: var(--spotlight-padding);
   }
 
   .dashboard-layout.layout-normal > .spotlight {
-    --spotlight-poster-height: 208px;
+    --spotlight-poster-height: 228px;
     --spotlight-frame-space: 25px;
-    padding: 25px;
+    --spotlight-padding: 29px;
+    padding: var(--spotlight-padding);
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .spotlight {
+    --spotlight-poster-height: 228px;
+    --spotlight-padding: 29px;
   }
 }
 
 @media (max-width: 470px) {
   .spotlight {
-    --spotlight-poster-height: 218px;
+    --spotlight-poster-height: 238px;
     --spotlight-frame-space: 20px;
-    padding: 20px;
+    --spotlight-padding: 24px;
+    padding: var(--spotlight-padding);
   }
 
   .dashboard-layout.layout-normal > .spotlight {
-    --spotlight-poster-height: 218px;
+    --spotlight-poster-height: 238px;
     --spotlight-frame-space: 20px;
-    padding: 20px;
+    --spotlight-padding: 24px;
+    padding: var(--spotlight-padding);
+  }
+
+  body:not(.is-detail-view) .dashboard-layout.layout-normal > .spotlight {
+    --spotlight-poster-height: 238px;
+    --spotlight-padding: 24px;
   }
 }
 
+/* Keep the normal-layout poster slightly smaller within the banner. */
 @container app-content (min-width: 950px) {
   .dashboard-layout.layout-normal > .spotlight {
-    --spotlight-frame-space: 20px;
-    padding-right: 20px;
-    height: 100%;
-    min-height: 302px;
+    --spotlight-poster-height: 270px;
+    padding: 16px 50px;
   }
 }
 

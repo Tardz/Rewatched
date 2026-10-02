@@ -7,7 +7,9 @@
   background: var(--app-background);
   --text: #202733;
   --app-background: #eef2f6;
+  --light-background-white-tint: 24%;
   --poster-gradient-white-tint: 14%;
+  --poster-background-theme-factor: 1;
   --muted: #687384;
   --empty-inset-shadow: #52677f38;
   --empty-inset-highlight: #ffffffd1;
@@ -86,11 +88,15 @@
 
 :root[data-theme="light"] body {
   background:
+    linear-gradient(
+      color-mix(in srgb, white var(--light-background-white-tint), transparent),
+      color-mix(in srgb, white var(--light-background-white-tint), transparent)
+    ),
     radial-gradient(
       ellipse at 16% 0%,
       color-mix(
         in srgb,
-        color-mix(in srgb, var(--app-poster-color-one, #dce5e9) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-strength),
+        color-mix(in srgb, var(--app-poster-color-one, #dce5e9) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-effective-strength),
         var(--app-background)
       ) 0%,
       transparent 48%
@@ -99,7 +105,7 @@
       ellipse at 88% 12%,
       color-mix(
         in srgb,
-        color-mix(in srgb, var(--app-poster-color-two, #e2e1e7) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-strength),
+        color-mix(in srgb, var(--app-poster-color-two, #e2e1e7) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-effective-strength),
         var(--app-background)
       ) 0%,
       transparent 40%
@@ -108,8 +114,21 @@
   background-attachment: fixed;
 }
 
+:root[data-theme="light"] body::before {
+  background:
+    linear-gradient(
+      color-mix(in srgb, white var(--light-background-white-tint), transparent),
+      color-mix(in srgb, white var(--light-background-white-tint), transparent)
+    ),
+    var(--app-poster-image) center / cover no-repeat;
+}
+
 :root[data-theme="light"][data-poster-background="off"] body {
-  background: var(--app-background);
+  background: color-mix(
+    in srgb,
+    var(--app-background) calc(100% - var(--light-background-white-tint)),
+    white var(--light-background-white-tint)
+  );
 }
 
 :root[data-theme="light"] .library-section .section-heading { background: var(--panel); }
@@ -2295,7 +2314,7 @@
     7px 10px 18px var(--raised-lower-shadow);
 }
 
-/* The dashboard uses 14px key corners and 20px panel corners. */
+/* The dashboard uses 14px tile corners and 20px main-panel corners. */
 :root[data-theme][data-dashboard-tactile="on"] body .library-section :is(
   .library-view-option,
   .library-folder-dropdown,
@@ -2316,7 +2335,7 @@
   .media-type-filter-group:hover,
   .media-type-filter-group:focus-within
 ) {
-  border-radius: 20px;
+  border-radius: var(--box-level-2-radius);
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
   box-shadow:

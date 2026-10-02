@@ -4,7 +4,7 @@
 */
 
 .eyebrow {
-  margin: 0 0 13px;
+  margin: 0 0 var(--spotlight-title-gap, 13px);
   color: var(--blue);
   font: 500 10px "DM Mono", monospace;
   font-size: clamp(8px, 1.2cqi, 10px);
@@ -13,38 +13,41 @@
 }
 
 #banner-label {
+  --banner-label-icon-size: 22px;
+  --banner-label-text-size: clamp(13px, 1.65cqi, 15px);
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
 }
 
-.banner-media-chip {
-  display: inline-flex;
-  align-items: center;
-  min-height: 22px;
-  padding: 3px 8px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  background: color-mix(in srgb, var(--panel) 82%, transparent);
-  color: var(--text);
-  font: inherit;
-  line-height: 1;
-  letter-spacing: .1em;
+.banner-media-type-icon {
+  --app-icon-size: var(--banner-label-icon-size);
+  --app-icon-png-size: calc(var(--banner-label-icon-size) - 2px);
+  --app-icon-filled-size: calc(var(--banner-label-icon-size) - 6px);
+  display: block;
+  width: var(--banner-label-icon-size);
+  height: var(--banner-label-icon-size);
+  flex: 0 0 var(--banner-label-icon-size);
+  object-fit: contain;
+  transform: translateY(2px);
 }
 
-.banner-media-chip.is-movie {
-  border-color: var(--status-danger-border);
-  background: color-mix(in srgb, var(--status-danger) 18%, transparent);
+.banner-media-type-icon.is-movie {
+  --app-icon-state-color: var(--app-icon-red-color, var(--status-danger));
   color: var(--status-danger);
 }
 
-.banner-media-chip.is-show {
-  border-color: var(--border-blue-action);
-  background: color-mix(in srgb, var(--blue) 18%, transparent);
+.banner-media-type-icon.is-show {
+  --app-icon-state-color: var(--app-icon-blue-color, var(--blue));
   color: var(--blue);
 }
 
-.banner-label-context { color: inherit; }
+.banner-label-context {
+  color: #c1c9d4;
+  font: 400 var(--banner-label-text-size) "DM Mono", monospace;
+  letter-spacing: normal;
+  text-transform: none;
+}
 
 .spotlight {
   container-type: inline-size;
@@ -70,7 +73,12 @@
 }
 
 .spotlight-copy {
+  --spotlight-title-gap: 13px;
   min-width: 0;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  height: var(--spotlight-poster-height);
 }
 
 .spotlight h2 {
@@ -88,17 +96,29 @@
 }
 
 .banner-director {
-  margin: 0 0 14px;
-  color: var(--muted);
-  font-size: 15px;
-  font-size: clamp(11px, 1.8cqi, 15px);
-  line-height: 1.3;
+  display: inline;
+  margin: 0;
+  color: #c1c9d4;
+  font: 400 var(--banner-label-text-size) "DM Mono", monospace;
+  font-weight: 400;
+  line-height: inherit;
+  letter-spacing: normal;
+  vertical-align: baseline;
+  white-space: nowrap;
+  text-transform: none;
+  -webkit-text-stroke: 0;
+}
+
+.banner-label-separator {
+  color: #c1c9d4;
+  font: 400 var(--banner-label-text-size) "DM Mono", monospace;
+  text-transform: none;
 }
 
 .banner-director[hidden] { display: none; }
 
 .banner-release-year {
-  margin: 0 0 20px;
+  margin: 0 0 var(--spotlight-title-gap, 13px);
   color: #c1c9d4;
   font: 500 16px "DM Mono", monospace;
   font-size: clamp(12px, 2cqi, 16px);
@@ -108,9 +128,18 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: 0;
   color: var(--muted);
   font: 13px "DM Mono", monospace;
   font-size: clamp(10px, 1.6cqi, 13px);
+}
+
+.banner-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: auto;
 }
 
 .spotlight-meta strong {
@@ -158,7 +187,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 30px;
+  margin-top: 0;
   color: var(--muted);
   font: 11px "DM Mono", monospace;
 }
@@ -301,6 +330,7 @@
 }
 
 #banner-date {
+  color: #c1c9d4;
   line-height: 1;
   transform: none;
   align-self: center;

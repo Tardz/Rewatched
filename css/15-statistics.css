@@ -440,7 +440,7 @@
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--blue) 40%, transparent));
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--watch-color, var(--blue)) 40%, transparent));
 }
 
 .statistics-full-timeline {

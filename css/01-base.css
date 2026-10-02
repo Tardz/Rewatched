@@ -61,6 +61,10 @@
   --box-level-2-color: var(--surface-dashboard-inner);
   --box-level-3-color: #55555b;
   --poster-background-strength: 22%;
+  /* Dark colors have more contrast against the dark canvas, so use a softer
+     theme multiplier to keep the perceived wash close to light mode. */
+  --poster-background-theme-factor: 0.5;
+  --poster-background-effective-strength: calc(var(--poster-background-strength) * var(--poster-background-theme-factor));
   --poster-gradient-white-tint: 0%;
   --glass-highlight: #ffffff24;
   --glass-shadow: #00000048;
@@ -176,8 +180,8 @@
   --toolbar-control-gap-expanded: 6px;
   --toolbar-control-padding-inline: var(--space-6);
   --toolbar-control-padding-inline-compact: 14px;
-  --toolbar-control-radius: 14px;
-  --toolbar-control-radius-compact: 9px;
+  --toolbar-control-radius: var(--box-level-2-radius);
+  --toolbar-control-radius-compact: var(--box-level-3-radius);
   --toolbar-group-padding: var(--space-1);
   --library-bar-shadow: inset 0 1px 0 var(--shadow-inset), 0 6px 16px var(--shadow-black-25);
   --toolbar-folder-item-width: 112px;
@@ -208,7 +212,7 @@ body {
       ellipse at 16% 0%,
       color-mix(
         in srgb,
-        color-mix(in srgb, var(--app-poster-color-one, #26312f) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-strength),
+        color-mix(in srgb, var(--app-poster-color-one, #26312f) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-effective-strength),
         var(--app-background)
       ) 0%,
       transparent 48%
@@ -217,7 +221,7 @@ body {
       ellipse at 88% 12%,
       color-mix(
         in srgb,
-        color-mix(in srgb, var(--app-poster-color-two, #28272d) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-strength),
+        color-mix(in srgb, var(--app-poster-color-two, #28272d) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-effective-strength),
         var(--app-background)
       ) 0%,
       transparent 40%
@@ -241,7 +245,7 @@ body::before {
 }
 
 :root[data-poster-background="on"] body::before {
-  opacity: var(--poster-background-strength);
+  opacity: var(--poster-background-effective-strength);
 }
 
 :root[data-poster-background="off"] body::before { opacity: 0; }

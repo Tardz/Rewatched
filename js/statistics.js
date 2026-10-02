@@ -640,6 +640,7 @@ function drawExpandedStatisticsTimelinePath() {
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('d', `M ${point.x} ${point.y} L ${nextPoint.x} ${nextPoint.y}`);
     path.setAttribute('stroke', `url(#${gradientId})`);
+    path.style.setProperty('--watch-color', point.color);
     return path;
   });
   svg.replaceChildren(defs, ...segments);

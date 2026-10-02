@@ -126,15 +126,10 @@ function createTimelineItem(entry, watch, index) {
   item.style.setProperty('--watch-color', ratingColorForScore(watch.score));
   const heading = document.createElement('div');
   heading.className = 'timeline-entry-card';
-  const title = document.createElement('strong');
   const score = document.createElement('span');
   const date = document.createElement('time');
 
   const approximate = ['approximate', 'approximate-month', 'approximate-date'].includes(watch.precision);
-  const isFirstWatch = index === entry.watches.length - 1;
-  title.textContent = isFirstWatch
-    ? (approximate ? 'Approximate first watch' : 'First watch')
-    : `${approximate ? 'Approximate ' : ''}Rewatch`;
   score.className = 'detail-rating-with-star';
   const scoreFill = `${Number(watch.score) * 10}%`;
   const scoreColor = ratingColorForScore(watch.score);
@@ -181,7 +176,7 @@ function createTimelineItem(entry, watch, index) {
   const ratingRow = document.createElement('div');
   ratingRow.className = 'timeline-rating-row';
   ratingRow.append(actions, score);
-  heading.append(title, ratingRow);
+  heading.append(ratingRow);
   item.append(numberMarker, date, heading);
 
   item.tabIndex = 0;

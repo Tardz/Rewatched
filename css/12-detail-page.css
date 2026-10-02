@@ -28,7 +28,7 @@
       ellipse at 14% 0%,
       color-mix(
         in srgb,
-        color-mix(in srgb, var(--detail-poster-color-one, #26312f) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-strength),
+        color-mix(in srgb, var(--detail-poster-color-one, #26312f) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-effective-strength),
         var(--surface-detail)
       ) 0%,
       transparent 54%
@@ -37,7 +37,7 @@
       ellipse at 88% 12%,
       color-mix(
         in srgb,
-        color-mix(in srgb, var(--detail-poster-color-two, #28272d) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-strength),
+        color-mix(in srgb, var(--detail-poster-color-two, #28272d) calc(100% - var(--poster-gradient-white-tint)), white var(--poster-gradient-white-tint)) var(--poster-background-effective-strength),
         var(--surface-detail)
       ) 0%,
       transparent 48%

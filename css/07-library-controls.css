@@ -155,7 +155,7 @@
   align-items: center;
   gap: var(--toolbar-control-gap);
   box-sizing: border-box;
-  height: auto;
+  height: var(--toolbar-control-height);
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -252,8 +252,9 @@
   isolation: isolate;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
   gap: var(--toolbar-control-gap);
-  height: auto;
+  height: var(--toolbar-control-height);
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -536,7 +537,8 @@
 
 .library-section {
   --library-section-padding: var(--space-7);
-  padding-block: var(--library-section-padding);
+  padding-top: var(--library-toolbar-inset);
+  padding-bottom: var(--library-section-padding);
   padding-inline: var(--library-toolbar-inset);
   border: 1px solid var(--line);
   border-radius: 20px;
@@ -545,7 +547,7 @@
 }
 
 .library-section .section-heading {
-  margin-top: calc(var(--library-toolbar-inset) - var(--library-section-padding));
+  margin-top: 0;
   margin-inline: 0;
   padding: 0;
   margin-bottom: var(--space-6);
