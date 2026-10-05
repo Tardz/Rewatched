@@ -1,5 +1,6 @@
 /* Stats bar beneath the banner: one card for each summary metric. */
 
+/* Lay out the four summary metrics beneath the featured banner. */
 .statsbar {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -8,11 +9,12 @@
   background: var(--surface-stats-outer);
   border: 1px solid var(--line);
   border-radius: 20px;
-  margin: 30px 0 70px;
+  margin: 30px 0;
   overflow: visible;
   box-shadow: 0 16px 36px #00000090, 0 4px 12px #00000068, inset 0 1px 0 #ffffff0d;
 }
 
+/* Give each summary metric its own inset card. */
 .statsbar div {
   background: var(--surface-stats-inner);
   border: 1px solid var(--line);
@@ -25,13 +27,15 @@
   transition: box-shadow 160ms ease;
 }
 
+/* Center the label and value in each top-level metric card. */
 .statsbar > div {
   align-items: center;
   text-align: center;
   gap: 5px;
 }
 
-:root[data-dashboard-tactile="on"] .statsbar {
+/* Apply the optional glass surface to the summary bar. */
+:root[data-theme-glass="on"] .statsbar {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-stats-outer) 88%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -43,7 +47,8 @@
     0 4px 12px #00000060;
 }
 
-:root[data-dashboard-tactile="on"] .statsbar > div {
+/* Apply matching glass surfaces to individual summary cards. */
+:root[data-theme-glass="on"] .statsbar > div {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -56,6 +61,7 @@
   transition: box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
+/* Style the compact uppercase label for each metric. */
 .stat-label {
   display: block;
   color: var(--muted);
@@ -65,22 +71,21 @@
   margin-bottom: 0;
 }
 
+/* Emphasize the numeric value in each summary card. */
 .statsbar strong {
   font-size: 19px;
   letter-spacing: 0.1em;
   font-weight: 500;
 }
 
+/* Let the average-score value inherit its active rating color. */
 .statsbar #stat-average {
   color: inherit;
 }
 
+/* Adjust the shared rating chip for the average-score card. */
 .statsbar #stat-average.rating-value-chip {
   padding: 3px 7px;
   border-radius: var(--toolbar-control-radius-compact);
   font-size: 17px;
-}
-
-.statsbar {
-  margin-bottom: 30px;
 }

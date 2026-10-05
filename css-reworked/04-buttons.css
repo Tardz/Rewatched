@@ -1,0 +1,73 @@
+/* Shared styles for text buttons, icon buttons, and button icons. */
+
+/* SECTION Text buttons */
+/* Set the common shape and typography for app action buttons. */
+.button {
+  border: 0;                               /* Remove browser-default button borders. */       
+  border-radius: var(--radius-button);     /* Give action buttons the shared rounded shape. */
+  padding: 11px 17px;                      /* Set comfortable click-target spacing. */        
+  font-size: 13px;                         /* Keep action labels compact. */                  
+  font-weight: var(--font-weight-app); /* Make action labels easy to scan. */
+}
+
+/* Base class: .button */
+/* Highlight the primary action. */
+.buttonPrimary {
+  background: var(--color-button-primary); /* Use the app's primary button fill. */
+  color: var(--color-text-on-primary);     /* Keep text legible on the bright fill. */
+}
+
+/* Adjust the primary action on hover. */
+.buttonPrimary:hover {
+  background: var(--color-button-primary-hover); /* Provide visible hover feedback. */
+}
+/* !SECTION */
+
+/* SECTION Icon buttons and symbols */
+/* Align the contents of compact icon-only controls. */
+.buttonIcon {
+  display: grid;                                /* Use grid to center the icon. */                      
+  place-items: center;                          /* Center the icon on both axes. */                     
+  padding: 0;                                   /* Let control dimensions come from component styles. */
+  cursor: pointer;                              /* Indicate that the control is interactive. */         
+  transition:                                  
+    background-color 140ms ease,               
+    border-color 140ms ease,                   
+    color 140ms ease,                            /* Smooth its hover state. */
+    box-shadow 140ms ease;
+}
+
+/* Give icon controls a stronger surface and border on hover. */
+.buttonIcon:hover {
+  border-color: var(--color-border-accent-muted); /* Emphasize the hovered outline. */
+  background: var(--color-surface-hover);         /* Brighten the hovered control surface. */
+}
+
+/* Make keyboard focus clearly visible on icon controls. */
+.buttonIcon:focus-visible {
+  outline: 2px solid var(--color-accent-primary); /* Mark the focused control with the accent color. */ 
+  outline-offset: 3px;                            /* Separate the focus ring from the control border. */
+}
+
+/* Keep outlined button icons consistent while leaving filled playback icons alone. */
+button svg:not(.play-icon):not(.pause-icon) {
+  fill: none;             /* Keep outlined icons unfilled. */
+  stroke: currentColor;   /* Match each icon to its button text color. */
+  stroke-width: 1.8;      /* Use the shared outline thickness. */
+  stroke-linecap: round;  /* Soften line ends. */
+  stroke-linejoin: round; /* Soften line corners. */
+}
+
+/* Base class: .icon */
+/* Define the standard size and outline style for reusable button SVGs. */
+.iconImage {
+  display: block;         /* Avoid inline-SVG baseline spacing. */
+  width: 18px;            /* Set the icon's standard width. */
+  height: 18px;           /* Set the icon's standard height. */
+  fill: none;             /* Keep the icon in outline style. */
+  stroke: currentColor;   /* Match the icon to the control's text color. */
+  stroke-width: 1.8;      /* Use the shared outline thickness. */
+  stroke-linecap: round;  /* Soften line ends. */
+  stroke-linejoin: round; /* Soften line corners. */
+}
+/* !SECTION */

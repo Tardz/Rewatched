@@ -1,0 +1,143 @@
+/* Shared tag, rating, and priority chips and indicators. */
+
+/* SECTION Text chips */
+/* Share the box, inset, and typography used by category and label chips. */
+.tagChip,
+.labelChip {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 6px;
+  font-family: var(--font-family-app);
+  font-size: var(--font-size-labelChip);
+  font-weight: calc(var(--font-weight-app) - 200);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Share the category-colored chip frame between banners and entry cards. */
+.tagChip {
+  flex: 0 0 auto;
+  border: 1px solid var(--color-border-control-subtle);
+  border-radius: var(--radius-tagChip-entry);
+  color: var(--color-text-secondary);
+}
+.tagChip:not(.is-placeholder) {
+  border-color: hsl(var(--category-hue) 38% 45%);
+  background: hsl(var(--category-hue) 34% 29%);
+  color: hsl(var(--category-hue) 48% 84%);
+}
+.tagChip.is-placeholder { visibility: hidden; }
+/* Give text and media-type labels the same compact chip surface. */
+.labelChip {
+  justify-content: center;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-labelChip);
+  background: var(--color-surface-level-3);
+  box-shadow: var(--shadow-surface-level-3);
+  color: var(--color-text-muted-bright);
+  letter-spacing: normal;
+  text-transform: none;
+}
+/* !SECTION */
+
+/* SECTION Rating and priority indicators */
+/* SECTION valueChip */
+/* Give rating and priority values the same compact badge layout. */
+.valueChip {
+  display: inline-flex;                                        /* Keep the badge sized to its inline content. */
+  align-items: center;                                         /* Vertically center the value text. */
+  flex: 0 0 auto;                                              /* Prevent the badge from shrinking in flex layouts. */
+  padding: 3px 6px;
+  border: 1px solid color-mix(in srgb, var(--valueChip-color) 
+          42%, var(--color-border-subtle));                    /* Tint the outline with the badge value color. */
+  border-radius: var(--radius-valueChip);                     /* Give value chips a radius suited to their height. */
+  background: color-mix(in srgb, var(--valueChip-color) 
+              9%, var(--color-surface-deep));                  /* Add a subtle tint to the deep surface. */
+  box-shadow: var(--shadow-value-badge);                       /* Lift the badge slightly from its background. */
+  color: var(--valueChip-color);                              /* Use the value's semantic color for its text. */
+  font-family: var(--font-family-valueChip);                   /* Use the tokenized badge typeface. */
+  font-size: var(--font-size-chip);                       /* Use the tokenized badge size. */
+  font-weight: var(--font-weight-valueChip);                   /* Use the tokenized badge weight. */
+}
+
+/* Base class: .valueChip */
+/* Use the current rating color, falling back to a neutral tone. */
+.ratingValueChip {
+  --valueChip-color: var(--rating-color, var(--color-rating-neutral));
+}
+
+/* Base class: .valueChip */
+/* Use the current priority color, falling back to medium priority. */
+.priorityValueChip {
+  --valueChip-color: var(--priority-color, var(--color-priority-medium));
+}
+/* !SECTION */
+
+/* SECTION ratingsMeter */
+/* Draw the shared track behind rating and priority fills. */
+.ratingsMeter {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 88px;
+  height: 7px;
+  overflow: visible;
+  border-radius: 999px;
+  background: var(--color-rating-neutral);
+  box-shadow: inset 0 0 0 1px #ffffff20;
+  vertical-align: middle;
+}
+
+/* Size the rating meter used inside banner metadata. */
+.banner-content-info-meta-value-ratingBar {
+  width: 110px;
+  height: 9px;
+}
+
+/* Fill a shared meter with its current rating or priority color. */
+.ratingFill,
+.priorityFill {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+  background: var(--rating-color, var(--color-rating-neutral));
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--rating-color, var(--color-rating-neutral)) 38%, transparent);
+  transition: width 180ms ease, box-shadow 180ms ease;
+}
+
+/* Prefer the semantic priority color for priority meter fills. */
+.priorityFill {
+  background: var(--priority-color, var(--rating-color, var(--color-priority-medium)));
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--priority-color, var(--rating-color, var(--color-priority-medium))) 38%, transparent);
+}
+/* !SECTION */
+
+/* SECTION priorityDots */
+/* Arrange priority dots in a compact row. */
+.priorityDots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-level-2);
+}
+
+/* Draw each unfilled priority dot. */
+.priorityDots > span {
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--priority-color, var(--color-priority-medium));
+  border-radius: 50%;
+  background: transparent;
+}
+
+/* Fill dots up to the current priority. */
+.priorityDots > span.is-filled {
+  background: var(--priority-color, var(--color-priority-medium));
+  box-shadow: 0 0 5px color-mix(in srgb, var(--priority-color, var(--color-priority-medium)) 45%, transparent);
+}
+/* !SECTION */
+/* !SECTION */

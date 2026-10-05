@@ -1,0 +1,28 @@
+/* Shared interaction feedback used by controls in multiple components. */
+
+/* SECTION Pressed controls */
+/* Give banner and dashboard controls the same subtle inset click feedback. */
+:is(
+  .dashboard-info-brand,
+  .dashboard-info-git,
+  .dashboard-info-back,
+  .dashboard-controls-settings,
+  .dashboard-controls-theme,
+  .dashboard-controls-activity,
+  .dashboard-controls-storage-indicator,
+  .dashboard-controls-storage-settings,
+  .dashboard-page-control,
+  .banner-content-controls > button,
+  .workspace-controls .expandable > button,
+  .workspace-controls-folders .entry-folder-trigger,
+  .workspace-controls-search-toggle,
+  .workspace-controls-search-clear,
+  .workspace-controls-filter-reset,
+  .workspace-controls-pagination > button,
+  .workspace-controls-createEntry,
+  .workspace-content-entry-tools button,
+  .workspace-content-entry-tools .entry-open-fullscreen
+):active {
+  box-shadow: var(--shadow-control-pressed) !important; /* Override component elevation while pressed. */
+}
+/* !SECTION */

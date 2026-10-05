@@ -1,0 +1,167 @@
+/* App-shell and browser defaults, separated from the shared token layer. */
+
+/* SECTION Document defaults and canvas */
+/* Apply predictable sizing to all elements and their pseudo-elements. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* Include padding and borders in element dimensions. */
+}
+
+/* Set the shared app typography and foreground color. */
+:root {
+  font-family: var(--font-family-app); /* Use the tokenized app typeface throughout. */
+  font-weight: var(--font-weight-app);
+  color: var(--color-text-primary); /* Give text a consistent default color. */
+}
+
+/* Keep in-page navigation smooth unless reduced motion is enabled. */
+html {
+  scroll-behavior: smooth; /* Animate in-page jumps for easier navigation. */
+}
+
+/* Set the document canvas and layered poster-derived background. */
+body {
+  position: relative; /* Anchor the page-level poster wash. */
+  isolation: isolate; /* Keep the wash behind page content. */
+  margin: 0;          /* Remove the browser's default body gap. */
+  background:
+    radial-gradient(
+      ellipse at 16% 0%,
+      color-mix(
+        in srgb,
+        color-mix(in srgb, var(--app-poster-color-one, var(--color-poster-fallback-one)) calc(100% - var(--tint-white-poster-gradient)), white var(--tint-white-poster-gradient)) var(--strength-effective-poster-background),
+        var(--color-background-app)
+      ) 0%,
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 88% 12%,
+      color-mix(
+        in srgb,
+        color-mix(in srgb, var(--app-poster-color-two, var(--color-poster-fallback-two)) calc(100% - var(--tint-white-poster-gradient)), white var(--tint-white-poster-gradient)) var(--strength-effective-poster-background),
+        var(--color-background-app)
+      ) 0%,
+      transparent 40%
+    ),
+    linear-gradient(155deg, #1a1d20 0%, #141619 58%, var(--color-background-app) 100%);
+  background-attachment: fixed; /* Keep the canvas gradient stationary while scrolling. */
+  backdrop-filter: none;        /* Avoid filtering the entire page. */
+}
+
+/* Use a blurred poster as a soft canvas wash when canvas sampling is unavailable. */
+body::before {
+  position: fixed;                                                    /* Keep the wash attached to the viewport. */
+  z-index: -1;                                                        /* Place it behind the app's content. */
+  inset: -12%;                                                        /* Extend beyond the viewport to hide blurred edges. */
+  background: var(--app-poster-image, none) center/cover no-repeat; /* Fill with the current poster image. */
+  content: "";                                                        /* Create the decorative pseudo-element. */
+  filter: blur(var(--blur-poster-wash)) 
+          saturate(var(--saturation-poster-wash));             /* Soften and enrich the poster colors. */
+  opacity: 0;                                                         /* Start hidden until enabled by app state. */
+  pointer-events: none;                                               /* Let clicks pass through to the app. */
+  transition: opacity 900ms ease;                                     /* Fade the wash in or out. */
+}
+
+/* Reveal the poster wash only when the app has enabled that preference. */
+:root[data-poster-background="on"] body::before {
+  opacity: var(--strength-effective-poster-background); /* Show the wash at the configured strength. */
+}
+
+/* Keep the wash fully hidden when poster backgrounds are disabled. */
+:root[data-poster-background="off"] body::before {
+  opacity: 0; /* Hide the wash when the preference is off. */
+}
+
+/* Use a plain theme canvas when poster backgrounds are disabled. */
+:root[data-poster-background="off"] body {
+  background: var(--color-background-app); /* Restore the plain app canvas. */
+}
+/* !SECTION */
+
+/* SECTION Shared app elements */
+/* Shared box surfaces; pair with component classes for layout and meaning. */
+.surfaceLevel1 { border: 1px solid var(--color-border-subtle); border-radius: var(--radius-surface-level-1); background: var(--color-surface-level-1); box-shadow: var(--shadow-surface-level-1); }
+.surfaceLevel2 { border: 1px solid var(--color-border-subtle); border-radius: var(--radius-surface-level-2); background: var(--color-surface-level-2); box-shadow: var(--shadow-surface-level-2); }
+.surfaceLevel3 { border: 1px solid var(--color-border-subtle); border-radius: var(--radius-surface-level-3); background: var(--color-surface-level-3); box-shadow: var(--shadow-surface-level-3); }
+
+/* ANCHOR Save confirmation toast */
+/* Position and style the global save confirmation toast. */
+.save-toast {
+  position: fixed;                                   /* Keep the confirmation visible while scrolling. */
+  right: var(--offset-inline-save-toast);            /* Set its distance from the inline edge. */
+  bottom: var(--offset-block-save-toast);            /* Set its distance from the bottom edge. */
+  z-index: 100;                                      /* Keep it above ordinary page content. */
+  padding: 9px 13px;                                 /* Give the short message breathing room. */
+  border: 1px solid var(--color-border-subtle);      /* Separate it from the page behind it. */
+  border-radius: var(--radius-control-compact);      /* Match compact control corners. */
+  background: var(--color-surface-panel);            /* Use the app panel surface color. */
+  color: var(--color-accent-primary);                /* Highlight the confirmation text. */
+  font-size: 12px;                                   /* Keep the transient message compact. */
+  box-shadow: 0 8px 
+              24px var(--shadow-color-black-strong); /* Lift it visually above the page. */
+}
+
+/* Make form controls inherit the app's type styling. */
+button,
+input,
+select,
+textarea {
+  font: inherit; /* Keep controls consistent with the surrounding typography. */
+}
+
+/* Show an interactive cursor on links and buttons. */
+button,
+a {
+  cursor: pointer; /* Signal that these elements can be activated. */
+}
+
+/* Keep links visually consistent with surrounding text. */
+a {
+  color: inherit;        /* Match the surrounding text color. */
+  text-decoration: none; /* Remove the browser's default underline. */
+}
+
+/* SECTION Icons */
+/* Give reusable interface icons a consistent default size. */
+.icon {
+  display: block;      /* Prevent inline-image baseline gaps. */       
+  flex: 0 0 auto;      /* Keep icons from shrinking in control rows. */
+  width: 24px;         /* Share the standard dashboard icon width. */  
+  height: 24px;        /* Share the standard dashboard icon height. */ 
+  color: var(--color-icon-default); /* Give inline icons the shared default color. */
+  object-fit: contain; /* Preserve raster icon proportions. */
+}
+
+/* Render filled icons as tinted masks while preserving their layout size. */
+/* Base class: .icon */
+.filledIcon {
+  width: var(--size-icon-filled);              /* Size the visible mask art. */             
+  height: var(--size-icon-filled);             /* Keep the mask square. */                  
+  flex: 0 0 var(--size-icon-filled);            /* Reserve the shared icon-size slot. */        
+  background-color: var(--app-icon-state-color, var(--color-icon-default)); /* Use the shared icon tint unless a state overrides it. */
+  -webkit-mask-position: center;                /* Center the mask in WebKit browsers. */    
+  mask-position: center;                        /* Center the mask. */                       
+  -webkit-mask-repeat: no-repeat;               /* Prevent mask tiling in WebKit browsers. */
+  mask-repeat: no-repeat;                       /* Prevent mask tiling. */                   
+  -webkit-mask-size: contain;                   /* Fit the full mask inside the icon slot. */
+  mask-size: contain;                           /* Fit the full mask inside the icon slot. */
+}
+/* !SECTION */
+
+/* ANCHOR Main app content */
+/* Center the app content and expose its width and padding as easy-to-tune tokens. */
+main {
+  container-name: app-content;                   /* Name the query container for component layout rules. */
+  container-type: inline-size;                   /* Let descendants respond to the available content width. */
+  max-width: var(--max-width-layout-content);    /* Limit the app's readable content width. */
+  margin: auto;                                  /* Center the content area horizontally. */
+  padding: var(--padding-block-layout-content) 
+           var(--padding-inline-layout-content); /* Keep consistent space around page content. */
+}
+
+/* Ensure elements hidden by app state stay hidden despite component display rules. */
+[hidden] {
+  display: none !important; /* Ensure hidden app-state elements cannot be displayed by other rules. */
+}
+/* !SECTION */

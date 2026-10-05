@@ -1,0 +1,244 @@
+/* Shared design tokens for the isolated reworked stylesheet set. */
+
+/* TOKEN RULES
+   - Add a token for shared values or values meant to be tuned together.
+   - Keep one-off layout and optical adjustments beside the rule that uses them.
+   - Name tokens by purpose, and group them by category below.
+   - Before adding a token, search for an existing one to reuse; remove tokens with no consumers.
+*/
+:root {
+  /* SECTION Colors */
+  /* Palette */
+  --palette-white: #ffffff; /* Pure white for status and icon details. */
+  --palette-grey: #D7DCE5;
+  --palette-purple: #D3B8FF;
+  --palette-red: var(--color-brand-mark);
+  --palette-orange: #FFC6A5;
+  --palette-blue: #A9D6FF;
+  --palette-green: #B7E8C7;
+  --palette-yellow: #F2D58A;
+
+  /* Text colors. */
+  --color-text-primary: #f4f1eb;                      /* Default foreground text color. */           
+  --color-text-secondary: #a3a9b5;                    /* Supporting and less prominent text. */      
+  --color-text-muted-bright: #cacfd8;                 /* Brighter secondary copy on dark surfaces. */
+  --color-text-on-surface: #e7edf7;                   /* Text placed on elevated surfaces. */        
+  --color-text-accent: var(--palette-blue);             /* Emphasized links and accent labels. */      
+  --color-icon-default: var(--color-text-on-surface); /* Shared default tint for interface icons. */
+
+  /* App canvas, panels, controls, and borders. */
+  --color-background-app: #111318;          /* Main page canvas color. */
+  --color-surface-panel: #1b1f27;           /* Default card, dialog, and panel fill. */
+  --color-border-subtle: #303641;           /* Low-emphasis separators and outlines. */
+  --color-border-strong: var(--color-border-control-subtle); /* Share the stronger control-border shade. */
+  --color-border-accent-muted: #68849e;     /* Softer accent outline for hovered controls. */
+  --color-surface-hover: #303b4b;           /* Surface fill for hovered controls. */
+  --color-surface-deep: var(--color-background-app); /* Share the nearly identical app-canvas shade. */
+  --color-border-control-subtle: #3b4654; /* Subtle outline for compact controls and frames. */    
+  
+  --color-surface-level-1: #222326;       /* Shared fill for outer-level panels. */                
+  --color-surface-level-2: #3d3e41;       /* Shared fill for controls and cards inside panels. */  
+  --color-surface-level-3: #55555b;       /* Shared fill for nested tiles. */
+  
+  --color-surface-detail: #171b22;        /* Dark surface for branding and fallback artwork. */
+  --color-surface-accent: #243745;          /* Accent surface for selected dashboard sections. */
+
+  /* General interaction and button colors. */
+  --color-accent-primary: var(--color-text-accent); /* Shared keyboard-focus and interaction accent. */
+  --color-button-primary: #ff6b67;                  /* Fill for primary buttons. */
+  --color-button-primary-hover: #ff8984;             /* Hover fill for primary buttons. */
+  --color-text-on-primary: #170f12;                  /* Text color legible on primary buttons. */
+  --color-brand-mark: #F29AA3;                       /* Color of the brand's punctuation mark. */
+
+  /* Media-type colors. */
+  --color-media-film: var(--palette-red);         /* Film icon and label. */                                                   
+  --color-media-game: var(--palette-orange);      /* Game icon and label. */                                                   
+  --color-media-show: var(--palette-blue);        /* Show icon and label. */                                                   
+  --color-media-book: var(--palette-green);       /* Book icon and label. */                                                   
+
+  /* Dashboard icon colors, applied to each control's hover or active state. */
+  --color-icon-settings: var(--palette-grey);     /* Settings control. */                                                      
+  --color-icon-theme: var(--palette-purple);      /* Theme control. */                                                         
+  --color-icon-git: var(--color-brand-mark);    /* GitHub link. */                                                           
+  --color-icon-activity: var(--palette-orange);   /* Activity control. */                                                      
+  --color-icon-library: var(--palette-blue);      /* Library navigation. */                                                    
+  --color-icon-storage: var(--palette-green);     /* Storage control. */                                                        
+  --color-icon-statistics: var(--palette-yellow); /* Statistics navigation. */                                                 
+
+  --color-log: var(--palette-blue);               /* Log action and logged-item state. */                                      
+  --color-backlog: var(--palette-blue);           /* Backlog and watchlist state. */
+
+  /* Storage feedback colors. */
+  --color-storage-saved: var(--palette-green);        /* Saved state. */
+  --color-storage-pending: var(--palette-orange);      /* Pending save state. */
+  --color-storage-error: var(--palette-red);        /* Failed save state. */
+  --color-storage-saved-border: #6eb489; /* Saved-state outline. */
+
+  /* Value indicator colors. */
+  --color-rating-neutral: #657183; /* Rating track when no score color is set. */
+  --color-priority-medium: var(--palette-blue); /* Default medium-priority label color. */
+  --color-title-outline: #000000;                /* Outline around the wordmark and banner title. */
+  /* !SECTION */
+
+  /* SECTION Radii */
+  /* Shared radius scale: change this multiplier to scale all migrated corners together. */
+  --radius-scale: 1; /* Global multiplier; increase to round the UI more, decrease to sharpen it. */
+  --radius-surface-level-1: calc(20px * var(--radius-scale)); /* Large outer panels and containers. */                  
+  --radius-surface-level-2: calc(14px * var(--radius-scale)); /* Mid-level boxes and grouped controls. */               
+  --radius-surface-level-3: calc(10px * var(--radius-scale)); /* Small nested controls and tiles. */                    
+  --radius-control-compact: var(--radius-surface-level-3);    /* Compact controls and value badges. */                  
+  --radius-button: var(--radius-control-compact);             /* Standard action buttons. */                            
+  --radius-icon-button: calc(12px * var(--radius-scale));     /* Compact icon-only buttons. */                          
+  --radius-valueChip: calc(8px * var(--radius-scale));       /* Smaller corner radius for compact rating and priority chips. */
+  --radius-tagChip-entry: calc(6px * var(--radius-scale));   /* Category tag radius in entry cards. */
+  --radius-tagChip-banner: calc(6px * var(--radius-scale));  /* Smaller category tag radius in the banner. */
+  --radius-labelChip: calc(6px * var(--radius-scale));       /* Compact radius for shared label-chip boxes. */
+  /* !SECTION */
+
+  /* SECTION Sizes and spacing */
+  --size-dashboard-control: 50px;                             /* Standard height and width for dashboard controls. */   
+  --size-icon-filled: 22px;                                   /* Default visible artwork size for filled icons. */   
+  --size-icon-controlls: 22px;
+  
+  /* Higher levels are nested more deeply and use tighter spacing. */
+  --spacing-level-0: 16px;                                    /* Gap between outer groups: overview siblings and dashboard info, controls, and page. */
+  --spacing-level-1: 9px;                                      /* Insets and gaps between inner boxes in level-0 panels. */
+  --spacing-level-2: 5px;                                      /* Gaps between compact items inside level-1 boxes. */
+  --spacing-level-3: 4px;                                      /* Fine gaps for tightly grouped level-2 items. */
+  /* !SECTION */
+
+  /* SECTION Typography */
+  --font-family-mono: "DM Mono", monospace;                                       /* Shared monospaced typeface for compact interface text. */    
+  --font-family-sans: "DM Sans", sans-serif;                                     
+  --font-family-apple: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-weight-app: 850;                                                        
+  --font-family-app: var(--font-family-apple);             /* Use the platform UI font, including Apple's San Francisco. */
+  
+  --font-family-dashboard-brand: var(--font-family-sans); /* Preserve the dashboard wordmark typeface. */                 
+  --font-family-banner-title: var(--font-family-apple);    /* Preserve the featured-title typeface. */                     
+  --font-size-dashboard-brand: 29px;                       /* Wordmark text size. */                                       
+  --font-family-valueChip: var(--font-family-mono);       /* Typeface for rating and priority values. */                  
+  
+  --size-dot-dashboard-brand: 53px;                        /* Wordmark punctuation size. */                                
+  --size-banner-label-chip: calc(var(--font-size-labelChip) + 8px); /* Shared height for banner label chips. */
+  --size-media-type-chip: var(--size-banner-label-chip); /* Square size for banner media-type icons. */
+  --font-size-labelChip: 10px; /* Shared text size for label chips. */
+  --font-size-chip: 14px;                            /* Base size for rating and priority values. */                 
+  --font-weight-valueChip: 500;                           /* Weight for rating and priority values. */
+  /* !SECTION */
+
+  /* SECTION Poster-derived backgrounds */
+  /* Fallback colors and palette values supplied by the banner script. */
+  --color-poster-fallback-one: #26312f;                                       /* First wash color when no poster sample exists. */     
+  --color-poster-fallback-two: #28272d;                                       /* Second wash color when no poster sample exists. */    
+  --poster-color-one: var(--color-poster-fallback-one);                       /* Runtime-overridable first banner palette color. */
+  --poster-color-two: var(--color-poster-fallback-two);                       /* Runtime-overridable second banner palette color. */
+  --tint-white-poster-gradient: 0%;                                           /* Amount of white mixed into sampled poster colors. */  
+  --strength-poster-background: var(--poster-background-strength, 22%);       /* Read the live app's poster-strength setting. */       
+  --factor-theme-poster-background: 0.5;                                      /* Softens the wash for the current theme. */            
+  --strength-effective-poster-background: calc(                              
+    var(--strength-poster-background) * var(--factor-theme-poster-background)
+  );                                                                          /* Final wash opacity after theme adjustment. */
+  /* !SECTION */
+
+  /* SECTION Shadows and glass */
+  /* Shared shadow colors and surface elevations. */
+  --shadow-color-black-strong: #0007;                                          /* Shared dark shadow color for elevated UI. */          
+  --shadow-color-black-medium: #0004;                                          /* Softer shadow for compact controls and badges. */     
+  --shadow-color-black-31: #0006;                                              /* Stronger shadow for grouped controls. */             
+  --shadow-color-inset: #ffffff08;                                             /* Low-contrast inset highlight. */                      
+  --shadow-surface-level-1:                                                   
+    0 12px 28px var(--shadow-color-black-31),                                 
+    0 3px 8px var(--shadow-color-black-medium);                                /* Shared elevation for outer panels. */                 
+  --shadow-surface-level-2:                                                   
+    inset 0 1px 0 var(--shadow-color-inset),                                  
+    0 8px 20px var(--shadow-color-black-31);                                   /* Shared elevation for inner boxes. */                  
+  --shadow-surface-level-3:
+    inset 0 1px 0 var(--shadow-color-inset),                                  
+    0 3px 8px var(--shadow-color-black-31);                                    /* Shared elevation for nested tiles. */                 
+  --shadow-value-badge: 0 3px 8px var(--shadow-color-black-medium);            /* Subtle lift for compact rating and priority badges. */
+  --filter-icon-glow: drop-shadow(0 0 4px color-mix(in srgb, var(--dashboard-control-color, currentColor) 72%, transparent)); /* Shared role-colored glow for dashboard icons. */
+  --filter-icon-glow-active: drop-shadow(0 0 6px color-mix(in srgb, var(--dashboard-control-color, currentColor) 88%, transparent)); /* Make the selected dashboard icon glow more clearly. */
+  /* Shared translucent surface values for dashboard glass effects. */
+  --opacity-glass-surface: var(--glass-surface-opacity, 80%); /* Read the live app's glass-opacity setting. */ 
+  --blur-glass-panel: 12px;                                   /* Match the former outer-panel blur. */         
+  --saturation-glass-panel: 118%;                             /* Match the former outer-panel saturation. */   
+  --color-glass-highlight: #ffffff24;                         /* Light edge on glass surfaces. */              
+  --shadow-color-glass-edge: #00000020;                       /* Dark edge beneath glass surfaces. */          
+  --shadow-color-glass: #00000048;                            /* Main depth shadow for glass surfaces. */      
+  --shadow-color-glass-contact: #00000040;                    /* Match the former dark-theme contact shadow. */
+  --opacity-glass-inner: max(20%, calc(
+                         var(--opacity-glass-surface) - 40%)); /* Opacity for controls nested inside glass panels. */
+  --opacity-glass-tile: max(
+      4%, 
+      calc(var(--opacity-glass-inner) - 39%)                                         
+    );                                           /* Match the former nearly-clear nested tile. */
+  /* --opacity-glass-chip: max(50%, var(--opacity-glass-surface)); Follow the slider while keeping chips readable. */
+  --opacity-glass-chip: 40%; /* Keep label-chip fills more translucent. */
+  --color-border-glass-level-1: color-mix(      
+      in srgb,                                  
+      var(--color-border-subtle) 66%,           
+      var(--color-glass-highlight)              
+    );                                           /* Former outer-panel glass border. */          
+  --color-border-glass-level-2: color-mix(      
+      in srgb,                                  
+      var(--color-border-subtle) 52%,           
+      var(--color-glass-highlight)              
+    );                                           /* Former inner-box glass border. */            
+  --color-border-glass-level-3: color-mix(      
+      in srgb,                                  
+      var(--color-border-subtle) 68%,           
+      var(--color-glass-highlight)              
+    );                                           /* Former nested-tile glass border. */          
+  --color-border-glass-level-2-hover: color-mix(
+      in srgb,                                  
+      var(--color-border-glass-level-2) 75%,    
+      var(--color-glass-highlight)              
+    );                                           /* Former inner-box hover border. */
+  --color-surface-glass-level-2-hover: color-mix(                                    
+      in srgb,                                                                       
+      color-mix(                                                                     
+          in srgb,                                                                   
+          var(--color-surface-level-2) 90%, white)                                   
+          var(--opacity-glass-inner),                                                
+          transparent                                                                
+      );                                                                              /* Former brightened inner-box hover fill. */
+  --shadow-glass-level-1:                                                            
+    inset 0 1px 0 var(--color-glass-highlight),                                      
+    inset 0 -1px 0 var(--shadow-color-glass-edge),                                   
+    0 16px 36px var(--shadow-color-glass),                                           
+    0 4px 12px var(--shadow-color-glass-edge);                                        /* Match the former outer-panel elevation. */
+  --shadow-glass-level-2:                                                            
+    inset 0 1px 0 color-mix(in srgb, var(--color-glass-highlight) 86%, transparent), 
+    inset 0 -1px 0 var(--shadow-color-glass-edge),                                   
+    0 3px 5px var(--shadow-color-glass-contact),                                     
+    0 6px 16px var(--shadow-color-glass),                                            
+    0 2px 5px var(--shadow-color-glass-edge);      /* Match the former inner-box elevation. */   
+  --shadow-glass-level-2-hover:                   
+    inset 0 1px 0 var(--color-glass-highlight),   
+    inset 0 -1px 0 var(--shadow-color-glass-edge),
+    0 3px 5px var(--shadow-color-glass-contact),  
+    0 9px 20px var(--shadow-color-glass),         
+    0 3px 7px var(--shadow-color-glass-edge);      /* Former raised inner-box hover elevation. */
+  --shadow-glass-level-3:                         
+    inset 0 1px 0 var(--color-glass-highlight),   
+    0 3px 8px var(--shadow-color-glass);           /* Match the former nested-tile elevation. */
+  --shadow-glass-pressed:                                                            
+    inset 0 2px 6px var(--shadow-color-glass),                                       
+    inset 0 0 0 1px color-mix(in srgb, var(--color-accent-primary) 36%, transparent); /* Pressed glass state. */
+  --shadow-control-pressed: inset 0 2px 5px #00000070, inset 0 1px 2px #ffffff20; /* Visible, border-free pressed feedback. */
+  /* !SECTION */
+
+  /* SECTION Layout and positioning */
+  /* Tunable app-shell dimensions. */
+  --max-width-layout-content: 1200px;     /* Maximum width of centered app content. */
+  --padding-inline-layout-content: 24px;  /* Horizontal breathing room inside main. */
+  --padding-block-layout-content: 24px;   /* Vertical breathing room inside main. */
+  --blur-poster-wash: 96px;               /* Softness of the decorative poster wash. */
+  --saturation-poster-wash: 1.3;           /* Color intensity of the poster wash. */
+
+  /* Tunable save-notification placement. */
+  --offset-inline-save-toast: 22px;              /* Toast distance from the inline viewport edge. */
+  --offset-block-save-toast: 20px;               /* Toast distance from the bottom viewport edge. */
+  /* !SECTION */
+}

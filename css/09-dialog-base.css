@@ -1,6 +1,6 @@
-/* Dialog Base
-   Shared <dialog> chrome and form styling used by all modals. */
+/* Dialog base: shared modal chrome, form controls, and common dialog layouts. */
 
+/* Set the shared dimensions and surface for native dialog windows. */
 dialog {
   width: min(650px, calc(100% - 28px));
   border: 1px solid var(--border-strong);
@@ -11,15 +11,18 @@ dialog {
   box-shadow: 0 25px 80px #000b;
 }
 
+/* Dim and soften the page behind an open dialog. */
 dialog::backdrop {
   background: #07090eb8;
   backdrop-filter: blur(5px);
 }
 
+/* Give the storage conflict confirmation dialog extra width. */
 #save-confirmation-dialog {
   width: min(680px, calc(100% - 28px));
 }
 
+/* Add spacing around the storage conflict dialog content. */
 .save-confirmation-content {
   padding: 26px;
 }
@@ -43,12 +46,14 @@ dialog::backdrop {
   letter-spacing: -.04em;
 }
 
+/* Compare the current and proposed storage data side by side. */
 .save-comparison-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
+/* Frame each side of the storage comparison. */
 .save-comparison-card {
   min-width: 0;
   padding: 14px;
@@ -63,6 +68,7 @@ dialog::backdrop {
   font-size: 14px;
 }
 
+/* Arrange comparison fields as a compact definition list. */
 .save-comparison-card dl {
   display: grid;
   gap: 7px;
@@ -79,6 +85,7 @@ dialog::backdrop {
 .save-comparison-card dt { color: var(--muted); }
 .save-comparison-card dd { margin: 0; font-weight: 600; }
 
+/* Align the storage comparison status and save action. */
 .save-confirmation-footer {
   display: flex;
   align-items: stretch;
@@ -86,6 +93,7 @@ dialog::backdrop {
   margin-top: 16px;
 }
 
+/* Frame the save destination and status message. */
 .save-confirmation-status-box {
   display: flex;
   flex: 1 1 auto;
@@ -100,6 +108,7 @@ dialog::backdrop {
   box-shadow: 0 6px 16px var(--shadow-black-31), 0 2px 5px var(--shadow-black-20), inset 0 1px 0 var(--shadow-inset-soft);
 }
 
+/* Allow long storage locations to wrap without widening the dialog. */
 .save-confirmation-location {
   margin: 0;
   font-size: 13px;
@@ -114,6 +123,7 @@ dialog::backdrop {
   .save-comparison-grid { grid-template-columns: 1fr; }
 }
 
+/* Show when the storage consistency check last ran. */
 .save-confirmation-time {
   margin-top: 12px;
   color: var(--muted);
@@ -121,6 +131,7 @@ dialog::backdrop {
   line-height: 1.55;
 }
 
+/* Emphasize the action that saves through the selected file. */
 .save-confirmation-save {
   min-width: 96px;
   padding: 9px 15px;
@@ -144,10 +155,12 @@ dialog::backdrop {
   opacity: .7;
 }
 
+/* Give dialog forms shared inner spacing. */
 dialog form {
   padding: 28px;
 }
 
+/* Size the create-collection dialog. */
 #collection-dialog {
   width: min(520px, calc(100% - 28px));
 }
@@ -156,6 +169,7 @@ dialog form {
   margin-bottom: 14px;
 }
 
+/* Align the folder name input and its actions in one row. */
 .collection-form-row {
   display: flex;
   align-items: end;
@@ -167,6 +181,7 @@ dialog form {
   min-width: 0;
 }
 
+/* Style labels inside the create-collection dialog. */
 #collection-dialog label {
   display: block;
   margin-bottom: 9px;
@@ -174,6 +189,7 @@ dialog form {
   font-size: 12px;
 }
 
+/* Size and surface the new collection name input. */
 #collection-name {
   width: 100%;
   min-height: 46px;
@@ -190,7 +206,8 @@ dialog form {
   outline-offset: 1px;
 }
 
-.folder-popover { 
+/* Position and style the card folder picker popover. */
+.folder-popover {
   position: fixed; 
   z-index: 80; 
   width: 230px;
@@ -201,12 +218,14 @@ dialog form {
   box-shadow: 0 14px 35px #0009;
   backdrop-filter: blur(18px);
 }
-.folder-popover .collection-checklist { 
+/* Make the folder choices scroll when the list is long. */
+.folder-popover .collection-checklist {
   max-height: 190px;
   overflow-y: auto;
   padding: 0;
 }
-.folder-popover .collection-checklist label { 
+/* Align each selectable folder name and checkbox. */
+.folder-popover .collection-checklist label {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -216,6 +235,7 @@ dialog form {
   font-size: 12px;
 }
 .folder-popover .collection-checklist label:hover { background: var(--surface-hover); }
+/* Draw custom checkboxes inside the folder picker. */
 .folder-popover .collection-checklist input[type="checkbox"] {
   width: 17px;
   height: 17px;
@@ -228,6 +248,7 @@ dialog form {
   cursor: pointer;
 }
 
+/* Add a check mark when a folder is selected. */
 .folder-popover .collection-checklist input[type="checkbox"]:checked {
   border-color: var(--rating-default);
   background: var(--rating-default);
@@ -240,6 +261,7 @@ dialog form {
   padding: 0 0 1px;
 }
 
+/* Align a dialog title with its close control. */
 .dialog-heading {
   display: flex;
   justify-content: space-between;
@@ -247,12 +269,14 @@ dialog form {
   margin-bottom: 25px;
 }
 
+/* Set the shared dialog title typography. */
 .dialog-heading h2 {
   font-size: 28px;
   letter-spacing: -.06em;
   margin: 0;
 }
 
+/* Style the shared close button used by dialogs. */
 .close {
   background: transparent;
   border: 0;
@@ -262,12 +286,14 @@ dialog form {
   padding: 0;
 }
 
+/* Lay out standard dialog form fields in two columns. */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px 13px;
 }
 
+/* Set the shared label layout and text color for form controls. */
 label {
   display: grid;
   gap: 7px;
@@ -275,8 +301,10 @@ label {
   font-size: 11px;
 }
 
+/* Set common input, select, and textarea surfaces. */
 input,
 select,
+/* Allow longer notes to grow vertically. */
 textarea {
   width: 100%;
   border: 1px solid #3d4654;
@@ -292,6 +320,7 @@ textarea {
   resize: vertical;
 }
 
+/* Highlight form fields when they receive focus. */
 input:focus,
 select:focus,
 textarea:focus {
@@ -299,6 +328,7 @@ textarea:focus {
   box-shadow: 0 0 0 2px #a9dfff22;
 }
 
+/* Align dialog action buttons at the end of the form. */
 .dialog-actions {
   display: flex;
   justify-content: end;

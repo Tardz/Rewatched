@@ -37,7 +37,8 @@ let reduceAnimationsEnabled = savedReduceAnimations === null
   : savedReduceAnimations === 'true';
 const savedIconStyle = localStorage.getItem(ICON_STYLE_KEY);
 const savedColorToggle = localStorage.getItem(COLORED_ICONS_KEY);
-let iconStylePreference = savedIconStyle || (savedColorToggle === 'false' ? 'black' : 'color');
+const fixedIconStyle = document.documentElement.dataset.fixedIconStyle;
+let iconStylePreference = fixedIconStyle || savedIconStyle || (savedColorToggle === 'false' ? 'black' : 'color');
 if (!['color', 'black', 'filled', 'original'].includes(iconStylePreference)) iconStylePreference = 'color';
 
 const APP_ICON_FILES = {
@@ -103,7 +104,7 @@ function appIconUrl(name) {
 }
 
 /** Creates the original inline icon or text arrow for compatibility mode. */
-function originalIconMarkup(name, className = 'app-icon', originalText = '') {
+function originalIconMarkup(name, className = 'icon app-icon', originalText = '') {
   if (originalText || ORIGINAL_ICON_TEXT[name]) {
     const text = originalText || ORIGINAL_ICON_TEXT[name];
     return `<span class="${className}" data-app-icon="${name}" data-app-icon-original-text="${text}" aria-hidden="true">${text}</span>`;
@@ -112,19 +113,35 @@ function originalIconMarkup(name, className = 'app-icon', originalText = '') {
 }
 
 /** Creates markup for an icon image that follows the selected icon style. */
-function appIconMarkup(name, className = 'app-icon') {
+function appIconMarkup(name, className = 'icon app-icon') {
   if (iconStylePreference === 'original') return originalIconMarkup(name, className);
   if (iconStylePreference === 'filled') {
     const url = appIconUrl(name);
-    return `<span class="${className} filled-icon" data-app-icon="${name}" style="-webkit-mask-image: url('${url}'); mask-image: url('${url}')" aria-hidden="true"></span>`;
+    return `<span class="${className} filledIcon filled-icon" data-app-icon="${name}" style="-webkit-mask-image: url('${url}'); mask-image: url('${url}')" aria-hidden="true"></span>`;
   }
   return `<img class="${className}" data-app-icon="${name}" src="${appIconPath(name)}" alt="" aria-hidden="true">`;
+}
+
+/** Maps stored media names to the matching shared type icon. */
+function mediaTypeIconName(type) {
+  return ({ movie: 'movie', film: 'movie', show: 'show', game: 'game', book: 'book' })[
+    String(type || '').toLowerCase()
+  ] || 'movie';
+}
+
+/** Creates a stable tint hue for a category tag. */
+function categoryHueForName(category) {
+  let hue = 0;
+  for (const character of String(category || '').toLocaleLowerCase()) {
+    hue = (hue * 31 + character.codePointAt(0)) % 360;
+  }
+  return hue;
 }
 
 /** Creates a tinted Filled icon element from the PNG's alpha mask. */
 function createFilledIconElement(name, className, originalText = '', hidden = false) {
   const replacement = document.createElement('span');
-  replacement.className = `${className} filled-icon`;
+  replacement.className = `${className} filledIcon filled-icon`;
   replacement.dataset.appIcon = name;
   if (originalText) replacement.dataset.appIconOriginalText = originalText;
   const url = `url("${appIconUrl(name)}")`;
@@ -141,9 +158,9 @@ function refreshAppIcons() {
     const name = icon.dataset.appIcon;
     const isOriginal = iconStylePreference === 'original';
     const isFilled = iconStylePreference === 'filled';
-    const isFilledNode = icon.classList.contains('filled-icon');
+    const isFilledNode = icon.classList.contains('filledIcon') || icon.classList.contains('filled-icon');
     const iconClassName = icon.className.baseVal || icon.className;
-    const nonFilledClassName = iconClassName.replace(/\bfilled-icon\b/g, '').trim();
+    const nonFilledClassName = iconClassName.replace(/\b(?:filledIcon|filled-icon)\b/g, '').trim();
     if (isOriginal && (icon.tagName === 'IMG' || isFilledNode)) {
       const originalText = icon.dataset.appIconOriginalText || ORIGINAL_ICON_TEXT[name];
       const replacement = originalText
@@ -206,7 +223,7 @@ function applyTheme() {
 applyTheme();
 document.documentElement.dataset.posterBackground = posterBackgroundEnabled ? 'on' : 'off';
 document.documentElement.style.setProperty('--poster-background-strength', `${posterBackgroundStrength}%`);
-document.documentElement.dataset.dashboardTactile = tactileDashboardEnabled ? 'on' : 'off';
+document.documentElement.dataset.themeGlass = tactileDashboardEnabled ? 'on' : 'off';
 document.documentElement.style.setProperty('--glass-surface-opacity', `${glassSurfaceOpacity}%`);
 document.documentElement.dataset.glassTransparency = glassTransparencyEnabled ? 'on' : 'off';
 document.documentElement.dataset.glassOpaque = !glassTransparencyEnabled || glassSurfaceOpacity === 100 ? 'on' : 'off';
@@ -285,12 +302,13 @@ function recordOmdbApiCall() {
 }
 
 /** Creates a percentage meter with the color for its rating. */
-function createRatingMeter(fill, color, className = 'rating-meter') {
+function createRatingMeter(fill, color, className = 'ratingsMeter') {
   const meter = document.createElement('span');
   meter.className = className;
+  meter.classList.add('ratingsMeter', 'rating-meter'); // Keep the old meter hook until the live CSS is migrated.
   meter.setAttribute('aria-hidden', 'true');
   const progress = document.createElement('span');
-  progress.className = 'rating-meter-fill';
+  progress.className = 'ratingFill';
   progress.style.width = fill;
   progress.style.backgroundColor = color;
   meter.style.setProperty('--rating-color', color);

@@ -95,12 +95,12 @@ function renderStatsbar() {
   const averageElement = $('#stat-average');
   averageElement.textContent = watches.length ? `${Number(average) * 10}%` : '—';
   if (watches.length) {
-    averageElement.classList.add('rating-value-chip');
+    averageElement.classList.add('valueChip', 'ratingValueChip', 'rating-valueChip');
     averageElement.style.setProperty('--rating-color', ratingColorForScore(average));
     averageElement.setAttribute('aria-label', `Average rating ${average} out of 10`);
     averageElement.style.color = ratingColorForScore(average);
   } else {
-    averageElement.classList.remove('rating-value-chip');
+    averageElement.classList.remove('valueChip', 'ratingValueChip', 'rating-valueChip');
     averageElement.style.removeProperty('--rating-color');
     averageElement.removeAttribute('aria-label');
     averageElement.style.removeProperty('color');
@@ -178,7 +178,7 @@ function createAverageRatingCard(average, watchCount) {
   value.className = 'stat-rating-value';
   value.textContent = watchCount ? `${percentage}%` : '—';
   if (watchCount) {
-    value.classList.add('rating-value-chip');
+    value.classList.add('valueChip', 'ratingValueChip', 'rating-valueChip');
     value.style.setProperty('--rating-color', ratingColorForScore(average));
   }
 

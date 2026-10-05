@@ -32,59 +32,87 @@ function renderBanner() {
 
   bannerIndex = (bannerIndex + recent.length) % recent.length;
   const entry = recent[bannerIndex];
-  const watch = activeView === 'watchlist'
+  const isBacklogged = activeView === 'watchlist';
+  banner.classList.toggle('is-logged', !isBacklogged);
+  banner.classList.toggle('is-backlogged', isBacklogged);
+  const watch = isBacklogged
     ? { score: Number(entry.priority || 3) * 2, date: '' }
     : latest(entry);
 
   const bannerLabel = $('#banner-label');
+  const isReworkPreview = document.documentElement.dataset.cssReworkPreview === 'true';
+  const mediaType = entry.type.toLowerCase();
   const mediaIcon = document.createElement('span');
-  mediaIcon.className = `banner-media-type-icon is-${entry.type.toLowerCase()}`;
+  mediaIcon.className = isReworkPreview
+    ? `labelChip media-type-icon banner-poster-type is-${mediaType}`
+    : `labelChip media-type-icon banner-content-info-label-type banner-media-type-icon is-${mediaType}`;
   mediaIcon.setAttribute('role', 'img');
   mediaIcon.setAttribute('aria-label', entry.type);
-  mediaIcon.innerHTML = appIconMarkup(entry.type.toLowerCase() === 'movie' ? 'movie' : 'show', 'app-icon banner-media-type-icon-image');
+  mediaIcon.innerHTML = appIconMarkup(mediaTypeIconName(entry.type), 'icon app-icon banner-media-type-icon-image');
+  if (isReworkPreview) {
+    const poster = $('.banner-poster');
+    poster.querySelector('.banner-poster-type')?.remove();
+    poster.append(mediaIcon);
+  }
   const labelContext = document.createElement('span');
-  labelContext.className = 'banner-label-context';
-  labelContext.textContent = activeView === 'watchlist'
+  labelContext.className = 'labelChip banner-content-info-label-release';
+  labelContext.textContent = isBacklogged
     ? `WATCHLIST${entry.year ? ` · ${entry.year}` : ''}`
     : entry.year || '';
   const director = $('#banner-director');
+  director.className = 'labelChip banner-content-info-label-director';
   director.textContent = entry.director || '';
   director.hidden = !entry.director;
-  const labelParts = [mediaIcon];
+  const labelParts = [];
+  if (isReworkPreview) {
+    const tag = document.createElement('span');
+    tag.className = 'tagChip banner-content-info-label-tag';
+    if (entry.category && entry.category.toLowerCase() !== entry.type.toLowerCase()) {
+      tag.textContent = entry.category;
+      tag.style.setProperty('--category-hue', categoryHueForName(entry.category));
+    } else {
+      tag.classList.add('is-placeholder');
+      tag.setAttribute('aria-hidden', 'true');
+      tag.textContent = 'Genre';
+    }
+    labelParts.push(tag);
+  } else {
+    labelParts.push(mediaIcon);
+  }
   if (labelContext.textContent) {
-    const mediaSeparator = document.createElement('span');
-    mediaSeparator.className = 'banner-label-separator';
-    mediaSeparator.setAttribute('aria-hidden', 'true');
-    mediaSeparator.textContent = '·';
-    labelParts.push(mediaSeparator, labelContext);
+    labelParts.push(labelContext);
   }
   if (entry.director) {
-    const separator = document.createElement('span');
-    separator.className = 'banner-label-separator';
-    separator.setAttribute('aria-hidden', 'true');
-    separator.textContent = '·';
-    labelParts.push(separator, director);
+    labelParts.push(director);
   }
   bannerLabel.replaceChildren(...labelParts);
   const bannerTitle = $('#banner-title');
   bannerTitle.textContent = entry.title;
   const bannerScore = $('#banner-score');
+  const bannerDate = $('#banner-date');
+  bannerDate.textContent = isBacklogged ? '' : formatDate(watch.date);
+  if (isReworkPreview) {
+    bannerDate.className = 'labelChip banner-content-info-meta-date';
+    bannerDate.hidden = isBacklogged;
+    bannerScore.replaceChildren();
+    bannerScore.parentElement.append(bannerDate);
+  } else {
+    bannerScore.replaceChildren();
+  }
   const scoreFill = `${Number(watch.score) * 10}%`;
   const priority = Math.min(5, Math.max(1, Number(entry.priority) || 3));
-  const scoreColor = activeView === 'watchlist'
+  const scoreColor = isBacklogged
     ? priority <= 2 ? '#7edb9a' : priority === 3 ? '#8fc9ff' : '#ff7970'
     : ratingColorForScore(watch.score);
-  bannerScore.replaceChildren();
-  bannerScore.classList.toggle('banner-priority-rating', activeView === 'watchlist');
   $('#banner-score').dataset.priority = priority;
-  if (activeView === 'watchlist') {
+  if (isBacklogged) {
     bannerScore.style.setProperty('--priority-color', scoreColor);
     const priorityValue = document.createElement('span');
-    priorityValue.className = 'priority-value-chip';
+    priorityValue.className = 'valueChip priorityValueChip priority-valueChip banner-content-info-meta-value-priorityChip';
     priorityValue.textContent = `P${priority}`;
     priorityValue.style.setProperty('--priority-color', scoreColor);
     const priorityDots = document.createElement('span');
-    priorityDots.className = 'banner-priority-dots';
+    priorityDots.className = 'priorityDots banner-content-info-meta-value-priorityDots';
     priorityDots.setAttribute('aria-hidden', 'true');
     for (let dot = 1; dot <= 5; dot++) {
       const marker = document.createElement('span');
@@ -96,16 +124,15 @@ function renderBanner() {
   } else {
     bannerScore.style.removeProperty('--priority-color');
     const ratingValue = document.createElement('span');
-    ratingValue.className = 'rating-value-chip';
+    ratingValue.className = 'valueChip ratingValueChip rating-valueChip banner-content-info-meta-value-ratingChip';
     ratingValue.textContent = `${Number(watch.score) * 10}%`;
     ratingValue.style.setProperty('--rating-color', scoreColor);
-    bannerScore.append(ratingValue, createRatingMeter(scoreFill, scoreColor));
+    bannerScore.append(
+      ratingValue,
+      createRatingMeter(scoreFill, scoreColor, 'ratingsMeter banner-content-info-meta-value-ratingBar')
+    );
     bannerScore.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
   }
-  $('#banner-year').textContent = '';
-  $('#banner-year').hidden = true;
-  $('#banner-date').textContent = activeView === 'watchlist' ? '' : formatDate(watch.date);
-  $('#banner-date').classList.toggle('banner-priority-date', activeView === 'watchlist');
   $('#banner-count').textContent = `${bannerIndex + 1} / ${recent.length}`;
 
   const hasPoster = Boolean(entry.poster);
@@ -307,11 +334,11 @@ function updateBannerPalette(source, { updatePage = true } = {}) {
 
 /** Returns the ordered entries eligible for banner rotation. */
 function bannerEntries() {
-  const isWatchlist = activeView === 'watchlist';
-  const source = (isWatchlist ? watchlist : entries).filter((entry) =>
+  const isBacklogged = activeView === 'watchlist';
+  const source = (isBacklogged ? watchlist : entries).filter((entry) =>
     matchesCollectionSearch(entry, $('#library-search')?.value.trim().toLocaleLowerCase() || '')
-    && matchesCollectionFilters(entry, isWatchlist));
-  return sortCollectionItems(source, isWatchlist).slice(0, 7);
+    && matchesCollectionFilters(entry, isBacklogged));
+  return sortCollectionItems(source, isBacklogged).slice(0, 7);
 }
 
 /** Moves the banner to the previous or next eligible entry. */

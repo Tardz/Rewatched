@@ -1,0 +1,34 @@
+/* Shared media-type icon treatment used by banners and entry cards. */
+
+/* SECTION media-type-icon */
+/* Keep icon variants centered within the size reserved by each component. */
+.media-type-icon {
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+.media-type-icon > .icon,
+.media-type-icon > .filledIcon { width: 100%; height: 100%; }
+
+/* SECTION Media type color states */
+/* Base class: .media-type-icon */
+/* Apply the same semantic tint wherever a media type is shown. */
+.media-type-icon.is-movie,
+.media-type-icon.is-film {
+  --app-icon-state-color: var(--color-media-film);
+  color: var(--color-media-film);
+}
+.media-type-icon.is-show {
+  --app-icon-state-color: var(--color-media-show);
+  color: var(--color-media-show);
+}
+.media-type-icon.is-game {
+  --app-icon-state-color: var(--color-media-game);
+  color: var(--color-media-game);
+}
+.media-type-icon.is-book {
+  --app-icon-state-color: var(--color-media-book);
+  color: var(--color-media-book);
+}
+/* !SECTION */
+/* !SECTION */

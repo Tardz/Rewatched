@@ -1,0 +1,332 @@
+/* Main-page banner layout, content, poster, and transitions. */
+/* SECTION main-banner */
+
+/* Base class: .banner */
+/* Lay out the featured content beside its poster. */
+.main-banner {
+  --banner-poster-width: 150px;                 /* Set poster width; content height follows its 2:3 ratio. */
+  --banner-content-height: calc(var(--banner-poster-width) * 1.5); /* Align content height with poster height. */
+  container-type: inline-size;                  /* Scale text to the available banner width. */
+  display: flex;                                /* Place content beside the poster. */
+  align-items: center;                          /* Center both columns vertically. */
+  justify-content: space-between;               /* Separate content and poster. */
+  gap: 28px;                                    /* Keep the columns apart. */
+  /* min-height: 220px;                            Preserve room for featured content. */
+  padding: 18px 18px;                           /* Inset the banner content. */
+  background: linear-gradient(115deg, color-mix(in srgb, var(--poster-color-one, var(--color-poster-fallback-one)) 70%, var(--color-background-app) 30%), color-mix(in srgb, var(--poster-color-two, var(--color-poster-fallback-two)) 55%, var(--color-surface-detail) 45%)); /* Blend current poster colors into the base surface. */
+  cursor: pointer;                              /* Indicate that the banner opens its featured item. */
+}
+
+/* Keep the not-yet-reworked watch timeline from expanding the preview banner. TEMP */
+.main-banner > .statistics-recent-watches { display: none; }
+
+/* Show hover and keyboard focus on the banner frame. */
+.main-banner:hover { border-color: var(--color-border-accent-muted); }
+.main-banner:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 4px; }
+
+/* SECTION banner-content */
+/* Stack the information and controls inside the content column. */
+.banner-content {
+  position: relative;                  /* Layer text above the backdrop. */
+  z-index: 2;                          /* Keep content above artwork layers. */
+  display: flex;                       /* Separate information from controls. */
+  flex-direction: column;              /* Place controls below banner information. */
+  align-self: center;                  /* Center content beside the poster. */
+  min-width: 0;                        /* Let long titles wrap instead of overflow. */
+  height: var(--banner-content-height); /* Align controls with the bottom of the information column. */
+}
+
+/* SECTION banner-content-info */
+/* Stack banner information with one consistent vertical gap. */
+.banner-content-info {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-level-1) + 8px);
+}
+
+/* SECTION banner-content-info-label */
+/* Style the small uppercase media label. */
+.banner-content-info-label {
+  display: flex;                       /* Align the type icon and label. */            
+  align-items: center;                 /* Center icon with text. */                    
+  gap: 8px;                            /* Separate icon and label. */                  
+  margin: 0;                          /* Let the shared parent gap set vertical spacing. */
+  color: var(--color-text-muted-bright); /* Keep label elements neutral. */
+  font: 500 10px var(--font-family-app); /* Use compact label typography. */
+  font-size: clamp(8px, 1.2cqi, 10px); /* Scale label to banner width. */              
+  letter-spacing: .15em;               /* Give the uppercase label air. */             
+  text-transform: uppercase;           /* Distinguish the label from the title text. */
+}
+
+/* Base classes: .labelChip, .media-type-icon */
+/* Size the movie or series icon inserted by the banner script. */
+.banner-content-info-label-type {
+  display: inline-flex;         /* Center the icon inside its chip. */
+  flex: 0 0 var(--size-media-type-chip); /* Reserve a width matching the other label chips. */
+  width: var(--size-media-type-chip);
+  height: var(--size-media-type-chip); /* Match the shared label-chip height. */
+  padding: 3px;
+}
+.main-banner .banner-content-info-label-type {
+  --app-icon-state-color: var(--color-text-muted-bright); /* Override the shared media tint in the banner. */
+  color: var(--color-text-muted-bright);
+}
+
+/* Base classes: .tagChip, .labelChip */
+/* Keep banner text chips the same height and text size. */
+.banner-content-info-label-tag,
+.banner-content-info-label-release,
+.banner-content-info-label-director {
+  height: var(--size-banner-label-chip);
+}
+
+/* Fit the shared category chip into the banner's media label row. */
+.banner-content-info-label-tag {
+  align-self: center;
+  border-radius: var(--radius-tagChip-banner);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* !SECTION */
+
+/* SECTION banner-content-info-title */
+/* Set the featured title's responsive type and outline. */
+.banner-content-info-title {
+  position: relative;                                    /* Preserve the small optical title offset. */    
+  left: -4px;                                            /* Align title glyphs with the label above. */    
+  max-width: 650px;                                      /* Keep very wide titles readable. */             
+  margin: 0;                                             /* Let the shared parent gap set vertical spacing. */
+  overflow-wrap: anywhere;                               /* Prevent long names from escaping the banner. */
+  color: var(--color-text-primary);                      /* Use the primary text token. */                 
+  font-family: var(--font-family-banner-title);           /* Use the featured-title font token. */
+  font-size: clamp(30px, calc(5.5cqi + 10px), 52px);     /* Scale title with available width. */     
+  font-weight: var(--font-weight-app);      
+  line-height: 1.02;                                     /* Keep multi-line titles compact. */             
+  letter-spacing: -.06em;                                /* Match the app's display typography. */         
+  -webkit-text-stroke: 1.4px var(--color-title-outline); /* Separate text from artwork. */                 
+  paint-order: stroke fill;                              /* Draw the outline beneath glyph fill. */
+}
+/* !SECTION */
+
+/* SECTION banner-content-info-label-director */
+/* Base class: .labelChip */
+/* Keep the director chip with the other banner label items. */
+.banner-content-info-label-director {
+  align-self: center;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* !SECTION */
+
+/* SECTION banner-content-info-meta */
+/* Stack the rating or priority value above its date. */
+.banner-content-info-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--spacing-level-1) + 8px);
+  margin: 0;                            /* Avoid browser paragraph margins. */    
+  color: var(--color-text-secondary);   /* De-emphasize metadata. */              
+}
+
+/* Keep the rating chip and meter together in one inline value row. */
+.banner-content-info-meta-value {
+  display: inline-flex;                /* Align stars, text, and meters. */         
+  align-items: center;                 /* Center mixed rating content. */           
+  min-width: 0;
+  max-width: 100%;
+  gap: 8px;                            /* Separate the chip from its indicator. */
+  color: var(--color-text-secondary);  /* Keep the value neutral until JS applies its color. */
+  font: 500 13px var(--font-family-valueChip); /* Use the banner metadata face. */
+  letter-spacing: .1em;                /* Separate compact digits. */
+}
+
+/* Base class: .valueChip */
+/* Size value chips for the banner metadata stack. */
+.banner-content-info-meta-value-ratingChip,
+.banner-content-info-meta-value-priorityChip { 
+  border-radius: calc(7.5px * var(--radius-scale)); /* Give the smaller banner chips a restrained corner radius. */
+  font-size: var(--font-size-labelChip);
+}
+
+/* Base class: .labelChip */
+.banner-content-info-meta-date {
+  flex: 0 1 auto;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+}
+/* !SECTION */
+/* !SECTION */
+
+/* SECTION banner-content-controls */
+/* Place banner controls at the bottom of the content area. */
+.banner-content-controls { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  margin-top: auto; 
+  color: var(--color-text-secondary); 
+  font: 12px var(--font-family-valueChip); 
+}
+
+/* Base class: .buttonIcon */
+/* Give navigation and playback buttons a consistent control frame. */
+.banner-content-controls > button {
+  display: grid;                                /* Center the icon within each control. */
+  flex: 0 0 28px;                               /* Keep controls square and consistent. */
+  place-items: center;                          /* Center the icon on both axes. */
+  height: 28px;                                 /* Set control height. */
+  padding: 0;                                   /* Remove default button padding. */
+  border: 1px solid var(--color-border-strong); /* Outline each control. */
+  border-radius: var(--radius-button);          /* Reuse the shared button radius. */
+  background: transparent;                      /* Let banner artwork show through. */
+  color: var(--color-text-on-surface);          /* Keep icon visible. */
+}
+.banner-content-controls > button:hover { background: var(--color-surface-hover); }
+.banner-content-controls > button:focus-visible { 
+  outline: 2px solid var(--color-accent-primary); 
+  outline-offset: 2px; 
+}
+.banner-content-controls-previous,
+.banner-content-controls-next { overflow: hidden; }
+.banner-content-controls-previous > .icon,
+.banner-content-controls-next > .icon { 
+  width: calc(var(--size-icon-filled) - 14px); 
+  height: calc(var(--size-icon-filled) - 14px); 
+}
+.banner-content-controls-count { 
+  min-width: 48px; 
+  text-align: center; 
+  font-variant-numeric: tabular-nums; 
+}
+.banner-content-controls > .banner-content-controls-media { 
+  margin-left: 8px; 
+  color: var(--color-text-secondary); 
+}
+.banner-content-controls-media .icon {
+  width: calc(var(--size-icon-filled) - 14px); 
+  height: calc(var(--size-icon-filled) - 14px); 
+}
+.banner-content-controls-media[data-rotation-state="paused"] .pause-icon,
+.banner-content-controls-media[data-rotation-state="playing"] .play-icon { display: none !important; }
+/* !SECTION */
+
+/* !SECTION */
+
+/* SECTION banner-poster */
+/* Frame the featured title's poster artwork. */
+.banner-poster {
+  position: relative;                                   /* Keep poster above the backdrop. */            
+  z-index: 2;                                           /* Layer the poster beside the banner content. */
+  display: grid;                                        /* Center the empty-poster message. */           
+  flex: 0 0 var(--banner-poster-width);                 /* Reserve the shared poster width. */            
+  place-items: center;                                  /* Center placeholder text. */                   
+  aspect-ratio: 2 / 3;                                  /* Preserve standard poster proportions. */      
+  overflow: hidden;                                     /* Crop artwork to the poster frame. */          
+  border: 1px solid var(--color-border-control-subtle); /* Outline poster artwork. */                    
+  border-radius: var(--radius-surface-level-2);         /* Use the shared middle radius. */              
+  background: var(--color-surface-detail);              /* Set a fallback surface. */                    
+  color: var(--color-text-secondary);                   /* Style the placeholder message. */             
+  font-size: 11px;                                      /* Keep placeholder compact. */                  
+  line-height: 1.5;                                     /* Separate its two lines. */                    
+  text-align: center;                                   /* Center the placeholder text. */
+}
+.banner-poster img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+}
+
+  /* SECTION banner-poster-type */
+/* Base classes: .labelChip, .media-type-icon */
+/* Overlay the media-type icon in the poster's upper-right corner. */
+.banner-poster-type {
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--spacing-level-2) + 3px);
+  right: calc(var(--spacing-level-2) + 3px);
+  box-sizing: border-box;
+  display: inline-flex;
+  width: var(--size-media-type-chip);
+  height: var(--size-media-type-chip);
+  padding: 3px;
+}
+    /* !SECTION */
+/* !SECTION */
+
+/* SECTION banner-backdrop */
+/* Place a blurred poster backdrop behind banner content. */
+.banner-backdrop { 
+  position: absolute; 
+  z-index: 0; 
+  inset: -24px; 
+  overflow: hidden; 
+  pointer-events: none; 
+}
+.banner-backdrop img { 
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover; 
+  filter: blur(36px) saturate(1.65); 
+  transform: scale(1.12); 
+}
+.main-banner.has-poster::before { 
+  content: ""; 
+  position: absolute; 
+  z-index: 1; 
+  inset: 0; 
+  pointer-events: none; 
+  background: linear-gradient(90deg, #111722f2 0%, color-mix(in srgb, var(--poster-color-one, #141a27) 35%, transparent) 48%, #121722a3 100%); 
+}
+/* !SECTION */
+
+/* SECTION Main banner transitions and responsive sizing */
+/* Keep the outgoing banner visible while a slide transition runs. */
+.main-banner .banner-slide-ghost { 
+  position: absolute; 
+  z-index: 5; 
+  inset: 0; 
+  width: 100%; 
+  height: 100%; 
+  min-height: 0; 
+  margin: 0; 
+  pointer-events: none; 
+  box-shadow: none; 
+}
+.main-banner.is-sliding > .banner-content,
+.main-banner.is-sliding > .banner-poster,
+.main-banner.is-sliding > .banner-backdrop { 
+  animation: banner-morph-in 560ms cubic-bezier(.22, 1, .36, 1) both; 
+}
+.main-banner.is-sliding > .banner-slide-ghost { 
+  animation: banner-morph-out 560ms cubic-bezier(.22, 1, .36, 1) both; 
+}
+
+/* Define banner transitions locally so this bundle does not depend on live CSS. */
+@keyframes banner-morph-in { 
+  from { opacity: 0; transform: scale(.96); } 
+  to { opacity: 1; transform: scale(1); } 
+}
+@keyframes banner-morph-out { 
+  from { opacity: 1; transform: scale(1); } 
+  to { opacity: 0; transform: scale(1.03); } 
+}
+
+/* Reduce the poster and banner spacing on narrow screens. */
+@media (max-width: 640px) {
+  .main-banner { 
+    --banner-poster-width: 105px;
+    gap: 12px; 
+    min-height: 260px; 
+    padding: 20px; 
+  }
+  .banner-content-info-meta-value { font-size: 11px; }
+}
+/* !SECTION */
+
+/* !SECTION */

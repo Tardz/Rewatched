@@ -431,6 +431,8 @@ function clearWatchedDatePart(event) {
 function updateFormVisibility() {
   const isWatchlist = formEntryMode === 'watchlist';
   form.classList.toggle('is-watchlist-mode', isWatchlist);
+  form.classList.toggle('is-logged-mode', !isWatchlist);
+  form.classList.toggle('is-backlogged-mode', isWatchlist);
   $('.watch-details-components').hidden = isWatchlist;
   document.querySelectorAll('.watch-only').forEach((field) => { field.hidden = isWatchlist; });
   document.querySelectorAll('.watchlist-only').forEach((field) => { field.hidden = !isWatchlist; });

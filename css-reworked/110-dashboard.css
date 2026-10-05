@@ -1,0 +1,454 @@
+/* Dashboard rail, app info, controls, and section navigation */
+
+/* SECTION Dashboard */
+
+/* ANCHOR Dashboard row */
+/* Lay out reusable rows of dashboard controls and app-info items. */
+.dashboard-row {
+  display: flex;                         /* Put sibling items side by side. */
+  align-items: center;                   /* Vertically align header items. */
+  gap: var(--spacing-level-1); /* Match the spacing between row items to panel insets. */
+  min-width: 0;                          /* Allow row contents to shrink without overflow. */
+}
+
+/* SECTION dashboard-info */
+/* Frame the wordmark, repository link, and version badge. */
+.dashboard-info {
+  display: grid;                                    /* Stack app-info rows. */
+  gap: var(--spacing-level-1);                       /* Separate rows inside the info panel. */
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 100%;                                  /* Keep it inside a narrow rail. */
+  padding: var(--spacing-level-1);                   /* Match panel spacing. */
+  /* Surface supplied by .surfaceLevel1. */
+}
+
+/* Keep the app-info rows sized to their contents. */
+.dashboard-info > .dashboard-row {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Size icon-only controls consistently within the dashboard. */
+.dashboard .buttonIcon {
+  height: var(--size-dashboard-control);
+}
+
+/* Match the non-icon info badges and storage group to that control height. */
+.dashboard-info-brand,
+.dashboard-info-version,
+.dashboard-controls-storage,
+.dashboard-controls-storage-settings {
+  height: var(--size-dashboard-control);
+}
+
+/* SECTION brand */
+/* Style the Rewatched wordmark. */
+.dashboard-info-brand {
+  width: max-content;
+  min-width: max-content;
+  display: flex;                                           /* Keep wordmark spans on one line. */
+  align-items: baseline;                                   /* Align the dot with the text baseline. */
+  padding: calc(var(--spacing-level-1) - 3px)
+          calc(var(--spacing-level-1) + 2px)
+          calc(var(--spacing-level-1) - 2px); /* Tune the wordmark inset for baseline alignment. */
+  font-family: var(--font-family-dashboard-brand);          /* Use the dashboard brand font token. */
+  font-size: var(--font-size-dashboard-brand);             /* Set the wordmark size. */
+  font-weight: 700;                                         /* Emphasize the wordmark. */
+  letter-spacing: -.07em;                                   /* Tighten the letter spacing. */
+  -webkit-text-stroke: 1.4px var(--color-title-outline);    /* Outline the wordmark text. */
+  paint-order: stroke fill;                                 /* Draw the outline behind the fill. */
+}
+
+/* Reserve the short wordmark for the optional fullscreen detail state. */
+.dashboard-info-brand-mark { display: none; }
+.default-layout.is-entry-fullscreen .dashboard-info-brand-name { display: none; }
+.default-layout.is-entry-fullscreen .dashboard-info-brand-mark { display: block; }
+
+/* Tint and brighten the wordmark when hovered. */
+.dashboard-info-brand:hover {
+  border-color: var(--color-border-accent-muted);        /* Highlight the outline. */
+  background: linear-gradient(145deg, #27313d, #1b2028); /* Brighten the gradient. */
+}
+
+/* Keep keyboard focus visible on the home link. */
+.dashboard-info-brand:focus-visible {
+  outline: 2px solid var(--color-accent-primary); /* Show keyboard focus. */
+  outline-offset: 3px;                            /* Separate focus ring from the border. */
+}
+
+/* Finish the wordmark with its red dot. */
+.dashboard-info-brand-dot {
+  margin-left: 1px;           /* Separate the dot from the name. */
+  color: var(--color-brand-mark); /* Use the brand accent. */
+  font-size: var(--size-dot-dashboard-brand); /* Make the dot prominent. */
+  line-height: 0;             /* Prevent the dot increasing row height. */
+  -webkit-text-stroke: 0;     /* Keep the dot solid. */
+}
+
+.dashboard-info-brand-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* !SECTION */
+
+/* ANCHOR Back */
+/* Base class: .buttonIcon */
+/* Size the back-to-library control shown in entry detail view. */
+.dashboard-info-back {
+  --dashboard-control-color: var(--color-icon-library);
+  width: var(--size-dashboard-control);                    /* Match other dashboard controls. */
+  flex: 0 0 var(--size-dashboard-control);                 /* Keep a fixed control width. */
+  color: var(--color-accent-primary);                      /* Mark the navigation action. */
+}
+
+/* SECTION Git */
+/* Base class: .buttonIcon */
+/* Link to the project's GitHub repository. */
+.dashboard-info-git {
+  --dashboard-control-color: var(--color-icon-git);
+  width: var(--size-dashboard-control);                /* Match other dashboard controls. */
+  color: var(--color-text-secondary);                  /* Set the default icon color. */
+  text-decoration: none;                               /* Remove the link underline. */
+}
+
+/* Highlight the repository link on hover. */
+.dashboard-info-git:hover {
+  color: var(--color-icon-git);
+  --app-icon-state-color: var(--color-icon-git); /* Tint the repository icon with its role color. */
+}
+/* !SECTION */
+
+/* ANCHOR Version */
+/* Display the app version as a compact badge. */
+.dashboard-info-version {
+  display: grid;                                    /* Center the version text. */
+  min-width: 0;                                     /* Allow the badge to shrink. */
+  flex: 1 1 auto;                                   /* Keep its intrinsic width. */
+  place-items: center;                              /* Center the label in both directions. */
+  padding-inline: var(--spacing-level-1); /* Add horizontal breathing room. */
+  color: var(--color-icon-default);                 /* De-emphasize version text. */
+  font: 13px var(--font-family-mono);                  /* Use compact monospaced type. */
+  font-weight: var(--font-weight-app);
+}
+/* !SECTION */
+
+/* SECTION dashboard-controls */
+/* Place settings, theme, activity, and storage controls in the rail. */
+.dashboard-controls {
+  display: grid;                                          /* Stack the settings row and storage row. */
+  grid-template-columns: minmax(0, 1fr);                  /* Prevent content forcing panel width. */
+  grid-template-rows: repeat(2, var(--size-dashboard-control)); /* Size both control rows. */
+  align-items: center;                                    /* Center row contents. */
+  gap: var(--spacing-level-1);                             /* Match row gaps to the panel inset. */
+  width: 100%;                                            /* Fill the dashboard rail. */
+  padding: var(--spacing-level-1);                         /* Match panel spacing. */
+}
+
+/* SECTION dashboard-controls rows */
+.dashboard-controls > .dashboard-row {
+  display: grid; /* Give each control a predictable grid cell. */
+  grid-template-columns: repeat(2, minmax(0, 1fr)); /* Keep paired controls the same width. */
+  width: 100%; /* Fill the controls panel row. */
+  min-width: 0;
+}
+
+/* Give Settings and Storage more room than Theme and Activity. */
+.dashboard-controls > .dashboard-row:first-child {
+  grid-template-columns: 2fr 1fr; /* Make Settings twice as wide as Theme. */
+}
+
+.dashboard-controls > .dashboard-row:last-child {
+  grid-template-columns: 1fr 2fr; /* Make Storage twice as wide as Activity. */
+}
+
+/* Keep the two settings controls shrinkable inside their equal-width cells. */
+.dashboard-controls > .dashboard-row:first-child .dashboard-controls-settings,
+.dashboard-controls > .dashboard-row:first-child .dashboard-controls-theme {
+  min-width: 0; /* Allow both buttons to shrink. */
+}
+
+/* SECTION Settings, theme and activity buttons */
+/* Base class: .buttonIcon */
+/* Size dashboard settings and activity icon buttons. */
+.dashboard-controls-settings,
+.dashboard-controls-theme,
+.dashboard-controls-activity {
+  color: var(--color-text-on-surface);                 /* Keep icons legible on the surface. */
+}
+
+.dashboard-controls-settings { --dashboard-control-color: var(--color-icon-settings); }
+.dashboard-controls-theme { --dashboard-control-color: var(--color-icon-theme); }
+.dashboard-controls-activity { --dashboard-control-color: var(--color-icon-activity); }
+.dashboard-controls-storage { --dashboard-control-color: var(--color-icon-storage); }
+
+.dashboard-controls-settings,
+.dashboard-controls-theme,
+.dashboard-controls-activity {
+  width: 100%; /* Fill an equal-width row cell. */
+}
+
+/* Tint dashboard icons with their role color while hovered. */
+.dashboard-controls-settings:hover,
+.dashboard-controls-settings:focus-visible { --app-icon-state-color: var(--color-icon-settings); }
+.dashboard-controls-theme:hover,
+.dashboard-controls-theme:focus-visible { --app-icon-state-color: var(--color-icon-theme); }
+.dashboard-controls-activity:hover,
+.dashboard-controls-activity:focus-visible { --app-icon-state-color: var(--color-icon-activity); }
+.dashboard-controls-storage:hover .filledIcon,
+.dashboard-controls-storage:focus-within .filledIcon { --app-icon-state-color: var(--color-icon-storage); }
+.dashboard-info-back:hover .filledIcon,
+.dashboard-info-back:focus-visible .filledIcon { --app-icon-state-color: var(--color-icon-library); }
+/* !SECTION */
+
+/* SECTION Storage */
+/* Keep the storage icon and selected storage name together. */
+.dashboard-controls-storage {
+  display: flex;                                 /* Place the icon and storage name side by side. */
+  align-items: center;                           /* Vertically center both controls. */
+  gap: var(--spacing-level-3); /* Set the icon-to-name spacing. */
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;                                  /* Allow the group to shrink. */
+  overflow: hidden;                              /* Clip child surfaces to the group. */
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;                       /* Smooth focus and hover states. */
+}
+
+/* Highlight the storage group while a child control has keyboard focus. */
+.dashboard-controls-storage:focus-within {
+  border-color: var(--color-border-accent-muted); /* Keep keyboard focus visible on the group. */
+}
+
+/* Glow only the dashboard icon during hover or keyboard focus. */
+.dashboard-info-git:hover .filledIcon,
+.dashboard-info-git:focus-visible .filledIcon,
+.dashboard-info-back:hover .filledIcon,
+.dashboard-info-back:focus-visible .filledIcon,
+.dashboard-controls-settings:hover .filledIcon,
+.dashboard-controls-settings:focus-visible .filledIcon,
+.dashboard-controls-theme:hover .filledIcon,
+.dashboard-controls-theme:focus-visible .filledIcon,
+.dashboard-controls-activity:hover .filledIcon,
+.dashboard-controls-activity:focus-visible .filledIcon,
+.dashboard-controls-storage-indicator:hover .filledIcon,
+.dashboard-controls-storage:focus-within .filledIcon,
+.dashboard-page-control:hover .filledIcon {
+  filter: var(--filter-icon-glow);
+}
+
+/* Base class: .buttonIcon */
+/* Use the icon-only consistency-check button as the status tile. */
+.dashboard .dashboard-controls-storage-indicator {
+  flex: 0 0 calc(var(--size-dashboard-control) - 12px);            /* Reserve a compact tile width. */
+  width: calc(var(--size-dashboard-control) - 12px);               /* Set the tile width relative to dashboard controls. */
+  height: calc(100% - var(--spacing-level-1));                 /* Keep a half-spacing inset above and below. */
+  margin-block: var(--spacing-level-3);                        /* Keep the tile vertically inset. */
+  margin-inline-start: var(--spacing-level-3);                 /* Inset the tile from the group edge. */
+  padding: 0;                                                      /* Remove default button padding. */
+}
+
+/* Center the save icon. */
+.dashboard-controls-storage-save {
+  display: grid;                                   /* Center the status icon. */
+  width: var(--size-icon-filled);                  /* Set status icon area width. */
+  height: var(--size-icon-filled);                 /* Set status icon area height. */
+  flex: 0 0 var(--size-icon-filled);               /* Keep the icon from shrinking. */
+  place-items: center;                             /* Center the icon in its area. */
+  color: var(--palette-white);                     /* Set the default saved color. */
+  transition: color 160ms ease, filter 160ms ease; /* Smooth status changes. */
+}
+
+/* Keep the storage save icon smaller inside its compact tile. */
+.dashboard-controls-storage-save > .icon {
+  display: block; /* Remove inline SVG baseline space. */
+  width: calc(var(--size-icon-filled) - 4px);    /* Slightly inset the save icon from its standard size. */
+  height: calc(var(--size-icon-filled) - 4px);   /* Keep the icon square. */
+  flex: 0 0 calc(var(--size-icon-filled) - 4px); /* Keep a consistent icon size. */
+}
+
+/* Mark pending and failed saves with status colors. */
+.dashboard-controls-storage-save.is-pending {
+  --app-icon-state-color: var(--color-storage-pending);
+  --dashboard-control-color: var(--color-storage-pending);
+  color: var(--color-storage-pending);                   /* Show that changes are not saved yet. */
+  filter: drop-shadow(
+    0 0 4px
+    color-mix(
+      in srgb,
+      var(--color-storage-pending) 56%,
+      transparent
+    )
+  );                                                     /* Add a warning glow. */
+}
+
+.dashboard-controls-storage-save.is-error {
+  --app-icon-state-color: var(--color-storage-error);
+  --dashboard-control-color: var(--color-storage-error);
+  color: var(--color-storage-error);                       /* Show a failed-save state. */
+  filter: drop-shadow(
+    0 0 4px
+    color-mix(
+      in srgb, var(--color-storage-error) 56%, transparent
+    )
+  );                                                       /* Add a danger glow. */
+}
+
+/* Let the storage settings button use remaining width and truncate its label. */
+.dashboard-controls-storage-settings {
+  display: flex;                         /* Align the storage label. */
+  align-items: center;                   /* Vertically center the label. */
+  flex: 1 1 auto;                        /* Use the width remaining after the check tile. */
+  min-width: 0;                          /* Permit the name to shrink. */
+  max-width: 100%;                       /* Prevent overflow in narrow layouts. */
+  padding-inline-end: var(--spacing-level-3); /* Keep the label inset from the edge. */
+  border: 0;                             /* Use the shared group border instead. */
+  border-radius: 0;                      /* Let the group define the outer corners. */
+  background: transparent;               /* Keep the group surface visible. */
+  color: var(--color-text-on-surface);   /* Keep the storage label legible. */
+  font: 500 11px var(--font-family-app); /* Match compact storage typography. */
+  text-align: left;                      /* Align the name to the start. */
+  box-shadow: none;                      /* Avoid a nested shadow inside the group. */
+}
+
+/* Truncate long storage names inside their available width. */
+.dashboard-controls-storage-name {
+  min-width: 0;            /* Allow the text to shrink. */
+  flex: 1 1 auto;          /* Use available label width. */
+  overflow: hidden;        /* Hide text beyond the control. */
+  text-overflow: ellipsis; /* Show truncation with an ellipsis. */
+  white-space: nowrap;     /* Keep the storage name on one line. */
+  font-family: var(--font-family-app);
+  font-size: 13px;
+  font-weight: var(--font-weight-app);
+}
+
+/* Highlight storage actions on hover and keyboard focus. */
+.dashboard-controls-storage-settings:hover,
+.dashboard-controls-storage-indicator:hover {
+  border-color: var(--color-border-accent-muted); /* Highlight the active control border. */
+}
+
+.dashboard-controls-storage-settings:focus-visible {
+  outline: 2px solid var(--color-accent-primary); /* Keep keyboard focus visible on the button. */
+  outline-offset: -2px;                           /* Keep the ring inside the shared group. */
+}
+
+/* Show a success accent when the consistency check is hovered. */
+.dashboard-controls-storage-indicator:hover {
+  border-color: var(--color-storage-saved-border);                     /* Mark the check action as successful. */
+}
+
+/* Highlight the checked state and group when either storage action is hovered. */
+.dashboard-controls-storage-indicator:hover .dashboard-controls-storage-save.is-saved {
+  --app-icon-state-color: var(--color-storage-saved);
+  --dashboard-control-color: var(--color-storage-saved);
+  color: var(--color-storage-saved);                        /* Show the successful check state. */
+}
+
+.dashboard-controls-storage:has(.dashboard-controls-storage-indicator:hover),
+.dashboard-controls-storage:has(.dashboard-controls-storage-settings:hover),
+.dashboard-controls-storage:has(.dashboard-controls-storage-settings:focus-visible),
+.dashboard-controls-storage:has(.dashboard-controls-storage-indicator:focus-visible) {
+  border-color: color-mix(
+    in srgb, var(--color-storage-saved) 58%,
+    var(--color-border-subtle)
+  ); /* Tint the group outline. */
+}
+
+.dashboard-controls-storage-settings:hover,
+.dashboard-controls-storage-settings:focus-visible {
+  color: var(--color-storage-saved); /* Highlight the storage settings action. */
+  text-shadow: 0 0 8px color-mix(in srgb, var(--color-storage-saved) 48%, transparent); /* Add a matching text glow. */
+}
+/* !SECTION */
+
+/* !SECTION */
+
+/* !SECTION */
+
+/* SECTION Page navigation */
+/* Frame the dashboard's page-navigation row. */
+.dashboard-page {
+  width: 100%;                                            /* Fill the dashboard rail. */
+  min-width: 0;                                           /* Allow buttons to shrink. */
+  padding: var(--spacing-level-1);                         /* Match other panel spacing. */
+}
+
+/* Stretch the page controls across their parent panel. */
+.dashboard-page > .dashboard-row {
+  width: 100%; /* Fill the page panel. */
+}
+
+/* Base class: .buttonIcon */
+/* Size and style each dashboard page option. */
+.dashboard-page-control {
+  --dashboard-control-color: var(--color-icon-library);
+  flex: 1 1 0;                                                /* Give each section equal width. */
+  min-width: 0;                                               /* Allow equal-width buttons to shrink. */
+  color: var(--color-text-muted-bright);                      /* De-emphasize inactive labels. */
+}
+
+/* Highlight a section button on hover. */
+.dashboard-page-control:hover {
+  color: var(--color-text-primary);               /* Increase text contrast. */
+  border-color: var(--color-border-accent-muted); /* Highlight the outline. */
+  background: var(--color-surface-hover);         /* Raise the button surface. */
+}
+
+/* Mark the Library section with the blue accent. */
+.dashboard-page-control[aria-label="Library"]:hover {
+  color: var(--color-accent-primary); /* Accent the Library icon. */
+  border-color: color-mix(in srgb, var(--color-accent-primary) 48%, var(--color-border-subtle)); /* Tint the border. */
+  background: color-mix(in srgb, var(--color-accent-primary) 12%, var(--color-surface-level-2)); /* Tint the surface. */
+}
+.dashboard-page-control[aria-label="Library"].is-active {
+  color: var(--color-accent-primary); /* Color the active Library icon. */
+}
+
+/* Mark the Statistics section with the warm accent. */
+.dashboard-page-control[aria-label="Statistics"]:hover {
+  --dashboard-control-color: var(--color-icon-statistics);
+  color: var(--color-icon-statistics); /* Accent the Statistics icon. */
+  border-color: color-mix(in srgb, var(--color-icon-statistics) 48%, var(--color-border-subtle)); /* Tint the border. */
+  background: color-mix(in srgb, var(--color-icon-statistics) 12%, var(--color-surface-level-2)); /* Tint the surface. */
+}
+.dashboard-page-control[aria-label="Statistics"].is-active {
+  --dashboard-control-color: var(--color-icon-statistics);
+  color: var(--color-icon-statistics); /* Color the active Statistics icon. */
+}
+
+/* Color active section controls without adding an active border or surface. */
+.dashboard-page-control.is-active {
+  color: var(--color-text-accent); /* Use the shared active text color. */
+}
+
+/* Give navigation icons a role color on hover or while selected. */
+.dashboard-page-control.section-library:hover .filledIcon,
+.dashboard-page-control.section-library.is-active .filledIcon {
+  --app-icon-state-color: var(--color-icon-library);
+}
+
+.dashboard-page-control.section-statistics:hover .filledIcon,
+.dashboard-page-control.section-statistics.is-active .filledIcon {
+  --app-icon-state-color: var(--color-icon-statistics);
+}
+
+/* Make the selected Library or Statistics icon glow more strongly than hover. */
+.dashboard-page-control.section-library.is-active .filledIcon,
+.dashboard-page-control.section-statistics.is-active .filledIcon {
+  filter: var(--filter-icon-glow-active);
+}
+
+/* Hide dashboard navigation and Activity while an entry detail is open. */
+body.is-detail-view .dashboard-page,
+body.is-detail-view .dashboard-controls-activity {
+  display: none; /* Keep only relevant controls in detail view. */
+}
+/* !SECTION */
+
+/* !SECTION */

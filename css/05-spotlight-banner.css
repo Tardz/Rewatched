@@ -1,8 +1,6 @@
-/* 
-  Spotlight Banner
-  The rotating hero banner at the top of the page.
-*/
+/* Spotlight banner: rotating featured title, rating, poster, and controls. */
 
+/* Style the small uppercase label used above feature titles. */
 .eyebrow {
   margin: 0 0 var(--spotlight-title-gap, 13px);
   color: var(--blue);
@@ -12,6 +10,7 @@
   text-transform: uppercase;
 }
 
+/* Align the media icon and context label in the banner heading. */
 #banner-label {
   --banner-label-icon-size: 22px;
   --banner-label-text-size: clamp(13px, 1.65cqi, 15px);
@@ -20,6 +19,7 @@
   gap: 8px;
 }
 
+/* Size the movie or show icon generated beside the banner label. */
 .banner-media-type-icon {
   --app-icon-size: var(--banner-label-icon-size);
   --app-icon-png-size: calc(var(--banner-label-icon-size) - 2px);
@@ -42,6 +42,7 @@
   color: var(--blue);
 }
 
+/* Set the typography for the banner label's contextual text. */
 .banner-label-context {
   color: #c1c9d4;
   font: 400 var(--banner-label-text-size) "DM Mono", monospace;
@@ -49,6 +50,7 @@
   text-transform: none;
 }
 
+/* Lay out the featured title copy and poster inside the banner. */
 .spotlight {
   container-type: inline-size;
   min-height: 290px;
@@ -72,6 +74,7 @@
   display: none;
 }
 
+/* Stack the title details and controls within the banner. */
 .spotlight-copy {
   --spotlight-title-gap: 13px;
   min-width: 0;
@@ -81,6 +84,7 @@
   height: var(--spotlight-poster-height);
 }
 
+/* Size and outline the featured title. */
 .spotlight h2 {
   position: relative;
   left: -4px;
@@ -95,6 +99,7 @@
   paint-order: stroke fill;
 }
 
+/* Keep the optional director text inline with the featured title. */
 .banner-director {
   display: inline;
   margin: 0;
@@ -109,6 +114,7 @@
   -webkit-text-stroke: 0;
 }
 
+/* Separate the media type and director in the banner label. */
 .banner-label-separator {
   color: #c1c9d4;
   font: 400 var(--banner-label-text-size) "DM Mono", monospace;
@@ -117,6 +123,7 @@
 
 .banner-director[hidden] { display: none; }
 
+/* Show the featured title's release year. */
 .banner-release-year {
   margin: 0 0 var(--spotlight-title-gap, 13px);
   color: #c1c9d4;
@@ -124,6 +131,7 @@
   font-size: clamp(12px, 2cqi, 16px);
 }
 
+/* Align the rating and watch-date details. */
 .spotlight-meta {
   display: flex;
   align-items: center;
@@ -134,6 +142,7 @@
   font-size: clamp(10px, 1.6cqi, 13px);
 }
 
+/* Push banner actions to the bottom of the title details. */
 .banner-footer {
   display: flex;
   flex-direction: column;
@@ -157,6 +166,7 @@
   content: "";
 }
 
+/* Frame the featured title's poster. */
 .banner-poster {
   width: 170px;
   flex: 0 0 170px;
@@ -183,6 +193,7 @@
   display: none;
 }
 
+/* Arrange the previous, next, and rotation controls. */
 .banner-controls {
   display: flex;
   align-items: center;
@@ -192,6 +203,7 @@
   font: 11px "DM Mono", monospace;
 }
 
+/* Give banner controls their shared outline and hover surface. */
 .banner-controls button {
   border: 1px solid #596879;
   border-radius: 7px;
@@ -214,6 +226,7 @@
   background: #344556;
 }
 
+/* Size the control that pauses or resumes banner rotation. */
 .banner-controls .pause {
   margin-left: 8px;
   color: var(--muted);
@@ -239,11 +252,13 @@
   display: none !important;
 }
 
+/* Establish a stacking context for the poster backdrop and banner content. */
 .spotlight {
   position: relative;
   isolation: isolate;
 }
 
+/* Fill the banner with a blurred version of its poster image. */
 .spotlight-backdrop {
   position: absolute;
   inset: -24px;
@@ -260,6 +275,7 @@
   transform: scale(1.12);
 }
 
+/* Shade the poster backdrop so banner text remains readable. */
 .spotlight.has-poster::before {
   content: "";
   position: absolute;
@@ -275,6 +291,7 @@
   z-index: 2;
 }
 
+/* Share rating text alignment between the banner, cards, and detail page. */
 .banner-rating-with-star,
 .entry-rating-with-star,
 .detail-rating-with-star {
@@ -285,6 +302,7 @@
   gap: 8px;
 }
 
+/* Draw the track used by rating and priority meters. */
 .rating-meter {
   position: relative;
   isolation: isolate;
@@ -299,6 +317,7 @@
   vertical-align: middle;
 }
 
+/* Animate the filled portion of a rating or priority meter. */
 .rating-meter-fill {
   position: relative;
   z-index: 1;
@@ -310,6 +329,7 @@
   transition: width 180ms ease, box-shadow 180ms ease;
 }
 
+/* Lay out the watchlist priority markers. */
 .banner-priority-dots {
   display: inline-flex;
   align-items: center;
@@ -329,6 +349,7 @@
   box-shadow: 0 0 5px color-mix(in srgb, var(--priority-color, var(--rating-neutral)) 45%, transparent);
 }
 
+/* Align the watch date or watchlist priority label. */
 #banner-date {
   color: #c1c9d4;
   line-height: 1;
@@ -336,6 +357,7 @@
   align-self: center;
 }
 
+/* Tune the rating label and meter for the larger banner layout. */
 .spotlight-meta .banner-rating-with-star {
   align-self: center;
   font-family: "DM Mono", monospace;
@@ -364,6 +386,7 @@
   letter-spacing: .1em;
 }
 
+/* Keep the outgoing banner content positioned during slide transitions. */
 .spotlight .banner-slide-ghost {
   position: absolute;
   inset: 0;
@@ -376,6 +399,7 @@
   box-shadow: none;
 }
 
+/* Animate incoming banner content when the featured title changes. */
 .spotlight.is-sliding>.spotlight-copy,
 .spotlight.is-sliding>.banner-poster,
 .spotlight.is-sliding>.spotlight-backdrop {

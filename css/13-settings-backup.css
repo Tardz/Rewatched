@@ -1,6 +1,6 @@
-/* Settings & Backup
-   Settings dialog plus backup/import options. */
+/* Settings dialog: appearance options, API credentials, and backup controls. */
 
+/* Set the width of the settings dialog. */
 #settings-dialog {
   width: min(440px, calc(100% - 28px));
 }
@@ -12,6 +12,7 @@
   backdrop-filter: none;
 }
 
+/* Keep the backdrop subtle when the light theme is active. */
 :root[data-theme="light"] #settings-dialog::backdrop {
   background: #52607220;
 }
@@ -22,10 +23,12 @@
   }
 }
 
+/* Add spacing around settings sections. */
 .settings-dialog-content {
   padding: 26px;
 }
 
+/* Lay out each preference and its control. */
 .settings-option {
   display: flex;
   align-items: center;
@@ -62,11 +65,13 @@
   accent-color: var(--red);
 }
 
+/* Let a range-setting label use the available space. */
 .settings-option-range label {
   min-width: 0;
   flex: 1 1 auto;
 }
 
+/* Size the sliders used by appearance settings. */
 .settings-option-range input[type="range"] {
   width: 140px;
   height: 22px;
@@ -88,12 +93,14 @@
   overflow: auto;
 }
 
+/* Separate storage and backup actions from appearance settings. */
 .backup-settings {
   margin-top: 24px;
   padding-top: 22px;
   border-top: 1px solid var(--line);
 }
 
+/* Style headings within the storage and backup sections. */
 .backup-settings h3 {
   margin: 0 0 7px;
   font-size: 17px;
@@ -112,6 +119,7 @@
   font: 11px "DM Mono", monospace;
 }
 
+/* Arrange backup and storage actions, wrapping when needed. */
 .backup-actions {
   display: flex;
   gap: 8px;
@@ -123,6 +131,7 @@
   font-size: 12px;
 }
 
+/* Group the choices shown before importing a backup. */
 .import-options {
   margin: 18px 0 0;
   padding: 16px;
@@ -136,6 +145,7 @@
   font-size: 12px;
 }
 
+/* Align each import option with its radio button. */
 .import-options label {
   display: flex;
   align-items: center;
@@ -156,6 +166,7 @@
   margin-top: 8px;
 }
 
+/* Reserve room for storage and backup status messages. */
 .backup-settings .backup-status {
   min-height: 1.2em;
   margin: 14px 0 0;
@@ -163,6 +174,7 @@
   font-size: 12px;
 }
 
+/* Align each API credential field with its Save button. */
 .api-key-setting {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -173,6 +185,7 @@
   font-size: 12px;
 }
 
+/* Display API usage alongside the current count. */
 .api-usage-counter {
   display: flex;
   align-items: center;

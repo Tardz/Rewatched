@@ -727,7 +727,6 @@
   border-radius: 8px;
   background: transparent;
   color: var(--muted);
-  text-align: left;
   transition: color 140ms ease, background 140ms ease, border-color 140ms ease;
 }
 

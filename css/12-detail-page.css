@@ -1,9 +1,6 @@
-/* 
-  Detail Page
-  The full entry detail view, including 
-  the watch-history timeline. 
-*/
+/* Entry detail view: summary, metadata, actors/plot, and watch history. */
 
+/* Cover the app with the centered entry detail view. */
 .detail-page {
   position: fixed;
   inset: 0;
@@ -16,6 +13,7 @@
   backdrop-filter: blur(3px);
 }
 
+/* Bound the detail content and provide its poster-tinted background. */
 .detail-shell {
   position: relative;
   width: min(960px, 100%);
@@ -180,6 +178,7 @@
 
 .detail-runtime[hidden] { display: none; }
 
+/* Compact the hero and content grid in the dialog-sized detail view. */
 .detail-page:not(.is-fullscreen) .detail-hero {
   margin: 0;
   border-radius: 16px;
@@ -261,6 +260,7 @@
   font-size: 12px;
 }
 
+/* Fill the hero with a blurred version of the entry poster. */
 .detail-backdrop {
   position: absolute;
   inset: -28px;
@@ -285,6 +285,7 @@
   pointer-events: none;
 }
 
+/* Frame the poster in the entry summary. */
 .detail-poster {
   position: relative;
   z-index: 2;
@@ -311,6 +312,7 @@
   object-fit: cover;
 }
 
+/* Stack the title, metadata, rating, and entry actions. */
 .detail-summary {
   position: relative;
   z-index: 2;
@@ -333,6 +335,7 @@
   margin: 0 0 15px;
 }
 
+/* Display the saved IMDb score and fetched-data hint. */
 .detail-imdb {
   position: relative;
   display: flex;
@@ -382,6 +385,7 @@
 .detail-imdb.has-error { border-color: #a75a6066; }
 .detail-imdb.has-error span { color: var(--status-danger); }
 
+/* Align the entry rating and runtime metadata. */
 #detail-meta {
   color: var(--muted);
   font: 16px "DM Mono", monospace;
@@ -393,6 +397,7 @@
 
 .detail-summary .eyebrow { margin: 0 0 13px; }
 
+/* Style the optional director or creator line. */
 .detail-director {
   margin: 0;
   color: var(--muted);
@@ -472,6 +477,7 @@
 }
 
 
+/* Arrange the edit, rewatch, and remove actions. */
 .detail-actions {
   display: flex;
   flex-wrap: wrap;
@@ -479,6 +485,7 @@
   margin-top: 26px;
 }
 
+/* Expand the detail view into the full page layout. */
 .detail-page.is-fullscreen {
   position: static;
   display: block;
@@ -520,6 +527,7 @@
 }
 /* Full entry pages use the same generous hero layout as the main banner,
    with the poster kept on the left. */
+/* Give the full-page hero more room for the poster and title. */
 .detail-page.is-fullscreen .detail-hero {
   min-height: 260px;
   min-width: 0;
@@ -546,6 +554,7 @@
   display: none;
 }
 
+/* Stack cast members inside the information panel. */
 .detail-actors-list {
   display: flex;
   flex-direction: column;
@@ -565,6 +574,7 @@
 
 .detail-actors-panel[hidden] { display: none; }
 
+/* Style the actors or plot panel controlled by the info tabs. */
 .detail-info-content {
   min-width: 0;
   width: 100%;
@@ -576,6 +586,7 @@
   box-shadow: inset 0 1px 0 var(--shadow-inset), 0 4px 12px var(--shadow-black-12);
 }
 
+/* Group the Actors and Plot tab buttons. */
 .detail-info-tabs {
   display: flex;
   width: 184px;
@@ -589,6 +600,7 @@
   box-shadow: 0 6px 16px var(--shadow-black-25), inset 0 1px 0 var(--shadow-inset);
 }
 
+/* Draw each Actors or Plot tab. */
 .detail-info-tab {
   flex: 1 1 0;
   min-height: 32px;
@@ -642,6 +654,7 @@
   line-height: 1.6;
 }
 
+/* Render each cast member as a compact tag. */
 .detail-actor-tag {
   display: inline-flex;
   align-items: center;
@@ -681,6 +694,7 @@
   white-space: pre-wrap;
 }
 
+/* Place the watch-history section beneath the entry summary. */
 .detail-history {
   max-width: none;
   margin: 24px 18px 0;
@@ -690,13 +704,13 @@
   margin-bottom: 0;
 }
 
+/* Reset history spacing and span both columns in the full-page layout. */
 .detail-page.is-fullscreen .detail-history {
-  margin-top: 0;
-  margin-right: 0;
-  margin-bottom: 0;
-  margin-left: 0;
+  grid-column: 1 / -1;
+  margin: 0;
 }
 
+/* Frame the watch timeline and notes columns. */
 .timeline-panel {
   min-width: 0;
   padding: 16px 16px 16px 66px;
@@ -706,6 +720,7 @@
   box-shadow: 0 12px 28px var(--shadow-black-25), 0 3px 8px var(--shadow-black-20), inset 0 1px 0 var(--shadow-inset);
 }
 
+/* Style the watch-history section heading. */
 .detail-history h2 {
   display: inline-block;
   padding: var(--panel-heading-padding);
@@ -785,6 +800,7 @@
   --watch-color: var(--blue);
 }
 
+/* Place the timeline beside its notes panel. */
 .timeline-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(220px, .8fr);
@@ -839,6 +855,7 @@
 }
 
 
+/* Draw the vertical spine and list layout for individual watches. */
 .detail-timeline {
   position: relative;
   isolation: isolate;
@@ -875,6 +892,7 @@
   pointer-events: none;
 }
 
+/* Give the timeline and notes content matching inset surfaces. */
 .detail-timeline-content,
 .timeline-notes-content {
   min-width: 0;
@@ -897,6 +915,7 @@
 
 .detail-timeline-content .detail-watch-count { margin-top: 0; }
 
+/* Position each watch event along the history timeline. */
 .detail-timeline li {
   display: flex;
   justify-content: flex-end;
@@ -908,6 +927,7 @@
   padding: 0;
 }
 
+/* Frame the details for one watch event. */
 .timeline-entry-card {
   position: relative;
   z-index: 1;
@@ -942,6 +962,7 @@
 
 .detail-timeline li:last-child { margin-bottom: 0; }
 
+/* Show the watch number beside its timeline marker. */
 .detail-watch-number {
   position: absolute;
   z-index: 2;
@@ -983,6 +1004,7 @@
   right: calc(var(--timeline-card-width, 0px) - 1px);
 }
 
+/* Position each event date beside the timeline spine. */
 .timeline-date {
   position: absolute;
   z-index: 3;
@@ -1065,6 +1087,7 @@
   transform: translateY(-50%);
 }
 
+/* Arrange the edit and remove controls for a watch event. */
 .timeline-actions button {
   width: 30px;
   height: 30px;
@@ -1089,6 +1112,7 @@
 .timeline-actions .timeline-edit:hover { color: var(--status-success); background: var(--status-success-surface); border-color: var(--status-success-border); }
 .timeline-actions .timeline-remove:hover { color: var(--status-danger); background: var(--status-danger-surface); border-color: var(--status-danger-border); }
 
+/* Frame the notes panel beside the watch timeline. */
 .timeline-notes-panel {
   min-height: 120px;
   padding: 16px;
@@ -1110,6 +1134,7 @@
   box-shadow: var(--panel-heading-shadow);
 }
 
+/* Align the notes title with its edit/save actions. */
 .timeline-notes-heading {
   display: flex;
   align-items: center;
@@ -1138,6 +1163,7 @@
   display: block;
 }
 
+/* Stack the notes field and save/discard actions. */
 .timeline-notes-editor {
   display: grid;
   flex: 1 1 auto;
@@ -1145,6 +1171,7 @@
   gap: 9px;
 }
 
+/* Style the editable watch notes field. */
 .timeline-notes-input {
   width: 100%;
   min-height: 108px;

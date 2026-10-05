@@ -44,7 +44,7 @@ function formatRuntime(runtime) {
 /** Keeps the plot/actors panel aligned with the entry banner. */
 function syncDetailInfoPanelHeight() {
   const panel = $('#detail-actors-panel');
-  const hero = $('.detail-hero');
+  const hero = $('.detail-banner, .detail-hero');
   if (panel.hidden) return;
   const previousAlignSelf = hero.style.alignSelf;
   hero.style.alignSelf = 'start';
@@ -54,7 +54,7 @@ function syncDetailInfoPanelHeight() {
 }
 
 const detailHeroResizeObserver = new ResizeObserver(syncDetailInfoPanelHeight);
-detailHeroResizeObserver.observe($('.detail-hero'));
+detailHeroResizeObserver.observe($('.detail-banner, .detail-hero'));
 
 /** Switches between plot and actor information. */
 function selectDetailInfoTab(tabName) {
@@ -134,10 +134,10 @@ function createTimelineItem(entry, watch, index) {
   const scoreFill = `${Number(watch.score) * 10}%`;
   const scoreColor = ratingColorForScore(watch.score);
   const scoreValue = document.createElement('span');
-  scoreValue.className = 'rating-value-chip';
+  scoreValue.className = 'valueChip ratingValueChip rating-valueChip';
   scoreValue.textContent = scoreFill;
   scoreValue.style.setProperty('--rating-color', scoreColor);
-  score.append(scoreValue, createRatingMeter(scoreFill, scoreColor, 'rating-meter timeline-rating-meter'));
+  score.append(scoreValue, createRatingMeter(scoreFill, scoreColor, 'ratingsMeter timeline-rating-meter'));
   score.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
   const olderWatch = entry.watches[index + 1];
   if (olderWatch) {
@@ -332,7 +332,7 @@ function selectTimelineWatch(entry, index) {
 function hideDetail() {
   const detail = $('#detail');
   document.body.classList.remove('is-detail-view');
-  $('.dashboard-layout').classList.remove('is-entry-fullscreen');
+  document.querySelector('.default-layout, .dashboard-layout').classList.remove('is-entry-fullscreen');
   detail.hidden = true;
   detail.classList.remove('is-fullscreen');
   delete detail.dataset.entryId;
@@ -340,7 +340,7 @@ function hideDetail() {
   $('#statistics-panel').hidden = !$('.section-statistics').classList.contains('is-active');
   $('#library').hidden = !$('.section-library').classList.contains('is-active');
   $('.statsbar').hidden = false;
-  $('#banner').hidden = entries.length === 0;
+  $('#banner').hidden = bannerEntries().length === 0;
 }
 
 /** Applies poster-derived colors to the hover detail without changing the page palette. */
@@ -397,23 +397,26 @@ function renderDetail() {
     ? requestedSelection
     : Number.isInteger(previousSelectedIndex) ? previousSelectedIndex : 0;
   document.body.classList.add('is-detail-view');
-  $('.dashboard-layout').classList.toggle('is-entry-fullscreen', fullscreen);
+  document.querySelector('.default-layout, .dashboard-layout').classList.toggle('is-entry-fullscreen', fullscreen);
   activeView = view;
   updateViewTabs();
   detail.dataset.entryId = id;
-  detail.classList.toggle('is-watchlist', view === 'watchlist');
+  const isBacklogged = view === 'watchlist';
+  detail.classList.toggle('is-logged', !isBacklogged);
+  detail.classList.toggle('is-backlogged', isBacklogged);
+  detail.classList.toggle('is-watchlist', isBacklogged); // Keep the current stylesheet working during migration.
   detail.classList.toggle('is-fullscreen', fullscreen);
   detail.hidden = false;
   $('#detail-back').hidden = !fullscreen;
   $('#statistics-panel').hidden = fullscreen || !$('.section-statistics').classList.contains('is-active');
   $('#library').hidden = fullscreen || !$('.section-library').classList.contains('is-active');
   $('.statsbar').hidden = fullscreen;
-  $('#banner').hidden = fullscreen || entries.length === 0;
+  $('#banner').hidden = fullscreen || bannerEntries().length === 0;
 
   $('#detail-poster').replaceChildren(posterElement(entry, 'detail-poster-art'));
   updateDetailPosterPalette(entry);
   $('#detail-backdrop').hidden = !entry.poster;
-  $('.detail-hero').classList.toggle('has-poster', Boolean(entry.poster));
+  $('.detail-banner, .detail-hero').classList.toggle('has-poster', Boolean(entry.poster));
   if (entry.poster) {
     $('#detail-backdrop-image').src = entry.poster;
     if (fullscreen) updateBannerPalette(entry.poster);
@@ -459,7 +462,7 @@ function renderDetail() {
   if (latestWatch) {
     const ratingValue = $('#detail-rating-value');
     ratingValue.textContent = `${Number(latestWatch.score) * 10}%`;
-    ratingValue.classList.add('rating-value-chip');
+    ratingValue.classList.add('valueChip', 'ratingValueChip', 'rating-valueChip');
     ratingValue.style.setProperty('--rating-color', ratingColorForScore(latestWatch.score));
     $('#detail-latest-date').textContent = `Watched ${formatDate(latestWatch.date)}`;
   }
@@ -473,7 +476,7 @@ function renderDetail() {
   if (latestWatch) {
     const fill = `${Number(latestWatch.score) * 10}%`;
     const color = ratingColorForScore(latestWatch.score);
-    detailMeta.insertBefore(createRatingMeter(fill, color, 'rating-meter detail-meta-meter'), $('#detail-latest-date'));
+    detailMeta.insertBefore(createRatingMeter(fill, color, 'ratingsMeter detail-meta-meter'), $('#detail-latest-date'));
   }
 
   const actions = $('#detail-actions');
@@ -523,7 +526,7 @@ function renderDetail() {
 
 $('#detail-backdrop-image').addEventListener('error', () => {
   $('#detail-backdrop').hidden = true;
-  $('.detail-hero').classList.remove('has-poster');
+  $('.detail-banner, .detail-hero').classList.remove('has-poster');
 });
 
 $('#detail-edit-movie').addEventListener('click', () => {

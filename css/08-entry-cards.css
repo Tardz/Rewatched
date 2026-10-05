@@ -1,6 +1,6 @@
-/* Entry Cards
-   Movie/show cards shown in the collection grid. */
+/* Entry cards: collection grid, ratings, watchlist priority, and card actions. */
 
+/* Lay out the paginated collection as a responsive card grid. */
 .collection {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -10,19 +10,23 @@
   padding-top: 8px;
 }
 
+/* Animate the grid when moving to a later collection page. */
 .collection.page-enter-forward {
   animation: collection-page-forward 240ms cubic-bezier(.2, .75, .25, 1) both;
 }
 
+/* Animate the grid when moving to an earlier collection page. */
 .collection.page-enter-backward {
   animation: collection-page-backward 240ms cubic-bezier(.2, .75, .25, 1) both;
 }
 
+/* Define the slide-in motion for forward pagination. */
 @keyframes collection-page-forward {
   from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
+/* Define the slide-in motion for backward pagination. */
 @keyframes collection-page-backward {
   from { opacity: 0; transform: translateX(-20px); }
   to { opacity: 1; transform: translateX(0); }
@@ -34,6 +38,7 @@
   .entry.is-opening { animation: none; }
 }
 
+/* Arrange a poster and its title details inside each collection card. */
 .entry {
   display: grid;
   grid-template-columns: 84px minmax(0, 1fr);
@@ -45,6 +50,7 @@
   min-width: 0;
 }
 
+/* Size and crop the poster area on each entry card. */
 .entry-poster {
   width: 84px;
   height: 100%;
@@ -60,6 +66,7 @@
   object-fit: cover;
 }
 
+/* Stack title metadata and rating details beside the poster. */
 .entry-info {
   min-width: 0;
   display: flex;
@@ -108,6 +115,7 @@
   margin-top: 8px;
 }
 
+/* Show watchlist priority as a label with filled dots. */
 .entry-priority {
   --priority-color: var(--priority-low);
   display: flex;
@@ -117,6 +125,7 @@
   padding-top: 12px;
 }
 
+/* Render the numeric priority label from its data attribute. */
 .entry-priority::before {
   content: "P" attr(data-priority);
   margin-right: 2px;
@@ -135,6 +144,7 @@
 .entry-priority[data-priority="4"],
 .entry-priority[data-priority="5"] { --priority-color: var(--priority-high); }
 
+/* Draw each watchlist priority dot. */
 .entry-priority span {
   width: 8px;
   height: 8px;
@@ -153,10 +163,12 @@
 .entry-priority[data-priority="4"] span.is-filled,
 .entry-priority[data-priority="5"] span.is-filled { border-color: var(--priority-high); background: var(--priority-high); box-shadow: 0 0 5px #ff797055; }
 
+/* Let card actions participate directly in the tools grid. */
 .entry-actions {
   display: contents;
 }
 
+/* Give category tags a compact base appearance. */
 .entry-tag {
   display: inline-block;
   border: 1px solid #46566a;
@@ -165,12 +177,14 @@
   align-self: flex-start;
 }
 
+/* Color real category tags from the category hue. */
 .entry-tag:not(.entry-tag-placeholder) {
   border-color: hsl(var(--category-hue) 38% 45%);
   background: hsl(var(--category-hue) 34% 29%);
   color: hsl(var(--category-hue) 48% 84%);
 }
 
+/* Use the danger accent for the remove action. */
 .entry-actions .remove-button:hover {
   color: var(--white);
   background: var(--status-danger-border);
@@ -195,6 +209,7 @@
   border-color: var(--border-blue-action);
 }
 
+/* Align media type and release year metadata beneath the title. */
 .entry-type {
   margin: 2px 0 2px;
   display: flex;
@@ -204,6 +219,7 @@
   line-height: 1.4;
 }
 
+/* Keep the release year inline with a small separator. */
 .entry-year {
   display: inline-flex;
   align-items: center;
@@ -226,6 +242,7 @@
   line-height: 1.15;
 }
 
+/* Lift cards and add a short transition when hovered or focused. */
 .entry {
   position: relative;
   min-height: 2px;
@@ -240,17 +257,20 @@
   box-shadow: 0 20px 40px #00000080, 0 4px 10px #00000050, inset 0 1px 0 #ffffff10;
 }
 
+/* Prevent repeat clicks while the card opens its detail page. */
 .entry.is-opening {
   pointer-events: none;
   animation: entry-open-transition 90ms ease-out;
 }
 
+/* Define the short visual response before opening an entry. */
 @keyframes entry-open-transition {
   to {
     transform: translateY(-8px) scale(1.012);
   }
 }
 
+/* Make the card's title area open the entry without covering its tools. */
 .entry-link {
   position: absolute;
   inset: 0;
@@ -263,6 +283,7 @@
   outline-offset: 3px;
 }
 
+/* Position the control that opens an entry in fullscreen detail view. */
 .entry-open-fullscreen {
   position: absolute;
   top: 8px;
@@ -308,6 +329,7 @@
   color: var(--blue);
 }
 
+/* Group the category tag and title at the top of each card. */
 .entry-header {
   display: flex;
   flex-direction: column;
@@ -323,10 +345,12 @@
   align-items: center;
 }
 
+/* Reserve tag space when a card has no category label. */
 .entry-tag-placeholder {
   visibility: hidden;
 }
 
+/* Limit card titles to two lines. */
 .entry-info h3 {
   margin: 2px 0 3px;
   display: -webkit-box;
@@ -335,6 +359,7 @@
   overflow: hidden;
 }
 
+/* Keep the score and watched date together at the bottom of card details. */
 .entry-details {
   margin: auto 0 6px;
   display: flex;
@@ -351,6 +376,7 @@
   margin: 0px;
 }
 
+/* Place card actions in a three-column grid over the poster. */
 .entry-card-tools {
   position: absolute;
   top: 8px;
@@ -366,6 +392,7 @@
   transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
 }
 
+/* Reveal card actions when the card is hovered or keyboard-focused. */
 .entry:hover .entry-card-tools,
 .entry:focus-within .entry-card-tools {
   opacity: 1;
@@ -373,6 +400,7 @@
   transform: translateY(0);
 }
 
+/* Give card actions and fullscreen controls a consistent compact surface. */
 .entry-card-tools .entry-actions button,
 .entry-card-tools .entry-open-fullscreen {
   position: static;
@@ -391,16 +419,19 @@
   visibility: visible;
 }
 
+/* Place edit, rewatch, folder, and remove actions in their card-tool slots. */
 .entry-card-tools .entry-actions button:nth-child(1) { grid-column: 1; grid-row: 1; }
 .entry-card-tools .entry-actions button:nth-child(2) { grid-column: 2; grid-row: 1; }
 .entry-card-tools .entry-actions button:nth-child(3) { grid-column: 3; grid-row: 2; }
 .entry-card-tools .entry-actions button:nth-child(4) { grid-column: 3; grid-row: 3; }
 
+/* Reserve the top-right slot for the fullscreen detail control. */
 .entry-card-tools .entry-open-fullscreen {
   grid-column: 3;
   grid-row: 1;
 }
 
+/* Apply the shared hover treatment to card tools. */
 .entry-card-tools .entry-actions button:hover,
 .entry-card-tools .entry-open-fullscreen:hover {
   border-color: var(--border-action-hover);
@@ -432,6 +463,7 @@
   border-color: var(--status-danger-border);
 }
 
+/* Size the action icons within the card tools. */
 .entry-card-tools .entry-actions button svg {
   width: 16px;
   height: 16px;
@@ -442,7 +474,7 @@
   height: 16px;
 }
 
-/* Keep the icon controls easy to reach on touch screens without hover. */
+/* Keep the icon controls visible on touch screens that do not use hover. */
 @media (hover: none) {
   .entry-card-tools {
     opacity: 1;

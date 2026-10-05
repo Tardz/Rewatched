@@ -397,13 +397,13 @@ function handleCollectionResize() {
 }
 
 /** Builds the card markup and actions for one entry. */
-function createEntryCard(entry, isWatchlist, sourceView = activeView) {
-  const watch = isWatchlist ? null : latest(entry);
+function createEntryCard(entry, isBacklogged, sourceView = activeView) {
+  const watch = isBacklogged ? null : latest(entry);
   const card = document.createElement('article');
-  card.className = `entry${isWatchlist ? ' is-watchlist' : ''}`;
+  card.className = `workspace-content-entry surfaceLevel2 entry ${isBacklogged ? 'is-backlogged' : 'is-logged'}`;
 
   const link = document.createElement('a');
-  link.className = 'entry-link';
+  link.className = 'workspace-content-entry-link entry-link';
   link.href = `#entry/${sourceView}/${encodeURIComponent(entry.id)}`;
   link.setAttribute('aria-label', `Open ${entry.title} details`);
   link.addEventListener('click', (event) => {
@@ -411,67 +411,110 @@ function createEntryCard(entry, isWatchlist, sourceView = activeView) {
     event.preventDefault();
     openEntryFromCard(card, link.href);
   });
-  card.append(link, posterElement(entry, 'entry-poster'));
+  const poster = posterElement(entry, 'workspace-content-entry-poster entry-poster');
+  card.append(link, poster);
 
+  const isReworkPreview = document.documentElement.dataset.cssReworkPreview === 'true';
   const info = document.createElement('div');
-  info.className = 'entry-info';
+  info.className = 'workspace-content-entry-detail entry-info';
   const header = document.createElement('div');
-  header.className = 'entry-header';
+  header.className = isReworkPreview ? 'workspace-content-entry-detail-header' : 'entry-header';
   const details = document.createElement('div');
   details.className = 'entry-details';
 
   const tag = document.createElement('span');
-  tag.className = 'entry-tag';
+  tag.className = isReworkPreview
+    ? 'tagChip workspace-content-entry-detail-header-label-tag'
+    : 'workspace-content-entry-detail-tagChip entry-tag';
   if (entry.category && entry.category.toLowerCase() !== entry.type.toLowerCase()) {
     tag.textContent = entry.category;
-    let categoryHash = 0;
-    for (const character of entry.category.toLocaleLowerCase()) {
-      categoryHash = (categoryHash * 31 + character.codePointAt(0)) % 360;
-    }
-    tag.style.setProperty('--category-hue', categoryHash);
+    tag.style.setProperty('--category-hue', categoryHueForName(entry.category));
   }
   else {
     tag.classList.add('entry-tag-placeholder');
+    if (isReworkPreview) tag.classList.add('is-placeholder');
     tag.setAttribute('aria-hidden', 'true');
     tag.textContent = 'Genre';
   }
 
   const title = document.createElement('h3');
+  title.className = isReworkPreview
+    ? 'workspace-content-entry-detail-header-title'
+    : 'workspace-content-entry-detail-title';
   title.textContent = entry.title;
-  const type = document.createElement('div');
-  type.className = 'entry-type';
-  type.append(Object.assign(document.createElement('span'), { textContent: entry.type }));
+  const label = document.createElement('div');
+  label.className = isReworkPreview
+    ? 'workspace-content-entry-detail-header-label'
+    : 'entry-type';
+  if (isReworkPreview) {
+    const mediaType = entry.type.toLowerCase();
+    const mediaIcon = document.createElement('span');
+    mediaIcon.className = `labelChip media-type-icon workspace-content-entry-poster-type is-${mediaType}`;
+    mediaIcon.setAttribute('role', 'img');
+    mediaIcon.setAttribute('aria-label', entry.type);
+    mediaIcon.innerHTML = appIconMarkup(mediaTypeIconName(entry.type), 'icon app-icon');
+    poster.append(mediaIcon);
+    label.append(tag);
+  } else {
+    label.textContent = entry.type;
+  }
   if (entry.year) {
     const year = document.createElement('span');
-    year.className = 'entry-year';
+    year.className = isReworkPreview
+      ? 'labelChip workspace-content-entry-detail-header-label-year'
+      : 'workspace-content-entry-detail-year entry-year';
     year.textContent = entry.year;
-    type.append(year);
+    label.append(year);
   }
-  header.append(tag, title, type);
+  if (isReworkPreview) {
+    if (entry.director) {
+      const director = document.createElement('div');
+      director.className = 'labelChip workspace-content-entry-detail-header-label-director';
+      const directorText = document.createElement('span');
+      directorText.textContent = entry.director;
+      director.append(directorText);
+      director.title = entry.director;
+      label.append(director);
+    }
+    header.append(label, title);
+  } else {
+    header.append(tag, label, title);
+  }
 
   if (watch) {
     const score = document.createElement('div');
-    score.className = 'entry-score entry-rating-with-star';
+    score.className = isReworkPreview
+      ? 'workspace-content-entry-detail-header-value'
+      : 'workspace-content-entry-detail-rating entry-score entry-rating-with-star';
     const scoreFill = `${Number(watch.score) * 10}%`;
     const scoreColor = ratingColorForScore(watch.score);
     const scoreValue = document.createElement('span');
-    scoreValue.className = 'rating-value-chip';
+    scoreValue.className = isReworkPreview
+      ? 'workspace-content-entry-detail-header-value-ratingChip valueChip ratingValueChip rating-valueChip'
+      : 'workspace-content-entry-detail-ratingChip valueChip ratingValueChip rating-valueChip';
     scoreValue.textContent = scoreFill;
     scoreValue.style.setProperty('--rating-color', scoreColor);
-    score.append(scoreValue, createRatingMeter(scoreFill, scoreColor));
+    const meterClass = isReworkPreview
+      ? 'workspace-content-entry-detail-header-value-ratingsMeter ratingsMeter'
+      : 'workspace-content-entry-detail-ratingsMeter ratingsMeter';
+    score.append(scoreValue, createRatingMeter(scoreFill, scoreColor, meterClass));
     score.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
     const date = document.createElement('div');
-    date.className = 'entry-date';
-    const approximate = ['approximate', 'approximate-month', 'approximate-date'].includes(watch.precision);
-    const watchLabel = entry.watches.length > 1
-      ? `${approximate ? 'Approximate ' : ''}Rewatch`
-      : `${approximate ? 'Approximate ' : ''}First watch`;
-    date.textContent = `${watchLabel} · ${formatDate(watch.date)}`;
-    details.append(score, date);
-  } else if (isWatchlist) {
+    date.className = isReworkPreview
+      ? 'labelChip workspace-content-entry-detail-header-date'
+      : 'workspace-content-entry-detail-date entry-date';
+    date.textContent = formatDate(watch.date);
+    if (isReworkPreview) {
+      header.append(score, date);
+    } else {
+      details.append(score, date);
+    }
+  } else if (isBacklogged) {
     const priority = Math.min(5, Math.max(1, Number(entry.priority) || 3));
     const indicator = document.createElement('div');
-    indicator.className = 'entry-priority';
+    indicator.className = isReworkPreview
+      ? 'workspace-content-entry-detail-header-value-priorityDots priorityDots'
+      : 'workspace-content-entry-detail-priorityDots entry-priority priorityDots';
     indicator.dataset.priority = priority;
     indicator.setAttribute('aria-label', `Priority ${priority} out of 5`);
     for (let dot = 1; dot <= 5; dot++) {
@@ -479,12 +522,21 @@ function createEntryCard(entry, isWatchlist, sourceView = activeView) {
       marker.classList.toggle('is-filled', dot <= priority);
       indicator.append(marker);
     }
-    details.append(indicator);
+    if (isReworkPreview) {
+      const value = document.createElement('div');
+      value.className = 'workspace-content-entry-detail-header-value';
+      const priorityValue = document.createElement('span');
+      priorityValue.className = 'valueChip priorityValueChip workspace-content-entry-detail-header-value-priorityChip';
+      priorityValue.textContent = `P${priority}`;
+      value.append(priorityValue, indicator);
+      header.append(value);
+    }
+    else details.append(indicator);
   }
 
   const actions = document.createElement('div');
   actions.className = 'entry-actions';
-  const actionList = isWatchlist
+  const actionList = isBacklogged
     ? [['Edit', () => openDialog(entry.id, false, null, true, 'watchlist')], ['Folder', () => openFolderPicker(entry)], ['Remove', () => removeEntry(entry, true)]]
     : [['Rewatch', () => openDialog(entry.id, true)], ['Edit', () => openDialog(entry.id, false, null, true)], ['Folder', () => openFolderPicker(entry)], ['Remove', () => removeEntry(entry, false)]];
 
@@ -495,9 +547,13 @@ function createEntryCard(entry, isWatchlist, sourceView = activeView) {
     actions.append(button);
   });
 
-  info.append(header, details);
+  if (isReworkPreview) {
+    info.append(header);
+  } else {
+    info.append(header, details);
+  }
   const tools = document.createElement('div');
-  tools.className = 'entry-card-tools';
+  tools.className = 'workspace-content-entry-tools entry-card-tools';
   tools.append(actions, iconButton(
     `Open ${entry.title} fullscreen`,
     'Fullscreen',

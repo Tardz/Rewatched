@@ -457,7 +457,6 @@ main:has(.dashboard-layout.layout-normal) {
     justify-content: flex-start;
   }
   .section-add { margin-left: auto; }
-  .collection-filter-sort { justify-content: flex-start; }
   .collection-filter-sort label { flex: 1 1 140px; }
   .collection-filter-sort select,
   .collection-filter-sort label:last-child select { width: 100%; min-width: 0; }
@@ -539,7 +538,6 @@ main:has(.dashboard-layout.layout-normal) {
    independently from the banner's height. */
 .spotlight {
   --spotlight-poster-height: 296px;
-  --spotlight-frame-space: 16px;
   --spotlight-padding: 20px;
   padding: var(--spotlight-padding);
 }
@@ -556,7 +554,6 @@ main:has(.dashboard-layout.layout-normal) {
 
 .dashboard-layout.layout-normal > .spotlight {
   --spotlight-poster-height: 318px;
-  --spotlight-frame-space: 20px;
   --spotlight-padding: 16px;
   padding: var(--spotlight-padding);
 }
@@ -570,14 +567,12 @@ main:has(.dashboard-layout.layout-normal) {
 @media (max-width: 760px) {
   .spotlight {
     --spotlight-poster-height: 228px;
-    --spotlight-frame-space: 25px;
     --spotlight-padding: 29px;
     padding: var(--spotlight-padding);
   }
 
   .dashboard-layout.layout-normal > .spotlight {
     --spotlight-poster-height: 228px;
-    --spotlight-frame-space: 25px;
     --spotlight-padding: 29px;
     padding: var(--spotlight-padding);
   }
@@ -591,14 +586,12 @@ main:has(.dashboard-layout.layout-normal) {
 @media (max-width: 470px) {
   .spotlight {
     --spotlight-poster-height: 238px;
-    --spotlight-frame-space: 20px;
     --spotlight-padding: 24px;
     padding: var(--spotlight-padding);
   }
 
   .dashboard-layout.layout-normal > .spotlight {
     --spotlight-poster-height: 238px;
-    --spotlight-frame-space: 20px;
     --spotlight-padding: 24px;
     padding: var(--spotlight-padding);
   }

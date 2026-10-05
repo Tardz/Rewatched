@@ -1,0 +1,14 @@
+/* SECTION workspace */
+/* Frame the workspace that contains the toolbar, empty states, and entries. */
+.workspace {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-level-1) + 8px); /* Match the workspace inset and internal spacing. */
+  min-width: 0;
+  padding: calc(var(--spacing-level-1) + 4px);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface-level-1);
+  background: var(--color-surface-level-1);
+  box-shadow: var(--shadow-surface-level-1);
+}
+/* !SECTION */

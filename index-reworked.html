@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en" data-fixed-icon-style="filled" data-css-rework-preview="true">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rewatched</title>
+  <link rel="icon" type="image/svg+xml" href="assets/rewatched-icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Preview the isolated reworked styles without changing the live app page. -->
+  <link rel="stylesheet" href="css-reworked/main.css">
+  <script src="js/state.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/banner.js" defer></script>
+  <script src="js/statistics.js" defer></script>
+  <script src="js/collection.js" defer></script>
+  <script src="js/detail.js" defer></script>
+  <script src="js/views.js" defer></script>
+  <script src="js/form.js" defer></script>
+  <script src="js/poster-search.js" defer></script>
+  <script src="js/backup.js" defer></script>
+  <script src="js/file-storage.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <!-- The overview places the dashboard, featured banner, and summary stats side by side. -->
+    <div class="overview default-layout">
+      <div class="dashboard">
+        <div class="dashboard-info surfaceLevel1">
+          <div class="dashboard-row">
+            <button
+              id="detail-back"
+              class="buttonIcon surfaceLevel2 dashboard-info-back"
+              type="button"
+              aria-label="Back to library"
+              title="Back to library"
+              hidden
+            ><img class="icon" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
+            <a class="surfaceLevel2 dashboard-info-brand" href="#" aria-label="Rewatched home">
+              <span class="dashboard-info-brand-name">Rewatched</span>
+              <span class="dashboard-info-brand-mark" aria-hidden="true">R</span>
+              <span class="dashboard-info-brand-dot">.</span>
+            </a>
+          </div>
+
+          <div class="dashboard-row">
+            <a
+              class="buttonIcon surfaceLevel2 dashboard-info-git"
+              href="https://github.com/Tardz/Rewatched"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open Rewatched on GitHub"
+              title="ReWatched on GitHub"
+            >
+              <img class="icon" data-app-icon="github" src="assets/icons/color/github.png" alt="" aria-hidden="true">
+            </a>
+            <div class="surfaceLevel2 dashboard-info-version" aria-label="Version 1.0.0">v1.0.0</div>
+          </div>
+        </div>
+
+        <div class="dashboard-controls surfaceLevel1">
+          <div class="dashboard-row">
+            <button id="open-settings" class="buttonIcon surfaceLevel2 dashboard-controls-settings" type="button" aria-label="Settings" title="Settings">
+              <img class="icon" data-app-icon="settings" src="assets/icons/color/settings.png" alt="" aria-hidden="true">
+            </button>
+            <button
+              id="toggle-theme"
+              class="buttonIcon surfaceLevel2 dashboard-controls-theme"
+              type="button"
+              aria-label="Switch to light mode"
+              title="Switch to light mode"
+              aria-pressed="false"
+            >
+              <img class="icon" data-app-icon="light_mode" src="assets/icons/color/light_mode.png" alt="" aria-hidden="true">
+            </button>
+          </div>
+
+          <div class="dashboard-row">
+            <button class="buttonIcon surfaceLevel2 dashboard-controls-activity" type="button" aria-label="Activity" title="Activity">
+              <img class="icon" data-app-icon="history" src="assets/icons/color/history.png" alt="" aria-hidden="true">
+            </button>
+            <div class="dashboard-controls-storage surfaceLevel2">
+              <button id="open-storage-check" class="buttonIcon surfaceLevel3 dashboard-controls-storage-indicator" type="button" title="Storage Consistency Check" aria-label="Open Storage Consistency Check">
+                <span
+                  id="storage-save-indicator"
+                  class="dashboard-controls-storage-save is-saved"
+                  role="status"
+                  aria-label="All changes saved"
+                  title="All changes saved"
+                ><img class="icon" data-app-icon="save" src="assets/icons/color/save.png" alt="" aria-hidden="true"></span>
+              </button>
+              <button id="open-storage-settings" class="dashboard-controls-storage-settings" type="button" title="Open storage settings">
+                <span id="current-storage-name" class="dashboard-controls-storage-name">Browser Vault</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <nav class="dashboard-page surfaceLevel1" aria-label="Main sections">
+          <div class="dashboard-row">
+            <button class="buttonIcon surfaceLevel2 dashboard-page-control section-library is-active" type="button" aria-current="page" aria-label="Library" title="Library">
+              <img class="icon" data-app-icon="library" src="assets/icons/color/Library.png" alt="" aria-hidden="true">
+            </button>
+            <button class="buttonIcon surfaceLevel2 dashboard-page-control section-statistics" type="button" aria-label="Statistics" title="Statistics">
+              <img class="icon" data-app-icon="statistics" src="assets/icons/color/piechart.png" alt="" aria-hidden="true">
+            </button>
+          </div>
+        </nav>
+      </div>
+
+    <!-- Summary statistics above the featured title. -->
+    <section class="statsbar surfaceLevel1" aria-label="Library summary">
+      <div class="statsbar-card surfaceLevel2">
+        <span class="statsbar-card-title">Total watch time</span>
+        <strong class="statsbar-card-data" id="stat-watch-time">—</strong>
+      </div>
+      <div class="statsbar-card surfaceLevel2">
+        <span class="statsbar-card-title">Titles logged</span>
+        <strong class="statsbar-card-data" id="stat-titles">0</strong>
+      </div>
+      <div class="statsbar-card surfaceLevel2">
+        <span class="statsbar-card-title">Total watches</span>
+        <strong class="statsbar-card-data" id="stat-watches">0</strong>
+      </div>
+      <div class="statsbar-card surfaceLevel2">
+        <span class="statsbar-card-title">Rewatches</span>
+        <strong class="statsbar-card-data" id="stat-rewatches">0</strong>
+      </div>
+      <div class="statsbar-card surfaceLevel2">
+        <span class="statsbar-card-title">Average score</span>
+        <strong class="statsbar-card-data" id="stat-average">—</strong>
+      </div>
+    </section>
+
+    <!-- Featured title beneath the summary statistics. -->
+    <section class="banner main-banner" id="banner" aria-label="Recently rated" tabindex="0" hidden>
+      <div class="banner-backdrop" id="banner-backdrop" aria-hidden="true" hidden>
+        <img id="banner-backdrop-image" alt="">
+      </div>
+      <div class="banner-content">
+        <div class="banner-content-info">
+          <p id="banner-label" class="banner-content-info-label"><span id="banner-director" class="banner-content-info-label-director" hidden></span></p>
+          <h2 class="banner-content-info-title" id="banner-title"></h2>
+          <div class="banner-content-info-meta">
+            <div id="banner-score" class="banner-content-info-meta-value"></div>
+            <span id="banner-date" class="labelChip banner-content-info-meta-date" hidden></span>
+          </div>
+        </div>
+        <div class="banner-content-controls">
+          <button type="button" id="previous" class="buttonIcon surfaceLevel2 banner-content-controls-previous" aria-label="Previous title"><img class="icon" data-app-icon-original-text="‹" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
+          <span id="banner-count" class="banner-content-controls-count"></span>
+          <button type="button" id="next" class="buttonIcon surfaceLevel2 banner-content-controls-next" aria-label="Next title"><img class="icon" data-app-icon-original-text="›" data-app-icon="arrow-right" src="assets/icons/black/arrow-right.png" alt="" aria-hidden="true"></button>
+          <button type="button" id="pause" class="buttonIcon surfaceLevel2 banner-content-controls-media" aria-label="Pause rotation" title="Pause rotation">
+            <img class="pause-icon icon" data-app-icon="pause" src="assets/icons/black/pause.png" alt="" aria-hidden="true">
+            <img class="play-icon icon" data-app-icon="play" src="assets/icons/black/play.png" alt="" aria-hidden="true" hidden>
+          </button>
+        </div>
+      </div>
+      <div class="banner-poster">
+        <img id="banner-image" alt="" hidden>
+        <span id="banner-placeholder">Add a poster<br>to see it here</span>
+      </div>
+      <section id="statistics-recent-watches" class="statistics-recent-watches" aria-label="Watch history" hidden>
+        <ol id="statistics-timeline" class="statistics-timeline" aria-label="Watch history, oldest to newest"></ol>
+        <button id="statistics-timeline-expand" class="entry-open-fullscreen statistics-timeline-expand" type="button" aria-label="Open full watch timeline" title="Open full watch timeline">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M21 16v5h-5M3 16v5h5" /></svg>
+        </button>
+      </section>
+    </section>
+
+    </div>
+
+    <!-- Workspace controls and views; entry cards are rendered into the content area. -->
+    <section class="workspace surfaceLevel1 library library-section" id="library" aria-label="Library">
+      <div class="workspace-controls surfaceLevel2 collection-source-controls" id="collection-source-controls" aria-label="Library controls">
+        <div class="expandable surfaceLevel2 workspace-controls-expandableCollection library-view-switcher" role="tablist" aria-label="Library or watchlist">
+          <button class="workspace-controls-expandableCollection-logOption library-view-option active" type="button" data-view="logged" role="tab" aria-selected="true">Library</button>
+          <button class="workspace-controls-expandableCollection-backlogOption library-view-option" type="button" data-view="watchlist" role="tab" aria-selected="false">Watchlist</button>
+        </div>
+        <div class="workspace-controls-folders library-folder-control">
+          <div class="entry-folder-dropdown surfaceLevel2 library-folder-dropdown" id="library-folder-dropdown">
+            <button class="entry-folder-trigger" id="library-folder-button" type="button" aria-label="Choose a folder" aria-expanded="false" aria-controls="library-folder-picker" title="Choose a folder">
+              <img class="icon folder-icon" data-app-icon="folder" src="assets/icons/color/folder.png" alt="" aria-hidden="true">
+            </button>
+            <div class="entry-folder-menu library-folder-menu" id="library-folder-picker" role="group" aria-label="Choose a folder" hidden>
+              <div id="library-folder-list" class="library-folder-list"></div>
+              <button id="add-collection" class="collection-add" type="button" aria-label="Create folder" title="Create folder">+ Add folder</button>
+            </div>
+          </div>
+        </div>
+        <div class="workspace-controls-search surfaceLevel2 library-search" id="library-search-box">
+          <button id="library-search-toggle" class="workspace-controls-search-toggle library-search-toggle" type="button" aria-label="Open search" aria-expanded="false" title="Search">
+            <img class="icon" data-app-icon="search" src="assets/icons/color/search.png" alt="" aria-hidden="true">
+          </button>
+          <input id="library-search" type="search" aria-label="Search this view" placeholder="Search titles…" autocomplete="off">
+          <button id="library-search-clear" class="workspace-controls-search-clear library-search-clear" type="button" aria-label="Clear search" title="Clear search" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
+          </button>
+        </div>
+        <div class="workspace-controls-filter surfaceLevel2 collection-filter-sort" id="collection-filter-sort" aria-label="Filter and sort collection">
+          <label class="logged-collection-tool workspace-controls-filter-rating">
+            <span class="visually-hidden">Filter by rating</span>
+            <select id="rating-filter" aria-label="Filter by rating">
+              <option value="all">Any rating</option>
+              <option value="10">10+</option><option value="9">9+</option><option value="8">8+</option><option value="7">7+</option><option value="6">6+</option><option value="5">5+</option><option value="4">4+</option><option value="3">3+</option><option value="2">2+</option><option value="1">1+</option>
+            </select>
+          </label>
+          <label class="logged-collection-tool workspace-controls-filter-year">
+            <span class="visually-hidden">Filter by watched year</span>
+            <select id="watched-year-filter" aria-label="Filter by watched year"><option value="all">All years</option></select>
+          </label>
+          <label class="workspace-controls-filter-sort">
+            <span class="visually-hidden">Sort collection</span>
+            <select id="collection-sort" aria-label="Sort collection"></select>
+          </label>
+          <button id="reset-collection-filter-sort" class="workspace-controls-filter-reset filter-sort-reset" type="button" aria-label="Reset filters and sorting" title="Reset filters and sorting">↺</button>
+        </div>
+        <div class="expandable surfaceLevel2 workspace-controls-expandableType collection-view-controls media-type-filter-group" id="media-type-filters" aria-label="Filter by media type">
+          <button class="workspace-controls-expandableType-allOption media-type-filter active" type="button" data-filter="all" aria-label="All" title="All"><img class="icon" data-app-icon="all" src="assets/icons/color/all.png" alt="" aria-hidden="true"></button>
+          <button class="workspace-controls-expandableType-filmOption media-type-filter" type="button" data-filter="Movie" aria-label="Films" title="Films"><img class="icon" data-app-icon="movie" src="assets/icons/color/dvd.png" alt="" aria-hidden="true"></button>
+          <button class="workspace-controls-expandableType-showOption media-type-filter" type="button" data-filter="Show" aria-label="Shows" title="Shows"><img class="icon" data-app-icon="show" src="assets/icons/color/tv.png" alt="" aria-hidden="true"></button>
+          <button class="workspace-controls-expandableType-gameOption media-type-filter" type="button" data-filter="Game" aria-label="Games" title="Games"><img class="icon" data-app-icon="game" src="assets/icons/color/game-controller.png" alt="" aria-hidden="true"></button>
+          <button class="workspace-controls-expandableType-bookOption media-type-filter" type="button" data-filter="Book" aria-label="Books" title="Books"><img class="icon" data-app-icon="book" src="assets/icons/color/book.png" alt="" aria-hidden="true"></button>
+        </div>
+        <div class="workspace-controls-pagination surfaceLevel2 collection-pagination" id="collection-pagination" aria-label="Collection pages" hidden>
+          <button id="collection-page-previous" type="button" aria-label="Previous page" title="Previous page"><img class="icon" data-app-icon-original-text="‹" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
+          <span id="collection-page-status" aria-live="polite">1 / 1</span>
+          <button id="collection-page-next" type="button" aria-label="Next page" title="Next page"><img class="icon" data-app-icon-original-text="›" data-app-icon="arrow-right" src="assets/icons/black/arrow-right.png" alt="" aria-hidden="true"></button>
+        </div>
+        <button class="workspace-controls-createEntry button buttonPrimary section-add" id="open-add" type="button" aria-label="Log a watch" title="Add item">+</button>
+      </div>
+      <p id="empty" class="workspace-content-empty empty">Nothing here yet. Log the first thing you watched.</p>
+      <div id="watchlist-empty" class="workspace-content-empty workspace-content-empty-backlog empty watchlist-empty" hidden>
+        <strong>Your watchlist is clear.</strong>
+        <span>Add films and shows you want to remember for later.</span>
+      </div>
+      <div id="collection" class="workspace-content collection"></div>
+    </section>
+
+    <div id="statistics-panel" class="statistics-panel" aria-labelledby="statistics-title" hidden>
+      <h2 id="statistics-title" class="visually-hidden">Statistics</h2>
+      <div id="statistics-grid"></div>
+    </div>
+
+    <dialog id="statistics-timeline-dialog" aria-labelledby="statistics-timeline-dialog-title">
+      <div class="statistics-timeline-dialog-content">
+        <div class="dialog-heading">
+          <h2 id="statistics-timeline-dialog-title">Watch history</h2>
+          <button id="close-statistics-timeline" class="close" type="button" aria-label="Close watch history">×</button>
+        </div>
+        <div id="statistics-timeline-scroll" class="statistics-timeline-scroll" tabindex="0" aria-label="Scrollable watch history">
+          <div id="statistics-full-timeline-canvas" class="statistics-full-timeline-canvas">
+            <svg class="statistics-full-timeline-path" aria-hidden="true"><path></path></svg>
+            <ol id="statistics-full-timeline" class="statistics-full-timeline" aria-label="Watch history, newest to oldest"></ol>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+
+
+    <!-- Entry preview and full-page detail view -->
+    <section id="detail" class="detail-page" aria-labelledby="detail-title" hidden>
+      <div class="detail-shell">
+        <div class="detail-content-grid">
+          <div class="banner detail-banner">
+            <div id="detail-backdrop" class="detail-backdrop" aria-hidden="true" hidden>
+              <img id="detail-backdrop-image" alt="">
+            </div>
+            <div class="detail-window-actions">
+              <button id="detail-expand" class="detail-window-button" type="button" aria-label="Open full entry page" title="Open full entry page">
+                ⛶
+              </button>
+              <button id="detail-edit-movie" class="detail-window-button detail-movie-edit" type="button" aria-label="Edit movie details" title="Edit movie details">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+              </button>
+              <button id="detail-close" class="detail-window-button detail-close-button" type="button" aria-label="Close entry" title="Close entry">
+                ×
+              </button>
+            </div>
+            <span id="detail-runtime" class="detail-runtime" hidden></span>
+            <div id="detail-poster" class="detail-poster"></div>
+            <div class="detail-summary">
+              <p id="detail-kicker" class="eyebrow"></p>
+              <div class="detail-title-row">
+                <h1 id="detail-title"></h1>
+                <p id="detail-director" class="detail-director" hidden></p>
+              </div>
+              <p id="detail-meta">
+                <span id="detail-rating-value"></span>
+                <span id="detail-latest-date" class="detail-latest-date"></span>
+              </p>
+              <div id="detail-imdb" class="detail-imdb" aria-live="polite" tabindex="0" hidden>
+                <span>IMDb</span>
+                <strong id="detail-imdb-score"></strong>
+                <span id="detail-imdb-fetched" class="detail-imdb-fetched"></span>
+              </div>
+              <div id="detail-actions" class="detail-actions entry-actions"></div>
+            </div>
+          </div>
+          <aside id="detail-actors-panel" class="timeline-notes-panel detail-actors-panel" aria-label="Movie information" hidden>
+            <div class="detail-info-tabs" role="tablist" aria-label="Movie information">
+              <button id="detail-actors-tab" class="detail-info-tab active" type="button" role="tab" aria-selected="true" aria-controls="detail-actors-content">Actors</button>
+              <button id="detail-plot-tab" class="detail-info-tab" type="button" role="tab" aria-selected="false" aria-controls="detail-plot-content">Plot</button>
+            </div>
+            <div id="detail-actors-content" class="detail-info-content" role="tabpanel" aria-labelledby="detail-actors-tab">
+              <div id="detail-actors" class="detail-actors-list"></div>
+            </div>
+            <div id="detail-plot-content" class="detail-info-content detail-plot-content" role="tabpanel" aria-labelledby="detail-plot-tab" hidden>
+              <p id="detail-plot"></p>
+            </div>
+          </aside>
+          <section id="detail-history" class="detail-history" aria-labelledby="detail-history-title">
+            <div class="timeline-layout">
+              <div class="timeline-panel">
+                <div class="detail-history-heading">
+                  <h2 id="detail-history-title">Timeline</h2>
+                  <div id="detail-full-actions" class="detail-full-actions"></div>
+                </div>
+                <div class="detail-timeline-content">
+                  <div class="detail-timeline-inner">
+                    <p id="detail-watch-count" class="detail-watch-count statistics-watch-marker statistics-watch-total-box" hidden></p>
+                    <ol id="detail-timeline" class="detail-timeline"></ol>
+                  </div>
+                </div>
+              </div>
+              <aside id="timeline-notes-panel" class="timeline-notes-panel" aria-live="polite"></aside>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="save-toast" class="save-toast" role="status" aria-live="polite" hidden></div>
+
+  <dialog id="save-confirmation-dialog" aria-labelledby="save-confirmation-heading">
+    <div class="save-confirmation-content">
+      <div class="dialog-heading">
+        <div class="save-confirmation-title-box"><h2 id="save-confirmation-heading">Storage Consistency Check</h2></div>
+      </div>
+      <div class="save-comparison-grid">
+        <section class="save-comparison-card" aria-labelledby="save-app-heading">
+          <h3 id="save-app-heading">App</h3>
+          <dl>
+            <div><dt>Logged titles</dt><dd id="save-app-titles">—</dd></div>
+            <div><dt>Watches</dt><dd id="save-app-watches">—</dd></div>
+            <div><dt>Watchlist items</dt><dd id="save-app-watchlist">—</dd></div>
+            <div><dt>Folders</dt><dd id="save-app-folders">—</dd></div>
+          </dl>
+        </section>
+        <section class="save-comparison-card" aria-labelledby="save-json-heading">
+          <h3 id="save-json-heading">Save File</h3>
+          <dl>
+            <div><dt>Logged titles</dt><dd id="save-json-titles">—</dd></div>
+            <div><dt>Watches</dt><dd id="save-json-watches">—</dd></div>
+            <div><dt>Watchlist items</dt><dd id="save-json-watchlist">—</dd></div>
+            <div><dt>Folders</dt><dd id="save-json-folders">—</dd></div>
+          </dl>
+        </section>
+      </div>
+      <div class="save-confirmation-footer">
+        <div class="save-confirmation-status-box">
+          <p id="save-confirmation-location" class="save-confirmation-location" role="status"></p>
+          <p id="save-confirmation-time" class="save-confirmation-time"></p>
+        </div>
+        <button id="save-confirmation-save" class="save-confirmation-save" type="button">Save now</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Collection and folder dialogs -->
+  <dialog id="collection-dialog" aria-labelledby="collection-dialog-heading">
+    <form method="dialog" id="collection-form">
+      <div class="dialog-heading"><h2 id="collection-dialog-heading">New collection</h2><button class="close" value="cancel" type="submit" aria-label="Close">×</button></div>
+      <div class="collection-form-row">
+        <div class="collection-name-field"><label for="collection-name">Collection name</label><input id="collection-name" type="text" maxlength="60" autocomplete="off" required></div>
+        <div class="dialog-actions"><button class="button" value="cancel" type="submit">Cancel</button><button class="button buttonPrimary" value="create" type="submit">Create</button></div>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="folder-popover" class="folder-popover" hidden role="dialog" aria-label="Choose folders">
+    <div id="folder-popover-list" class="collection-checklist"></div>
+  </div>
+
+  <!-- App preferences and data management -->
+  <dialog id="settings-dialog" aria-labelledby="settings-heading">
+    <div class="settings-dialog-content">
+      <div class="dialog-heading"><div><p class="eyebrow">Preferences</p><h2 id="settings-heading">Settings</h2></div><button id="close-settings" class="close" type="button" aria-label="Close settings">×</button></div>
+      <label class="settings-option" for="auto-rotate">
+        <span>
+          <strong>Rotate the banner automatically</strong>
+          <small>Show the next title every six seconds.</small>
+        </span>
+        <input id="auto-rotate" type="checkbox">
+      </label>
+      <label class="settings-option" for="theme-mode">
+        <span>
+          <strong>Appearance</strong>
+          <small>Follow your system or choose a theme.</small>
+        </span>
+        <select id="theme-mode">
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <label class="settings-option" for="reduce-animations">
+        <span>
+          <strong>Reduce animations</strong>
+          <small>Shorten motion and transitions throughout the app.</small>
+        </span>
+        <input id="reduce-animations" type="checkbox">
+      </label>
+      <label class="settings-option" for="poster-background">
+        <span>
+          <strong>Use poster colors in the background</strong>
+          <small>Subtly tint the app background to match the current banner poster.</small>
+        </span>
+        <input id="poster-background" type="checkbox" checked>
+      </label>
+      <div class="settings-option settings-option-range">
+        <label for="poster-background-strength">
+          <strong>Poster gradient strength</strong>
+          <small>Adjust the poster color tint: <output id="poster-background-strength-value">22%</output></small>
+        </label>
+        <input id="poster-background-strength" type="range" min="0" max="100" step="5" value="20">
+      </div>
+      <label class="settings-option" for="tactile-dashboard">
+        <span>
+          <strong>Soft glass dashboard controls</strong>
+          <small>Give the dashboard boxes a lightly frosted, glass-like finish.</small>
+        </span>
+        <input id="tactile-dashboard" type="checkbox" checked>
+      </label>
+      <label class="settings-option" for="disable-glass-transparency">
+        <span>
+          <strong>Disable glass transparency</strong>
+          <small>Use solid surfaces instead of translucent glass.</small>
+        </span>
+        <input id="disable-glass-transparency" type="checkbox">
+      </label>
+      <div class="settings-option settings-option-range">
+        <label for="glass-surface-opacity">
+          <strong>Glass panel opacity</strong>
+          <small>Higher values are less transparent: <output id="glass-surface-opacity-value">80%</output></small>
+        </label>
+        <input id="glass-surface-opacity" type="range" min="60" max="100" step="5" value="80">
+      </div>
+      <section class="backup-settings" aria-labelledby="google-settings-heading">
+        <h3 id="google-settings-heading">Google Image Search</h3>
+        <p>Enter your Programmable Search Engine ID (cx) to choose posters from Google Images.</p>
+        <div class="api-key-setting"><input id="google-search-id" type="text" placeholder="Search engine ID (cx)" autocomplete="off"><button id="save-google-key" class="button button-quiet" type="button">Save ID</button></div>
+        <p id="google-key-status" class="backup-status" role="status"></p>
+      </section>
+      <section class="backup-settings" aria-labelledby="imdb-settings-heading">
+        <h3 id="imdb-settings-heading">IMDb ratings</h3>
+        <p>Enter an <a href="https://www.omdbapi.com/apikey.aspx" target="_blank" rel="noopener">OMDb API key</a> to look up movie or show details. Results, including IMDb rating and fetch date, are saved with each entry and are not refreshed automatically.</p>
+        <div class="api-key-setting"><input id="omdb-api-key" type="password" placeholder="OMDb API key" autocomplete="off"><button id="save-omdb-key" class="button button-quiet" type="button">Save key</button></div>
+        <p class="api-usage-counter">OMDb requests today <strong id="omdb-calls-today">0</strong></p>
+        <p id="omdb-key-status" class="backup-status" role="status"></p>
+      </section>
+      <section class="backup-settings" aria-labelledby="file-storage-heading">
+        <h3 id="file-storage-heading">Storage file</h3>
+        <p>Choose a Rewatched JSON file to load each time you open the app. Changes save to that file automatically.</p>
+        <div class="backup-actions"><button id="choose-storage-file" class="button buttonPrimary" type="button">Choose JSON file</button><input id="storage-file-input" type="file" accept=".json,application/json" hidden><button id="create-storage-file" class="button button-quiet" type="button">Create new file</button><button id="reconnect-storage-file" class="button button-quiet" type="button" hidden>Reconnect file</button><button id="disconnect-storage-file" class="button button-quiet" type="button" hidden>Stop using file</button></div>
+        <p id="file-storage-status" class="backup-status" role="status">Checking file access…</p>
+      </section>
+      <section class="backup-settings" aria-labelledby="backup-heading">
+        <h3 id="backup-heading">Your data</h3>
+        <p>Saved in this browser on this device. Download a backup to keep a copy.</p>
+        <p id="backup-summary" class="backup-summary"></p>
+        <div class="backup-actions"><button id="export-backup" class="button buttonPrimary" type="button">Export backup</button><button id="choose-backup" class="button button-quiet" type="button">Choose backup file</button><input id="backup-file" type="file" accept=".json,application/json" hidden></div>
+        <fieldset id="import-options" class="import-options" hidden>
+          <legend id="backup-preview">Backup ready to import</legend>
+          <label><input type="radio" name="import-mode" value="merge" checked><span>Merge with current data</span></label>
+          <label><input type="radio" name="import-mode" value="replace"><span>Replace current data</span></label>
+          <button id="import-backup" class="button buttonPrimary" type="button">Import backup</button>
+        </fieldset>
+        <p id="backup-status" class="backup-status" role="status"></p>
+      </section>
+      <section class="backup-settings" aria-labelledby="demo-vault-heading">
+        <h3 id="demo-vault-heading">Demo vault</h3>
+        <p>Load sample titles, watches, folders, and watchlist entries to explore the app.</p>
+        <button id="load-demo-vault" class="button button-quiet" type="button">Load demo vault</button>
+        <p id="demo-vault-status" class="backup-status" role="status"></p>
+      </section>
+    </div>
+  </dialog>
+
+  <!-- Add or edit a logged watch or watchlist item -->
+  <dialog id="watch-dialog">
+    <div id="form-toast" class="save-toast" role="status" aria-live="polite" hidden></div>
+    <form id="watch-form" method="dialog">
+      <h2 id="form-heading" class="visually-hidden">Entry</h2>
+      <div class="form-grid">
+      <div class="form-dialog-toolbar">
+        <div class="form-toolbar-groups">
+          <div class="form-destination-controls">
+            <div id="entry-mode-switcher" class="library-view-switcher form-entry-switcher" role="tablist" aria-label="Add to library or watchlist">
+              <button class="library-view-option active" type="button" data-view="logged" role="tab" aria-selected="true">Library</button>
+              <button class="library-view-option" type="button" data-view="watchlist" role="tab" aria-selected="false">Watchlist</button>
+            </div>
+            <div class="library-view-switcher entry-media-switcher" role="tablist" aria-label="Media type">
+              <button type="button" class="collection-tab entry-media-option active" data-media-type-option="Movie" role="tab" aria-selected="true" aria-label="Movie" title="Movie">
+                <img class="icon" data-app-icon="movie" src="assets/icons/color/dvd.png" alt="" aria-hidden="true">
+              </button>
+              <button type="button" class="collection-tab entry-media-option" data-media-type-option="Show" role="tab" aria-selected="false" aria-label="Show" title="Show">
+                <img class="icon" data-app-icon="show" src="assets/icons/color/tv.png" alt="" aria-hidden="true">
+              </button>
+            </div>
+            <div class="entry-folder-dropdown" id="entry-folder-picker">
+              <button class="entry-folder-trigger" id="entry-folder-button" type="button" aria-label="Choose folders" aria-expanded="false" aria-controls="entry-folder-options" title="Choose folders">
+                <img class="icon folder-icon" data-app-icon="folder" src="assets/icons/color/folder.png" alt="" aria-hidden="true">
+              </button>
+              <div class="entry-folder-menu" id="entry-folder-options" role="group" aria-label="Folders to add this entry to" hidden></div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <section class="form-panel title-details movie-details-panel" aria-label="Movie details">
+          <h3 id="movie-details-heading">Movie details</h3>
+          <select id="type" class="visually-hidden" tabindex="-1" aria-hidden="true"><option>Movie</option><option>Show</option></select>
+          <div class="form-panel-content">
+            <div class="title-search-box" role="group" aria-label="Title lookup controls">
+              <div class="title-lookup-row">
+                <label for="title"><span class="visually-hidden">Movie title</span><input id="title" required placeholder="Movie title"></label>
+                <label for="year"><span class="visually-hidden">Release year</span><input id="year" type="text" inputmode="numeric" autocomplete="off" maxlength="4" pattern="[0-9]{2}|[0-9]{4}" placeholder="Year" required></label>
+                <button id="lookup-title-details" class="button metadata-lookup-button" type="button" title="Look up movie or show details with OMDb.&#10;API calls made today: 0">Find details</button>
+              </div>
+            </div>
+            <div class="movie-credit-genre-row">
+              <label><span class="visually-hidden">Director</span><input id="director" placeholder="Director"></label>
+              <label><span class="visually-hidden">Genre</span><span class="category-select-control"><span id="category-chip" class="entry-tag" aria-hidden="true" hidden></span><select id="category" required><option value="">Genre</option><option>Action</option><option>Adventure</option><option>Animation</option><option>Comedy</option><option>Crime</option><option>Documentary</option><option>Drama</option><option>Family</option><option>Fantasy</option><option>History</option><option>Horror</option><option>Music</option><option>Mystery</option><option>Romance</option><option>Science Fiction</option><option>Thriller</option><option>War</option><option>Western</option><option>Other</option></select></span></label>
+            </div>
+          </div>
+        </section>
+        <section class="form-panel title-details poster-panel" aria-label="Poster">
+          <h3>Poster</h3>
+          <div class="poster-url-tools">
+            <label class="poster-url-label"><span class="visually-hidden">Poster URL</span><input id="poster" type="url" placeholder="Poster URL"></label>
+          </div>
+          <div class="poster-preview" id="poster-preview">
+            <img id="poster-preview-image" alt="Selected poster preview" hidden>
+            <span id="poster-preview-empty">No poster selected</span>
+            <div class="poster-buttons">
+              <button id="poster-search" class="button buttonIcon surfaceLevel2" type="button" aria-label="Search images" title="Search images">
+                <img class="icon" data-app-icon="search" src="assets/icons/color/search.png" alt="" aria-hidden="true">
+              </button>
+              <button id="poster-upload-button" class="button buttonIcon surfaceLevel2" type="button" aria-label="Choose image file" title="Choose image file">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.75h7l4 4v12.5H7z"></path><path d="M14 3.75v4h4M10 12h5M10 15h5"></path></svg>
+              </button>
+            </div>
+          </div>
+          <div class="poster-options">
+            <input id="poster-upload" type="file" accept="image/*" hidden>
+            <p id="poster-upload-status" class="poster-upload-status" role="status"></p>
+          </div>
+        </section>
+        <section class="form-panel watch-rating-panel" aria-label="Watch details">
+          <div class="watch-panel-heading">
+            <h3>Log to library</h3>
+            <div class="watch-dialog-actions">
+              <button type="button" class="detail-window-button detail-close-button" id="cancel-dialog" aria-label="Cancel" title="Cancel">CANCEL</button>
+              <button class="detail-window-button detail-save-button" id="save-entry" type="submit" aria-label="Save entry" title="Save entry">SAVE</button>
+            </div>
+          </div>
+          <div class="watch-details-components">
+            <div class="watch-fields">
+              <div class="watch-only watch-date-field" id="watch-date-field">
+                <div class="watch-date-layout">
+                  <div class="watch-date-controls">
+                    <div class="date-picker-control">
+                      <button id="watch-date-picker-button" class="date-picker-button" type="button" aria-label="Choose a watch date" title="Choose a date from the calendar">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M7.5 3.5v3M16.5 3.5v3M4 9.5h16M8 13h2M14 13h2M8 16.5h2"></path></svg>
+                      </button>
+                      <input id="watch-date-picker" class="watch-date-picker" type="date" min="1888-01-01" tabindex="-1" aria-hidden="true">
+                    </div>
+                    <button id="date-mode" class="date-mode-button" type="button" aria-label="Use exact date" aria-pressed="false" title="Toggle approximate date">
+                    <span id="date-mode-symbol" aria-hidden="true">=</span>
+                    </button>
+                  </div>
+                  <div class="watch-date-parts">
+                    <label><span class="visually-hidden">Year watched</span><input id="watch-year-input" type="text" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="----" aria-label="Year watched"></label>
+                    <label><span class="visually-hidden">Month watched</span><input id="watch-month" type="text" inputmode="numeric" maxlength="2" autocomplete="off" placeholder="--" aria-label="Month watched"></label>
+                    <label><span class="visually-hidden">Day watched</span><input id="watch-day" type="text" inputmode="numeric" maxlength="2" autocomplete="off" placeholder="--" aria-label="Day watched"></label>
+                  </div>
+                </div>
+                <input id="date" type="hidden">
+                <select id="date-precision" class="visually-hidden" aria-hidden="true" tabindex="-1">
+                  <option value="exact">Exact date</option><option value="month">Year and month</option><option value="year">Year only</option><option value="approximate">Approximate year</option><option value="approximate-month">Approximate month</option><option value="approximate-date">Approximate date</option><option value="unknown">Unknown</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="watch-rating-fields">
+            <label class="watch-only score-field"><span><span><span id="score-field-label">Score</span> <output id="score-value" class="score-value-with-star valueChip ratingValueChip" for="score">85%</output></span></span><div class="rating-slider"><span class="ratingsMeter rating-slider-meter"><span id="score-meter-fill" class="ratingFill"></span></span><input id="score" type="range" min="0" max="10" step="0.5" value="8.5"></div><span class="score-scale"><span>0</span><span>5</span><span>10</span></span></label>
+            <label class="watchlist-only priority-field">
+              <span class="priority-heading"><span class="visually-hidden">Priority</span><output id="priority-value" class="valueChip priorityValueChip" for="priority">P3</output></span>
+              <span class="priority-slider">
+                <span class="ratingsMeter priority-slider-meter"><span class="priorityFill" id="priority-meter-fill"></span></span>
+                <input id="priority" type="range" min="1" max="5" step="1" value="3" required aria-label="Priority">
+              </span>
+            </label>
+          </div>
+        </section>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Search and choose a poster image -->
+  <dialog id="poster-dialog" aria-labelledby="poster-dialog-heading">
+    <div class="poster-dialog-content">
+      <div class="poster-dialog-heading">
+        <h2 id="poster-dialog-heading" class="poster-dialog-title" aria-label="Google Images"><span class="google-word" aria-hidden="true"><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span></span><span aria-hidden="true"> Images</span></h2>
+        <button type="button" class="detail-window-button poster-google-settings" id="poster-google-settings" aria-label="Open Google search settings" title="Open Google search settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="16" r="4"></circle><path d="m10.8 13.2 8-8 2 2-2 2 1.7 1.7-2.7 2.7-1.7-1.7-2.3 2.3"></path></svg>
+        </button>
+        <button type="button" class="detail-window-button detail-close-button poster-dialog-close" id="close-poster-dialog" aria-label="Close">×</button>
+      </div>
+      <form id="poster-search-form" class="poster-search-form">
+        <input id="poster-query" type="search" aria-label="Search images" placeholder="Movie or show title poster" required>
+      </form>
+      <p id="poster-status" class="poster-status" role="status"></p>
+      <div id="google-results"></div>
+    </div>
+  </dialog>
+</body>
+</html>

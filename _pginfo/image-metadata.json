@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "assets": {
+    "image-mur5d7mq-my7ydoka788": {
+      "id": "image-mur5d7mq-my7ydoka788",
+      "source": "project:assets/icons/color/save.png",
+      "remembered": {},
+      "suggestions": {},
+      "revision": "sha256:c713913863986ce17348ce706424cdbf6475d9d2dd953c3097deeaf269347a72",
+      "available": true
+    }
+  },
+  "sources": {
+    "project:assets/icons/color/save.png": {
+      "asset": "image-mur5d7mq-my7ydoka788",
+      "kind": "original",
+      "cropToken": null
+    }
+  }
+}

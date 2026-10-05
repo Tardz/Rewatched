@@ -161,8 +161,8 @@
 :root[data-theme="light"] .storage-save-indicator.is-pending { color: #b56b00; }
 :root[data-theme="light"] .storage-save-indicator.is-error { color: #c52d35; }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-identity,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-controls {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -183,13 +183,13 @@
   background: var(--surface-dashboard-inner);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .brand,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .github-repo-link,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .app-version,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity .detail-back-icon,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .settings-button,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-check-button,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-indicator {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-identity .brand,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-identity .github-repo-link,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-identity .app-version,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-identity .detail-back-icon,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-controls .settings-button,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-controls .storage-check-button,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-controls .storage-indicator {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -461,8 +461,8 @@
 }
 
 /* Keep the soft-glass treatment after the shared light-theme card rules. */
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-identity,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-identity,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-controls {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -484,7 +484,7 @@
   border-radius: 14px;
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .statsbar {
+:root[data-theme="light"][data-theme-glass="on"] .statsbar {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-stats-outer) 88%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -496,7 +496,7 @@
     0 4px 12px #26344238;
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .statsbar > div {
+:root[data-theme="light"][data-theme-glass="on"] .statsbar > div {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -545,15 +545,15 @@
   background-color: var(--surface-dashboard-inner);
 }
 
-:root[data-dashboard-tactile="on"] .library-section,
-:root[data-dashboard-tactile="on"] .collection-filter-sort,
-:root[data-dashboard-tactile="on"] .collection-pagination,
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])),
-:root[data-dashboard-tactile="on"] .library-view-switcher:hover,
-:root[data-dashboard-tactile="on"] .library-view-switcher:focus-within,
-:root[data-dashboard-tactile="on"] #watch-form .library-view-switcher.is-pointer-active,
-:root[data-dashboard-tactile="on"] .media-type-filter-group:hover,
-:root[data-dashboard-tactile="on"] .media-type-filter-group:focus-within {
+:root[data-theme-glass="on"] .library-section,
+:root[data-theme-glass="on"] .collection-filter-sort,
+:root[data-theme-glass="on"] .collection-pagination,
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])),
+:root[data-theme-glass="on"] .library-view-switcher:hover,
+:root[data-theme-glass="on"] .library-view-switcher:focus-within,
+:root[data-theme-glass="on"] #watch-form .library-view-switcher.is-pointer-active,
+:root[data-theme-glass="on"] .media-type-filter-group:hover,
+:root[data-theme-glass="on"] .media-type-filter-group:focus-within {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -565,14 +565,14 @@
     0 3px 8px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .collection-tab:not(:hover):not(.active),
-:root[data-dashboard-tactile="on"] .collection-add:not(:hover),
-:root[data-dashboard-tactile="on"] .library-view-option:not(:hover):not(.active),
-:root[data-dashboard-tactile="on"] .media-type-filter:not(:hover):not(.active),
-:root[data-dashboard-tactile="on"] .collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-dashboard-tactile="on"] .filter-sort-reset:not(:hover),
-:root[data-dashboard-tactile="on"] .library-search:not(:hover):not(:focus-within):not(.has-query),
-:root[data-dashboard-tactile="on"] .entry {
+:root[data-theme-glass="on"] .collection-tab:not(:hover):not(.active),
+:root[data-theme-glass="on"] .collection-add:not(:hover),
+:root[data-theme-glass="on"] .library-view-option:not(:hover):not(.active),
+:root[data-theme-glass="on"] .media-type-filter:not(:hover):not(.active),
+:root[data-theme-glass="on"] .collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme-glass="on"] .filter-sort-reset:not(:hover),
+:root[data-theme-glass="on"] .library-search:not(:hover):not(:focus-within):not(.has-query),
+:root[data-theme-glass="on"] .entry {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -584,7 +584,7 @@
     0 2px 6px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .section-add {
+:root[data-theme-glass="on"] .section-add {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--red) 86%, transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -592,17 +592,17 @@
 }
 
 /* Keep the accent glow on controls and cards that can actually be activated. */
-:root[data-dashboard-tactile="on"] .collection-tab:hover,
-:root[data-dashboard-tactile="on"] .collection-add:hover,
-:root[data-dashboard-tactile="on"] .library-view-option[data-view="logged"]:hover,
-:root[data-dashboard-tactile="on"] .collection-filter-sort select:hover,
-:root[data-dashboard-tactile="on"] .collection-filter-sort select:focus,
-:root[data-dashboard-tactile="on"] .filter-sort-reset:hover,
-:root[data-dashboard-tactile="on"] .collection-pagination button:hover:not(:disabled),
-:root[data-dashboard-tactile="on"] .library-search:hover:not(.is-escape-collapsed),
-:root[data-dashboard-tactile="on"] .library-search:focus-within:not(.is-escape-collapsed),
-:root[data-dashboard-tactile="on"] .entry:hover,
-:root[data-dashboard-tactile="on"] .entry:focus-within {
+:root[data-theme-glass="on"] .collection-tab:hover,
+:root[data-theme-glass="on"] .collection-add:hover,
+:root[data-theme-glass="on"] .library-view-option[data-view="logged"]:hover,
+:root[data-theme-glass="on"] .collection-filter-sort select:hover,
+:root[data-theme-glass="on"] .collection-filter-sort select:focus,
+:root[data-theme-glass="on"] .filter-sort-reset:hover,
+:root[data-theme-glass="on"] .collection-pagination button:hover:not(:disabled),
+:root[data-theme-glass="on"] .library-search:hover:not(.is-escape-collapsed),
+:root[data-theme-glass="on"] .library-search:focus-within:not(.is-escape-collapsed),
+:root[data-theme-glass="on"] .entry:hover,
+:root[data-theme-glass="on"] .entry:focus-within {
   border-color: var(--border-accent-muted);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -611,7 +611,7 @@
     0 12px 26px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .library-view-option[data-view="watchlist"]:hover {
+:root[data-theme-glass="on"] .library-view-option[data-view="watchlist"]:hover {
   border-color: var(--status-success-border);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -619,8 +619,8 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .media-type-filter:hover,
-:root[data-dashboard-tactile="on"] .library-search.has-query .library-search-clear:hover {
+:root[data-theme-glass="on"] .media-type-filter:hover,
+:root[data-theme-glass="on"] .library-search.has-query .library-search-clear:hover {
   border-color: var(--status-danger-border);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -628,28 +628,28 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .library-view-option[data-view="logged"].active {
+:root[data-theme-glass="on"] .library-view-option[data-view="logged"].active {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 0 14px color-mix(in srgb, var(--blue) 28%, transparent),
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .library-view-option[data-view="watchlist"].active {
+:root[data-theme-glass="on"] .library-view-option[data-view="watchlist"].active {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 0 14px color-mix(in srgb, var(--status-success) 28%, transparent),
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .media-type-filter.active {
+:root[data-theme-glass="on"] .media-type-filter.active {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 0 14px color-mix(in srgb, var(--status-danger) 28%, transparent),
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .section-add:hover {
+:root[data-theme-glass="on"] .section-add:hover {
   border-color: var(--status-danger-border);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -658,7 +658,7 @@
 }
 
 /* Folder tray internals stay glassy even when the selected folder has its own color. */
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab {
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -670,7 +670,7 @@
     0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-menu-opacity), transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -682,12 +682,12 @@
     0 3px 8px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab:hover,
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab.active {
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab:hover,
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab.active {
   background-color: color-mix(in srgb, var(--surface-hover) 76%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab:hover {
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab:hover {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     inset 0 0 0 1px color-mix(in srgb, var(--blue) 28%, transparent),
@@ -695,7 +695,7 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
+:root[data-theme="light"][data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) {
   background: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-menu-opacity), transparent);
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   box-shadow:
@@ -706,11 +706,11 @@
 }
 
 /* Reuse the dashboard glass surfaces throughout the entry hover and page. */
-:root[data-dashboard-tactile="on"] .detail-page:not(.is-fullscreen) .detail-shell,
-:root[data-dashboard-tactile="on"] .detail-page .detail-hero,
-:root[data-dashboard-tactile="on"] .detail-page .detail-actors-panel,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-panel,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-panel {
+:root[data-theme-glass="on"] .detail-page:not(.is-fullscreen) .detail-shell,
+:root[data-theme-glass="on"] .detail-page .detail-hero,
+:root[data-theme-glass="on"] .detail-page .detail-actors-panel,
+:root[data-theme-glass="on"] .detail-page .timeline-panel,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-panel {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-panel-opacity), transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -722,9 +722,9 @@
     0 3px 8px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-history h2,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-panel h3,
-:root[data-dashboard-tactile="on"] #watch-form .form-panel h3 {
+:root[data-theme-glass="on"] .detail-page .detail-history h2,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-panel h3,
+:root[data-theme-glass="on"] #watch-form .form-panel h3 {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -736,13 +736,13 @@
     0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-info-content,
-:root[data-dashboard-tactile="on"] .detail-page .detail-info-tabs,
-:root[data-dashboard-tactile="on"] .detail-page .detail-runtime,
-:root[data-dashboard-tactile="on"] .detail-page .detail-actor-tag,
-:root[data-dashboard-tactile="on"] .detail-page .detail-timeline-content,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-content,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-entry-card {
+:root[data-theme-glass="on"] .detail-page .detail-info-content,
+:root[data-theme-glass="on"] .detail-page .detail-info-tabs,
+:root[data-theme-glass="on"] .detail-page .detail-runtime,
+:root[data-theme-glass="on"] .detail-page .detail-actor-tag,
+:root[data-theme-glass="on"] .detail-page .detail-timeline-content,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-content,
+:root[data-theme-glass="on"] .detail-page .timeline-entry-card {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: none;
@@ -754,11 +754,11 @@
     0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab,
-:root[data-dashboard-tactile="on"] .detail-page .detail-window-button,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions button,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions button {
+:root[data-theme-glass="on"] .detail-page .detail-info-tab,
+:root[data-theme-glass="on"] .detail-page .detail-window-button,
+:root[data-theme-glass="on"] .detail-page .timeline-rewatch-add,
+:root[data-theme-glass="on"] .detail-page .timeline-actions button,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-actions button {
   -webkit-backdrop-filter: blur(10px) saturate(130%);
   backdrop-filter: blur(10px) saturate(130%);
   box-shadow:
@@ -769,23 +769,23 @@
     0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab:not(.active),
-:root[data-dashboard-tactile="on"] .detail-page .detail-window-button,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions button,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions button {
+:root[data-theme-glass="on"] .detail-page .detail-info-tab:not(.active),
+:root[data-theme-glass="on"] .detail-page .detail-window-button,
+:root[data-theme-glass="on"] .detail-page .timeline-actions button,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-actions button {
   border-color: color-mix(in srgb, var(--line) 62%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) 72%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add {
+:root[data-theme-glass="on"] .detail-page .timeline-rewatch-add {
   background-color: color-mix(in srgb, var(--accent-orange) 12%, color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent));
 }
 
 /* Only interactive detail elements get the accent glow on hover. */
-:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab:hover,
-:root[data-dashboard-tactile="on"] .detail-page .detail-window-button:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions button:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions button:hover {
+:root[data-theme-glass="on"] .detail-page .detail-info-tab:hover,
+:root[data-theme-glass="on"] .detail-page .detail-window-button:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-actions button:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-actions button:hover {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     inset 0 0 0 1px color-mix(in srgb, var(--blue) 24%, transparent),
@@ -793,17 +793,17 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab:not(.active):hover,
-:root[data-dashboard-tactile="on"] .detail-page .detail-window-button:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions button:hover {
+:root[data-theme-glass="on"] .detail-page .detail-info-tab:not(.active):hover,
+:root[data-theme-glass="on"] .detail-page .detail-window-button:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-actions button:hover {
   background-color: color-mix(in srgb, var(--surface-hover) 78%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-info-tab.active {
+:root[data-theme-glass="on"] .detail-page .detail-info-tab.active {
   background-color: color-mix(in srgb, var(--blue) 17%, var(--surface-dashboard-inner));
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add:hover {
+:root[data-theme-glass="on"] .detail-page .timeline-rewatch-add:hover {
   background-color: color-mix(in srgb, var(--accent-orange) 22%, color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent));
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -811,8 +811,8 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-edit:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-save:hover {
+:root[data-theme-glass="on"] .detail-page .timeline-actions .timeline-edit:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-actions .timeline-note-save:hover {
   background-color: color-mix(in srgb, var(--status-success-surface) 82%, transparent);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -820,8 +820,8 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-remove:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover {
+:root[data-theme-glass="on"] .detail-page .timeline-actions .timeline-remove:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover {
   background-color: color-mix(in srgb, var(--status-danger-surface) 82%, transparent);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -829,8 +829,8 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-timeline li:hover .timeline-entry-card,
-:root[data-dashboard-tactile="on"] .detail-page .detail-timeline li.is-selected .timeline-entry-card {
+:root[data-theme-glass="on"] .detail-page .detail-timeline li:hover .timeline-entry-card,
+:root[data-theme-glass="on"] .detail-page .detail-timeline li.is-selected .timeline-entry-card {
   border-color: color-mix(in srgb, var(--watch-color) 48%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--watch-color) 10%, var(--surface-hover));
   box-shadow:
@@ -841,9 +841,9 @@
 }
 
 /* Apply the same optional glass finish to controls floating over cards. */
-:root[data-dashboard-tactile="on"] .banner-controls button,
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions button,
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-open-fullscreen {
+:root[data-theme-glass="on"] .banner-controls button,
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions button,
+:root[data-theme-glass="on"] .entry-card-tools .entry-open-fullscreen {
   border-color: color-mix(in srgb, var(--line) 58%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) 72%, transparent);
   -webkit-backdrop-filter: blur(10px) saturate(130%);
@@ -855,9 +855,9 @@
     0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .banner-controls button:hover,
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions button:hover,
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-open-fullscreen:hover {
+:root[data-theme-glass="on"] .banner-controls button:hover,
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions button:hover,
+:root[data-theme-glass="on"] .entry-card-tools .entry-open-fullscreen:hover {
   border-color: var(--border-accent-muted);
   background-color: color-mix(in srgb, var(--surface-blue-action) 78%, transparent);
   box-shadow:
@@ -867,7 +867,7 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-rewatch:hover {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .action-rewatch:hover {
   border-color: var(--border-warm-action);
   background-color: color-mix(in srgb, var(--surface-warm-action) 82%, transparent);
   box-shadow:
@@ -876,7 +876,7 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-edit:hover {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .action-edit:hover {
   border-color: var(--status-success-border);
   background-color: color-mix(in srgb, var(--status-success-surface) 82%, transparent);
   box-shadow:
@@ -885,12 +885,12 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-folder:hover {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .action-folder:hover {
   border-color: var(--border-blue-action);
   background-color: color-mix(in srgb, var(--surface-accent) 82%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .remove-button:hover {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .remove-button:hover {
   border-color: var(--status-danger-border);
   background-color: color-mix(in srgb, var(--status-danger-surface) 82%, transparent);
   box-shadow:
@@ -900,7 +900,7 @@
 }
 
 /* Glass treatment for the category chip and the stored IMDb badge. */
-:root[data-dashboard-tactile="on"] .entry-tag:not(.entry-tag-placeholder) {
+:root[data-theme-glass="on"] .entry-tag:not(.entry-tag-placeholder) {
   border-color: hsl(var(--category-hue) 38% 58% / 72%);
   background: color-mix(in srgb, hsl(var(--category-hue) 34% 29%) 78%, transparent);
   -webkit-backdrop-filter: blur(8px) saturate(125%);
@@ -910,7 +910,7 @@
     0 3px 10px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-imdb {
+:root[data-theme-glass="on"] .detail-page .detail-imdb {
   border-color: color-mix(in srgb, #f5c518 45%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) 78%, transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -921,9 +921,9 @@
 }
 
 /* Match each icon's border and glow to its meaning while the glass theme is on. */
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-edit:hover,
-:root[data-dashboard-tactile="on"] .detail-page .detail-window-button.detail-movie-edit:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-edit:hover {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .action-edit:hover,
+:root[data-theme-glass="on"] .detail-page .detail-window-button.detail-movie-edit:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-actions .timeline-edit:hover {
   border-color: var(--status-success-border);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -931,16 +931,16 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-edit:hover svg,
-:root[data-dashboard-tactile="on"] .detail-page .detail-window-button.detail-movie-edit:hover svg,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-edit:hover svg {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .action-edit:hover svg,
+:root[data-theme-glass="on"] .detail-page .detail-window-button.detail-movie-edit:hover svg,
+:root[data-theme-glass="on"] .detail-page .timeline-actions .timeline-edit:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-success) 72%, transparent));
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .remove-button:hover,
-:root[data-dashboard-tactile="on"] .detail-page .detail-close-button:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-remove:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .remove-button:hover,
+:root[data-theme-glass="on"] .detail-page .detail-close-button:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-actions .timeline-remove:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover {
   border-color: var(--status-danger-border);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -948,15 +948,15 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .remove-button:hover svg,
-:root[data-dashboard-tactile="on"] .detail-page .detail-close-button:hover svg,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-actions .timeline-remove:hover svg,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover svg {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .remove-button:hover svg,
+:root[data-theme-glass="on"] .detail-page .detail-close-button:hover svg,
+:root[data-theme-glass="on"] .detail-page .timeline-actions .timeline-remove:hover svg,
+:root[data-theme-glass="on"] .detail-page .timeline-notes-actions .timeline-note-discard:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-danger) 72%, transparent));
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-open-fullscreen:hover,
-:root[data-dashboard-tactile="on"] .detail-page #detail-expand:hover {
+:root[data-theme-glass="on"] .entry-card-tools .entry-open-fullscreen:hover,
+:root[data-theme-glass="on"] .detail-page #detail-expand:hover {
   border-color: color-mix(in srgb, var(--icon-muted) 78%, var(--glass-highlight));
   color: var(--text-muted-strong);
   box-shadow:
@@ -965,13 +965,13 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-open-fullscreen:hover svg,
-:root[data-dashboard-tactile="on"] .detail-page #detail-expand:hover svg {
+:root[data-theme-glass="on"] .entry-card-tools .entry-open-fullscreen:hover svg,
+:root[data-theme-glass="on"] .detail-page #detail-expand:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--icon-muted) 72%, transparent));
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-rewatch:hover,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add:hover {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .action-rewatch:hover,
+:root[data-theme-glass="on"] .detail-page .timeline-rewatch-add:hover {
   border-color: var(--accent-orange);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -979,17 +979,17 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-rewatch:hover svg,
-:root[data-dashboard-tactile="on"] .detail-page .timeline-rewatch-add:hover svg {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .action-rewatch:hover svg,
+:root[data-theme-glass="on"] .detail-page .timeline-rewatch-add:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent-orange) 72%, transparent));
 }
 
-:root[data-dashboard-tactile="on"] .entry-card-tools .entry-actions .action-folder:hover svg {
+:root[data-theme-glass="on"] .entry-card-tools .entry-actions .action-folder:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--blue) 72%, transparent));
 }
 
 /* Dashboard icons use their own familiar status colors instead of one blue glow. */
-:root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:hover {
+:root[data-theme-glass="on"] .dashboard-identity .github-repo-link:hover {
   border-color: var(--red);
   color: var(--red);
   background: color-mix(in srgb, var(--red) 18%, transparent);
@@ -999,11 +999,11 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:hover svg {
+:root[data-theme-glass="on"] .dashboard-identity .github-repo-link:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--red) 72%, transparent));
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .settings-button:not(.theme-toggle-button):hover {
+:root[data-theme-glass="on"] .dashboard-controls .settings-button:not(.theme-toggle-button):hover {
   border-color: var(--icon-muted);
   color: var(--text-muted-strong);
   background: color-mix(in srgb, var(--icon-muted) 18%, transparent);
@@ -1013,11 +1013,11 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .settings-button:not(.theme-toggle-button):hover svg {
+:root[data-theme-glass="on"] .dashboard-controls .settings-button:not(.theme-toggle-button):hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--icon-muted) 72%, transparent));
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .theme-toggle-button:hover {
+:root[data-theme-glass="on"] .dashboard-controls .theme-toggle-button:hover {
   border-color: var(--accent-orange);
   color: var(--accent-orange);
   background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
@@ -1027,11 +1027,11 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .theme-toggle-button:hover svg {
+:root[data-theme-glass="on"] .dashboard-controls .theme-toggle-button:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent-orange) 72%, transparent));
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .storage-check-button:hover {
+:root[data-theme-glass="on"] .dashboard-controls .storage-check-button:hover {
   border-color: var(--status-success-border);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -1039,7 +1039,7 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .storage-file-control:has(.storage-indicator:hover) {
+:root[data-theme-glass="on"] .dashboard-controls .storage-file-control:has(.storage-indicator:hover) {
   border-color: color-mix(in srgb, var(--status-success) 76%, var(--glass-highlight));
   background: color-mix(in srgb, var(--status-success) 18%, transparent);
   box-shadow:
@@ -1048,7 +1048,7 @@
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .storage-file-control:has(.storage-check-button:hover) {
+:root[data-theme-glass="on"] .dashboard-controls .storage-file-control:has(.storage-check-button:hover) {
   border-color: color-mix(in srgb, var(--status-success) 76%, var(--glass-highlight));
   background: color-mix(in srgb, var(--status-success) 18%, transparent);
   box-shadow:
@@ -1058,7 +1058,7 @@
 }
 
 /* Give the poster-colored hero a light-glass sheen without muting its colors. */
-:root[data-dashboard-tactile="on"] .spotlight {
+:root[data-theme-glass="on"] .spotlight {
   border-color: color-mix(in srgb, var(--line) 62%, var(--glass-highlight));
   -webkit-backdrop-filter: saturate(120%);
   backdrop-filter: saturate(120%);
@@ -1069,7 +1069,7 @@
     0 3px 8px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .spotlight::after {
+:root[data-theme-glass="on"] .spotlight::after {
   position: absolute;
   z-index: 3;
   inset: 0;
@@ -1080,7 +1080,7 @@
   pointer-events: none;
 }
 
-:root[data-dashboard-tactile="on"] .spotlight:hover {
+:root[data-theme-glass="on"] .spotlight:hover {
   border-color: var(--border-accent-muted);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -1089,12 +1089,12 @@
     0 14px 32px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .detail-close-button:hover {
+:root[data-theme-glass="on"] .detail-page .detail-close-button:hover {
   color: var(--status-danger);
   text-shadow: 0 0 7px color-mix(in srgb, var(--status-danger) 70%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] .detail-page .timeline-notes-actions .timeline-note-save:hover svg {
+:root[data-theme-glass="on"] .detail-page .timeline-notes-actions .timeline-note-save:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--status-success) 72%, transparent));
 }
 
@@ -1123,9 +1123,9 @@
   box-shadow: 0 4px 12px var(--shadow-black-25);
 }
 
-:root[data-dashboard-tactile="on"] .entry-poster,
-:root[data-dashboard-tactile="on"] .banner-poster,
-:root[data-dashboard-tactile="on"] .detail-poster {
+:root[data-theme-glass="on"] .entry-poster,
+:root[data-theme-glass="on"] .banner-poster,
+:root[data-theme-glass="on"] .detail-poster {
   position: relative;
   isolation: isolate;
   border: 1px solid color-mix(in srgb, var(--glass-highlight) 62%, var(--line));
@@ -1134,9 +1134,9 @@
     0 4px 12px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .entry-poster::after,
-:root[data-dashboard-tactile="on"] .banner-poster::after,
-:root[data-dashboard-tactile="on"] .detail-poster::after {
+:root[data-theme-glass="on"] .entry-poster::after,
+:root[data-theme-glass="on"] .banner-poster::after,
+:root[data-theme-glass="on"] .detail-poster::after {
   position: absolute;
   z-index: 3;
   inset: 0;
@@ -1147,15 +1147,15 @@
   pointer-events: none;
 }
 
-:root[data-dashboard-tactile="on"] .entry-poster img,
-:root[data-dashboard-tactile="on"] .banner-poster img,
-:root[data-dashboard-tactile="on"] .detail-poster-art {
+:root[data-theme-glass="on"] .entry-poster img,
+:root[data-theme-glass="on"] .banner-poster img,
+:root[data-theme-glass="on"] .detail-poster-art {
   position: relative;
   z-index: 1;
 }
 
 /* Keep the collection toolbar's visible boxes on one shared shadow level. */
-:root[data-dashboard-tactile="on"] {
+:root[data-theme-glass="on"] {
   --library-bar-shadow:
     inset 0 1px 0 var(--raised-edge-light),
     -2px -2px 7px var(--raised-upper-shadow),
@@ -1163,7 +1163,7 @@
     7px 10px 18px var(--raised-lower-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .library-section .collection-pagination button:not(:hover) {
+:root[data-theme-glass="on"] .library-section .collection-pagination button:not(:hover) {
   background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
 }
 
@@ -1212,14 +1212,14 @@
   background: var(--surface-accent);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-sections {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-sections {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) 88%, transparent);
   box-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 -1px 0 var(--glass-edge-shadow),
     0 12px 28px var(--glass-shadow), 0 3px 8px var(--glass-edge-shadow);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-section-button {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-section-button {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
 }
@@ -1245,8 +1245,8 @@
   background: color-mix(in srgb, var(--red) 12%, var(--surface-dashboard-inner));
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-section-button.section-library:hover,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-section-button.section-library.is-active {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-section-button.section-library:hover,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-section-button.section-library.is-active {
   color: var(--blue);
   border-color: color-mix(in srgb, var(--blue) 75%, var(--glass-highlight));
   background: color-mix(in srgb, var(--blue) 18%, transparent);
@@ -1254,8 +1254,8 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-section-button.section-statistics.is-active {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-section-button.section-statistics:hover,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-section-button.section-statistics.is-active {
   color: var(--accent-orange);
   border-color: color-mix(in srgb, var(--accent-orange) 75%, var(--glass-highlight));
   background: color-mix(in srgb, var(--accent-orange) 18%, transparent);
@@ -1263,8 +1263,8 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-section-button.section-activity:hover,
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-section-button.section-activity.is-active {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-section-button.section-activity:hover,
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-section-button.section-activity.is-active {
   color: var(--red);
   border-color: color-mix(in srgb, var(--red) 75%, var(--glass-highlight));
   background: color-mix(in srgb, var(--red) 18%, transparent);
@@ -1272,7 +1272,7 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .activity-button:hover {
+:root[data-theme-glass="on"] .dashboard-controls .activity-button:hover {
   color: var(--red);
   border-color: color-mix(in srgb, var(--red) 75%, var(--glass-highlight));
   background: color-mix(in srgb, var(--red) 18%, transparent);
@@ -1280,7 +1280,7 @@
     0 0 14px color-mix(in srgb, var(--red) 30%, transparent), 0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-controls .activity-button:hover svg {
+:root[data-theme-glass="on"] .dashboard-controls .activity-button:hover svg {
   filter: drop-shadow(0 0 4px color-mix(in srgb, var(--red) 72%, transparent));
 }
 
@@ -1290,7 +1290,7 @@
   box-shadow: 0 7px 18px var(--shadow-light-strong), 0 2px 5px var(--shadow-light);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-file-control {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-controls .storage-file-control {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   box-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 0 0 1px #ffffff0a,
@@ -1310,7 +1310,7 @@
   box-shadow: inset 0 1px 0 #ffffff0a, 0 3px 8px var(--shadow-light);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] .dashboard-controls .storage-file-control .storage-check-button {
+:root[data-theme="light"][data-theme-glass="on"] .dashboard-controls .storage-file-control .storage-check-button {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) 82%, transparent);
   -webkit-backdrop-filter: blur(7px) saturate(125%);
@@ -1323,8 +1323,8 @@
 }
 
 /* Extend the optional glass finish to the Statistics surfaces as well. */
-:root[data-dashboard-tactile="on"] .statistics-panel,
-:root[data-theme="light"][data-dashboard-tactile="on"] .statistics-panel {
+:root[data-theme-glass="on"] .statistics-panel,
+:root[data-theme="light"][data-theme-glass="on"] .statistics-panel {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-stats-outer) var(--glass-panel-opacity), transparent);
   -webkit-backdrop-filter: blur(14px) saturate(125%);
@@ -1336,8 +1336,8 @@
     0 4px 12px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #statistics-timeline-dialog,
-:root[data-theme="light"][data-dashboard-tactile="on"] #statistics-timeline-dialog {
+:root[data-theme-glass="on"] #statistics-timeline-dialog,
+:root[data-theme="light"][data-theme-glass="on"] #statistics-timeline-dialog {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-stats-outer) var(--glass-panel-opacity), transparent);
   -webkit-backdrop-filter: blur(16px) saturate(125%);
@@ -1349,7 +1349,7 @@
     0 4px 12px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form {
+:root[data-theme-glass="on"] #watch-form {
   border-color: color-mix(in srgb, var(--line) 62%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-panel-opacity), transparent);
   -webkit-backdrop-filter: blur(18px) saturate(130%);
@@ -1361,14 +1361,14 @@
     0 4px 12px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .form-panel,
-:root[data-dashboard-tactile="on"] #watch-form .title-search-box,
-:root[data-dashboard-tactile="on"] #watch-form .movie-credit-genre-row,
-:root[data-dashboard-tactile="on"] #watch-form .watch-details-components,
-:root[data-dashboard-tactile="on"] #watch-form .watch-rating-fields,
-:root[data-dashboard-tactile="on"] #watch-form .priority-field,
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-menu,
-:root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher.is-pointer-active {
+:root[data-theme-glass="on"] #watch-form .form-panel,
+:root[data-theme-glass="on"] #watch-form .title-search-box,
+:root[data-theme-glass="on"] #watch-form .movie-credit-genre-row,
+:root[data-theme-glass="on"] #watch-form .watch-details-components,
+:root[data-theme-glass="on"] #watch-form .watch-rating-fields,
+:root[data-theme-glass="on"] #watch-form .priority-field,
+:root[data-theme-glass="on"] #watch-form .entry-folder-menu,
+:root[data-theme-glass="on"] #watch-form .form-folder-switcher.is-pointer-active {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-inner) 78%, transparent);
   -webkit-backdrop-filter: blur(10px) saturate(125%);
@@ -1380,12 +1380,12 @@
     0 2px 5px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions .detail-window-button,
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown,
-:root[data-dashboard-tactile="on"] #watch-form .poster-buttons .button,
-:root[data-dashboard-tactile="on"] #watch-form .metadata-lookup-button,
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-icon,
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-option {
+:root[data-theme-glass="on"] #watch-dialog .watch-dialog-actions .detail-window-button,
+:root[data-theme-glass="on"] #watch-form .entry-folder-dropdown,
+:root[data-theme-glass="on"] #watch-form .poster-buttons .button,
+:root[data-theme-glass="on"] #watch-form .metadata-lookup-button,
+:root[data-theme-glass="on"] #watch-form .entry-folder-icon,
+:root[data-theme-glass="on"] #watch-form .entry-folder-option {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   -webkit-backdrop-filter: blur(8px) saturate(125%);
   backdrop-filter: blur(8px) saturate(125%);
@@ -1396,7 +1396,7 @@
     0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions #save-entry:not(:hover) {
+:root[data-theme-glass="on"] #watch-dialog .watch-dialog-actions #save-entry:not(:hover) {
   border-color: var(--status-success-border);
   background: var(--status-success-surface);
   color: var(--status-success);
@@ -1406,7 +1406,7 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions #cancel-dialog:not(:hover) {
+:root[data-theme-glass="on"] #watch-dialog .watch-dialog-actions #cancel-dialog:not(:hover) {
   border-color: var(--status-danger-border);
   background: var(--status-danger-surface);
   color: var(--status-danger);
@@ -1416,7 +1416,7 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions #save-entry:hover {
+:root[data-theme-glass="on"] #watch-dialog .watch-dialog-actions #save-entry:hover {
   border-color: var(--status-success-border);
   background: var(--status-success-surface);
   color: var(--status-success);
@@ -1426,7 +1426,7 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-dialog .watch-dialog-actions #cancel-dialog:hover {
+:root[data-theme-glass="on"] #watch-dialog .watch-dialog-actions #cancel-dialog:hover {
   border-color: var(--status-danger-border);
   background: var(--status-danger-surface);
   color: var(--status-danger);
@@ -1437,19 +1437,19 @@
   text-shadow: 0 0 7px color-mix(in srgb, var(--status-danger) 70%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .metadata-lookup-button {
+:root[data-theme-glass="on"] #watch-form .metadata-lookup-button {
   border-color: color-mix(in srgb, #ffc04d 68%, var(--line));
   background: color-mix(in srgb, #f5a623 78%, transparent);
   color: #17130c;
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown.has-folder-selection {
+:root[data-theme-glass="on"] #watch-form .entry-folder-dropdown.has-folder-selection {
   border-color: var(--status-warning-border);
   background: color-mix(in srgb, var(--status-warning) 14%, var(--surface-dashboard-inner));
   color: var(--status-warning);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown:is(:hover, .is-open, :has(.entry-folder-trigger:focus-visible)) {
+:root[data-theme-glass="on"] #watch-form .entry-folder-dropdown:is(:hover, .is-open, :has(.entry-folder-trigger:focus-visible)) {
   border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
   background: color-mix(in srgb, var(--status-warning) 18%, var(--surface-dashboard-inner));
   color: var(--status-warning);
@@ -1458,14 +1458,14 @@
     0 5px 14px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .metadata-lookup-button:hover:not(:disabled) {
+:root[data-theme-glass="on"] #watch-form .metadata-lookup-button:hover:not(:disabled) {
   border-color: color-mix(in srgb, #ffd477 78%, var(--line));
   background: color-mix(in srgb, #ffc04d 82%, transparent);
 }
 
 /* Keep the create-entry folder switcher consistent with the library folder box. */
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-option.active,
-:root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher.has-folder-selection .entry-folder-icon {
+:root[data-theme-glass="on"] #watch-form .entry-folder-option.active,
+:root[data-theme-glass="on"] #watch-form .form-folder-switcher.has-folder-selection .entry-folder-icon {
   border-color: color-mix(in srgb, var(--accent-orange) 72%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
   color: var(--accent-orange);
@@ -1477,7 +1477,7 @@
 }
 
 /* Dashboard section buttons use the same glass surface and retain their accents. */
-:root[data-dashboard-tactile="on"] .dashboard-section-button {
+:root[data-theme-glass="on"] .dashboard-section-button {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-surface-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -1489,18 +1489,18 @@
     0 2px 5px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library.is-active,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics.is-active,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity.is-active {
+:root[data-theme-glass="on"] .dashboard-section-button.section-library:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-library.is-active,
+:root[data-theme-glass="on"] .dashboard-section-button.section-statistics:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-statistics.is-active,
+:root[data-theme-glass="on"] .dashboard-section-button.section-activity:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-activity.is-active {
   -webkit-backdrop-filter: blur(9px) saturate(130%);
   backdrop-filter: blur(9px) saturate(130%);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library.is-active {
+:root[data-theme-glass="on"] .dashboard-section-button.section-library:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-library.is-active {
   border-color: color-mix(in srgb, var(--blue) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--blue) 18%, transparent);
   color: var(--blue);
@@ -1509,8 +1509,8 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics.is-active {
+:root[data-theme-glass="on"] .dashboard-section-button.section-statistics:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-statistics.is-active {
   border-color: color-mix(in srgb, var(--accent-orange) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
   color: var(--accent-orange);
@@ -1519,8 +1519,8 @@
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity.is-active {
+:root[data-theme-glass="on"] .dashboard-section-button.section-activity:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-activity.is-active {
   border-color: color-mix(in srgb, var(--red) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--red) 18%, transparent);
   color: var(--red);
@@ -1551,30 +1551,30 @@
   color: var(--blue);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .entry-media-option[data-media-type-option="Movie"].active,
-:root[data-dashboard-tactile="on"] #watch-form .entry-media-option[data-media-type-option="Movie"]:hover {
+:root[data-theme-glass="on"] #watch-form .entry-media-option[data-media-type-option="Movie"].active,
+:root[data-theme-glass="on"] #watch-form .entry-media-option[data-media-type-option="Movie"]:hover {
   border-color: var(--status-danger-border);
   background: var(--status-danger-surface);
   color: var(--status-danger);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .entry-media-option[data-media-type-option="Movie"].active {
+:root[data-theme-glass="on"] #watch-form .entry-media-option[data-media-type-option="Movie"].active {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 0 14px color-mix(in srgb, var(--status-danger) 28%, transparent),
     0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .entry-media-option[data-media-type-option="Movie"]:hover {
+:root[data-theme-glass="on"] #watch-form .entry-media-option[data-media-type-option="Movie"]:hover {
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 0 14px color-mix(in srgb, var(--status-danger) 20%, transparent),
     0 6px 18px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .form-panel input:not([type="range"]):not([type="file"]),
-:root[data-dashboard-tactile="on"] #watch-form .form-panel select,
-:root[data-dashboard-tactile="on"] #watch-form .form-panel textarea {
+:root[data-theme-glass="on"] #watch-form .form-panel input:not([type="range"]):not([type="file"]),
+:root[data-theme-glass="on"] #watch-form .form-panel select,
+:root[data-theme-glass="on"] #watch-form .form-panel textarea {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-deep) 76%, transparent);
   -webkit-backdrop-filter: blur(7px) saturate(125%);
@@ -1586,23 +1586,23 @@
     0 1px 2px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .form-panel input:not([type="range"]):not([type="file"]):hover:not(:focus),
-:root[data-dashboard-tactile="on"] #watch-form .form-panel select:hover:not(:focus),
-:root[data-dashboard-tactile="on"] #watch-form .form-panel textarea:hover:not(:focus) {
+:root[data-theme-glass="on"] #watch-form .form-panel input:not([type="range"]):not([type="file"]):hover:not(:focus),
+:root[data-theme-glass="on"] #watch-form .form-panel select:hover:not(:focus),
+:root[data-theme-glass="on"] #watch-form .form-panel textarea:hover:not(:focus) {
   border-color: color-mix(in srgb, var(--blue) 34%, var(--line));
 }
 
-:root[data-dashboard-tactile="on"] #watch-form.has-submission-attempt .form-panel input:required:invalid,
-:root[data-dashboard-tactile="on"] #watch-form.has-submission-attempt .form-panel select:required:invalid {
+:root[data-theme-glass="on"] #watch-form.has-submission-attempt .form-panel input:required:invalid,
+:root[data-theme-glass="on"] #watch-form.has-submission-attempt .form-panel select:required:invalid {
   border-color: #d85f68;
   box-shadow: inset 0 1px 0 var(--glass-highlight), 0 0 0 2px #d85f6822,
     0 3px 8px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .statistics-panel h2,
-:root[data-dashboard-tactile="on"] #statistics-grid article,
-:root[data-theme="light"][data-dashboard-tactile="on"] .statistics-panel h2,
-:root[data-theme="light"][data-dashboard-tactile="on"] #statistics-grid article {
+:root[data-theme-glass="on"] .statistics-panel h2,
+:root[data-theme-glass="on"] #statistics-grid article,
+:root[data-theme="light"][data-theme-glass="on"] .statistics-panel h2,
+:root[data-theme="light"][data-theme-glass="on"] #statistics-grid article {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -1614,10 +1614,10 @@
     0 2px 6px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .statistics-watch-poster,
-:root[data-dashboard-tactile="on"] .statistics-watch-placeholder,
-:root[data-theme="light"][data-dashboard-tactile="on"] .statistics-watch-poster,
-:root[data-theme="light"][data-dashboard-tactile="on"] .statistics-watch-placeholder {
+:root[data-theme-glass="on"] .statistics-watch-poster,
+:root[data-theme-glass="on"] .statistics-watch-placeholder,
+:root[data-theme="light"][data-theme-glass="on"] .statistics-watch-poster,
+:root[data-theme="light"][data-theme-glass="on"] .statistics-watch-placeholder {
   border-color: color-mix(in srgb, var(--line) 62%, var(--glass-highlight));
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
@@ -1626,29 +1626,29 @@
 }
 
 /* Let the poster-derived page background show through the main dashboard surfaces. */
-:root[data-dashboard-tactile="on"] .dashboard-identity,
-:root[data-dashboard-tactile="on"] .dashboard-controls,
-:root[data-dashboard-tactile="on"] .dashboard-sections,
-:root[data-dashboard-tactile="on"] .library-section {
+:root[data-theme-glass="on"] .dashboard-identity,
+:root[data-theme-glass="on"] .dashboard-controls,
+:root[data-theme-glass="on"] .dashboard-sections,
+:root[data-theme-glass="on"] .library-section {
   background-color: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-panel-opacity), transparent);
   -webkit-backdrop-filter: blur(12px) saturate(118%);
   backdrop-filter: blur(12px) saturate(118%);
 }
 
-:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar {
+:root[data-theme-glass="on"] body:not(.is-detail-view) .statsbar {
   background-color: color-mix(in srgb, var(--surface-stats-outer) var(--glass-panel-opacity), transparent);
   -webkit-backdrop-filter: blur(12px) saturate(118%);
   backdrop-filter: blur(12px) saturate(118%);
 }
 
-:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar > div {
+:root[data-theme-glass="on"] body:not(.is-detail-view) .statsbar > div {
   background-color: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   box-shadow: inset 0 1px 0 color-mix(in srgb, var(--glass-highlight) 58%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner {
+:root[data-theme-glass="on"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner {
   background-image: linear-gradient(
     115deg,
     color-mix(in srgb, var(--poster-color-one, var(--surface-banner-shade)) calc(var(--glass-surface-opacity) - 14%), transparent),
@@ -1658,7 +1658,7 @@
   backdrop-filter: blur(12px) saturate(125%);
 }
 
-:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner.has-poster::before {
+:root[data-theme-glass="on"] body:not(.is-detail-view) .dashboard-layout:not(.is-statistics-view) > #banner.has-poster::before {
   background: linear-gradient(
     90deg,
     #111722c8 0%,
@@ -1668,14 +1668,14 @@
 }
 
 /* Match the collection heading strip to the glass library container. */
-:root[data-dashboard-tactile="on"] body:not(.is-detail-view) .library-section > .section-heading {
+:root[data-theme-glass="on"] body:not(.is-detail-view) .library-section > .section-heading {
   background: transparent;
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
 
 /* Use the same glass surface across the create-entry and dashboard controls. */
-:root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher:is(:hover, :focus-within, .is-pointer-active) {
+:root[data-theme-glass="on"] #watch-form .form-folder-switcher:is(:hover, :focus-within, .is-pointer-active) {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-panel-opacity), transparent);
   -webkit-backdrop-filter: blur(14px) saturate(120%);
@@ -1684,8 +1684,8 @@
     0 12px 28px var(--glass-shadow), 0 3px 8px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .entry-folder-option.active,
-:root[data-dashboard-tactile="on"] #watch-form .form-folder-switcher.has-folder-selection .entry-folder-icon {
+:root[data-theme-glass="on"] #watch-form .entry-folder-option.active,
+:root[data-theme-glass="on"] #watch-form .form-folder-switcher.has-folder-selection .entry-folder-icon {
   border-color: color-mix(in srgb, var(--accent-orange) 72%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
   color: var(--accent-orange);
@@ -1694,7 +1694,7 @@
     0 5px 14px var(--glass-shadow), 0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab.active {
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .collection-tab.active {
   border-color: color-mix(in srgb, var(--accent-orange) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
   color: var(--accent-orange);
@@ -1703,7 +1703,7 @@
     0 5px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button {
+:root[data-theme-glass="on"] .dashboard-section-button {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-surface-opacity), transparent);
   -webkit-backdrop-filter: blur(9px) saturate(125%);
@@ -1712,8 +1712,8 @@
     0 6px 16px var(--glass-shadow), 0 2px 5px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library.is-active {
+:root[data-theme-glass="on"] .dashboard-section-button.section-library:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-library.is-active {
   border-color: color-mix(in srgb, var(--blue) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--blue) 18%, transparent);
   color: var(--blue);
@@ -1721,8 +1721,8 @@
     0 0 13px color-mix(in srgb, var(--blue) 24%, transparent), 0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics.is-active {
+:root[data-theme-glass="on"] .dashboard-section-button.section-statistics:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-statistics.is-active {
   border-color: color-mix(in srgb, var(--accent-orange) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--accent-orange) 18%, transparent);
   color: var(--accent-orange);
@@ -1730,8 +1730,8 @@
     0 0 13px color-mix(in srgb, var(--accent-orange) 24%, transparent), 0 6px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity:hover,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity.is-active {
+:root[data-theme-glass="on"] .dashboard-section-button.section-activity:hover,
+:root[data-theme-glass="on"] .dashboard-section-button.section-activity.is-active {
   border-color: color-mix(in srgb, var(--red) 68%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--red) 18%, transparent);
   color: var(--red);
@@ -1750,8 +1750,8 @@
     0 5px 14px var(--shadow-black-20);
 }
 
-:root[data-dashboard-tactile="on"] .folder-picker-group .entry-folder-option:hover,
-:root[data-dashboard-tactile="on"] .folder-picker-group .entry-folder-option.active {
+:root[data-theme-glass="on"] .folder-picker-group .entry-folder-option:hover,
+:root[data-theme-glass="on"] .folder-picker-group .entry-folder-option.active {
   border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
   background: color-mix(in srgb, var(--status-warning) 18%, transparent);
   color: var(--status-warning);
@@ -1771,8 +1771,8 @@
     0 5px 14px var(--shadow-black-20);
 }
 
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .entry-folder-option:hover,
-:root[data-dashboard-tactile="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .entry-folder-option.active {
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .entry-folder-option:hover,
+:root[data-theme-glass="on"] .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])) .library-folder-list .entry-folder-option.active {
   border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
   background: color-mix(in srgb, var(--status-warning) 18%, transparent);
   color: var(--status-warning);
@@ -1781,7 +1781,7 @@
     0 5px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .library-folder-menu {
+:root[data-theme-glass="on"] .library-folder-menu {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-menu-opacity), transparent);
   -webkit-backdrop-filter: blur(12px) saturate(125%);
@@ -1790,7 +1790,7 @@
     0 12px 28px var(--glass-shadow), 0 3px 8px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .library-folder-choice {
+:root[data-theme-glass="on"] .library-folder-choice {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: blur(8px) saturate(125%);
@@ -1800,8 +1800,8 @@
     0 5px 14px var(--glass-shadow), 0 1px 3px var(--glass-edge-shadow);
 }
 
-:root[data-dashboard-tactile="on"] .library-folder-choice:hover,
-:root[data-dashboard-tactile="on"] .library-folder-choice.active {
+:root[data-theme-glass="on"] .library-folder-choice:hover,
+:root[data-theme-glass="on"] .library-folder-choice.active {
   border-color: color-mix(in srgb, var(--status-warning) 72%, var(--glass-highlight));
   background: color-mix(in srgb, var(--status-warning) 18%, transparent);
   color: var(--status-warning);
@@ -1810,8 +1810,8 @@
     0 5px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .poster-buttons #poster-search:hover,
-:root[data-dashboard-tactile="on"] #watch-form .poster-buttons #poster-search:focus-visible {
+:root[data-theme-glass="on"] #watch-form .poster-buttons #poster-search:hover,
+:root[data-theme-glass="on"] #watch-form .poster-buttons #poster-search:focus-visible {
   border-color: color-mix(in srgb, var(--blue) 72%, var(--glass-highlight));
   background: color-mix(in srgb, var(--blue) 18%, transparent);
   color: var(--blue);
@@ -1820,8 +1820,8 @@
     0 5px 16px var(--glass-shadow);
 }
 
-:root[data-dashboard-tactile="on"] #watch-form .poster-buttons #poster-upload-button:hover,
-:root[data-dashboard-tactile="on"] #watch-form .poster-buttons #poster-upload-button:focus-visible {
+:root[data-theme-glass="on"] #watch-form .poster-buttons #poster-upload-button:hover,
+:root[data-theme-glass="on"] #watch-form .poster-buttons #poster-upload-button:focus-visible {
   border-color: color-mix(in srgb, var(--status-success) 72%, var(--glass-highlight));
   background: color-mix(in srgb, var(--status-success) 18%, transparent);
   color: var(--status-success);
@@ -1831,7 +1831,7 @@
 }
 
 /* Keep inset controls readable while letting the parent panels carry the glass blur. */
-:root[data-theme][data-dashboard-tactile="on"] :is(
+:root[data-theme][data-theme-glass="on"] :is(
   .library-section .library-view-option,
   .library-section .media-type-filter,
   .library-section .collection-tab:not(.active),
@@ -1867,7 +1867,7 @@
   transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar > div {
+:root[data-theme][data-theme-glass="on"] body:not(.is-detail-view) .statsbar > div {
   border-color: color-mix(in srgb, var(--line) 52%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   -webkit-backdrop-filter: none;
@@ -1882,14 +1882,14 @@
 }
 
 /* Use the same outer/inner glass layers for the library and its toolbar groups. */
-:root[data-theme][data-dashboard-tactile="on"] body:not(.is-detail-view) .library-section {
+:root[data-theme][data-theme-glass="on"] body:not(.is-detail-view) .library-section {
   border-color: color-mix(in srgb, var(--line) 66%, var(--glass-highlight));
   background-color: color-mix(in srgb, var(--surface-dashboard-outer) var(--glass-panel-opacity), transparent);
   -webkit-backdrop-filter: blur(12px) saturate(118%);
   backdrop-filter: blur(12px) saturate(118%);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body:not(.is-detail-view) .library-section :is(
+:root[data-theme][data-theme-glass="on"] body:not(.is-detail-view) .library-section :is(
   .collection-filter-sort,
   .collection-pagination,
   .folder-picker-group.is-expanded:has(#library-folder-picker:not([hidden])),
@@ -1910,7 +1910,7 @@
 }
 
 /* Inner boxes sit over translucent panels, so their color is only a light overlay. */
-:root[data-dashboard-tactile="on"] {
+:root[data-theme-glass="on"] {
   --raised-inner-overlay-opacity: max(12%, calc(var(--glass-surface-opacity) - 46%));
   --raised-key-background: color-mix(
     in srgb,
@@ -1923,7 +1923,7 @@
   --raised-edge-light: color-mix(in srgb, var(--glass-highlight) 28%, transparent);
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"] {
+:root[data-theme="light"][data-theme-glass="on"] {
   --raised-inner-overlay-opacity: max(4%, calc(var(--glass-surface-opacity) - 54%));
   --raised-upper-shadow: #ffffff1e;
   --raised-contact-shadow: #52677f20;
@@ -1931,7 +1931,7 @@
   --raised-edge-light: color-mix(in srgb, var(--glass-highlight) 50%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] :is(
+:root[data-theme-glass="on"] :is(
   #settings-dialog,
   #poster-dialog,
   #save-confirmation-dialog
@@ -1941,57 +1941,57 @@
   backdrop-filter: blur(14px) saturate(120%);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-identity .brand:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-identity .app-version,
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-identity .detail-back-icon:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-controls .settings-button:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-controls .activity-button:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-controls .storage-file-control:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-controls .storage-file-control .storage-check-button:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-section-button:not(:hover):not(.is-active),
-:root[data-theme][data-dashboard-tactile="on"] body:not(.is-detail-view) .statsbar > div:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .form-panel,
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .title-search-box,
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .movie-credit-genre-row,
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .watch-details-components,
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .watch-rating-fields,
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .priority-field,
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .form-panel h3,
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .entry-folder-dropdown:not(:hover):not(.is-open):not(.has-folder-selection),
-:root[data-theme][data-dashboard-tactile="on"] #watch-form .entry-folder-option:not(:hover):not(.active),
-:root[data-theme][data-dashboard-tactile="on"] .statistics-panel h2,
-:root[data-theme][data-dashboard-tactile="on"] #statistics-grid article,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .detail-history h2,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .timeline-notes-panel h3,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .detail-info-content,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .detail-info-tabs,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .detail-runtime,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .detail-actor-tag,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .detail-timeline-content,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .timeline-notes-content,
-:root[data-theme][data-dashboard-tactile="on"] .detail-page .timeline-entry-card,
-:root[data-theme][data-dashboard-tactile="on"] .library-section .collection-filter-sort,
-:root[data-theme][data-dashboard-tactile="on"] .library-section .collection-pagination,
-:root[data-theme][data-dashboard-tactile="on"] .library-section .collection-pagination button:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .library-folder-choice:not(:hover):not(.active),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .entry:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .collection-tab:not(:hover):not(.active),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .collection-add:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .filter-sort-reset:not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .library-folder-dropdown:not(:hover):not(.has-folder-selection):not(.is-open),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .library-search:not(:hover):not(:focus-within):not(.has-query),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .library-view-option:not(:hover):not(.active),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .media-type-filter:not(:hover):not(.active),
-:root[data-theme][data-dashboard-tactile="on"] .library-section .collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-theme][data-dashboard-tactile="on"] #settings-dialog .settings-option,
-:root[data-theme][data-dashboard-tactile="on"] #settings-dialog .api-usage-counter,
-:root[data-theme][data-dashboard-tactile="on"] #settings-dialog .import-options,
-:root[data-theme][data-dashboard-tactile="on"] #save-confirmation-dialog .save-confirmation-title-box,
-:root[data-theme][data-dashboard-tactile="on"] #save-confirmation-dialog .save-comparison-card,
-:root[data-theme][data-dashboard-tactile="on"] #save-confirmation-dialog .save-confirmation-status-box,
-:root[data-theme][data-dashboard-tactile="on"] #poster-dialog .poster-dialog-title,
-:root[data-theme][data-dashboard-tactile="on"] #poster-dialog .poster-result:not(:hover) {
+:root[data-theme][data-theme-glass="on"] .dashboard-identity .brand:not(:hover),
+:root[data-theme][data-theme-glass="on"] .dashboard-identity .github-repo-link:not(:hover),
+:root[data-theme][data-theme-glass="on"] .dashboard-identity .app-version,
+:root[data-theme][data-theme-glass="on"] .dashboard-identity .detail-back-icon:not(:hover),
+:root[data-theme][data-theme-glass="on"] .dashboard-controls .settings-button:not(:hover),
+:root[data-theme][data-theme-glass="on"] .dashboard-controls .activity-button:not(:hover),
+:root[data-theme][data-theme-glass="on"] .dashboard-controls .storage-file-control:not(:hover),
+:root[data-theme][data-theme-glass="on"] .dashboard-controls .storage-file-control .storage-check-button:not(:hover),
+:root[data-theme][data-theme-glass="on"] .dashboard-section-button:not(:hover):not(.is-active),
+:root[data-theme][data-theme-glass="on"] body:not(.is-detail-view) .statsbar > div:not(:hover),
+:root[data-theme][data-theme-glass="on"] #watch-form .form-panel,
+:root[data-theme][data-theme-glass="on"] #watch-form .title-search-box,
+:root[data-theme][data-theme-glass="on"] #watch-form .movie-credit-genre-row,
+:root[data-theme][data-theme-glass="on"] #watch-form .watch-details-components,
+:root[data-theme][data-theme-glass="on"] #watch-form .watch-rating-fields,
+:root[data-theme][data-theme-glass="on"] #watch-form .priority-field,
+:root[data-theme][data-theme-glass="on"] #watch-form .form-panel h3,
+:root[data-theme][data-theme-glass="on"] #watch-form .entry-folder-dropdown:not(:hover):not(.is-open):not(.has-folder-selection),
+:root[data-theme][data-theme-glass="on"] #watch-form .entry-folder-option:not(:hover):not(.active),
+:root[data-theme][data-theme-glass="on"] .statistics-panel h2,
+:root[data-theme][data-theme-glass="on"] #statistics-grid article,
+:root[data-theme][data-theme-glass="on"] .detail-page .detail-history h2,
+:root[data-theme][data-theme-glass="on"] .detail-page .timeline-notes-panel h3,
+:root[data-theme][data-theme-glass="on"] .detail-page .detail-info-content,
+:root[data-theme][data-theme-glass="on"] .detail-page .detail-info-tabs,
+:root[data-theme][data-theme-glass="on"] .detail-page .detail-runtime,
+:root[data-theme][data-theme-glass="on"] .detail-page .detail-actor-tag,
+:root[data-theme][data-theme-glass="on"] .detail-page .detail-timeline-content,
+:root[data-theme][data-theme-glass="on"] .detail-page .timeline-notes-content,
+:root[data-theme][data-theme-glass="on"] .detail-page .timeline-entry-card,
+:root[data-theme][data-theme-glass="on"] .library-section .collection-filter-sort,
+:root[data-theme][data-theme-glass="on"] .library-section .collection-pagination,
+:root[data-theme][data-theme-glass="on"] .library-section .collection-pagination button:not(:hover),
+:root[data-theme][data-theme-glass="on"] .library-section .library-folder-choice:not(:hover):not(.active),
+:root[data-theme][data-theme-glass="on"] .library-section .entry:not(:hover),
+:root[data-theme][data-theme-glass="on"] .library-section .collection-tab:not(:hover):not(.active),
+:root[data-theme][data-theme-glass="on"] .library-section .collection-add:not(:hover),
+:root[data-theme][data-theme-glass="on"] .library-section .filter-sort-reset:not(:hover),
+:root[data-theme][data-theme-glass="on"] .library-section .library-folder-dropdown:not(:hover):not(.has-folder-selection):not(.is-open),
+:root[data-theme][data-theme-glass="on"] .library-section .library-search:not(:hover):not(:focus-within):not(.has-query),
+:root[data-theme][data-theme-glass="on"] .library-section .library-view-option:not(:hover):not(.active),
+:root[data-theme][data-theme-glass="on"] .library-section .media-type-filter:not(:hover):not(.active),
+:root[data-theme][data-theme-glass="on"] .library-section .collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme][data-theme-glass="on"] #settings-dialog .settings-option,
+:root[data-theme][data-theme-glass="on"] #settings-dialog .api-usage-counter,
+:root[data-theme][data-theme-glass="on"] #settings-dialog .import-options,
+:root[data-theme][data-theme-glass="on"] #save-confirmation-dialog .save-confirmation-title-box,
+:root[data-theme][data-theme-glass="on"] #save-confirmation-dialog .save-comparison-card,
+:root[data-theme][data-theme-glass="on"] #save-confirmation-dialog .save-confirmation-status-box,
+:root[data-theme][data-theme-glass="on"] #poster-dialog .poster-dialog-title,
+:root[data-theme][data-theme-glass="on"] #poster-dialog .poster-result:not(:hover) {
   background-color: color-mix(
     in srgb,
     color-mix(in srgb, var(--surface-dashboard-inner) 85%, var(--surface-dashboard-outer)) var(--raised-inner-overlay-opacity),
@@ -2008,7 +2008,7 @@
 }
 
 /* At the slider's end, the main glass panels become fully opaque. */
-:root[data-dashboard-tactile="on"][data-glass-opaque="on"] :is(
+:root[data-theme-glass="on"][data-glass-opaque="on"] :is(
   .dashboard-identity,
   .dashboard-controls,
   .dashboard-sections,
@@ -2030,25 +2030,25 @@
 }
 
 /* Selected navigation keeps its color on the label or icon, not around the box. */
-:root[data-dashboard-tactile="on"] .library-section .library-view-option[data-view="logged"].active,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-library.is-active {
+:root[data-theme-glass="on"] .library-section .library-view-option[data-view="logged"].active,
+:root[data-theme-glass="on"] .dashboard-section-button.section-library.is-active {
   --selected-icon-glow: var(--blue);
 }
 
-:root[data-dashboard-tactile="on"] .library-section .library-view-option[data-view="watchlist"].active {
+:root[data-theme-glass="on"] .library-section .library-view-option[data-view="watchlist"].active {
   --selected-icon-glow: var(--status-success);
 }
 
-:root[data-dashboard-tactile="on"] .library-section .media-type-filter.active,
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-activity.is-active {
+:root[data-theme-glass="on"] .library-section .media-type-filter.active,
+:root[data-theme-glass="on"] .dashboard-section-button.section-activity.is-active {
   --selected-icon-glow: var(--status-danger);
 }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics.is-active {
+:root[data-theme-glass="on"] .dashboard-section-button.section-statistics.is-active {
   --selected-icon-glow: var(--accent-orange);
 }
 
-:root[data-dashboard-tactile="on"] :is(
+:root[data-theme-glass="on"] :is(
   .library-section .library-view-option.active,
   .library-section .media-type-filter.active,
   .dashboard-section-button.is-active
@@ -2063,7 +2063,7 @@
   text-shadow: 0 0 8px color-mix(in srgb, var(--selected-icon-glow) 70%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] :is(
+:root[data-theme-glass="on"] :is(
   .library-section .media-type-filter.active,
   .dashboard-section-button.is-active
 ) svg {
@@ -2071,7 +2071,7 @@
 }
 
 /* Hover raises interactive surfaces; color belongs to their content. */
-:root[data-dashboard-tactile="on"] :is(
+:root[data-theme-glass="on"] :is(
   .dashboard-section-button:hover,
   .dashboard-controls button:hover,
   .library-section .library-view-option:hover,
@@ -2090,25 +2090,25 @@
     7px 10px 18px var(--raised-lower-shadow);
 }
 
-:root[data-dashboard-tactile="on"] :is(
+:root[data-theme-glass="on"] :is(
   .library-section .library-view-option[data-view="logged"]:hover,
   .dashboard-section-button.section-library:hover
 ) { --hover-icon-glow: var(--blue); }
 
-:root[data-dashboard-tactile="on"] .library-section .library-view-option[data-view="watchlist"]:hover {
+:root[data-theme-glass="on"] .library-section .library-view-option[data-view="watchlist"]:hover {
   --hover-icon-glow: var(--status-success);
 }
 
-:root[data-dashboard-tactile="on"] :is(
+:root[data-theme-glass="on"] :is(
   .library-section .media-type-filter:hover,
   .dashboard-section-button.section-activity:hover
 ) { --hover-icon-glow: var(--status-danger); }
 
-:root[data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover {
+:root[data-theme-glass="on"] .dashboard-section-button.section-statistics:hover {
   --hover-icon-glow: var(--accent-orange);
 }
 
-:root[data-dashboard-tactile="on"] :is(
+:root[data-theme-glass="on"] :is(
   .library-section .library-view-option:hover,
   .library-section .media-type-filter:hover,
   .dashboard-section-button:hover
@@ -2116,7 +2116,7 @@
   text-shadow: 0 0 8px color-mix(in srgb, var(--hover-icon-glow, currentColor) 70%, transparent);
 }
 
-:root[data-dashboard-tactile="on"] :is(
+:root[data-theme-glass="on"] :is(
   .library-section .media-type-filter:hover,
   .dashboard-section-button:hover
 ) svg {
@@ -2124,7 +2124,7 @@
 }
 
 /* Dashboard hover colors stay on the glyphs, including the split storage control. */
-:root[data-theme][data-dashboard-tactile="on"] :is(
+:root[data-theme][data-theme-glass="on"] :is(
   .dashboard-identity .brand:hover,
   .dashboard-identity .github-repo-link:hover,
   .dashboard-identity .detail-back-icon:hover,
@@ -2144,43 +2144,43 @@
     7px 10px 18px var(--raised-lower-shadow);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-controls .storage-check-button:hover {
+:root[data-theme][data-theme-glass="on"] .dashboard-controls .storage-check-button:hover {
   background-color: var(--raised-key-background);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] :is(
+:root[data-theme][data-theme-glass="on"] :is(
   .dashboard-identity .brand:hover,
   .dashboard-identity .detail-back-icon:hover,
   .dashboard-controls .settings-button:not(.theme-toggle-button):hover
 ) { --dashboard-hover-glow: var(--icon-muted); }
 
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-identity .github-repo-link:hover {
+:root[data-theme][data-theme-glass="on"] .dashboard-identity .github-repo-link:hover {
   --dashboard-hover-glow: var(--red);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-controls .theme-toggle-button:hover {
+:root[data-theme][data-theme-glass="on"] .dashboard-controls .theme-toggle-button:hover {
   --dashboard-hover-glow: var(--accent-orange);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] :is(
+:root[data-theme][data-theme-glass="on"] :is(
   .dashboard-controls .activity-button:hover,
   .dashboard-section-button.section-activity:hover
 ) { --dashboard-hover-glow: var(--status-danger); }
 
-:root[data-theme][data-dashboard-tactile="on"] :is(
+:root[data-theme][data-theme-glass="on"] :is(
   .dashboard-controls .storage-file-control:hover,
   .dashboard-controls .storage-check-button:hover
 ) { --dashboard-hover-glow: var(--status-success); }
 
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-section-button.section-library:hover {
+:root[data-theme][data-theme-glass="on"] .dashboard-section-button.section-library:hover {
   --dashboard-hover-glow: var(--blue);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] .dashboard-section-button.section-statistics:hover {
+:root[data-theme][data-theme-glass="on"] .dashboard-section-button.section-statistics:hover {
   --dashboard-hover-glow: var(--accent-orange);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] :is(
+:root[data-theme][data-theme-glass="on"] :is(
   .dashboard-identity .brand:hover,
   .dashboard-identity .detail-back-icon:hover,
   .dashboard-controls .storage-indicator:hover
@@ -2188,7 +2188,7 @@
   text-shadow: 0 0 8px color-mix(in srgb, var(--dashboard-hover-glow, var(--status-success)) 70%, transparent);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] :is(
+:root[data-theme][data-theme-glass="on"] :is(
   .dashboard-identity .github-repo-link:hover,
   .dashboard-controls .settings-button:hover,
   .dashboard-controls .activity-button:hover,
@@ -2199,7 +2199,7 @@
 }
 
 /* Dashboard keys share one raised hover response. */
-:root[data-theme][data-dashboard-tactile="on"] body :is(
+:root[data-theme][data-theme-glass="on"] body :is(
   .dashboard-identity .brand,
   .dashboard-identity .github-repo-link,
   .dashboard-identity .app-version,
@@ -2213,7 +2213,7 @@
   transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body :is(
+:root[data-theme][data-theme-glass="on"] body :is(
   .dashboard-identity .brand:hover,
   .dashboard-identity .github-repo-link:hover,
   .dashboard-identity .app-version:hover,
@@ -2234,7 +2234,7 @@
 }
 
 /* Selected keys keep the same surface as their unselected neighbors. */
-:root[data-theme][data-dashboard-tactile="on"] body :is(
+:root[data-theme][data-theme-glass="on"] body :is(
   .dashboard-section-button.is-active,
   .dashboard-controls .storage-file-control:has(.storage-check-button:hover),
   .dashboard-controls .storage-file-control:has(.storage-indicator:hover),
@@ -2252,7 +2252,7 @@
 }
 
 /* Match the statsbar tile's hovered surface and shadow exactly. */
-:root[data-theme][data-dashboard-tactile="on"] body :is(
+:root[data-theme][data-theme-glass="on"] body :is(
   .dashboard-identity .brand:hover,
   .dashboard-identity .github-repo-link:hover,
   .dashboard-identity .app-version:hover,
@@ -2285,7 +2285,7 @@
 }
 
 /* Section keys have identical resting surfaces, regardless of selection. */
-:root[data-theme][data-dashboard-tactile="on"] body .dashboard-sections .dashboard-section-button:not(:hover) {
+:root[data-theme][data-theme-glass="on"] body .dashboard-sections .dashboard-section-button:not(:hover) {
   border-color: transparent;
   background: var(--raised-key-background);
   box-shadow:
@@ -2296,7 +2296,7 @@
 }
 
 /* Library toolbar keys use the same raised surface as dashboard keys. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme][data-theme-glass="on"] body .library-section :is(
   .library-view-option,
   .library-folder-dropdown,
   .library-search,
@@ -2315,7 +2315,7 @@
 }
 
 /* The dashboard uses 14px tile corners and 20px main-panel corners. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme][data-theme-glass="on"] body .library-section :is(
   .library-view-option,
   .library-folder-dropdown,
   .library-search,
@@ -2327,7 +2327,7 @@
   border-radius: 14px;
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme][data-theme-glass="on"] body .library-section :is(
   .collection-filter-sort,
   .collection-pagination,
   .library-view-switcher:hover,
@@ -2347,9 +2347,9 @@
 
 /* These toolbar keys are wrappers around transparent icon buttons. Style the
    visible wrapper in every state, as with the dashboard's inner keys. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .collection-source-controls .library-view-option,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .library-folder-dropdown,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .library-search {
+:root[data-theme][data-theme-glass="on"] body .library-section .collection-source-controls .library-view-option,
+:root[data-theme][data-theme-glass="on"] body .library-section .library-folder-dropdown,
+:root[data-theme][data-theme-glass="on"] body .library-section .library-search {
   box-sizing: border-box;
   border: 1px solid transparent;
   border-radius: 14px;
@@ -2365,7 +2365,7 @@
 
 /* Match the stat tiles' edge in both states. Earlier generic Library rules
    have more pseudo-classes, so target these two visible wrappers directly. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section :is(#library-folder-dropdown, #library-search-box):not(:hover) {
+:root[data-theme][data-theme-glass="on"] body .library-section :is(#library-folder-dropdown, #library-search-box):not(:hover) {
   border: 1px solid transparent;
   border-radius: 14px;
   background: #28282c;
@@ -2376,7 +2376,7 @@
     7px 10px 18px var(--raised-lower-shadow);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section :is(#library-folder-dropdown, #library-search-box):hover {
+:root[data-theme][data-theme-glass="on"] body .library-section :is(#library-folder-dropdown, #library-search-box):hover {
   border: 1px solid color-mix(in srgb, var(--line) 52%, var(--glass-highlight));
   border-radius: 14px;
   background: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
@@ -2388,7 +2388,7 @@
     0 2px 5px var(--glass-edge-shadow);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section :is(#library-folder-dropdown, #library-search-box):not(:hover) {
+:root[data-theme][data-theme-glass="on"] body .library-section :is(#library-folder-dropdown, #library-search-box):not(:hover) {
   background: #28282c;
 }
 
@@ -2402,7 +2402,7 @@
   );
 }
 
-:root[data-theme="dark"][data-dashboard-tactile] body .library-section .collection-filter-sort select {
+:root[data-theme="dark"][data-theme-glass] body .library-section .collection-filter-sort select {
   border-color: transparent;
   border-radius: 14px;
   background: var(--dark-inner-key-surface);
@@ -2416,9 +2416,9 @@
 }
 
 /* Dashboard keys use the same raised surface as the statsbar tiles. */
-:root[data-theme][data-dashboard-tactile="on"] body .dashboard-identity :is(.brand, .github-repo-link, .app-version):not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] body .dashboard-controls :is(.settings-button, .activity-button, .storage-file-control, .storage-check-button):not(:hover),
-:root[data-theme][data-dashboard-tactile="on"] body .dashboard-sections .dashboard-section-button:not(:hover) {
+:root[data-theme][data-theme-glass="on"] body .dashboard-identity :is(.brand, .github-repo-link, .app-version):not(:hover),
+:root[data-theme][data-theme-glass="on"] body .dashboard-controls :is(.settings-button, .activity-button, .storage-file-control, .storage-check-button):not(:hover),
+:root[data-theme][data-theme-glass="on"] body .dashboard-sections .dashboard-section-button:not(:hover) {
   border-color: transparent;
   background: var(--raised-key-background);
   -webkit-backdrop-filter: none;
@@ -2430,28 +2430,28 @@
     7px 10px 18px var(--raised-lower-shadow);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .library-folder-dropdown .entry-folder-trigger,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .library-search .library-search-toggle {
+:root[data-theme][data-theme-glass="on"] body .library-section .library-folder-dropdown .entry-folder-trigger,
+:root[data-theme][data-theme-glass="on"] body .library-section .library-search .library-search-toggle {
   border: 0;
   background: transparent;
   box-shadow: none;
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .library-folder-dropdown:is(
+:root[data-theme][data-theme-glass="on"] body .library-section .library-folder-dropdown:is(
   :hover, .is-open, .has-folder-selection, :has(.entry-folder-trigger:focus-visible)
 ) {
   color: var(--status-warning);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .library-folder-dropdown:is(
+:root[data-theme][data-theme-glass="on"] body .library-section .library-folder-dropdown:is(
   :hover, .is-open, .has-folder-selection
 ) svg {
   filter: drop-shadow(0 0 5px color-mix(in srgb, var(--status-warning) 65%, transparent));
 }
 
 /* Resting filter and page frames match the statsbar's resting tiles. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination {
   border: 1px solid color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   border-radius: 14px;
   background: #28282c;
@@ -2464,8 +2464,8 @@
 }
 
 /* Use the statsbar's brighter surface only while a frame is hovered. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort:hover,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination:hover {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort:hover,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination:hover {
   border-color: color-mix(in srgb, var(--line) 52%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent);
   box-shadow:
@@ -2477,8 +2477,8 @@
 }
 
 /* Selects and page arrows sit inset inside those outer tiles, like the save key. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled) {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled) {
   box-sizing: border-box;
   border: 1px solid color-mix(in srgb, var(--line) 68%, var(--glass-highlight));
   border-radius: 10px !important;
@@ -2490,10 +2490,10 @@
     0 3px 8px var(--glass-shadow);
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:hover,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:focus,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select.active,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination button:hover:not(:disabled) {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort select:hover,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort select:focus,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort select.active,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination button:hover:not(:disabled) {
   border-radius: 10px !important;
   border-color: color-mix(in srgb, var(--line) 52%, var(--glass-highlight));
   background: color-mix(in srgb, var(--surface-dashboard-inner) var(--glass-inner-opacity), transparent);
@@ -2504,19 +2504,19 @@
 }
 
 /* Keep the frame and its controls at a fixed radius in every interaction state. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination {
   border-radius: 14px !important;
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination button {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort select,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination button {
   border-radius: 10px !important;
 }
 
 /* Final toolbar surface values: match the stats tiles at rest and on hover. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination {
   border-color: transparent !important;
   border-radius: 14px !important;
   background-color: var(--raised-key-background) !important;
@@ -2527,8 +2527,8 @@
     7px 10px 18px var(--raised-lower-shadow) !important;
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled) {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled) {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight)) !important;
   border-radius: 10px !important;
   background-color: color-mix(in srgb, var(--surface-dashboard-outer) 82%, transparent) !important;
@@ -2538,13 +2538,13 @@
 }
 
 /* Keep the filter and pagination frames on their established charcoal surface. */
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort:not(:hover),
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination:not(:hover) {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort:not(:hover),
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination:not(:hover) {
   background-color: #28282c !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled) {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled) {
   border-color: color-mix(in srgb, var(--line) 68%, var(--glass-highlight)) !important;
   border-radius: 10px !important;
   background-color: #2c2c30 !important;
@@ -2554,8 +2554,8 @@
 }
 
 /* Filter and pagination frames stay static; only their controls react to hover. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-filter-sort:hover,
-:root[data-theme][data-dashboard-tactile="on"] body .library-section #collection-pagination:hover {
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-filter-sort:hover,
+:root[data-theme][data-theme-glass="on"] body .library-section #collection-pagination:hover {
   border-color: transparent !important;
   border-radius: 14px !important;
   background-color: var(--raised-key-background) !important;
@@ -2566,12 +2566,12 @@
     7px 10px 18px var(--raised-lower-shadow) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort:hover,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination:hover {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort:hover,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination:hover {
   background-color: #28282c !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section .filter-sort-reset:not(:hover) {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section .filter-sort-reset:not(:hover) {
   border: 1px solid color-mix(in srgb, var(--line) 68%, var(--glass-highlight)) !important;
   border-radius: 10px !important;
   background-color: #2c2c30 !important;
@@ -2580,53 +2580,53 @@
     0 3px 8px var(--glass-shadow) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section .filter-sort-reset {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section .filter-sort-reset {
   border-radius: 10px !important;
 }
 
 /* Keep the controls translucent enough to reveal the page background. */
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort:hover,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination:hover {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort:hover,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination:hover {
   background-color: color-mix(in srgb, #28282c var(--glass-panel-opacity), transparent) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled),
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section .filter-sort-reset:not(:hover) {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled),
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section .filter-sort-reset:not(:hover) {
   background-color: color-mix(in srgb, #2c2c30 var(--glass-inner-opacity), transparent) !important;
 }
 
 /* Give toolbar surfaces the same translucent blur treatment as stats tiles. */
-:root[data-dashboard-tactile="on"] body .library-section #collection-filter-sort,
-:root[data-dashboard-tactile="on"] body .library-section #collection-filter-sort:hover,
-:root[data-dashboard-tactile="on"] body .library-section #collection-pagination,
-:root[data-dashboard-tactile="on"] body .library-section #collection-pagination:hover {
+:root[data-theme-glass="on"] body .library-section #collection-filter-sort,
+:root[data-theme-glass="on"] body .library-section #collection-filter-sort:hover,
+:root[data-theme-glass="on"] body .library-section #collection-pagination,
+:root[data-theme-glass="on"] body .library-section #collection-pagination:hover {
   -webkit-backdrop-filter: blur(9px) saturate(125%) !important;
   backdrop-filter: blur(9px) saturate(125%) !important;
 }
 
-:root[data-dashboard-tactile="on"] body .library-section #collection-filter-sort select,
-:root[data-dashboard-tactile="on"] body .library-section #collection-pagination button,
-:root[data-dashboard-tactile="on"] body .library-section .filter-sort-reset {
+:root[data-theme-glass="on"] body .library-section #collection-filter-sort select,
+:root[data-theme-glass="on"] body .library-section #collection-pagination button,
+:root[data-theme-glass="on"] body .library-section .filter-sort-reset {
   -webkit-backdrop-filter: blur(7px) saturate(125%) !important;
   backdrop-filter: blur(7px) saturate(125%) !important;
 }
 
 /* Make translucency visible on filter and paging frames, without a hover state. */
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort:hover,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination:hover {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort:hover,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination:hover {
   background: color-mix(in srgb, #28282c var(--glass-panel-opacity), transparent) !important;
   -webkit-backdrop-filter: blur(14px) saturate(125%) !important;
   backdrop-filter: blur(14px) saturate(125%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled),
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section .filter-sort-reset:not(:hover) {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled),
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section .filter-sort-reset:not(:hover) {
   background: color-mix(in srgb, #2c2c30 var(--glass-inner-opacity), transparent) !important;
   -webkit-backdrop-filter: blur(9px) saturate(125%) !important;
   backdrop-filter: blur(9px) saturate(125%) !important;
@@ -2635,60 +2635,60 @@
 /* The filter and page frames share the slider-driven glass treatment. Keep
    the outer frame visibly translucent at the slider's minimum; 100% remains
    fully opaque through the explicit setting state below. */
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort:hover,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination:hover {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort:hover,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination:hover {
   background-color: color-mix(in srgb, #28282c calc(var(--glass-panel-opacity) - 40%), transparent) !important;
   -webkit-backdrop-filter: blur(14px) saturate(120%) !important;
   backdrop-filter: blur(14px) saturate(120%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled),
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section .filter-sort-reset:not(:hover) {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled),
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section .filter-sort-reset:not(:hover) {
   background-color: color-mix(in srgb, #2c2c30 var(--glass-inner-opacity), transparent) !important;
 }
 
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort,
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort:hover,
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section #collection-pagination,
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section #collection-pagination:hover {
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section #collection-filter-sort,
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section #collection-filter-sort:hover,
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section #collection-pagination,
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section #collection-pagination:hover {
   background-color: #28282c !important;
 }
 
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled),
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section .filter-sort-reset:not(:hover) {
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section #collection-filter-sort select:not(:hover):not(:focus):not(.active),
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section #collection-pagination button:not(:hover):not(:disabled),
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section .filter-sort-reset:not(:hover) {
   background-color: #2c2c30 !important;
 }
 
 /* Folder and search wrappers were pinned to solid charcoal above. Use the
    same slider-driven glass opacity as the other dashboard inner controls. */
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #library-folder-dropdown,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #library-folder-dropdown:hover,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #library-search-box,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #library-search-box:hover,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #library-search-box:focus-within,
-:root[data-theme="dark"][data-dashboard-tactile="on"] body .library-section #library-search-box.has-query {
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #library-folder-dropdown,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #library-folder-dropdown:hover,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #library-search-box,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #library-search-box:hover,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #library-search-box:focus-within,
+:root[data-theme="dark"][data-theme-glass="on"] body .library-section #library-search-box.has-query {
   background-color: color-mix(in srgb, #28282c var(--glass-panel-opacity), transparent) !important;
   -webkit-backdrop-filter: blur(9px) saturate(125%) !important;
   backdrop-filter: blur(9px) saturate(125%) !important;
 }
 
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section #library-folder-dropdown,
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section #library-search-box {
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section #library-folder-dropdown,
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section #library-search-box {
   background-color: #28282c !important;
 }
 
 /* At 100%, remove blur and translucency from every library toolbar surface. */
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
   #collection-pagination
 ),
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
@@ -2698,7 +2698,7 @@
   backdrop-filter: none !important;
 }
 
-:root[data-theme="dark"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme="dark"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section :is(
   #collection-filter-sort select,
   #collection-pagination button,
   .filter-sort-reset
@@ -2708,13 +2708,13 @@
   backdrop-filter: none !important;
 }
 
-:root[data-theme="light"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme="light"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
   #collection-pagination
 ),
-:root[data-theme="light"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme="light"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
@@ -2727,14 +2727,14 @@
 
 /* The settings switch makes glass surfaces fully solid without changing the
    tactile edges, shadows, or each component's established surface colors. */
-:root[data-dashboard-tactile="on"][data-glass-transparency="off"] {
+:root[data-theme-glass="on"][data-glass-transparency="off"] {
   --glass-panel-opacity: 100%;
   --glass-menu-opacity: 100%;
   --glass-inner-opacity: 100%;
   --raised-inner-overlay-opacity: 100%;
 }
 
-:root[data-dashboard-tactile="on"][data-glass-transparency="off"] :is(
+:root[data-theme-glass="on"][data-glass-transparency="off"] :is(
   .dashboard-identity,
   .dashboard-controls,
   .dashboard-sections,
@@ -2757,35 +2757,35 @@
   backdrop-filter: none !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] .statsbar {
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] .statsbar {
   background-color: var(--surface-stats-outer) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #collection-filter-sort,
   #collection-pagination
 ),
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #collection-filter-sort,
   #collection-pagination
 ):hover {
   background-color: #28282c !important;
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="light"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #collection-filter-sort,
   #collection-pagination
 ) {
   background-color: var(--surface-dashboard-outer) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
   #collection-pagination
 ),
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
@@ -2794,7 +2794,7 @@
   background-color: #28282c !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #collection-filter-sort select,
   #collection-pagination button,
   .filter-sort-reset
@@ -2802,7 +2802,7 @@
   background-color: #2c2c30 !important;
 }
 
-:root[data-theme="light"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="light"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
@@ -2814,7 +2814,7 @@
   background-color: var(--surface-dashboard-inner) !important;
 }
 
-:root[data-dashboard-tactile="on"][data-glass-transparency="off"] #watch-form :is(
+:root[data-theme-glass="on"][data-glass-transparency="off"] #watch-form :is(
   .form-panel,
   .title-search-box,
   .movie-credit-genre-row,
@@ -2829,7 +2829,7 @@
   backdrop-filter: none !important;
 }
 
-:root[data-dashboard-tactile="on"][data-glass-transparency="off"] #watch-form .form-panel :is(
+:root[data-theme-glass="on"][data-glass-transparency="off"] #watch-form .form-panel :is(
   input:not([type="range"]):not([type="file"]),
   select,
   textarea
@@ -2839,12 +2839,12 @@
   backdrop-filter: none !important;
 }
 
-:root[data-theme="light"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme="light"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section :is(
   #collection-filter-sort select,
   #collection-pagination button,
   .filter-sort-reset
 ),
-:root[data-theme="light"][data-glass-opaque="on"][data-dashboard-tactile="on"] body .library-section :is(
+:root[data-theme="light"][data-glass-opaque="on"][data-theme-glass="on"] body .library-section :is(
   #collection-filter-sort select,
   #collection-pagination button,
   .filter-sort-reset
@@ -2856,7 +2856,7 @@
 
 /* Glass-enabled toolbar colors retain their charcoal hue while blending with
    the page at the configured opacity. The opaque state is handled separately. */
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
@@ -2864,7 +2864,7 @@
   .media-type-filter:not(:hover):not(.active),
   .media-type-filter-group:is(:hover, :focus-within, .is-pointer-active)
 ),
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box,
   #collection-filter-sort,
@@ -2878,7 +2878,7 @@
   backdrop-filter: blur(12px) saturate(125%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   #collection-filter-sort select:not(:hover):not(:focus):not(.active),
   #collection-pagination button:not(:hover):not(:disabled),
   .filter-sort-reset:not(:hover),
@@ -2889,7 +2889,7 @@
   backdrop-filter: blur(9px) saturate(125%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-opaque="on"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-opaque="on"] body .library-section :is(
   .media-type-filter:not(:hover):not(.active),
   .media-type-filter-group:is(:hover, :focus-within, .is-pointer-active)
 ) {
@@ -2898,7 +2898,7 @@
   backdrop-filter: none !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-opaque="on"] body .library-section .media-type-filter-group:is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-opaque="on"] body .library-section .media-type-filter-group:is(
   :hover, :focus-within, .is-pointer-active
 ) .media-type-filter:not(:hover):not(.active) {
   background-color: #2c2c30 !important;
@@ -2908,13 +2908,13 @@
 
 /* Match the Library panel and its content surfaces to the statsbar's outer
    shell and inner tiles. Keep the existing control hover accents intact. */
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section {
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section {
   background-color: color-mix(in srgb, var(--surface-stats-outer) var(--glass-panel-opacity), transparent) !important;
   -webkit-backdrop-filter: blur(12px) saturate(118%) !important;
   backdrop-filter: blur(12px) saturate(118%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   .entry:not(:hover),
   .media-type-filter:not(:hover):not(.active),
   .media-type-filter-group:is(:hover, :focus-within, .is-pointer-active) .media-type-filter:not(:hover):not(.active)
@@ -2924,7 +2924,7 @@
   backdrop-filter: blur(9px) saturate(125%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section .media-type-filter-group:is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section .media-type-filter-group:is(
   :hover, :focus-within, .is-pointer-active
 ) {
   background-color: color-mix(in srgb, var(--surface-stats-outer) var(--glass-panel-opacity), transparent) !important;
@@ -2932,13 +2932,13 @@
   backdrop-filter: blur(14px) saturate(120%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section {
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section {
   background-color: var(--surface-stats-outer) !important;
   -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   .entry:not(:hover),
   .media-type-filter:not(:hover):not(.active),
   .media-type-filter-group:is(:hover, :focus-within, .is-pointer-active) .media-type-filter:not(:hover):not(.active)
@@ -2948,7 +2948,7 @@
   backdrop-filter: none !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section .media-type-filter-group:is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section .media-type-filter-group:is(
   :hover, :focus-within, .is-pointer-active
 ) {
   background-color: var(--surface-stats-outer) !important;
@@ -2958,11 +2958,11 @@
 
 /* Keep the already-correct folder and search finishes independent of the
    neighboring filter and paging controls. */
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box
 ),
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   #library-folder-dropdown,
   #library-search-box
 ):is(:hover, :focus-within, .has-query) {
@@ -2973,11 +2973,11 @@
 
 /* Filter and pager keep their established charcoal hues; only alpha follows
    the panel and inner-tile opacity sliders. */
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   #collection-filter-sort,
   #collection-pagination
 ),
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   #collection-filter-sort,
   #collection-pagination
 ):hover {
@@ -2986,7 +2986,7 @@
   backdrop-filter: blur(12px) saturate(118%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="on"][data-glass-opaque="off"] body .library-section :is(
   #collection-filter-sort select:not(:hover):not(:focus):not(.active),
   #collection-pagination button:not(:hover):not(:disabled),
   .filter-sort-reset:not(:hover)
@@ -2996,11 +2996,11 @@
   backdrop-filter: blur(9px) saturate(125%) !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-opaque="on"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-opaque="on"] body .library-section :is(
   #collection-filter-sort,
   #collection-pagination
 ),
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #collection-filter-sort,
   #collection-pagination
 ) {
@@ -3009,12 +3009,12 @@
   backdrop-filter: none !important;
 }
 
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-opaque="on"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-opaque="on"] body .library-section :is(
   #collection-filter-sort select,
   #collection-pagination button,
   .filter-sort-reset
 ),
-:root[data-theme="dark"][data-dashboard-tactile="on"][data-glass-transparency="off"] body .library-section :is(
+:root[data-theme="dark"][data-theme-glass="on"][data-glass-transparency="off"] body .library-section :is(
   #collection-filter-sort select,
   #collection-pagination button,
   .filter-sort-reset
@@ -3026,12 +3026,12 @@
 
 /* Entry cards use the same inner tile finish and hover response as statsbar
    tiles, instead of the older lift-and-darken card treatment. */
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .entry {
+:root[data-theme][data-theme-glass="on"] body .library-section .entry {
   background-color: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent) !important;
   transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
 }
 
-:root[data-theme][data-dashboard-tactile="on"] body .library-section .entry:is(:hover, :focus-within) {
+:root[data-theme][data-theme-glass="on"] body .library-section .entry:is(:hover, :focus-within) {
   transform: none !important;
   border-color: color-mix(in srgb, var(--line) 52%, var(--glass-highlight)) !important;
   background-color: color-mix(in srgb, var(--surface-stats-inner) var(--glass-inner-opacity), transparent) !important;

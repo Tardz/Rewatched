@@ -1,0 +1,17 @@
+/* Accessibility helper classes shared across app components. */
+
+/* SECTION Accessibility utilities */
+/* ANCHOR Visually hidden utility */
+/* Hide text visually while keeping it available to screen readers. */
+.visually-hidden {
+  position: absolute;     /* Remove the text from the normal layout flow. */
+  width: 1px;             /* Reduce its visible box to a tiny area. */
+  height: 1px;            /* Reduce its visible box to a tiny area. */
+  padding: 0;             /* Prevent padding from making the box visible. */
+  margin: -1px;           /* Move the tiny box out of the visible layout. */
+  overflow: hidden;       /* Clip any text outside the tiny box. */
+  clip: rect(0, 0, 0, 0); /* Hide the box visually while retaining accessible text. */
+  white-space: nowrap;    /* Keep the text from wrapping into view. */
+  border: 0;              /* Remove any visible border. */
+}
+/* !SECTION */

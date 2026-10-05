@@ -1,16 +1,18 @@
-/* Poster Picker
-   The poster search/upload dialog and results grid. */
+/* Poster picker: image search dialog, upload preview, and poster controls. */
 
+/* Limit the poster search dialog to the viewport height. */
 #poster-dialog {
   width: min(520px, calc(100% - 28px));
   max-height: 85vh;
   overflow: auto;
 }
 
+/* Add consistent spacing inside the poster search dialog. */
 .poster-dialog-content {
   padding: 20px;
 }
 
+/* Align the dialog title, search settings, and close button. */
 .poster-dialog-heading {
   display: flex;
   align-items: center;
@@ -19,6 +21,7 @@
   margin-bottom: 18px;
 }
 
+/* Frame the Google Images title. */
 .poster-dialog-title {
   display: inline-flex;
   align-items: center;
@@ -33,6 +36,7 @@
   letter-spacing: -.04em;
 }
 
+/* Keep the colored Google letters together as one word. */
 .google-word {
   display: inline-flex;
   font: inherit;
@@ -46,11 +50,13 @@
 .google-word span:nth-child(3) { color: #fbbc05; }
 .google-word span:nth-child(5) { color: #34a853; }
 
+/* Keep the close button at the end of the heading row. */
 .poster-dialog-close {
   flex: none;
   margin-left: auto;
 }
 
+/* Keep the search-settings control aligned with the dialog title. */
 .poster-google-settings {
   flex: none;
 }
@@ -80,6 +86,7 @@
     0 5px 14px var(--shadow-black-38);
 }
 
+/* Reset the search form to the dialog's content width. */
 .poster-search-form {
   display: block;
 }
@@ -89,11 +96,13 @@
   width: 100%;
 }
 
+/* Show poster search progress and error messages. */
 .poster-status {
   color: var(--muted);
   font-size: 12px;
 }
 
+/* Display poster search results in a responsive grid. */
 .poster-results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -101,6 +110,7 @@
   margin-top: 16px;
 }
 
+/* Make each poster result a selectable image card. */
 .poster-result {
   display: flex;
   flex-direction: column;
@@ -133,6 +143,7 @@
   -webkit-box-orient: vertical;
 }
 
+/* Lay out the poster preview, URL field, and upload options. */
 .poster-panel {
   --poster-content-width: min(100%, 224px);
   display: grid;
@@ -157,6 +168,7 @@
   display: none;
 }
 
+/* Frame the currently selected poster or the empty preview prompt. */
 .poster-preview {
   grid-area: preview;
   position: relative;
@@ -179,6 +191,7 @@
   padding: 12px;
 }
 
+/* Center the selected poster without cropping it. */
 .poster-preview img {
   position: absolute;
   top: 50%;
@@ -197,6 +210,7 @@
   padding: 0;
 }
 
+/* Arrange upload status and related poster options below the preview. */
 .poster-options {
   grid-area: options;
   display: grid;
@@ -214,6 +228,7 @@
   line-height: 1.4;
 }
 
+/* Overlay search and upload actions on the poster preview. */
 .poster-buttons {
   position: absolute;
   z-index: 1;
@@ -226,6 +241,7 @@
   gap: var(--space-2);
 }
 
+/* Reveal poster actions on hover-capable devices when the preview is engaged. */
 @media (hover: hover) and (pointer: fine) {
   .poster-preview .poster-buttons {
     opacity: 0;
@@ -243,6 +259,7 @@
   }
 }
 
+/* Size the search and upload icon buttons. */
 .poster-buttons .icon-button {
   display: grid;
   flex: 0 0 36px;
@@ -260,6 +277,7 @@
     border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 
+/* Accent the image-search action on hover or keyboard focus. */
 .poster-buttons #poster-search:hover,
 .poster-buttons #poster-search:focus-visible {
   border-color: var(--border-accent);
@@ -269,6 +287,7 @@
     0 5px 14px var(--shadow-black-38);
 }
 
+/* Accent the local image-upload action on hover or keyboard focus. */
 .poster-buttons #poster-upload-button:hover,
 .poster-buttons #poster-upload-button:focus-visible {
   border-color: var(--status-success-border);
@@ -294,6 +313,7 @@
   stroke-linejoin: round;
 }
 
+/* Let the poster URL label fill its tools row. */
 .poster-url-label {
   width: 100%;
   justify-self: stretch;
@@ -302,6 +322,7 @@
   color: var(--muted);
 }
 
+/* Center the poster URL field beneath the preview. */
 .poster-url-tools {
   grid-area: url-tools;
   display: grid;
@@ -311,6 +332,7 @@
   min-width: 0;
 }
 
+/* Keep upload feedback inside the options area. */
 .poster-options .poster-upload-status {
   margin: 0;
 }

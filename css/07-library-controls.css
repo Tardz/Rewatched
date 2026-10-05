@@ -1,6 +1,6 @@
-/* Collection toolbar
-   Shared control surfaces first; component-specific behavior follows. */
+/* Library controls: source selection, filters, search, pagination, and empty states. */
 
+/* Align the collection title and its toolbar controls. */
 .section-heading {
   display: flex;
   align-items: center;
@@ -15,6 +15,7 @@
   margin: 0;
 }
 
+/* Group the Library/Watchlist switcher and folder picker. */
 .collection-source-controls {
   position: relative;
   display: flex;
@@ -28,6 +29,7 @@
   z-index: 2;
 }
 
+/* Keep the folder picker aligned beside the source switcher. */
 .library-folder-control {
   display: flex;
   flex: none;
@@ -53,6 +55,7 @@
   overflow-y: auto;
 }
 
+/* Style each folder option in the library folder menu. */
 .library-folder-choice {
   appearance: none;
   border: 1px solid transparent;
@@ -63,6 +66,7 @@
     color 150ms ease, box-shadow 150ms ease;
 }
 
+/* Highlight a hovered or selected folder option. */
 .library-folder-choice:hover,
 .library-folder-choice.active {
   border-color: var(--status-warning-border);
@@ -74,6 +78,7 @@
   box-shadow: 0 0 10px color-mix(in srgb, var(--status-warning) 18%, transparent);
 }
 
+/* Make the create-folder action span the folder menu. */
 .library-folder-menu .collection-add {
   width: 100%;
   height: 34px;
@@ -86,6 +91,7 @@
   text-align: left;
 }
 
+/* Explain when no folders are available in the folder menu. */
 .library-folder-empty {
   padding: 7px 8px;
   color: var(--muted);
@@ -93,6 +99,7 @@
 }
 
 
+/* Share dimensions and surface styling across media and collection controls. */
 .collection-tab,
 .collection-add,
 .library-view-option,
@@ -113,6 +120,7 @@
     max-width 180ms ease, opacity 140ms ease;
 }
 
+/* Accent the media-type tabs used by the entry form. */
 .collection-tab:hover,
 .collection-tab.active {
   border-color: var(--border-accent);
@@ -120,6 +128,7 @@
   color: var(--blue);
 }
 
+/* Style the compact action that creates a collection folder. */
 .collection-add {
   width: 46px;
   height: var(--toolbar-control-height);
@@ -131,12 +140,7 @@
 
 .collection-add:hover { background: var(--surface-hover); border-color: var(--border-accent); }
 
-.collection-folder {
-  position: relative;
-  display: flex;
-  flex: none;
-}
-
+/* Keep media filters and pagination aligned in the collection toolbar. */
 .collection-view-controls {
   display: flex;
   flex-shrink: 0;
@@ -148,6 +152,7 @@
   display: none;
 }
 
+/* Frame the Library and Watchlist options as an expandable group. */
 .library-view-switcher {
   position: relative;
   isolation: isolate;
@@ -166,12 +171,14 @@
     box-shadow 180ms ease;
 }
 
+/* Order the Library/Watchlist options while their group is collapsed. */
 .library-view-option {
   position: relative;
   z-index: 1;
   order: 2;
 }
 
+/* Expand source and media-type groups while hovered, focused, or pressed. */
 .library-view-switcher:hover,
 .library-view-switcher:focus-within,
 .collection-source-controls .library-view-switcher.is-pointer-active,
@@ -187,6 +194,7 @@
   box-shadow: inset 0 1px 0 var(--shadow-inset), 0 6px 16px var(--shadow-black-20);
 }
 
+/* Compact each option while its control group is expanded. */
 .library-view-switcher:hover .library-view-option,
 .library-view-switcher:focus-within .library-view-option,
 .collection-source-controls .library-view-switcher.is-pointer-active .library-view-option,
@@ -200,10 +208,12 @@
   box-shadow: inset 0 1px 0 var(--shadow-inset), 0 4px 10px var(--shadow-black-20);
 }
 
+/* Place the active source option first in the expanded switcher. */
 .library-view-option.active {
   order: 1;
 }
 
+/* Keep the currently selected source visible while the switcher is collapsed. */
 .library-view-option.is-collapsed-current {
   order: 1;
 }
@@ -214,6 +224,7 @@
   border-color: var(--line);
 }
 
+/* Use blue for the logged library option. */
 .library-view-option[data-view="logged"].active,
 .library-view-option[data-view="logged"]:hover {
   background: var(--surface-hover);
@@ -228,6 +239,7 @@
     0 6px 16px var(--shadow-black-20);
 }
 
+/* Use green for the watchlist option. */
 .library-view-option[data-view="watchlist"].active,
 .library-view-option[data-view="watchlist"]:hover {
   background: var(--status-success-surface);
@@ -247,6 +259,7 @@
     0 6px 16px var(--shadow-black-20);
 }
 
+/* Frame the movie/show/game/book filters as an expandable group. */
 .media-type-filter-group {
   position: relative;
   isolation: isolate;
@@ -264,6 +277,7 @@
     border-radius 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
 }
 
+/* Size and order each media-type filter button. */
 .media-type-filter {
   display: grid;
   place-items: center;
@@ -286,6 +300,7 @@
   stroke-linejoin: round;
 }
 
+/* Compact media filter buttons when their group is expanded. */
 .media-type-filter-group:is(:hover, :focus-within, .is-pointer-active) .media-type-filter {
   flex-basis: var(--toolbar-control-height-compact);
   width: var(--toolbar-control-height-compact);
@@ -294,6 +309,7 @@
   padding: 5px;
 }
 
+/* Mark the selected or hovered media type with the shared danger accent. */
 .media-type-filter.active,
 .media-type-filter:hover {
   background: color-mix(in srgb, var(--status-danger-surface) 75%, var(--panel));
@@ -312,6 +328,7 @@
     0 6px 16px var(--shadow-black-20);
 }
 
+/* Preserve the toolbar spacing while pointer users expand the source picker. */
 @media (hover: hover) and (pointer: fine) {
   .collection-source-controls:has(.library-view-switcher:hover),
   .collection-source-controls:has(.library-view-switcher:focus-within),
@@ -321,6 +338,7 @@
   }
 }
 
+/* Frame the collection page controls and current page count. */
 .collection-pagination {
   display: flex;
   flex: none;
@@ -370,6 +388,7 @@
   display: none;
 }
 
+/* Style the message shown when the current collection has no entries. */
 .empty {
   color: var(--muted);
   font-size: 14px;
@@ -380,6 +399,7 @@
   display: none;
 }
 
+/* Stack the title and guidance in the empty watchlist state. */
 .watchlist-empty {
   display: flex;
   flex-direction: column;
@@ -391,6 +411,7 @@
   font-size: 16px;
 }
 
+/* Size the primary action that opens the add-entry form. */
 .section-add {
   width: var(--toolbar-control-height);
   height: var(--toolbar-control-height);
@@ -403,6 +424,7 @@
   box-shadow: inset 0 1px 0 var(--shadow-inset), 0 6px 16px var(--shadow-black-20);
 }
 
+/* Collapse the search field to an icon until the user opens it. */
 .library-search {
   display: flex;
   align-items: center;
@@ -421,6 +443,7 @@
   transition: width 180ms ease, flex-basis 180ms ease;
 }
 
+/* Hide and style the text field while the search control is collapsed. */
 .library-search input {
   flex: 1 1 auto;
   min-width: 0;
@@ -448,6 +471,7 @@
   opacity: 1;
 }
 
+/* Keep the search icon centered in its collapsed button. */
 .library-search-toggle {
   display: grid;
   flex: 0 0 46px;
@@ -476,6 +500,7 @@
   display: none;
 }
 
+/* Show a compact clear button whenever the search has a query. */
 .library-search.has-query .library-search-clear {
   display: grid;
   flex: 0 0 28px;
@@ -506,6 +531,7 @@
   color: var(--status-danger);
 }
 
+/* Expand the search field for focus, keyboard activation, or a nonempty query. */
 .library-search:focus-within:not(.is-escape-collapsed),
 .library-search.is-keyboard-expanded,
 .library-search.has-query {
@@ -527,6 +553,7 @@
   display: block;
 }
 
+/* Group source selection and search on the left side of the heading. */
 .library-heading-left {
   display: flex;
   align-items: center;
@@ -535,6 +562,7 @@
   flex: 1;
 }
 
+/* Frame the collection toolbar and entry grid as one section. */
 .library-section {
   --library-section-padding: var(--space-7);
   padding-top: var(--library-toolbar-inset);
@@ -555,6 +583,7 @@
   background: var(--surface-raised);
 }
 
+/* Group the year, rating, and sort controls. */
 .collection-filter-sort {
   display: flex;
   align-items: center;
@@ -572,6 +601,7 @@
   min-width: 0;
 }
 
+/* Style the compact filter and sort dropdowns. */
 .collection-filter-sort select {
   box-sizing: border-box;
   width: 96px;
@@ -617,6 +647,7 @@
 
 .collection-filter-sort label:nth-child(2) select { width: 92px; }
 
+/* Provide a compact action for clearing filters and sorting. */
 .filter-sort-reset {
   width: 34px;
   height: 34px;
@@ -642,6 +673,7 @@
   display: none;
 }
 
+/* Center the empty collection message within the library section. */
 .library-section .empty {
   display: flex;
   min-height: 140px;

@@ -1,0 +1,329 @@
+/* Workspace empty states and repeated entry cards. */
+
+/* SECTION workspace-content-empty */
+/* Center explanatory content when the selected collection is empty. */
+.workspace-content-empty {
+  display: flex;
+  min-height: 140px;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: var(--spacing-level-1);
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+/* ANCHOR workspace-content-empty-backlog */
+/* Base class: .workspace-content-empty */
+/* Stack and separate the watchlist's empty-state message. */
+.workspace-content-empty-backlog { flex-direction: column; gap: var(--spacing-level-2); }
+.workspace-content-empty-backlog strong { color: var(--color-text-primary); font-size: 16px; }
+/* !SECTION */
+
+/* SECTION workspace-content */
+/* Display repeated cards directly beneath the workspace controls. */
+.workspace-content {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-content: start;
+  gap: calc(var(--spacing-level-1) + 4px);
+  min-width: 0;
+}
+
+/* ANCHOR workspace-content paging */
+/* Base class: .workspace-content */
+/* Animate collection paging in the direction the user navigated. */
+.workspace-content.page-enter-forward { animation: workspace-page-forward 240ms cubic-bezier(.2, .75, .25, 1) both; }
+.workspace-content.page-enter-backward { animation: workspace-page-backward 240ms cubic-bezier(.2, .75, .25, 1) both; }
+@keyframes workspace-page-forward {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes workspace-page-backward {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* SECTION workspace-content-entry */
+/* Place the poster and details in the card; tools overlay the card on hover. */
+.workspace-content-entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: var(--spacing-level-1);
+  min-width: 0;
+  min-height: 150px;
+  padding: var(--spacing-level-1);
+  border: 1px solid var(--color-border-control-subtle);
+  border-radius: var(--radius-surface-level-2);
+  background: var(--color-surface-level-2);
+  box-shadow: var(--shadow-surface-level-2);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+  /* SECTION workspace-content-entry-poster */
+/* Fill the poster column and crop artwork consistently. */
+.workspace-content-entry-poster {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-surface-level-3);
+  background: var(--color-surface-deep);
+}
+.workspace-content-entry-poster img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* SECTION workspace-content-entry-poster-type */
+/* Base classes: .labelChip, .media-type-icon */
+/* Overlay the media-type icon in the poster's upper corner. */
+.workspace-content-entry-poster-type {
+  position: absolute;
+  z-index: 1;
+  top: var(--spacing-level-2);
+  left: var(--spacing-level-2);
+  box-sizing: border-box;
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  padding: 3px;
+}
+/* !SECTION */
+/* !SECTION */
+
+/* SECTION workspace-content-entry-detail */
+/* Stack the entry header beside the poster. */
+.workspace-content-entry-detail {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+    /* SECTION workspace-content-entry-detail-header */
+/* Group the entry label and title in the card header. */
+.workspace-content-entry-detail > .workspace-content-entry-detail-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: calc(var(--spacing-level-1) - 2px);
+  min-width: 0;
+}
+
+      /* SECTION workspace-content-entry-detail-header-label */
+/* Keep category, year, and director together above the title. */
+.workspace-content-entry-detail-header-label {
+  display: flex;
+  align-self: stretch;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--spacing-level-2);
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* Base classes: .tagChip, .labelChip */
+/* Use one text size for the entry label and date chips. */
+.workspace-content-entry-detail-header-label-tag,
+.workspace-content-entry-detail-header-label-year,
+.workspace-content-entry-detail-header-label-director,
+.workspace-content-entry-detail-header-date {
+  font-size: calc(var(--font-size-labelChip) - 1px);
+}
+
+/* Keep category, year, and director chips aligned in one row. */
+.workspace-content-entry-detail-header-label-tag,
+.workspace-content-entry-detail-header-label-year,
+.workspace-content-entry-detail-header-label-director { height: 20px; }
+
+/* Base class: .tagChip */
+/* Size the category tag inside the shared media label. */
+.workspace-content-entry-detail-header-label-tag {
+  flex: 0 0 auto;
+  padding: 2px 4px;
+}
+
+.workspace-content-entry-detail-header-label-year {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Base class: .labelChip */
+/* Fit the director chip into the shared entry label row. */
+.workspace-content-entry-detail-header-label-director {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+.workspace-content-entry-detail-header-label-director > span {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+      /* !SECTION */
+
+      /* SECTION workspace-content-entry-detail-header-title */
+/* Keep the entry title readable and prevent it from pushing the card wider. */
+.workspace-content-entry-detail-header-title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: var(--font-weight-app);      
+  line-height: 1.1;
+  letter-spacing: -.04em;
+}
+/* !SECTION */
+
+      /* SECTION workspace-content-entry-detail-header-value */
+/* Group the rating and meter, or show backlog priority, beneath the title. */
+.workspace-content-entry-detail-header-value {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  gap: var(--spacing-level-2);
+}
+/* Base class: .labelChip */
+.workspace-content-entry-detail-header-date {
+  flex: 0 1 auto;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+}
+/* Base class: .valueChip */
+.workspace-content-entry-detail-header-value-ratingChip {
+  padding: 2px 5px;
+  font-size: calc(var(--font-size-chip) - 5px);
+  border-radius: calc(7px * var(--radius-scale));
+}
+/* Base class: .ratingsMeter */
+.workspace-content-entry-detail-header-value-ratingsMeter { width: 62px; }
+
+/* Keep the backlog priority dots grouped as the header value. */
+.workspace-content-entry-detail-header-value-priorityDots {
+  --priority-color: var(--color-priority-medium);
+}
+/* Base class: .valueChip */
+.workspace-content-entry-detail-header-value-priorityChip {
+  --priority-color: var(--color-priority-medium);
+  padding: 2px 5px;
+  font-size: calc(var(--font-size-chip) - 3px);
+}
+      /* !SECTION */
+
+/* !SECTION */
+/* !SECTION */
+
+/* SECTION workspace-content-entry-link */
+/* Make the full card openable while leaving its tool buttons accessible. */
+.workspace-content-entry-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.workspace-content-entry-link:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 3px; }
+  /* !SECTION */
+
+  /* SECTION workspace-content-entry-tools */
+/* Reveal card actions on hover and keyboard focus. */
+.workspace-content-entry-tools {
+  position: absolute;
+  top: var(--spacing-level-1);
+  right: var(--spacing-level-1);
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(2, 25px);
+  grid-template-rows: repeat(3, 25px);
+  align-content: start;
+  gap: var(--spacing-level-3);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-3px);
+  transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
+}
+.workspace-content-entry:is(:hover, :focus-within) .workspace-content-entry-tools {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.workspace-content-entry-tools .entry-actions { display: contents; }
+/* Base class: .buttonIcon */
+.workspace-content-entry-tools .entry-actions button,
+.workspace-content-entry-tools .entry-open-fullscreen {
+  position: static;
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--color-border-control-subtle);
+  border-radius: var(--radius-icon-button);
+  background: color-mix(in srgb, var(--color-surface-level-1) 88%, transparent);
+  color: var(--color-text-on-surface);
+  box-shadow: var(--shadow-surface-level-2);
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+}
+.workspace-content-entry-tools .entry-actions button:nth-child(1) { grid-column: 1; grid-row: 1; }
+.workspace-content-entry-tools .entry-actions button:nth-child(2) { grid-column: 2; grid-row: 1; }
+.workspace-content-entry-tools .entry-actions button:nth-child(3) { grid-column: 1; grid-row: 2; }
+.workspace-content-entry-tools .entry-actions button:nth-child(4) { grid-column: 2; grid-row: 2; }
+.workspace-content-entry-tools .entry-open-fullscreen { grid-column: 2; grid-row: 3; }
+/* Base class on these SVG icons: .icon */
+.workspace-content-entry-tools svg { width: 14px; height: 14px; }
+
+/* Use shared accent colors for each card action on hover. */
+.workspace-content-entry-tools button:hover { border-color: var(--color-border-accent-muted); color: var(--color-text-accent); }
+.workspace-content-entry-tools .action-rewatch:hover { color: var(--color-log); }
+.workspace-content-entry-tools .action-folder:hover { color: var(--color-icon-library); }
+.workspace-content-entry-tools .remove-button:hover { color: var(--color-media-film); }
+  /* !SECTION */
+
+  /* ANCHOR workspace-content-entry states */
+/* Lift a card slightly when it is targeted. */
+.workspace-content-entry:is(:hover, :focus-within) {
+  transform: translateY(-4px);
+  border-color: var(--color-border-accent-muted);
+}
+.workspace-content-entry.is-opening { pointer-events: none; animation: workspace-entry-open 90ms ease-out; }
+@keyframes workspace-entry-open { to { transform: translateY(-6px) scale(1.012); } }
+
+/* Keep card actions accessible on touchscreens without hover. */
+@media (hover: none) {
+  .workspace-content-entry-tools { opacity: 1; visibility: visible; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workspace-content.page-enter-forward,
+  .workspace-content.page-enter-backward,
+  .workspace-content-entry.is-opening { animation: none; }
+}
+
+/* !SECTION */
+
+  /* ANCHOR workspace-content responsive grid */
+/* Reduce card columns as the workspace narrows. */
+@container app-content (width < 1150px) {
+  .workspace-content { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@container app-content (width < 850px) {
+  .workspace-content { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@container app-content (width < 560px) {
+  .workspace-content { grid-template-columns: minmax(0, 1fr); }
+}
+/* !SECTION */

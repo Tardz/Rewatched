@@ -9,7 +9,7 @@ const themeToggle = $('#toggle-theme');
 /** Switches between the library and its statistics panel. */
 function setDashboardSection(section) {
   const showStatistics = section === 'statistics';
-  const dashboard = $('.dashboard-layout');
+  const dashboard = document.querySelector('.default-layout, .dashboard-layout');
   const collectionFilters = $('.collection-filter-sort');
   const libraryButton = $('.section-library');
   const statisticsButton = $('.section-statistics');
@@ -189,18 +189,6 @@ $('#pause').addEventListener('click', () => setRotation(paused));
 function openSettings() {
   syncRotationControls();
   syncAppearanceControls();
-  $('#theme-mode').value = themePreference;
-  $('#reduce-animations').checked = reduceAnimationsEnabled;
-  $('#icon-style').value = iconStylePreference;
-  $('#poster-background').checked = posterBackgroundEnabled;
-  $('#poster-background-strength').value = posterBackgroundStrength;
-  $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
-  $('#poster-background-strength').disabled = !posterBackgroundEnabled;
-  $('#tactile-dashboard').checked = tactileDashboardEnabled;
-  $('#glass-surface-opacity').value = glassSurfaceOpacity;
-  $('#glass-surface-opacity-value').value = `${glassSurfaceOpacity}%`;
-  $('#disable-glass-transparency').checked = !glassTransparencyEnabled;
-  $('#glass-surface-opacity').disabled = !tactileDashboardEnabled || !glassTransparencyEnabled;
   updateBackupSummary();
   updateOmdbCallCount();
   $('#omdb-api-key').value = localStorage.getItem(OMDB_API_KEY) || '';
@@ -211,7 +199,8 @@ function openSettings() {
 function syncAppearanceControls() {
   $('#theme-mode').value = themePreference;
   $('#reduce-animations').checked = reduceAnimationsEnabled;
-  $('#icon-style').value = iconStylePreference;
+  const iconStyleControl = $('#icon-style');
+  if (iconStyleControl) iconStyleControl.value = iconStylePreference;
   $('#poster-background').checked = posterBackgroundEnabled;
   $('#poster-background-strength').value = posterBackgroundStrength;
   $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
@@ -246,7 +235,7 @@ function changeIconStyle(style) {
   refreshAppIcons();
   syncAppearanceControls();
 }
-$('#icon-style').addEventListener('change', (event) => changeIconStyle(event.currentTarget.value));
+$('#icon-style')?.addEventListener('change', (event) => changeIconStyle(event.currentTarget.value));
 function changePosterBackground(enabled) {
   posterBackgroundEnabled = enabled;
   localStorage.setItem(POSTER_BACKGROUND_KEY, String(posterBackgroundEnabled));
@@ -267,7 +256,7 @@ $('#poster-background-strength').addEventListener('input', (event) => changePost
 function changeTactileDashboard(enabled) {
   tactileDashboardEnabled = enabled;
   localStorage.setItem(TACTILE_DASHBOARD_KEY, String(tactileDashboardEnabled));
-  document.documentElement.dataset.dashboardTactile = tactileDashboardEnabled ? 'on' : 'off';
+  document.documentElement.dataset.themeGlass = tactileDashboardEnabled ? 'on' : 'off';
   syncAppearanceControls();
 }
 $('#tactile-dashboard').addEventListener('change', (event) => changeTactileDashboard(event.currentTarget.checked));

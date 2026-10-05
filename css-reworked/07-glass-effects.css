@@ -1,0 +1,185 @@
+/* Shared translucent surfaces enabled by the glass theme. */
+
+/* Apply theme glass by box level so the shared surface classes stay reusable. */
+:root[data-theme-glass="on"] .surfaceLevel1 {
+  border-color: var(--color-border-glass-level-1);
+  background: color-mix(in srgb, var(--color-surface-level-1) var(--opacity-glass-surface), transparent);
+  -webkit-backdrop-filter: blur(var(--blur-glass-panel)) saturate(var(--saturation-glass-panel));
+  backdrop-filter: blur(var(--blur-glass-panel)) saturate(var(--saturation-glass-panel));
+  box-shadow: var(--shadow-glass-level-1);
+}
+
+:root[data-theme-glass="on"] .surfaceLevel2 {
+  border-color: var(--color-border-glass-level-2);
+  background: color-mix(in srgb, var(--color-surface-level-2) var(--opacity-glass-inner), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-glass-level-2);
+}
+
+:root[data-theme-glass="on"] .surfaceLevel3 {
+  border-color: var(--color-border-glass-level-3);
+  background: color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-tile), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-glass-level-3);
+}
+
+/* SECTION Dashboard panels and controls */
+/* Apply glass to dashboard panels when the glass theme is enabled. */
+:root[data-theme-glass="on"] .dashboard-info,
+:root[data-theme-glass="on"] .dashboard-controls,
+:root[data-theme-glass="on"] .dashboard-page,
+:root[data-theme-glass="on"] .statsbar,
+:root[data-theme-glass="on"] .workspace {
+  border-color: var(--color-border-glass-level-1);  /* Match the former outer-panel glass border. */
+  background:                                      
+    color-mix(in srgb, var(--color-surface-level-1)
+    var(--opacity-glass-surface), transparent);     /* Follow the glass opacity setting. */         
+  -webkit-backdrop-filter:                         
+    blur(var(--blur-glass-panel))                  
+    saturate(var(--saturation-glass-panel));        /* Add Safari glass blur. */                    
+  backdrop-filter:                                 
+    blur(var(--blur-glass-panel))                  
+    saturate(var(--saturation-glass-panel));        /* Blur content behind the panel. */            
+  box-shadow: var(--shadow-glass-level-1);          /* Add glass highlights and depth. */
+}
+
+/* Give inner controls their shared glass appearance. */
+:root[data-theme-glass="on"] .dashboard-info-brand,
+:root[data-theme-glass="on"] .dashboard-info-git,
+:root[data-theme-glass="on"] .dashboard-info-version,
+:root[data-theme-glass="on"] .dashboard-info-back,
+:root[data-theme-glass="on"] .dashboard-controls-theme,
+:root[data-theme-glass="on"] .dashboard-controls-settings,
+:root[data-theme-glass="on"] .dashboard-controls-activity,
+:root[data-theme-glass="on"] .dashboard-controls-storage,
+:root[data-theme-glass="on"] .banner-content-controls > button,
+:root[data-theme-glass="on"] .statsbar-card,
+:root[data-theme-glass="on"] .workspace-controls,
+:root[data-theme-glass="on"] .workspace-content-entry,
+:root[data-theme-glass="on"] .expandable,
+:root[data-theme-glass="on"] .workspace-controls-filter,
+:root[data-theme-glass="on"] .workspace-controls-pagination,
+:root[data-theme-glass="on"] .workspace-controls-search {
+  border-color: var(--color-border-glass-level-2);  /* Match the former inner-box glass border. */ 
+  background:                                      
+    color-mix(in srgb, var(--color-surface-level-2)
+    var(--opacity-glass-inner), transparent);       /* Tint translucent controls. */               
+  -webkit-backdrop-filter: none;                    /* Preserve the former crisp inner surfaces. */
+  backdrop-filter: none;                            /* The old level-two boxes were not blurred. */
+  box-shadow: var(--shadow-glass-level-2);          /* Add glass edges and depth. */               
+  transition:                                      
+    box-shadow 160ms ease,                         
+    background 160ms ease,                         
+    border-color 160ms ease;                        /* Smooth glass state changes. */
+}
+
+/* Give every level-two dashboard control the same glass hover treatment. */
+:root[data-theme-glass="on"] :is(
+  .dashboard-info-brand,
+  .dashboard-info-git,
+  .dashboard-info-back,
+  .dashboard-controls-theme,
+  .dashboard-controls-settings,
+  .dashboard-controls-activity,
+  .dashboard-controls-storage,
+  .dashboard-page-control,
+  .banner-content-controls > button,
+  .workspace-content-entry,
+  .expandable,
+  .workspace-controls-filter,
+  .workspace-controls-pagination,
+  .workspace-controls-search
+):hover {
+  border-color: var(--color-border-glass-level-2-hover); /* Match the former brighter inner-box border. */ 
+  background: var(--color-surface-glass-level-2-hover);  /* Match the former subtly brightened fill. */    
+  -webkit-backdrop-filter: none;                         /* Keep the old hover surface crisp. */           
+  backdrop-filter: none;                                 /* The former hover treatment did not add blur. */
+  box-shadow: var(--shadow-glass-level-2-hover); /* Keep the regular glass hover depth without a control halo. */
+}
+
+/* !SECTION */
+
+/* SECTION Dashboard navigation */
+/* Give navigation buttons a glass surface when the glass theme is enabled. */
+:root[data-theme-glass="on"] .dashboard-page-control {
+  border-color: var(--color-border-glass-level-2);     /* Match the former inner-box glass border. */
+  background: color-mix(                              
+    in srgb,                                          
+    var(--color-surface-level-2)                      
+    var(--opacity-glass-inner),                       
+    transparent                                       
+  );                                                   /* Tint translucent buttons. */
+  -webkit-backdrop-filter: none;                       /* Preserve the former crisp navigation surface. */
+  backdrop-filter: none;                               /* The old level-two buttons were not blurred. */
+  box-shadow: var(--shadow-glass-level-2);             /* Use the shared inner-level glass elevation. */
+}
+
+/* !SECTION */
+
+/* SECTION Label chips */
+/* Give text and media-type label chips the nested glass treatment. */
+/* Base classes: .labelChip, .tagChip */
+:root[data-theme-glass="on"] .labelChip,
+:root[data-theme-glass="on"] .tagChip {
+  border-color: var(--color-border-glass-level-3);
+  -webkit-backdrop-filter: blur(var(--blur-glass-panel)) saturate(var(--saturation-glass-panel));
+  backdrop-filter: blur(var(--blur-glass-panel)) saturate(var(--saturation-glass-panel));
+  box-shadow: var(--shadow-glass-level-3);
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+:root[data-theme-glass="on"] .labelChip {
+  background: color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-chip), transparent);
+}
+
+/* Keep the poster's media-type chip slightly more opaque for legibility. */
+:root[data-theme-glass="on"] :is(.workspace-content-entry-poster-type, .banner-poster-type) {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-level-3) calc(var(--opacity-glass-chip) + 20%),
+    transparent
+  );
+}
+
+/* Keep each category's color visible through the translucent tag surface. */
+:root[data-theme-glass="on"] .tagChip:not(.is-placeholder) {
+  border-color: color-mix(in srgb, hsl(var(--category-hue) 38% 45%) 55%, var(--color-border-glass-level-3));
+  background: color-mix(in srgb, hsl(var(--category-hue) 34% 29%) var(--opacity-glass-chip), transparent);
+}
+/* !SECTION */
+
+/* SECTION Value chips */
+/* Add the shared glass surface while retaining each value chip's semantic color. */
+/* Base class: .valueChip */
+:root[data-theme-glass="on"] .valueChip {
+  border-color: color-mix(in srgb, var(--valueChip-color) 42%, var(--color-border-glass-level-3));
+  background: color-mix(
+    in srgb,
+    var(--valueChip-color) 9%,
+    color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-chip), transparent)
+  );
+  -webkit-backdrop-filter: blur(var(--blur-glass-panel)) saturate(var(--saturation-glass-panel));
+  backdrop-filter: blur(var(--blur-glass-panel)) saturate(var(--saturation-glass-panel));
+  box-shadow: var(--shadow-glass-level-3);
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+/* !SECTION */
+
+/* SECTION Storage controls */
+/* Give the inset check tile its own glass surface. */
+:root[data-theme-glass="on"] .dashboard-controls-storage-indicator {
+  border-color: var(--color-border-glass-level-3); /* Match the former nested-tile glass border. */
+  background: color-mix(
+    in srgb, 
+    var(--color-surface-level-3)          
+    var(--opacity-glass-tile),            
+    transparent                           
+  );                                       /* Match the former nearly-clear tile fill. */
+  -webkit-backdrop-filter: none;           /* Preserve the former crisp nested tile. */
+  backdrop-filter: none;                   /* The old level-three tiles were not blurred. */
+  box-shadow: var(--shadow-glass-level-3); /* Add glass tile depth. */
+}
+
+/* !SECTION */
