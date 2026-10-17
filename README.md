@@ -1,78 +1,22 @@
-<p align="center">
-  <img src="assets/rewatched-wordmark.svg" alt="Rewatched." width="370">
-  <br>A customizable watch journal for films and shows.
-</p>
+# ReWatched
+
+A watch journal for films and shows. Log ratings and rewatches, organize your library and backlog, and explore timelines and statistics.
 
 <p align="center">
-  <img src="assets/previews/home-screen-label-v2.svg" alt="Home screen" width="220"><br>
-  <a href="assets/previews/app-home-preview.png"><img src="assets/previews/app-home-preview.png" alt="ReWatched home screen with featured title, statistics, and library" width="100%"></a>
+  <a href="assets/previews/app-home-preview.png"><img src="assets/previews/app-home-preview.png" alt="ReWatched home screen" width="100%"></a>
 </p>
 
-<p align="center">
-  <img src="assets/previews/more-views-label-v2.svg" alt="More views" width="220"><br>
-  <a href="assets/previews/details-gallery-card.png"><img src="assets/previews/details-gallery-card.png" alt="ReWatched hover entry and full-screen details arranged diagonally inside one framed gallery" width="100%"></a>
-</p>
+## Run
 
-## Keep your watching history
-
-ReWatched is a customizable, desktop-friendly watch journal for keeping track of what you watch, when you watched it, and how you felt about it. Shape your library with folders, themes, and poster-based color effects, then add posters, log rewatches, and explore your history through timelines and statistics.
-
-### What you can do
-
-- Keep a library of watched films and shows, plus a separate watchlist with priorities.
-- Record ratings, notes, and exact, approximate, or partial watch dates.
-- Browse posters, search and filter entries, sort your collection, and organize titles into folders.
-- Open each title’s page to see its timeline, notes, cast, plot, and saved IMDb details.
-- View statistics for genres, ratings, rewatches, and watching years.
-- Import and export JSON backups, or link a JSON file for automatic loading and saving.
-- Choose light or dark appearance, including a subtle poster-based background effect.
-
-## Run the app
-
-You’ll need Node.js and npm. From the project folder, install dependencies and start Electron:
+With Node.js installed, start the desktop app:
 
 ```sh
 npm install
 npm start
 ```
 
-The app uses regular HTML, CSS, and JavaScript, so interface edits do not require a build step. While running in development, source changes reload the Electron window.
+For the web version, open `index.html` or run `python3 -m http.server 8000` and visit <http://localhost:8000>. It is also available on [GitHub Pages](https://tardz.github.io/Rewatched/).
 
-GitHub Pages serves the app directly from the repository root. In the repository’s **Settings → Pages**, choose **Deploy from a branch**, then select `main` and `/(root)`. The app files in the root are the published version, so there is no separate build or sync step.
+## Data
 
-To run the web version, open `index.html` or serve the project folder locally:
-
-```sh
-python3 -m http.server 8000
-```
-
-Then visit <http://localhost:8000>.
-
-## Your data
-
-By default, entries are stored in the current browser’s local storage. You can export a JSON backup from Settings. In a supported browser, you can also select a JSON file in Settings and have changes save to it automatically. The Electron app uses the same interface and storage controls.
-
-The app can optionally use Google Programmable Search for poster images and OMDb for movie details. Add those credentials in Settings if you want those features; fetched OMDb details are saved with the title.
-
-## Project layout
-
-```text
-.
-├── index.html          # Current page markup and dialogs
-├── index-old.html      # Preserved previous page
-├── app.js              # Startup, navigation, and event wiring
-├── css/                # Current styles, imported by css/main.css
-├── main-old.css        # Imports for the previous page
-├── css-old/            # Preserved previous styles
-├── js/                 # State, views, forms, storage, and features
-├── electron/           # Desktop application wrapper
-└── uml/                # Editable architecture diagrams
-```
-
-The JavaScript files are loaded in order from `index.html` as deferred scripts. `js/state.js` provides shared application data and helpers; feature files build on those shared browser globals.
-
-## Tools
-
-- HTML, CSS, and vanilla JavaScript
-- Electron
-- Optional Google Programmable Search and OMDb APIs
+Entries are stored in the browser by default. In Settings, you can import or export JSON files and, in supported browsers, save directly to a linked file. Poster search and movie details can optionally use Google Programmable Search and OMDb.
