@@ -1,376 +1,444 @@
-/* Collection selection, filters, search, and paging controls for the workspace. */
+/* Workspace control layout, collection filters, paging, and responsive behavior. */
 
-/* SECTION workspace-controls */
-/* Arrange all workspace controls in a single flexible toolbar. */
-.workspace-controls {
+/* SECTION workspace-controls-container */
+/* Base class: .level-2-styling */
+/* Arrange the workspace controls in a flexible row. */
+.workspace-controls-container {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-level-1); /* Match gaps between control groups to the toolbar inset. */
+  gap: var(--spacing-level-1);
   min-width: 0;
   padding: var(--spacing-level-1);
   border: 1px solid var(--color-border-control-subtle);
-  border-radius: var(--radius-surface-level-2);
-  background: var(--color-surface-level-2);
-  box-shadow: var(--shadow-surface-level-2);
 }
 
-/* SECTION expandable */
-/* Provide the shared compact frame for expandable option groups. */
-.expandable {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: 0;
-  min-height: 40px;
-  padding: 3px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: var(--color-surface-level-2);
-  box-shadow: var(--shadow-surface-level-2);
+/* SECTION workspace-view-expandable */
+/* Base classes: .expandable-box, .level-3-styling, .expandable-text-button, .level-4-styling */
+/* Keep Logged and Backlog in the same expanding option group. */
+/* Color Logged and Backlog from their existing data-view values. */
+.workspace-view-expandable > [data-view="logged"]:is(.active, :hover, :focus-visible) {
+  color: var(--color-log);
 }
-/* Share the compact control shape across collection and media options. */
-.expandable > button,
-.workspace-controls-folders .entry-folder-trigger,
-.workspace-controls-pagination > button,
-.workspace-controls-filter-reset {
-  display: grid;
-  flex: none;
-  place-items: center;
-  min-width: 38px;
-  height: 38px;
-  padding: 0 10px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: var(--color-surface-level-2);
-  color: var(--color-text-secondary);
-  font: 600 12px/1 var(--font-family-app);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 160ms ease, border-color 160ms ease,
-    color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
-}
-.expandable > button { height: 32px; }
-
-/* Expand grouped choices for pointer, keyboard, or pressed interaction. */
-.expandable:is(:hover, :focus-within, .is-pointer-active) {
-  gap: var(--spacing-level-3);
-  padding: 4px;
+.workspace-view-expandable > .expandable-text-button {
+  font-weight: var(--font-weight-app);
 }
 
-/* Hide inactive options until their choice group opens. */
-@media (hover: hover) and (pointer: fine) {
-  .expandable:not(:hover):not(:focus-within):not(.is-pointer-active) > button:not(.active):not(.is-collapsed-current) {
-    min-width: 0;
-    width: 0;
-    padding-inline: 0;
-    border-width: 0;
-    opacity: 0;
-    overflow: hidden;
-    pointer-events: none;
-  }
+.workspace-view-expandable > [data-view="watchlist"]:is(.active, :hover, :focus-visible) {
+  color: var(--color-backlog);
 }
 
 /* !SECTION */
 
-/* ANCHOR workspace-controls-expandableCollection */
-/* ANCHOR workspace-controls-expandableCollection-logOption */
-/* Highlight the active library option with its semantic color. */
-.workspace-controls-expandableCollection-logOption:is(.active, :hover),
-.workspace-controls-expandableCollection-logOption.is-collapsed-current {
-  border-color: color-mix(in srgb, var(--color-log) 55%, var(--color-border-subtle));
-  background: color-mix(in srgb, var(--color-log) 15%, var(--color-surface-level-2));
-  color: var(--color-log);
-}
-
-/* ANCHOR workspace-controls-expandableCollection-backlogOption */
-.workspace-controls-expandableCollection-backlogOption:is(.active, :hover),
-.workspace-controls-expandableCollection-backlogOption.is-collapsed-current {
-  border-color: color-mix(in srgb, var(--color-backlog) 55%, var(--color-border-subtle));
-  background: color-mix(in srgb, var(--color-backlog) 15%, var(--color-surface-level-2));
-  color: var(--color-backlog);
-}
-
-/* SECTION workspace-controls-folders */
-  /* SECTION entry-folder-dropdown */
-/* Give the folder picker a stable icon-sized target. */
-.workspace-controls-folders .entry-folder-dropdown {
-  position: relative;
-  z-index: 5;
+/* SECTION folder-menu-wrapper */
+/* Base classes on the trigger: .icon-button, .level-3-styling */
+/* Style the folder trigger through its menu wrapper. */
+.folder-menu-wrapper > button {
+  flex: none;
   width: 40px;
   height: 40px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: var(--color-surface-level-2);
+  padding: 0;
   color: var(--color-text-secondary);
-  box-shadow: var(--shadow-surface-level-2);
 }
-.workspace-controls-folders .entry-folder-trigger { width: 40px; padding: 0; }
-.workspace-controls-folders .entry-folder-trigger:hover,
-.workspace-controls-folders .entry-folder-dropdown.is-open .entry-folder-trigger {
+.folder-menu-wrapper > button:hover,
+.folder-menu-wrapper.is-open > button {
   border-color: var(--color-border-accent-muted);
-  color: var(--color-text-accent);
+  color: var(--palette-yellow);
 }
-.workspace-controls-folders .folder-icon {
+.folder-menu-wrapper > button:is(:hover, :focus-visible) > .masked-icon,
+.folder-menu-wrapper.is-open > button > .masked-icon {
+  --app-icon-state-color: var(--palette-yellow);
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--palette-yellow) 72%, transparent));
+}
+.folder-menu-wrapper > button:is(:hover, :focus-visible),
+.folder-menu-wrapper.is-open > button {
+  --glow-halo-color: var(--palette-yellow);
+  --glow-halo-opacity: 0.3;
+}
+.folder-menu-wrapper > button > .icon {
+  flex-basis: calc(var(--size-icon-filled) - 6px);
   width: calc(var(--size-icon-filled) - 6px);
   height: calc(var(--size-icon-filled) - 6px);
 }
-  /* !SECTION */
-
-  /* SECTION entry-folder-menu */
-/* Position and frame the library's folder picker. */
-.workspace-controls-folders .entry-folder-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  z-index: 30;
-  display: grid;
-  gap: var(--spacing-level-3);
-  min-width: 190px;
-  max-width: min(280px, calc(100vw - 32px));
-  padding: 8px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-surface-level-2);
-  background: var(--color-surface-level-1);
-  color: var(--color-text-primary);
-  box-shadow: var(--shadow-surface-level-1);
-}
-
-/* Constrain and size the folder menu variant. */
-      /* ANCHOR library-folder-menu */
-.workspace-controls-folders .library-folder-menu {
+.folder-menu-wrapper > button > span:last-child { display: none; }
+.folder-menu-wrapper.folder-active {
+  flex: 0 0 auto;
   width: max-content;
-  max-height: none;
-  overflow: visible;
 }
-
-    /* SECTION library-folder-list */
-.workspace-controls-folders .library-folder-list {
-  display: grid;
-  gap: var(--spacing-level-3);
-  max-height: 150px;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-      /* ANCHOR library-folder-choice */
-/* Style the folder choices and their selected state. */
-.workspace-controls-folders .library-folder-choice {
+.folder-menu-wrapper.folder-active > button {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-level-1);
-  width: 100%;
-  box-sizing: border-box;
-  padding: 7px 8px;
-  appearance: none;
-  border: 1px solid transparent;
-  border-radius: var(--radius-control-compact);
-  background: transparent;
-  color: var(--color-text-primary);
-  font: inherit;
-  text-align: left;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  justify-content: flex-start;
+  gap: calc(var(--spacing-level-1) + 2px);
+  width: max-content;
+  max-width: none;
+  padding-inline: calc(var(--spacing-level-1) + 2px);
 }
-.workspace-controls-folders .library-folder-choice:is(:hover, .active) {
-  border-color: var(--color-border-accent-muted);
-  background: var(--color-surface-hover);
-  color: var(--color-text-accent);
+.folder-menu-wrapper.folder-active > button > .icon {
+  --app-icon-state-color: var(--palette-yellow);
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--app-icon-state-color) 45%, transparent));
 }
-      /* ANCHOR library-folder-empty */
-.workspace-controls-folders .library-folder-empty {
+.folder-menu-wrapper.folder-active > button.glow-halo {
+  --glow-halo-color: var(--palette-yellow);
+  --glow-halo-opacity: 0.3;
+}
+.folder-menu-wrapper.folder-active > button.glow-halo::before {
+  inset: 22% auto 22% 2px;
+  width: calc(var(--size-icon-filled) - 2px);
+}
+.folder-menu-wrapper.folder-active > button > span:last-child {
+  display: block;
+  flex: none;
+  width: max-content;
+  max-width: none;
+  overflow: visible;
+  color: var(--color-text-secondary);
+  font: var(--font-weight-app) 12px/1 var(--font-family-app);
+  white-space: nowrap;
+}
+/* Style the folder-picker empty state when no choices are available. */
+.folder-menu-wrapper > .menu-container > .menu-options-container > div {
   padding: 7px 8px;
   color: var(--color-text-secondary);
   font-size: 13px;
 }
-      /* !SECTION */
-
-      /* ANCHOR collection-add */
-.workspace-controls-folders .library-folder-menu .collection-add {
-  width: 100%;
-  min-height: 34px;
-  margin-top: 4px;
-  padding: 0 8px;
-  border: 0;
-  border-top: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: transparent;
-  color: var(--color-text-accent);
-  font: 13px var(--font-family-app);
-  text-align: left;
+/* Show folder choices in two columns within the shared folder menu. */
+.folder-menu-wrapper > .menu-container > .menu-options-container {
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-    /* !SECTION */
-/* !SECTION */
-
-/* SECTION workspace-controls-search */
-/* Keep the search control compact until focused or populated. */
-.workspace-controls-search {
-  display: flex;
-  flex: 0 0 40px;
-  align-items: center;
-  min-width: 0;
-  height: 40px;
+.folder-menu-wrapper > .menu-container > .menu-options-container > .menu-option {
+  display: block;
   overflow: hidden;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: var(--color-surface-level-2);
-  color: var(--color-text-accent);
-  box-shadow: var(--shadow-surface-level-2);
-  transition: flex-basis 180ms ease, border-color 160ms ease;
+  text-overflow: ellipsis;
+  text-align: left;
+  white-space: nowrap;
 }
-  /* SECTION workspace-controls-search-toggle-icon */
-.workspace-controls-search .icon {
-  width: calc(var(--size-icon-filled) - 6px);
-  height: calc(var(--size-icon-filled) - 6px);
-}
-  /* !SECTION */
-.workspace-controls-search:is(:focus-within, .is-keyboard-expanded, .has-query) {
-  flex-basis: min(260px, calc(100vw - 100px));
-  border-color: var(--color-border-accent-muted);
-}
-  /* SECTION workspace-controls-search input */
-.workspace-controls-search input {
-  display: none;
-  flex: 1 1 auto;
-  min-width: 0;
-  height: 100%;
-  margin: 0;
-  padding: 8px 12px;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--color-text-primary);
-  box-shadow: none;
-}
-.workspace-controls-search:is(:focus-within, .is-keyboard-expanded, .has-query) input { display: block; }
-.workspace-controls-search input::-webkit-search-cancel-button { display: none; }
-.workspace-controls-search input::placeholder { color: var(--color-text-secondary); opacity: 1; }
-  /* !SECTION */
-
-  /* SECTION workspace-controls-search-toggle */
-.workspace-controls-search-toggle {
+/* Keep the folder-create action compact beside the title. */
+.folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option {
+  box-sizing: border-box;
   display: grid;
-  flex: 0 0 38px;
-  height: 38px;
   place-items: center;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
   padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
+  border: 1px solid color-mix(in srgb, var(--palette-yellow) 70%, var(--color-border-subtle));
+  border-radius: var(--radius-control-small);
+  background: var(--palette-yellow);
+  color: var(--color-background-app);
 }
-.workspace-controls-search:is(:focus-within, .is-keyboard-expanded, .has-query) .workspace-controls-search-toggle { display: none; }
-  /* !SECTION */
-  /* SECTION workspace-controls-search-clear */
-.workspace-controls-search-clear { display: none; }
-.workspace-controls-search.has-query .workspace-controls-search-clear {
-  display: grid;
-  flex: 0 0 28px;
-  height: 28px;
-  place-items: center;
-  margin-right: 5px;
-  padding: 0;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: var(--color-surface-deep);
-  color: var(--color-text-secondary);
+.folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option > .icon {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  --app-icon-state-color: var(--color-background-app);
 }
-.workspace-controls-search-clear svg { width: 14px; height: 14px; }
-  /* !SECTION */
+.folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option:hover {
+  background: color-mix(in srgb, var(--palette-yellow) 88%, white);
+}
 /* !SECTION */
 
-/* SECTION workspace-controls-filter */
-/* Group the year, rating, sort, and reset filters. */
-.workspace-controls-filter {
+/* SECTION workspace-filter-layout */
+/* Arrange the filter controls without adding a surface around them. */
+.workspace-filter-layout {
   display: flex;
   flex: 1 1 250px;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--spacing-level-2);
+  gap: var(--spacing-level-1);
   min-width: 0;
-  min-height: 40px;
-  padding: 3px 5px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: var(--color-surface-level-2);
-  box-shadow: var(--shadow-surface-level-2);
 }
-.workspace-controls-filter label { display: flex; flex: 1 1 70px; min-width: 0; }
-.workspace-controls-filter select {
+/* ANCHOR Filter and sort menu wrappers */
+/* Give the rating, year, and sort menus equal room in the filter group. */
+.workspace-value-filter-wrapper,
+.workspace-year-filter-wrapper,
+.workspace-sort-wrapper {
+  display: flex;
+  flex: 1 1 70px;
+  min-width: 0;
+  container-type: inline-size;
+}
+/* Base class: .level-3-styling */
+/* Style each filter and sort button through its specific menu wrapper. */
+.workspace-value-filter-wrapper > button,
+.workspace-year-filter-wrapper > button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-level-1);
   width: 100%;
   min-width: 0;
-  height: 32px;
-  padding: 4px 20px 4px 8px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: var(--color-surface-panel);
+  height: 40px;
+  padding: 4px 8px;
+  appearance: none;
   color: var(--color-text-secondary);
-  font: 11px var(--font-family-mono);
-  appearance: auto;
+  font-family: var(--font-family-app);
+  font-size: clamp(10px, calc(2cqi + 9px), 12px);
+  font-weight: var(--font-weight-app);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
 }
-.workspace-controls-filter select:is(:hover, :focus, .active) {
+.workspace-filter-layout .icon {
+  flex-basis: 16px;
+  width: 16px;
+  height: 16px;
+}
+.workspace-value-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]) > .masked-icon,
+.workspace-year-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]) > .masked-icon {
+  --app-icon-state-color: currentColor;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, currentColor 72%, transparent));
+}
+.workspace-value-filter-wrapper > button > .menu-button-label,
+.workspace-year-filter-wrapper > button > .menu-button-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workspace-value-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
+.workspace-year-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]) {
   border-color: var(--color-border-accent-muted);
-  background-color: var(--color-surface-hover);
+  background: var(--color-surface-hover);
   color: var(--color-text-accent);
 }
-/* ANCHOR workspace-controls-filter-reset */
-.workspace-controls-filter-reset { width: 32px; height: 32px; padding: 0; }
+
+/* Base class: .level-3-styling */
+/* Place the direction control before the current sort label inside its surface. */
+.workspace-sort-control {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: calc(var(--spacing-level-1) - 3px);
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  padding: 4px 8px;
+  color: var(--color-text-secondary);
+}
+.workspace-sort-control:is(:hover, :focus-within, .active),
+.workspace-sort-wrapper.is-open > .workspace-sort-control {
+  border-color: var(--color-border-accent-muted);
+  background: var(--color-surface-hover);
+  color: var(--color-text-accent);
+}
+.workspace-sort-control > :is(.workspace-direction-button, .workspace-sort-trigger) {
+  min-width: 0;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.workspace-sort-control > .workspace-direction-button {
+  display: grid;
+  flex: 0 0 16px;
+  place-items: center;
+  width: 16px;
+  font: 600 16px/1 var(--font-family-app);
+}
+.workspace-sort-control > .workspace-sort-trigger {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: flex-start;
+  font: var(--font-weight-app) clamp(10px, calc(2cqi + 9px), 12px)/1 var(--font-family-app);
+  text-align: left;
+}
+.workspace-sort-trigger > .menu-button-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workspace-sort-control > .workspace-sort-trigger:focus-visible,
+.workspace-sort-control > .workspace-direction-button:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 1px;
+}
+
+.workspace-value-filter-wrapper > .menu-container > .menu-options-container > .menu-option,
+.workspace-year-filter-wrapper > .menu-container > .menu-options-container > .menu-option,
+.workspace-sort-wrapper > .menu-container > .menu-options-container > .menu-option {
+  font-size: clamp(9px, calc(3cqi + 8px), 12px);
+}
+.workspace-value-filter-wrapper > .menu-container,
+.workspace-year-filter-wrapper > .menu-container,
+.workspace-sort-wrapper > .menu-container {
+  left: 0;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  transform: none;
+}
+.workspace-value-filter-wrapper > .menu-container > .menu-options-container,
+.workspace-year-filter-wrapper > .menu-container > .menu-options-container {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.workspace-value-filter-wrapper > .menu-container > .menu-options-container > .menu-option-value,
+.workspace-value-filter-wrapper > .menu-container > .menu-options-container > .menu-option-value:is(:hover, .active) {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+}
+.workspace-value-filter-wrapper > .menu-container > .menu-options-container > .menu-option-value > .value-chip-styling {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: inherit;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  line-height: 16px;
+}
+.workspace-sort-wrapper > .menu-container > .menu-options-container {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+/* Size reset actions to match the shared menu-title height. */
+.workspace-value-filter-wrapper > .menu-container > .menu-header-layout > .workspace-filter-reset-button,
+.workspace-year-filter-wrapper > .menu-container > .menu-header-layout > .workspace-filter-reset-button,
+.workspace-sort-wrapper > .menu-container > .menu-header-layout > .workspace-sort-reset-button {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+/* Render the shared reset artwork at a compact size that fits each control. */
+.workspace-reset-icon {
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  --app-icon-state-color: var(--color-text-secondary);
+  -webkit-mask: url("../assets/icons/filled/reset.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/reset.png") center / contain no-repeat;
+}
+/* Use orange on the reset icon alone when a reset action is available. */
+.workspace-value-filter-wrapper .workspace-filter-reset-button:not(:disabled) > .workspace-reset-icon,
+.workspace-year-filter-wrapper .workspace-filter-reset-button:not(:disabled) > .workspace-reset-icon,
+.workspace-sort-wrapper .workspace-sort-reset-button:not(:disabled) > .workspace-reset-icon,
+.workspace-reset-button.is-active > .workspace-reset-icon {
+  --app-icon-state-color: var(--palette-orange-strong);
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--palette-orange-strong) 45%, transparent));
+}
+.workspace-value-filter-wrapper .workspace-filter-reset-button:not(:disabled) > .workspace-reset-icon,
+.workspace-year-filter-wrapper .workspace-filter-reset-button:not(:disabled) > .workspace-reset-icon,
+.workspace-sort-wrapper .workspace-sort-reset-button:not(:disabled) > .workspace-reset-icon,
+.workspace-reset-button.is-active > .workspace-reset-icon {
+  position: relative;
+  z-index: 1;
+}
+.workspace-value-filter-wrapper .workspace-filter-reset-button:not(:disabled),
+.workspace-year-filter-wrapper .workspace-filter-reset-button:not(:disabled),
+.workspace-sort-wrapper .workspace-sort-reset-button:not(:disabled),
+.workspace-reset-button.is-active {
+  --glow-halo-color: var(--palette-orange-strong);
+  --glow-halo-opacity: 0.3;
+}
+.workspace-value-filter-wrapper > .menu-container > .menu-options-container,
+.workspace-year-filter-wrapper > .menu-container > .menu-options-container {
+  max-height: none;
+}
+/* ANCHOR workspace-reset-button */
+/* Base classes: .icon-button, .level-3-styling */
+/* Reset the three filter menus and the active media filter. */
+.workspace-reset-button {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: var(--color-text-secondary);
+  font: 600 12px/1 var(--font-family-app);
+}
 /* !SECTION */
 
-/* SECTION workspace-controls-expandableType */
-/* Arrange media-type choices and mark each type with its palette color. */
-.workspace-controls-expandableType > button { width: 40px; padding: 0; }
-.workspace-controls-expandableType .icon {
+/* SECTION workspace-type-expandable */
+/* Base classes: .expandable-box, .level-3-styling */
+/* Arrange media-type choices and mark each with its palette color. */
+.workspace-type-expandable .icon {
   width: calc(var(--size-icon-filled) - 6px);
   height: calc(var(--size-icon-filled) - 6px);
 }
-/* ANCHOR workspace-controls-expandableType-allOption */
-.workspace-controls-expandableType-allOption:is(.active, :hover) { color: var(--color-icon-default); }
-/* ANCHOR workspace-controls-expandableType-filmOption */
-.workspace-controls-expandableType-filmOption:is(.active, :hover) { color: var(--color-media-film); }
-/* ANCHOR workspace-controls-expandableType-showOption */
-.workspace-controls-expandableType-showOption:is(.active, :hover) { color: var(--color-media-show); }
-/* ANCHOR workspace-controls-expandableType-gameOption */
-.workspace-controls-expandableType-gameOption:is(.active, :hover) { color: var(--color-media-game); }
-/* ANCHOR workspace-controls-expandableType-bookOption */
-.workspace-controls-expandableType-bookOption:is(.active, :hover) { color: var(--color-media-book); }
-.workspace-controls-expandableType > button:is(.active, :hover) {
-  border-color: currentColor;
-  background: color-mix(in srgb, currentColor 14%, var(--color-surface-level-2));
+/* Use the general accent only as a fallback; type-specific colors override it. */
+:where(.workspace-type-expandable > button) { --workspace-type-highlight: var(--color-text-accent); }
+.workspace-type-film-button { --workspace-type-highlight: var(--color-media-film); }
+.workspace-type-show-button { --workspace-type-highlight: var(--color-media-show); }
+.workspace-type-game-button { --workspace-type-highlight: var(--color-media-game); }
+.workspace-type-book-button { --workspace-type-highlight: var(--color-media-book); }
+/* Keep every media icon neutral until its control is interacted with. */
+.workspace-type-expandable .masked-icon { --app-icon-state-color: var(--color-icon-default); }
+/* ANCHOR workspace-type-all-button */
+.workspace-type-all-button:is(.active, :hover, :focus-visible) { color: var(--workspace-type-highlight); }
+
+/* Tint and softly glow media icons on interaction or selection. */
+.workspace-type-expandable > button:is(:hover, :focus-visible, .active) {
+  color: var(--workspace-type-highlight);
+}
+.workspace-type-expandable > button:is(:hover, :focus-visible, .active) > .masked-icon {
+  --app-icon-state-color: var(--workspace-type-highlight);
+}
+.workspace-type-expandable > button:is(:hover, :focus-visible, .active) {
+  --glow-halo-color: var(--workspace-type-highlight);
+  --glow-halo-opacity: 0.3;
 }
 /* !SECTION */
 
-/* SECTION workspace-controls-pagination */
+/* SECTION workspace-pagination-container */
+/* Base class: .level-3-styling */
 /* Keep page navigation aligned with the control row. */
-.workspace-controls-pagination {
+.workspace-pagination-container {
   display: flex;
   flex: none;
   align-items: center;
   gap: var(--spacing-level-3);
   min-height: 40px;
   padding: 3px;
-  border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-compact);
-  background: var(--color-surface-level-2);
   color: var(--color-text-secondary);
-  font: 11px var(--font-family-mono);
-  box-shadow: var(--shadow-surface-level-2);
+  font: 11px var(--font-family-app);
+  font-weight: 500;
 }
-.workspace-controls-pagination .icon {
+.workspace-pagination-container .icon {
   width: calc(var(--size-icon-filled) - 12px);
   height: calc(var(--size-icon-filled) - 12px);
 }
-.workspace-controls-pagination > button { width: 32px; height: 32px; padding: 0; font-size: 18px; }
-.workspace-controls-pagination > button:disabled { opacity: .35; cursor: default; }
-.workspace-controls-pagination > button:hover:not(:disabled) { color: var(--color-text-accent); }
-.workspace-controls-pagination > span { min-width: 34px; text-align: center; }
+/* ANCHOR workspace-prev-button and workspace-next-button */
+/* Base classes: .icon-button, .level-4-styling */
+/* Keep both page arrows at the same compact size. */
+.workspace-prev-button,
+.workspace-next-button {
+  flex: none;
+  width: 30px;
+  height: 32px;
+  padding: 0;
+  font-size: 18px;
+}
+.workspace-pagination-container > button:disabled { opacity: .35; cursor: default; }
+.workspace-pagination-container > button:is(:hover, :focus-visible):not(:disabled) {
+  color: var(--color-text-accent);
+}
+.workspace-pagination-container > button:is(:hover, :focus-visible):not(:disabled) > .masked-icon {
+  --app-icon-state-color: currentColor;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, currentColor 72%, transparent));
+}
+/* ANCHOR workspace-counter */
+/* Center the current page number between the arrows. */
+.workspace-counter {
+  min-width: 34px;
+  font: var(--font-weight-app) 12px/1 var(--font-family-app);
+  text-align: center;
+}
 
 /* !SECTION */
 
-/* ANCHOR workspace-controls-createEntry */
+/* ANCHOR workspace-create-entry-button */
 /* Keep the add-entry action aligned with the control row. */
-/* Base classes: .button, .buttonPrimary */
-.workspace-controls-createEntry {
+/* Base classes: .text-button, .level-3-styling */
+.workspace-create-entry-button {
   display: grid;
   flex: none;
   width: 40px;
@@ -378,17 +446,23 @@
   place-items: center;
   margin-left: auto;
   padding: 0;
-  border-radius: var(--radius-button);
-  font-size: 24px;
+  text-align: center;
+}
+.workspace-create-entry-button > .icon {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  --app-icon-state-color: var(--color-background-app);
 }
 
-/* ANCHOR Responsive workspace controls */
-/* Keep controls usable as the available workspace width shrinks. */
+/* SECTION Responsive workspace controls */
+/* Wrap control groups as the available workspace width shrinks. */
 @container app-content (width < 900px) {
-  .workspace-controls { align-items: stretch; }
-  .workspace-controls-filter { order: 5; flex-basis: 100%; }
-  .workspace-controls-expandableType { order: 6; }
-  .workspace-controls-pagination { order: 7; }
-  .workspace-controls-createEntry { order: 8; margin-left: auto; }
+  .workspace-controls-container { align-items: stretch; }
+  .workspace-filter-layout { order: 5; flex-basis: 100%; }
+  .workspace-type-expandable { order: 6; }
+  .workspace-pagination-container { order: 7; }
+  .workspace-create-entry-button { order: 8; margin-left: auto; }
 }
+/* !SECTION */
 /* !SECTION */

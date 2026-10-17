@@ -5,26 +5,47 @@ const LIBRARY_SCROLL_KEY = 'rerun-library-scroll-position';
 let libraryScrollPosition = Number(sessionStorage.getItem(LIBRARY_SCROLL_KEY)) || 0;
 
 const themeToggle = $('#toggle-theme');
+const navThemeToggle = $('.nav-toggle-theme');
+$('#open-settings')?.addEventListener('click', openSettings);
+$('#open-storage-settings')?.addEventListener('click', openSettings);
+const collectionFiltersReturnAnchor = $('.collection-filter-sort').nextElementSibling;
+
+/** Updates the sidebar's expanded or icon-only state. */
+function setSidebarCollapsed(collapsed) {
+  const appContainer = $('.app-container');
+  const sidebarToggle = $('.nav-toggle-sidebar');
+  appContainer.classList.toggle('is-sidebar-collapsed', collapsed);
+  sidebarToggle.setAttribute('aria-pressed', String(collapsed));
+  sidebarToggle.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
+  sidebarToggle.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+}
+
+if ($('.navbar-vertical-layout')) {
+  const compactSidebarQuery = window.matchMedia('(max-width: 700px)');
+  setSidebarCollapsed(compactSidebarQuery.matches);
+  $('.nav-toggle-sidebar').addEventListener('click', () => {
+    setSidebarCollapsed(!$('.app-container').classList.contains('is-sidebar-collapsed'));
+  });
+  compactSidebarQuery.addEventListener('change', (event) => setSidebarCollapsed(event.matches));
+}
 
 /** Switches between the library and its statistics panel. */
 function setDashboardSection(section) {
   const showStatistics = section === 'statistics';
   const dashboard = document.querySelector('.default-layout, .dashboard-layout');
   const collectionFilters = $('.collection-filter-sort');
-  const libraryButton = $('.section-library');
-  const statisticsButton = $('.section-statistics');
+  const libraryButton = $('.library-page-button, .section-library');
+  const statisticsButton = $('.stats-page-button, .section-statistics');
 
   $('#library').hidden = showStatistics;
   $('#statistics-panel').hidden = !showStatistics;
   if (showStatistics) {
     $('#statistics-panel').prepend(collectionFilters);
-    updateCollectionTools(activeView === 'watchlist');
+    updateCollectionTools(activeCollectionView === 'watchlist');
   } else {
-    // Restore the filter box beside the heading controls. Placing it after
-    // the search input puts it inside .library-heading-left and breaks the
-    // toolbar's flex expansion after returning from Statistics.
-    $('.library-heading-left').after(collectionFilters);
-    updateCollectionTools(activeView === 'watchlist');
+    // Return the filters to their original position in either page layout.
+    collectionFiltersReturnAnchor.before(collectionFilters);
+    updateCollectionTools(activeCollectionView === 'watchlist');
   }
   dashboard.classList.toggle('is-statistics-view', showStatistics);
   document.documentElement.dataset.dashboardSection = showStatistics ? 'statistics' : 'library';
@@ -45,8 +66,211 @@ function setDashboardSection(section) {
   }
 }
 
-$('.section-library').addEventListener('click', () => setDashboardSection('library'));
-$('.section-statistics').addEventListener('click', () => setDashboardSection('statistics'));
+$('.library-page-button, .section-library').addEventListener('click', () => {
+  setDashboardSection('library');
+  setNavbarPage($('#nav-library-button'));
+});
+$('.stats-page-button, .section-statistics').addEventListener('click', () => {
+  setDashboardSection('statistics');
+  setNavbarPage($('#nav-stats-button'));
+});
+
+let navbarPageBeforeSettings = null;
+// Keep the non-modal settings dialog outside the clipped app shell so it can overlay the blur.
+document.body.append($('#settings-dialog'));
+function closeSettingsHeadingHelp() {
+  document.querySelectorAll('#settings-dialog .settings-heading-info[aria-controls]').forEach((button) => {
+    document.getElementById(button.getAttribute('aria-controls')).hidden = true;
+    button.setAttribute('aria-expanded', 'false');
+  });
+}
+$('#settings-dialog')?.addEventListener('click', (event) => {
+  const button = event.target.closest('.settings-heading-info[aria-controls]');
+  if (button) {
+    const help = document.getElementById(button.getAttribute('aria-controls'));
+    const shouldOpen = help.hidden;
+    closeSettingsHeadingHelp();
+    help.hidden = !shouldOpen;
+    button.setAttribute('aria-expanded', String(shouldOpen));
+  } else if (!event.target.closest('.settings-heading-help')) {
+    closeSettingsHeadingHelp();
+  }
+});
+// A click dismisses an option's hover help until the pointer leaves that row.
+document.querySelectorAll('#settings-dialog .settings-option').forEach((option) => {
+  option.addEventListener('pointerdown', () => option.classList.add('tooltip-dismissed'));
+  option.addEventListener('pointerleave', () => option.classList.remove('tooltip-dismissed'));
+});
+const navbarUrlHistory = [location.hash];
+let navbarUrlHistoryIndex = 0;
+let navbarHistoryTraversalDirection = 0;
+
+/** Show Back and Forward only when a URL/hash page exists in that direction. */
+function updateNavbarHistoryControls() {
+  const backButton = $('.nav-prev-button');
+  const forwardButton = $('.nav-next-button');
+  backButton.hidden = navbarUrlHistoryIndex <= 0;
+  forwardButton.hidden = navbarUrlHistoryIndex >= navbarUrlHistory.length - 1;
+  $('.nav-pagination-container').classList.toggle('is-history-empty', backButton.hidden && forwardButton.hidden);
+}
+
+/** Track actual URL/hash navigation, not navbar tab selection, for arrow history. */
+function recordNavbarUrlHistory(event) {
+  const nextHash = new URL(event.newURL).hash;
+  const previousHash = new URL(event.oldURL).hash;
+
+  if (navbarHistoryTraversalDirection) {
+    navbarUrlHistoryIndex = Math.max(0, Math.min(
+      navbarUrlHistory.length - 1,
+      navbarUrlHistoryIndex + navbarHistoryTraversalDirection,
+    ));
+    navbarHistoryTraversalDirection = 0;
+  } else if (navbarUrlHistory[navbarUrlHistoryIndex - 1] === nextHash) {
+    navbarUrlHistoryIndex -= 1;
+  } else if (navbarUrlHistory[navbarUrlHistoryIndex + 1] === nextHash) {
+    navbarUrlHistoryIndex += 1;
+  } else if (nextHash !== previousHash) {
+    navbarUrlHistory.splice(navbarUrlHistoryIndex + 1);
+    navbarUrlHistory.push(nextHash);
+    navbarUrlHistoryIndex = navbarUrlHistory.length - 1;
+  }
+
+  updateNavbarHistoryControls();
+}
+
+window.addEventListener('hashchange', recordNavbarUrlHistory);
+updateNavbarHistoryControls();
+
+/** Keeps the top-level navbar selection in sync with the current page. */
+function setNavbarPage(activeButton) {
+  if (!activeButton) return;
+
+  document.querySelectorAll('.navbar-vertical-layout .nav-button').forEach((button) => {
+    const active = button === activeButton;
+    button.classList.toggle('is-active', active);
+    button.toggleAttribute('aria-current', active);
+  });
+
+  const pageName = $('.nav-page-name');
+  const activeLabel = activeButton.querySelector('.nav-button-text');
+  if (pageName && activeLabel) {
+    pageName.textContent = activeLabel.textContent.trim();
+    pageName.style.setProperty('--nav-page-name-color', getComputedStyle(activeButton).getPropertyValue('--nav-item-color').trim());
+  }
+}
+
+setNavbarPage($('#nav-home-button'));
+$('.nav-prev-button')?.addEventListener('click', () => {
+  if (navbarUrlHistoryIndex <= 0) return;
+  navbarHistoryTraversalDirection = -1;
+  window.history.back();
+});
+$('.nav-next-button')?.addEventListener('click', () => {
+  if (navbarUrlHistoryIndex >= navbarUrlHistory.length - 1) return;
+  navbarHistoryTraversalDirection = 1;
+  window.history.forward();
+});
+
+$('#nav-settings-button')?.addEventListener('click', () => {
+  const dialog = $('#settings-dialog');
+  if (dialog.open) {
+    dialog.close();
+    return;
+  }
+  navbarPageBeforeSettings = $('.navbar-vertical-layout .nav-button.is-active') || $('#nav-home-button');
+  setNavbarPage($('#nav-settings-button'));
+  openSettings();
+});
+
+function openStorageSettingsFromNavigation() {
+  const dialog = $('#settings-dialog');
+  if (!dialog.open) {
+    navbarPageBeforeSettings = $('.navbar-vertical-layout .nav-button.is-active') || $('#nav-home-button');
+    setNavbarPage($('#nav-settings-button'));
+  }
+  setSettingsCategory('storage');
+  openSettings();
+}
+
+$('#nav-storage-button')?.addEventListener('click', openStorageSettingsFromNavigation);
+$('#nav-save-button')?.addEventListener('click', openStorageSettingsFromNavigation);
+
+$('#settings-dialog').addEventListener('close', () => {
+  closeSettingsHeadingHelp();
+  pauseLoadStatusTimer();
+  if (navbarPageBeforeSettings) setNavbarPage(navbarPageBeforeSettings);
+  navbarPageBeforeSettings = null;
+});
+
+$('.app-content-frame')?.addEventListener('click', () => {
+  const dialog = $('#settings-dialog');
+  if (dialog?.open) dialog.close();
+});
+
+/** Activates one settings category and its corresponding content panel. */
+function setSettingsCategory(category) {
+  document.querySelectorAll('.settings-category-button').forEach((button) => {
+    const active = button.dataset.settingsCategory === category;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-selected', String(active));
+    button.tabIndex = active ? 0 : -1;
+  });
+  document.querySelectorAll('[data-settings-panel]').forEach((panel) => {
+    panel.hidden = panel.dataset.settingsPanel !== category;
+  });
+  if (category === 'storage') startLoadStatusTimer();
+  else pauseLoadStatusTimer();
+}
+
+document.querySelectorAll('.settings-category-button').forEach((button, index, buttons) => {
+  button.addEventListener('click', () => setSettingsCategory(button.dataset.settingsCategory));
+  button.addEventListener('keydown', (event) => {
+    const direction = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1
+      : event.key === 'ArrowUp' || event.key === 'ArrowLeft' ? -1
+        : event.key === 'Home' ? -index
+          : event.key === 'End' ? buttons.length - index - 1
+            : 0;
+    if (!direction) return;
+    event.preventDefault();
+    const nextIndex = (index + direction + buttons.length) % buttons.length;
+    buttons[nextIndex].focus();
+    setSettingsCategory(buttons[nextIndex].dataset.settingsCategory);
+  });
+});
+
+/** Keep the tab-list orientation in sync with its responsive layout. */
+function updateSettingsCategoryOrientation() {
+  const categoryNavigation = $('.settings-category-container');
+  if (!categoryNavigation) return;
+  categoryNavigation.setAttribute('aria-orientation', window.matchMedia('(max-width: 700px)').matches ? 'horizontal' : 'vertical');
+}
+updateSettingsCategoryOrientation();
+
+$('#nav-home-button')?.addEventListener('click', () => {
+  if (document.documentElement.dataset.dashboardSection === 'statistics') {
+    setDashboardSection('library');
+  }
+  setNavbarPage($('#nav-home-button'));
+  $('.app-content-container').scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+$('#nav-library-button')?.addEventListener('click', () => {
+  setDashboardSection('library');
+  setNavbarPage($('#nav-library-button'));
+  $('#library').scrollIntoView({ block: 'start', behavior: 'smooth' });
+});
+
+$('#nav-folders-button')?.addEventListener('click', () => {
+  setDashboardSection('library');
+  setNavbarPage($('#nav-library-button'));
+  $('#library-folder-button')?.click();
+});
+
+$('#nav-stats-button')?.addEventListener('click', () => {
+  setDashboardSection('statistics');
+  setNavbarPage($('#nav-stats-button'));
+  $('#statistics-panel').scrollIntoView({ block: 'start', behavior: 'smooth' });
+});
 
 // Retain focus rings for keyboard use, but avoid persistent rings after pointer clicks.
 document.addEventListener('pointerdown', () => {
@@ -68,17 +292,25 @@ function syncThemeToggle() {
   themeToggle.setAttribute('aria-label', label);
   themeToggle.title = label;
   themeToggle.innerHTML = appIconMarkup(switchTo === 'dark' ? 'dark_mode' : 'light_mode');
+  if (navThemeToggle) {
+    navThemeToggle.setAttribute('aria-pressed', String(isLight));
+    navThemeToggle.setAttribute('aria-label', label);
+    navThemeToggle.title = label;
+    navThemeToggle.innerHTML = appIconMarkup(switchTo === 'dark' ? 'dark_mode' : 'light_mode');
+  }
   refreshAppIcons();
 }
 
 syncThemeToggle();
-themeToggle.addEventListener('click', () => {
+function toggleAppTheme() {
   themePreference = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
   localStorage.setItem(THEME_KEY, themePreference);
   applyTheme();
   syncThemeToggle();
   syncAppearanceControls();
-});
+}
+themeToggle.addEventListener('click', toggleAppTheme);
+navThemeToggle?.addEventListener('click', toggleAppTheme);
 systemTheme.addEventListener?.('change', syncThemeToggle);
 if (!systemTheme.addEventListener) systemTheme.addListener(syncThemeToggle);
 
@@ -121,9 +353,9 @@ $('#next').addEventListener('click', (event) => {
 
 /** Opens the entry currently featured in the banner. */
 function openBannerEntry() {
-  if ($('.section-statistics').classList.contains('is-active')) return;
+  if ($('.stats-page-button, .section-statistics').classList.contains('is-active')) return;
   const entry = bannerEntries()[bannerIndex];
-  if (entry) location.hash = `#entry/${activeView}/${encodeURIComponent(entry.id)}`;
+  if (entry) location.hash = `#entry/${activeCollectionView}/${encodeURIComponent(entry.id)}`;
 }
 
 $('#banner').addEventListener('click', (event) => {
@@ -139,7 +371,7 @@ $('#banner').addEventListener('keydown', (event) => {
 });
 
 $('#banner').addEventListener('wheel', (event) => {
-  if ($('.section-statistics').classList.contains('is-active')
+  if ($('.stats-page-button, .section-statistics').classList.contains('is-active')
     || event.target.closest('#statistics-timeline')) return;
   if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || bannerEntries().length < 2) return;
   event.preventDefault();
@@ -187,13 +419,48 @@ $('#pause').addEventListener('click', () => setRotation(paused));
 
 /** Opens the settings dialog. */
 function openSettings() {
-  syncRotationControls();
-  syncAppearanceControls();
-  updateBackupSummary();
-  updateOmdbCallCount();
-  $('#omdb-api-key').value = localStorage.getItem(OMDB_API_KEY) || '';
-  $('#settings-dialog').showModal();
+  const dialog = $('#settings-dialog');
+  if (!dialog) return;
+  centerSettingsDialog(dialog);
+  if (!dialog.open) dialog.show();
+  startLoadStatusTimer();
+
+  try {
+    syncRotationControls();
+    syncAppearanceControls();
+    updateBackupSummary();
+    updateOmdbCallCount();
+    $('#omdb-api-key').value = localStorage.getItem(OMDB_API_KEY) || '';
+  } catch (error) {
+    console.error('Settings opened, but some values could not be refreshed.', error);
+  }
 }
+
+/** Centers the settings dialog over the visible app-content frame. */
+function centerSettingsDialog(dialog) {
+  const frame = $('.app-content-frame');
+  if (!frame) return;
+  const bounds = frame.getBoundingClientRect();
+  dialog.style.setProperty('--settings-anchor-x', `${bounds.left + bounds.width / 2}px`);
+  dialog.style.setProperty('--settings-anchor-y', `${bounds.top + bounds.height / 2}px`);
+}
+
+window.addEventListener('resize', () => {
+  updateSettingsCategoryOrientation();
+  const dialog = $('#settings-dialog');
+  if (dialog?.open) centerSettingsDialog(dialog);
+});
+
+/** Keep custom slider tracks filled to each control's current value. */
+function syncSettingsRangeTrack(input) {
+  const min = Number(input.min || 0);
+  const max = Number(input.max || 100);
+  const progress = max === min ? 0 : (Number(input.value) - min) / (max - min) * 100;
+  input.style.setProperty('--settings-range-progress', `${Math.max(0, Math.min(100, progress))}%`);
+}
+document.querySelectorAll('.settings-option-range input[type="range"]').forEach((input) => {
+  input.addEventListener('input', () => syncSettingsRangeTrack(input));
+});
 
 /** Synchronizes appearance options with the settings dialog controls. */
 function syncAppearanceControls() {
@@ -202,18 +469,24 @@ function syncAppearanceControls() {
   const iconStyleControl = $('#icon-style');
   if (iconStyleControl) iconStyleControl.value = iconStylePreference;
   $('#poster-background').checked = posterBackgroundEnabled;
+  $('#entry-poster-backdrop').checked = entryPosterBackdropEnabled;
   $('#poster-background-strength').value = posterBackgroundStrength;
   $('#poster-background-strength-value').value = `${posterBackgroundStrength}%`;
   $('#poster-background-strength').disabled = !posterBackgroundEnabled;
   $('#tactile-dashboard').checked = tactileDashboardEnabled;
+  const dashboardModeControl = $('#dashboard-mode');
+  if (dashboardModeControl) dashboardModeControl.value = dashboardMode;
+  $('#macos-box-borders').checked = macosBoxBordersEnabled;
+  $('#colored-value-chips').checked = coloredValueChipsEnabled;
+  $('#hide-main-value-chips').checked = hideMainValueChipsEnabled;
+  $('#corner-radius-scale').value = cornerRadiusScale;
+  $('#corner-radius-scale-value').value = `${cornerRadiusScale}%`;
   $('#glass-surface-opacity').value = glassSurfaceOpacity;
   $('#glass-surface-opacity-value').value = `${glassSurfaceOpacity}%`;
   $('#disable-glass-transparency').checked = !glassTransparencyEnabled;
   $('#glass-surface-opacity').disabled = !tactileDashboardEnabled || !glassTransparencyEnabled;
+  document.querySelectorAll('.settings-option-range input[type="range"]').forEach(syncSettingsRangeTrack);
 }
-$('#open-settings').addEventListener('click', openSettings);
-$('#open-storage-settings').addEventListener('click', openSettings);
-$('#close-settings').addEventListener('click', () => $('#settings-dialog').close());
 $('#auto-rotate').addEventListener('change', (event) => setRotation(event.currentTarget.checked));
 function changeThemePreference(value) {
   themePreference = value;
@@ -244,6 +517,12 @@ function changePosterBackground(enabled) {
   syncAppearanceControls();
 }
 $('#poster-background').addEventListener('change', (event) => changePosterBackground(event.currentTarget.checked));
+function changeEntryPosterBackdrop(enabled) {
+  entryPosterBackdropEnabled = enabled;
+  localStorage.setItem(ENTRY_POSTER_BACKDROP_KEY, String(enabled));
+  document.documentElement.dataset.entryPosterBackdrop = enabled ? 'on' : 'off';
+}
+$('#entry-poster-backdrop').addEventListener('change', (event) => changeEntryPosterBackdrop(event.currentTarget.checked));
 function changePosterBackgroundStrength(value) {
   posterBackgroundStrength = Number(value);
   document.documentElement.style.setProperty('--poster-background-strength', `${posterBackgroundStrength}%`);
@@ -260,6 +539,37 @@ function changeTactileDashboard(enabled) {
   syncAppearanceControls();
 }
 $('#tactile-dashboard').addEventListener('change', (event) => changeTactileDashboard(event.currentTarget.checked));
+$('#dashboard-mode')?.addEventListener('change', (event) => {
+  dashboardMode = event.currentTarget.value === 'dashboard' ? 'dashboard' : 'navbar';
+  localStorage.setItem(DASHBOARD_MODE_KEY, dashboardMode);
+  document.documentElement.dataset.dashboardMode = dashboardMode;
+});
+function changeMacosBoxBorders(enabled) {
+  macosBoxBordersEnabled = enabled;
+  localStorage.setItem(MACOS_BOX_BORDERS_KEY, String(enabled));
+  document.documentElement.dataset.macosBorders = enabled ? 'on' : 'off';
+}
+$('#macos-box-borders').addEventListener('change', (event) => changeMacosBoxBorders(event.currentTarget.checked));
+function changeColoredValueChips(enabled) {
+  coloredValueChipsEnabled = enabled;
+  localStorage.setItem(COLORED_VALUE_CHIPS_KEY, String(enabled));
+  document.documentElement.dataset.valueChipFill = enabled ? 'on' : 'off';
+}
+$('#colored-value-chips').addEventListener('change', (event) => changeColoredValueChips(event.currentTarget.checked));
+function changeHideMainValueChips(enabled) {
+  hideMainValueChipsEnabled = enabled;
+  localStorage.setItem(HIDE_MAIN_VALUE_CHIPS_KEY, String(enabled));
+  document.documentElement.dataset.mainValueChips = enabled ? 'hidden' : 'visible';
+}
+$('#hide-main-value-chips').addEventListener('change', (event) => changeHideMainValueChips(event.currentTarget.checked));
+function changeCornerRadiusScale(value) {
+  cornerRadiusScale = Math.max(50, Math.min(150, Math.round(Number(value) / 5) * 5));
+  document.documentElement.style.setProperty('--radius-scale', String(cornerRadiusScale / 100));
+  $('#corner-radius-scale').value = cornerRadiusScale;
+  $('#corner-radius-scale-value').value = `${cornerRadiusScale}%`;
+  localStorage.setItem(CORNER_RADIUS_SCALE_KEY, String(cornerRadiusScale));
+}
+$('#corner-radius-scale').addEventListener('input', (event) => changeCornerRadiusScale(event.currentTarget.value));
 function changeGlassSurfaceOpacity(value) {
   glassSurfaceOpacity = Math.max(60, Math.min(100, Math.round(Number(value) / 5) * 5));
   document.documentElement.style.setProperty('--glass-surface-opacity', `${glassSurfaceOpacity}%`);
@@ -335,11 +645,6 @@ document.addEventListener('keydown', (event) => {
     openDialog();
     return;
   }
-  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
-    event.preventDefault();
-    showStorageComparison();
-    return;
-  }
   if (event.key !== 'Escape') return;
 
   const openDialogs = [...document.querySelectorAll('dialog[open]')];
@@ -356,12 +661,12 @@ document.addEventListener('keydown', (event) => {
 });
 // Filters and view tabs
 
-document.querySelectorAll('.media-type-filter').forEach((button) => {
+document.querySelectorAll('.type-switch-option, .media-type-filter').forEach((button) => {
   button.addEventListener('click', () => {
     activeFilter = button.dataset.filter;
     collectionPage = 0;
 
-    document.querySelectorAll('.media-type-filter').forEach((item) => {
+    document.querySelectorAll('.type-switch-option, .media-type-filter').forEach((item) => {
       item.classList.toggle('active', item === button);
     });
 
@@ -369,7 +674,7 @@ document.querySelectorAll('.media-type-filter').forEach((button) => {
   });
 });
 
-document.querySelectorAll('.library-view-switcher, .media-type-filter-group').forEach((group) => {
+document.querySelectorAll('.library-view-switcher, .collection-view-switcher, .workspace-type-expandable').forEach((group) => {
   group.addEventListener('pointerleave', () => {
     if (group.contains(document.activeElement)) document.activeElement.blur();
   });
@@ -379,6 +684,7 @@ const librarySearch = $('#library-search');
 const librarySearchBox = $('.library-search');
 const librarySearchToggle = $('#library-search-toggle');
 const librarySearchClear = $('#library-search-clear');
+const isReworkedSearch = document.documentElement.dataset.cssReworkPreview === 'true';
 
 document.addEventListener('keydown', (event) => {
   if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'l'
@@ -397,12 +703,24 @@ document.addEventListener('keydown', (event) => {
 function updateLibrarySearchExpandedState() {
   const hasQuery = librarySearch.value.length > 0;
   librarySearchBox.classList.toggle('has-query', hasQuery);
-  librarySearchClear.hidden = !hasQuery;
   const expanded = hasQuery || librarySearchBox.classList.contains('is-keyboard-expanded')
     || (!librarySearchBox.classList.contains('is-escape-collapsed') && librarySearchBox.matches(':focus-within'));
+  if (isReworkedSearch) librarySearchToggle.classList.toggle('level-4-styling', expanded);
+  librarySearchClear.hidden = isReworkedSearch ? !expanded : !hasQuery;
   librarySearchToggle.setAttribute('aria-expanded', String(expanded));
   librarySearchToggle.setAttribute('aria-label', 'Focus search field');
   librarySearchToggle.title = 'Search titles';
+}
+
+/** Clears the reworked search and returns its control to the compact state. */
+function closeReworkedSearch() {
+  librarySearch.value = '';
+  librarySearchBox.classList.remove('is-keyboard-expanded');
+  librarySearchBox.classList.add('is-escape-collapsed');
+  librarySearch.blur();
+  librarySearchClear.blur();
+  librarySearch.dispatchEvent(new Event('input', { bubbles: true }));
+  updateLibrarySearchExpandedState();
 }
 
 librarySearchToggle.addEventListener('click', () => {
@@ -419,6 +737,10 @@ librarySearchBox.addEventListener('focusout', () => {
 librarySearch.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape') return;
   event.preventDefault();
+  if (isReworkedSearch) {
+    closeReworkedSearch();
+    return;
+  }
   librarySearchBox.classList.add('is-escape-collapsed');
   librarySearch.blur();
   updateLibrarySearchExpandedState();
@@ -431,6 +753,10 @@ librarySearch.addEventListener('input', () => {
 });
 
 librarySearchClear.addEventListener('click', () => {
+  if (isReworkedSearch) {
+    closeReworkedSearch();
+    return;
+  }
   librarySearch.value = '';
   librarySearch.dispatchEvent(new Event('input', { bubbles: true }));
   librarySearch.focus();
@@ -438,19 +764,24 @@ librarySearchClear.addEventListener('click', () => {
 
 $('#add-collection').addEventListener('click', createCollection);
 let collectionResizeFrame = 0;
-window.addEventListener('resize', () => {
+const scheduleCollectionResize = () => {
   cancelAnimationFrame(collectionResizeFrame);
   collectionResizeFrame = requestAnimationFrame(handleCollectionResize);
-});
+};
+window.addEventListener('resize', scheduleCollectionResize);
+if ('ResizeObserver' in window) {
+  const collectionResizeObserver = new ResizeObserver(scheduleCollectionResize);
+  collectionResizeObserver.observe($('#collection'));
+}
 $('#collection-page-previous').addEventListener('click', () => changeCollectionPage(-1));
 $('#collection-page-next').addEventListener('click', () => changeCollectionPage(1));
 $('#watched-year-filter').addEventListener('change', (event) => {
-  watchedYearFilter = event.currentTarget.value;
+  watchedYearFilter = [...event.currentTarget.selectedOptions].map((option) => option.value);
   collectionPage = 0;
   renderCollection();
 });
-$('#rating-filter').addEventListener('change', (event) => {
-  ratingFilter = event.currentTarget.value;
+$('#rating-filter')?.addEventListener('change', (event) => {
+  ratingFilter = [...event.currentTarget.selectedOptions].map((option) => Number(option.value));
   collectionPage = 0;
   renderCollection();
 });
@@ -460,13 +791,14 @@ $('#collection-sort').addEventListener('change', (event) => {
   renderCollection();
 });
 $('#reset-collection-filter-sort').addEventListener('click', () => {
-  watchedYearFilter = 'all';
-  ratingFilter = 'all';
-  collectionSort = activeView === 'watchlist' ? 'priority-desc' : 'watched-desc';
+  watchedYearFilter = [];
+  ratingFilter = [];
+  priorityFilter = [];
+  collectionSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
   activeFilter = 'all';
   collectionPage = 0;
   $('#library-search').value = '';
-  document.querySelectorAll('.media-type-filter').forEach((button) => button.classList.toggle('active', button.dataset.filter === 'all'));
+  document.querySelectorAll('.type-switch-option, .media-type-filter').forEach((button) => button.classList.toggle('active', button.dataset.filter === 'all'));
   render();
 });
 window.addEventListener('hashchange', (event) => {
@@ -485,21 +817,31 @@ window.addEventListener('hashchange', (event) => {
   else if (wasViewingEntry && (!isViewingEntry || wasFullscreen)) restoreLibraryScrollPosition();
 });
 
-document.querySelectorAll('#collection-source-controls .library-view-option').forEach((button) => {
+document.querySelectorAll('#collection-source-controls .library-view-switcher > [data-view], #collection-source-controls .collection-view-switcher > [data-view]').forEach((button) => {
   button.addEventListener('click', () => {
-    const folderSelected = activeView === 'logged' && activeCollectionId !== 'all';
-    activeView = folderSelected
+    const appScroller = $('.app-content-container');
+    const preservedScrollTop = appScroller?.scrollTop;
+    const previousSnapType = appScroller?.style.scrollSnapType ?? '';
+    if (appScroller) appScroller.style.scrollSnapType = 'none';
+
+    const folderSelected = activeCollectionView === 'logged' && activeCollectionId !== 'all';
+    activeCollectionView = folderSelected
       ? button.dataset.view
-      : button.dataset.view === activeView
-        ? (activeView === 'logged' ? 'watchlist' : 'logged')
+      : button.dataset.view === activeCollectionView
+        ? (activeCollectionView === 'logged' ? 'watchlist' : 'logged')
         : button.dataset.view;
-    if (activeView === 'logged') activeCollectionId = 'all';
+    if (activeCollectionView === 'logged') activeCollectionId = 'all';
     collectionPage = 0;
     updateViewTabs();
     resetBannerTimer();
     $('#banner').classList.remove('is-sliding');
     render();
+    if (appScroller && preservedScrollTop !== undefined) appScroller.scrollTop = preservedScrollTop;
     requestAnimationFrame(() => {
+      if (appScroller && preservedScrollTop !== undefined) {
+        appScroller.scrollTop = preservedScrollTop;
+        appScroller.style.scrollSnapType = previousSnapType;
+      }
       $('#banner').classList.add('is-sliding');
       setTimeout(() => $('#banner').classList.remove('is-sliding'), 600);
     });

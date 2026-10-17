@@ -1,0 +1,347 @@
+/* Shared translucent surfaces enabled by the glass theme. */
+
+/* Apply theme glass by box level so the shared surface classes stay reusable. */
+:root[data-theme-glass="on"] .level-0-styling {
+  border-color: var(--color-border-glass-level-1);
+  background: color-mix(in srgb, var(--color-surface-level-0) var(--opacity-glass-level-0), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-glass-level-1);
+}
+
+:root[data-theme-glass="on"] .level-1-styling {
+  border-color: var(--color-border-glass-level-1);
+  background: color-mix(in srgb, var(--color-surface-level-1) var(--opacity-glass-level-1), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-glass-level-1);
+}
+
+:root[data-theme-glass="on"] .level-2-styling {
+  border-color: var(--color-border-glass-level-2);
+  background: color-mix(in srgb, var(--color-surface-level-2) var(--opacity-glass-level-2), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-glass-level-2);
+}
+
+:root[data-theme-glass="on"] .level-3-styling {
+  border-color: var(--color-border-glass-level-3);
+  background: color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-level-3), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-glass-level-3);
+}
+
+/* Apply the shared level-four opacity to the smallest nested controls. */
+:root[data-theme-glass="on"] .level-4-styling {
+  border-color: var(--color-border-glass-level-3);
+  background: color-mix(in srgb, var(--color-surface-level-4) var(--opacity-glass-level-4), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-glass-level-3);
+}
+
+/* Keep the create-entry action red while giving it the shared level-three glass depth. */
+:root[data-theme-glass="on"] .workspace-create-entry-button.level-3-styling {
+  border-color: var(--color-border-glass-level-3);
+  background: color-mix(in srgb, var(--color-button-primary) max(70%, var(--opacity-glass-level-3)), transparent);
+  box-shadow: var(--shadow-glass-level-3);
+}
+
+:root[data-theme-glass="on"] .workspace-create-entry-button.level-3-styling:hover {
+  background: color-mix(in srgb, var(--color-button-primary-hover) max(70%, var(--opacity-glass-level-3)), transparent);
+}
+
+/* Add a subtle glass rim and reflection to every shared poster without blurring its artwork. */
+:root[data-theme-glass="on"] .banner-poster {
+  border: 1px solid color-mix(in srgb, var(--color-glass-highlight) 55%, transparent);
+  box-shadow: inset 0 1px 0 var(--color-glass-highlight), var(--shadow-glass-level-3);
+}
+:root[data-theme-glass="on"] .banner-poster::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(145deg, var(--color-glass-highlight), transparent 42%);
+  content: "";
+  pointer-events: none;
+}
+
+/* SECTION Dashboard panels and controls */
+/* Apply translucent fills and shared elevation to outer app panels. */
+:root[data-theme-glass="on"] .dashboard-info-container,
+:root[data-theme-glass="on"] .dashboard-controls-container,
+:root[data-theme-glass="on"] .dashboard-page-container,
+:root[data-theme-glass="on"] .statsbar-container,
+:root[data-theme-glass="on"] .workspace-container {
+  border-color: var(--color-border-glass-level-1);  /* Match the former outer-panel glass border. */
+  background:                                      
+    color-mix(in srgb, var(--color-surface-level-1)
+    var(--opacity-glass-level-1), transparent);     /* Follow the level-one glass opacity. */         
+  box-shadow: var(--shadow-glass-level-1);          /* Add glass highlights and depth. */
+}
+
+/* Avoid repainting large app surfaces with backdrop blur during scrolling. */
+:root[data-theme-glass="on"] :is(
+  .app-container,
+  .app-content-frame,
+  .dashboard-info-container,
+  .dashboard-controls-container,
+  .dashboard-page-container,
+  .statsbar-container,
+  .workspace-container
+) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Give inner controls their shared glass appearance. */
+:root[data-theme-glass="on"] .dashboard-brand-button,
+:root[data-theme-glass="on"] .dashboard-git-button,
+:root[data-theme-glass="on"] .dashboard-version,
+:root[data-theme-glass="on"] .dashboard-back-button,
+:root[data-theme-glass="on"] .dashboard-theme-button,
+:root[data-theme-glass="on"] .dashboard-settings-button,
+:root[data-theme-glass="on"] .dashboard-activity-button,
+:root[data-theme-glass="on"] .dashboard-storage-container,
+:root[data-theme-glass="on"] .overview-banner-controls-layout > button,
+:root[data-theme-glass="on"] .statsbar-card,
+:root[data-theme-glass="on"] .workspace-controls-container,
+:root[data-theme-glass="on"] .workspace-banner-container {
+  border-color: var(--color-border-glass-level-2);  /* Match the former inner-box glass border. */ 
+  background:                                      
+    color-mix(in srgb, var(--color-surface-level-2)
+    var(--opacity-glass-level-2), transparent);     /* Tint translucent level-two controls. */               
+  -webkit-backdrop-filter: none;                    /* Preserve the former crisp inner surfaces. */
+  backdrop-filter: none;                            /* The old level-two boxes were not blurred. */
+  box-shadow: var(--shadow-glass-level-2);          /* Add glass edges and depth. */               
+  transition:                                      
+    box-shadow 160ms ease,                         
+    background 160ms ease,                         
+    border-color 160ms ease;                        /* Smooth glass state changes. */
+}
+
+/* Give shared level-two app surfaces the same glass hover treatment. */
+:root[data-theme-glass="on"] :is(
+  .dashboard-brand-button,
+  .dashboard-git-button,
+  .dashboard-back-button,
+  .dashboard-theme-button,
+  .dashboard-settings-button,
+  .dashboard-activity-button,
+  .dashboard-storage-container,
+  .library-page-button,
+  .stats-page-button,
+  .overview-banner-controls-layout > button,
+  .overview-banner-container,
+  .workspace-banner-container
+):hover {
+  border-color: var(--color-border-glass-level-2-hover); /* Match the former brighter inner-box border. */ 
+  background: var(--color-surface-glass-level-2-hover);  /* Match the former subtly brightened fill. */    
+  -webkit-backdrop-filter: none;                         /* Keep the old hover surface crisp. */           
+  backdrop-filter: none;                                 /* The former hover treatment did not add blur. */
+  box-shadow: var(--shadow-glass-level-2-hover); /* Keep the regular glass hover depth without a control halo. */
+}
+
+/* Keep each entry card translucent while its hover tint is drawn above the surface. */
+:root[data-theme-glass="on"] .workspace-banner-container {
+  background-color: color-mix(in srgb, var(--color-surface-level-2) var(--opacity-glass-level-2), transparent);
+}
+
+/* Preserve the wordmark's gradient while it follows the glass-opacity setting. */
+:root[data-theme-glass="on"] .dashboard-brand-button:hover {
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--dashboard-brand-hover-start) var(--opacity-glass-level-2), transparent),
+    color-mix(in srgb, var(--dashboard-brand-hover-end) var(--opacity-glass-level-2), transparent)
+  );
+}
+
+/* !SECTION */
+
+/* SECTION Dashboard navigation */
+/* Give navigation buttons a glass surface when the glass theme is enabled. */
+:root[data-theme-glass="on"] :is(.library-page-button, .stats-page-button) {
+  border-color: var(--color-border-glass-level-2);     /* Match the former inner-box glass border. */
+  background: color-mix(                              
+    in srgb,                                          
+    var(--color-surface-level-2)                      
+    var(--opacity-glass-level-2),                     
+    transparent                                       
+  );                                                   /* Tint translucent buttons. */
+  -webkit-backdrop-filter: none;                       /* Preserve the former crisp navigation surface. */
+  backdrop-filter: none;                               /* The old level-two buttons were not blurred. */
+  box-shadow: var(--shadow-glass-level-2);             /* Use the shared inner-level glass elevation. */
+}
+
+/* !SECTION */
+
+/* SECTION Popup menus */
+/* Let the level classes supply the matching menu, options-container, and option surfaces. */
+:root[data-theme-glass="on"] .menu-container.level-1-styling {
+  background: color-mix(in srgb, var(--color-surface-level-1) min(100%, calc(var(--opacity-glass-level-1) + 30%)), transparent);
+}
+
+:root[data-theme-glass="on"] .menu-container .menu-option:not(.menu-option-value):is(:hover, .active) {
+  border-color: var(--color-border-accent-muted);
+  background: var(--color-surface-hover);
+  color: var(--color-text-accent);
+}
+
+:root[data-theme-glass="on"] .workspace-value-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
+:root[data-theme-glass="on"] .workspace-year-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
+:root[data-theme-glass="on"] .workspace-sort-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]) {
+  border-color: var(--color-border-accent-muted);
+  background: var(--color-surface-hover);
+  color: var(--color-text-accent);
+}
+
+:root[data-theme-glass="on"] .menu-container .create-folder-option {
+  border-color: color-mix(in srgb, var(--palette-yellow) 70%, var(--color-border-glass-level-3));
+  background: color-mix(
+    in srgb,
+    var(--palette-yellow) var(--opacity-glass-level-3),
+    transparent
+  );
+  color: var(--color-background-app);
+}
+
+:root[data-theme-glass="on"] .menu-container .create-folder-option:hover {
+  background: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--palette-yellow) 92%, white) var(--opacity-glass-level-3),
+    transparent
+  );
+}
+
+/* Use solid menu surfaces when glass transparency is disabled or set to fully opaque. */
+:root[data-theme-glass="on"][data-glass-transparency="off"] .level-3-styling,
+:root[data-theme-glass="on"][data-glass-opaque="on"] .level-3-styling {
+  background: var(--color-surface-level-3);
+}
+
+:root[data-theme-glass="on"][data-glass-opaque="on"] :is(.navbar-vertical-layout, .navbar-horizontal-layout) .level-2-styling {
+  background: var(--color-surface-level-2);
+}
+
+:root[data-theme-glass="on"][data-glass-opaque="on"] :is(.navbar-vertical-layout, .navbar-horizontal-layout) .level-3-styling {
+  background: var(--color-surface-level-3);
+}
+
+:root[data-theme-glass="on"] .app-container.is-sidebar-collapsed .nav-profile-picture {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container,
+:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container {
+  background: var(--color-surface-level-1);
+}
+
+:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-options-container,
+:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-options-container {
+  background: var(--color-surface-level-2);
+}
+
+:root[data-theme-glass="on"][data-glass-transparency="off"] .workspace-value-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
+:root[data-theme-glass="on"][data-glass-transparency="off"] .workspace-year-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
+:root[data-theme-glass="on"][data-glass-transparency="off"] .workspace-sort-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
+:root[data-theme-glass="on"][data-glass-opaque="on"] .workspace-value-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
+:root[data-theme-glass="on"][data-glass-opaque="on"] .workspace-year-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
+:root[data-theme-glass="on"][data-glass-opaque="on"] .workspace-sort-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]) {
+  border-color: var(--color-border-accent-muted);
+  background: var(--color-surface-hover);
+  color: var(--color-text-accent);
+}
+
+:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .menu-option:not(.menu-option-value),
+:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .menu-option:not(.menu-option-value) {
+  background: var(--color-surface-level-3);
+}
+
+:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .menu-option:not(.menu-option-value):is(:hover, .active),
+:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .menu-option:not(.menu-option-value):is(:hover, .active) {
+  background: var(--color-surface-hover);
+}
+
+:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .create-folder-option,
+:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .create-folder-option {
+  background: var(--palette-yellow);
+}
+
+:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .create-folder-option:hover,
+:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .create-folder-option:hover {
+  background: color-mix(in srgb, var(--palette-yellow) 92%, white);
+}
+/* !SECTION */
+
+/* SECTION Label chips */
+/* Keep small text and media-type chips translucent without per-chip backdrop blur. */
+/* Base classes: .text-chip-styling, .category-chip-styling */
+:root[data-theme-glass="on"] .text-chip-styling,
+:root[data-theme-glass="on"] .category-chip-styling,
+:root[data-theme-glass="on"] .type-chip-styling {
+  border-color: var(--color-border-glass-level-3);
+  box-shadow: var(--shadow-glass-level-3);
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+:root[data-theme-glass="on"] .text-chip-styling,
+:root[data-theme-glass="on"] .type-chip-styling {
+  background: color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-chip), transparent);
+}
+
+/* Keep the poster's media-type chip slightly more opaque for legibility. */
+:root[data-theme-glass="on"] .banner-type {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-level-3) calc(var(--opacity-glass-chip) + 40%),
+    transparent
+  );
+}
+
+/* Keep each category's color visible through the translucent tag surface. */
+:root[data-theme-glass="on"] .category-chip-styling:not(.is-placeholder) {
+  border-color: color-mix(in srgb, var(--category-chip-border) 55%, var(--color-border-glass-level-3));
+  background: color-mix(in srgb, var(--category-chip-background) var(--opacity-glass-chip), transparent);
+}
+/* !SECTION */
+
+/* SECTION Value chips */
+/* Keep colored value fills while adding the shared glass-depth shadow. */
+/* Base class: .value-chip-styling */
+:root[data-theme-glass="on"] .value-chip-styling {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 32%, transparent),
+    var(--shadow-glass-level-3);
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+:root[data-theme-glass="on"][data-value-chip-fill="off"] .value-chip-styling {
+  border: 1px solid color-mix(in srgb, var(--value-chip-color) 42%, var(--color-border-glass-level-3));
+  background: color-mix(
+    in srgb,
+    var(--value-chip-color) 2%,
+    color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-chip), transparent)
+  );
+  box-shadow: var(--shadow-glass-level-3);
+}
+/* !SECTION */
+
+/* SECTION Storage controls */
+/* Match the inset save control to other level-three surfaces. */
+:root[data-theme-glass="on"] .dashboard-save-button {
+  border-color: var(--color-border-glass-level-3); /* Match the former nested-tile glass border. */
+  background: color-mix(
+    in srgb, 
+    var(--color-surface-level-3)          
+    var(--opacity-glass-level-3),         
+    transparent                           
+  );                                       /* Follow the shared level-three opacity. */
+  -webkit-backdrop-filter: none;           /* Preserve the former crisp nested tile. */
+  backdrop-filter: none;                   /* The old level-three tiles were not blurred. */
+  box-shadow: var(--shadow-glass-level-3); /* Add glass tile depth. */
+}
+
+/* !SECTION */

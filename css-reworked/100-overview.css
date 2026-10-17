@@ -1,54 +1,106 @@
-/* Overview grid shared by the dashboard rail, banner, and statsbar. */
+/* Overview grid for the dashboard rail, banner, and statsbar. */
 
 /* SECTION Overview grid */
 /* Place the stats above the banner beside the dashboard rail. */
-.overview {                                    
-  display: grid;              /* Place dashboard beside featured content. */     
+.overview-layout {
+  display: grid;
   grid-template-columns:
-    minmax(max-content, auto)
-    minmax(0, 1fr);           /* Reserve the rail and shared content column. */
-  grid-template-rows: auto auto; /* Stack stats above the featured banner. */
-  align-items: stretch;       /* Let components fill their grid areas. */        
-  gap: var(--spacing-level-0); /* Separate the dashboard, banner, and stats. */   
-  margin-bottom: var(--spacing-level-0); /* Separate the overview from the workspace. */
+    /* minmax(max-content, auto) */
+    minmax(180px, 200px)
+    minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: stretch;
+  gap: calc(var(--spacing-level-0) + 4px);
+  margin-bottom: calc(var(--spacing-level-0) + 4px);
+  scroll-margin-block-start: var(--padding-block-layout-content);
+  scroll-snap-align: start;
 }
 
-/* Stack dashboard components in the overview's left rail. */
-.overview > .dashboard {
-  grid-column: 1;             /* Keep dashboard controls in the rail. */   
-  grid-row: 1;                /* Align the rail with banner and stats. */  
-  display: flex;              /* Stack app controls and page navigation. */
-  flex-direction: column;     /* Keep the rail vertical. */                
-  gap: var(--spacing-level-0); /* Separate dashboard info, controls, and page panels. */             
-  min-width: 0;               /* Prevent contents forcing a wider rail. */
-  justify-content: space-between; /* Distribute spare height evenly between the three panels. */
+/* Keep the dashboard rail alongside both overview content rows. */
+.overview-layout > .dashboard-layout {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  min-width: 0;
 }
 
-/* Let the dashboard span the stats and banner rows. */
-.overview > .dashboard { grid-column: 1; grid-row: 1 / span 2; }
-.overview > .statsbar { grid-column: 2; grid-row: 1; min-width: 0; margin: 0; }
-/* Base class: .banner */
-.overview > .main-banner { grid-column: 2; grid-row: 2; min-width: 0; }
+/* Place the statsbar and featured banner in the content column. */
+.overview-layout > .statsbar-container {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  margin: 0;
+}
 
+.overview-layout > .overview-banner-container {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+}
 /* !SECTION */
 
-/* SECTION Narrow overview */
-/* Keep the stats summary above the featured banner in compact layout. */
-@container app-content (width < 900px) {
-  .overview { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; }
-  .overview > .dashboard {
+/* SECTION Navbar-first overview */
+/* Hide the duplicate dashboard rail while the navbar is the primary navigation. */
+:root[data-dashboard-mode="navbar"] .overview-layout {
+  grid-template-columns: minmax(220px, .28fr) minmax(0, 1fr) minmax(216px, .28fr);
+  grid-template-rows: auto;
+}
+
+/* Stretch the stats and details panels to the banner's shared grid-row height. */
+:root[data-dashboard-mode="navbar"] .overview-layout > :is(.statsbar-container, .overview-banner-container, .banner-details-container) {
+  align-self: stretch;
+  min-height: 0;
+}
+
+:root[data-dashboard-mode="navbar"] .overview-layout > .dashboard-layout {
+  display: none;
+}
+
+/* Reserve the detail panel for the navbar overview layout. */
+:root[data-dashboard-mode="dashboard"] .overview-layout > .banner-details-container {
+  display: none;
+}
+
+/* Place stats to the banner's left and details to its right. */
+:root[data-dashboard-mode="navbar"] .overview-layout > .statsbar-container {
+  grid-column: 1;
+  grid-row: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+:root[data-dashboard-mode="navbar"] .overview-layout > .overview-banner-container {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+:root[data-dashboard-mode="navbar"] .overview-layout > .banner-details-container {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+/* Keep the three overview panels stacked when the available width is tight. */
+@container app-content (width < 1100px) {
+  :root[data-dashboard-mode="navbar"] .overview-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+  }
+
+  :root[data-dashboard-mode="navbar"] .overview-layout > .statsbar-container {
     grid-column: 1;
     grid-row: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto;
-    align-items: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 640px;
   }
-  .overview > .dashboard-info { grid-column: 1; grid-row: 1; }
-  .overview > .dashboard-controls { grid-column: 1; grid-row: 2; }
-  .overview > .dashboard-page { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
-  .overview > .statsbar { grid-column: 1; grid-row: 2; }
-  /* Base class: .banner */
-  .overview > .main-banner { grid-column: 1; grid-row: 3; }
+
+  :root[data-dashboard-mode="navbar"] .overview-layout > .overview-banner-container {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  :root[data-dashboard-mode="navbar"] .overview-layout > .banner-details-container {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: stretch;
+    block-size: auto;
+  }
 }
 /* !SECTION */

@@ -8,7 +8,7 @@ function updateEntryModeSwitcher() {
   const destination = formEntryMode === 'watchlist' ? 'watchlist' : 'library';
   $('.watch-panel-heading h3').textContent = `Log to ${destination}`;
   $('.watch-rating-panel').setAttribute('aria-label', `Log to ${destination}`);
-  document.querySelectorAll('#entry-mode-switcher .library-view-option').forEach((button) => {
+  document.querySelectorAll('#entry-mode-switcher > [data-view]').forEach((button) => {
     const selected = button.dataset.view === formEntryMode;
     button.classList.toggle('active', selected);
     button.setAttribute('aria-selected', String(selected));
@@ -469,7 +469,7 @@ async function imageToPoster(file) {
 // Watch dialog
 
 /** Opens and initializes the add, edit, or rewatch dialog. */
-function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly = false, sourceView = activeView) {
+function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly = false, sourceView = activeCollectionView) {
   editingId = id;
   formEntryMode = sourceView;
   const isWatchlist = formEntryMode === 'watchlist';
@@ -583,7 +583,7 @@ function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly =
 
 $('#open-add').addEventListener('click', () => openDialog());
 $('#entry-mode-switcher').addEventListener('click', (event) => {
-  const option = event.target.closest('.library-view-option');
+  const option = event.target.closest('[data-view]');
   if (!option) return;
   const selectedMode = option.dataset.view;
   const nextMode = selectedMode === formEntryMode
@@ -591,7 +591,7 @@ $('#entry-mode-switcher').addEventListener('click', (event) => {
     : selectedMode;
   setFormEntryMode(nextMode);
 });
-keepControlOrderUntilCollapsed($('#entry-mode-switcher'), '.library-view-option');
+keepControlOrderUntilCollapsed($('#entry-mode-switcher'), '[data-view]');
 const entryFolderPicker = $('#entry-folder-picker');
 const entryFolderMenu = $('#entry-folder-options');
 const entryFolderButton = $('#entry-folder-button');

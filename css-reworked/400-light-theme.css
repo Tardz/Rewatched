@@ -1,0 +1,138 @@
+/* Light theme overrides for the shared reworked design tokens. */
+
+/* SECTION Light theme tokens */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* Use dark, readable text and softly contrasted neutral surfaces. */
+  --color-text-primary: #202733;
+  --color-text-secondary: #687384;
+  --color-text-muted-bright: #687384;
+  --color-text-on-surface: #384455;
+  --color-text-accent: #155d89;
+  --color-icon-default: #687384;
+  --color-icon-folder: #c18a00;
+
+  --color-background-app: #eef2f6;
+  --color-surface-panel: #ffffff;
+  --color-surface-level-base: #e3e9ef;
+  --color-surface-level-0: #eef2f6;
+  --color-surface-level-1: #ffffff;
+  --color-surface-level-2: #f4f6f9;
+  --color-surface-level-3: #e8edf2;
+  --color-surface-level-4: #f7f9fb;
+  --color-surface-detail: #f7f9fb;
+  --color-surface-accent: #dcecf6;
+  --color-surface-hover: #e8edf2;
+  --color-surface-deep: #f1f4f8;
+
+  /* Keep outlines visible without making the light panels feel heavy. */
+  --color-border-subtle: #cbd3dd;
+  --color-border-strong: #9eacbc;
+  --color-border-control-subtle: #c1cad5;
+  --color-border-accent-muted: #7fa9c3;
+  --color-accent-primary: #155d89;
+
+  /* Use deeper versions of the pastel palette for readable active states. */
+  --palette-grey: #687384;
+  --palette-purple: #7855a6;
+  --palette-red: #d95560;
+  --palette-orange: #df6b12;
+  --palette-orange-strong: #e66e00;
+  --palette-blue: #2376a8;
+  --palette-green: #286247;
+  --palette-yellow: #967100;
+  --color-brand-mark: #d95560;
+
+  --color-button-primary: #df504d;
+  --color-button-primary-hover: #c94142;
+  --color-text-on-primary: #ffffff;
+  --color-storage-saved-border: #6ca58e;
+  --color-rating-neutral: #8a96a6;
+  --color-title-outline: #202733cc;
+  --color-title-glow: #6485a54d;
+  --opacity-glass-level-1: min(100%, calc(var(--glass-surface-opacity, 80%) + 20%));
+  --opacity-glass-chip: 82%;
+
+  /* Lighten the poster wash while retaining the shared strength control. */
+  --color-poster-fallback-one: #dce5e9;
+  --color-poster-fallback-two: #e2e1e7;
+  --tint-white-poster-gradient: 14%;
+  --factor-theme-poster-background: 1;
+  --strength-overview-banner-poster-one: 32%;
+  --strength-overview-banner-poster-two: 24%;
+  --strength-overview-banner-overlay-poster: 14%;
+  --color-overview-banner-overlay-start: #ffffff70;
+  --color-overview-banner-overlay-end: #ffffff30;
+
+  /* Replace dark glass rims and shadows with cool, softer light-theme depth. */
+  --color-glass-highlight: #ffffffc7;
+  --color-border-highlight: #ffffffa0;
+  --shadow-color-black-strong: #26344260;
+  --shadow-color-black-medium: #26344224;
+  --shadow-color-black-31: #26344238;
+  --shadow-color-inset: #ffffffa0;
+  --shadow-color-glass-edge: #52677f16;
+  --shadow-color-glass: #52677f32;
+  --shadow-color-glass-contact: #52677f24;
+}
+
+/* Lighten and soften the recessed sidebar separators for light surfaces. */
+:root[data-theme="light"] .nav-separator {
+  background: color-mix(in srgb, var(--color-surface-level-base) 60%, var(--color-border-strong));
+  box-shadow:
+    0 -1px 0 color-mix(in srgb, var(--color-border-strong) 25%, transparent),
+    0 1px 0 color-mix(in srgb, var(--color-surface-level-3) 25%, transparent);
+  opacity: 0.82;
+}
+
+/* Give category labels a light tint while retaining their hue identity. */
+:root[data-theme="light"] .category-chip-styling:not(.is-placeholder) {
+  --category-chip-border: hsl(var(--category-hue) 38% 62%);
+  --category-chip-background: hsl(var(--category-hue) 55% 90%);
+  --category-chip-text: hsl(var(--category-hue) 48% 32%);
+}
+
+/* Use tinted fills and matching dark text for values on light surfaces. */
+:root[data-theme="light"] .value-chip-styling {
+  border-color: color-mix(in srgb, var(--value-chip-color) 48%, var(--color-border-subtle));
+  background: color-mix(in srgb, var(--value-chip-color) 22%, white);
+  box-shadow: var(--shadow-value-badge);
+  color: var(--value-chip-color);
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
+:root[data-theme="light"][data-theme-glass="on"] .value-chip-styling {
+  border-color: color-mix(in srgb, var(--value-chip-color) 48%, var(--color-border-glass-level-3));
+  background: color-mix(
+    in srgb,
+    var(--value-chip-color) 22%,
+    color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-chip), transparent)
+  );
+  box-shadow: var(--shadow-glass-level-3);
+}
+
+/* Preserve the muted chip option as a lighter tint in light mode. */
+:root[data-theme="light"][data-value-chip-fill="off"] .value-chip-styling {
+  border-color: color-mix(in srgb, var(--value-chip-color) 42%, var(--color-border-subtle));
+  background: color-mix(in srgb, var(--value-chip-color) 9%, white);
+  box-shadow: var(--shadow-value-badge);
+  color: var(--value-chip-color);
+}
+
+:root[data-theme="light"][data-theme-glass="on"][data-value-chip-fill="off"] .value-chip-styling {
+  border-color: color-mix(in srgb, var(--value-chip-color) 42%, var(--color-border-glass-level-3));
+  background: color-mix(
+    in srgb,
+    var(--value-chip-color) 9%,
+    color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-chip), transparent)
+  );
+  box-shadow: var(--shadow-glass-level-3);
+}
+
+/* Replace the dark-only inset highlight on rating tracks with a light border. */
+:root[data-theme="light"] .ratings-meter {
+  box-shadow: inset 0 0 0 1px var(--color-border-subtle);
+}
+/* !SECTION */

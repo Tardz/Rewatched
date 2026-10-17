@@ -1,0 +1,719 @@
+/* SECTION settings-container */
+/* Present settings as a level-one dialog with separate level-two navigation and content surfaces. */
+#settings-dialog.settings-container.level-1-styling[open] {
+  --settings-category-icon-size: 40px;
+  position: fixed;
+  z-index: 1000;
+  top: var(--settings-anchor-y, 50%);
+  left: var(--settings-anchor-x, 50%);
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: stretch;
+  gap: calc(var(--spacing-level-1) + 3px);
+  width: min(680px, calc(100vw - 64px));
+  max-width: calc(100vw - 64px);
+  height: min(68dvh, 600px);
+  max-height: min(68dvh, 600px);
+  margin: 0;
+  padding: calc(var(--spacing-level-1) + 3px);
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+
+/* Keep the settings shell more opaque than other level-one surfaces. */
+:root[data-theme-glass="on"] #settings-dialog.settings-container {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-level-1) max(94%, var(--opacity-glass-level-1)),
+    transparent
+  );
+}
+
+/* Keep native form controls matched to the dark default theme. */
+:root:not([data-theme="light"]) #settings-dialog.settings-container {
+  color-scheme: dark;
+}
+
+/* Keep app content blurred and intercept its clicks without blocking the navbar. */
+.app-content-frame {
+  position: relative;
+}
+
+:root:has(#settings-dialog[open]) .app-content-frame::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: "";
+}
+
+/* Blur only the page content while the non-modal settings dialog is open. */
+.app-content-container {
+  transition: filter 180ms ease;
+}
+
+:root:has(#settings-dialog[open]) .app-content-container {
+  filter: blur(4px);
+}
+/* !SECTION */
+
+/* SECTION settings-category-container */
+/* Style and vertically arrange category buttons inside the level-two surface. */
+.settings-category-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-level-2);
+  width: max-content;
+  max-width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding-block: calc(var(--spacing-level-2) - 1px);
+  padding-inline: calc(var(--spacing-level-2) + 2px);
+}
+
+/* Lay out category controls without giving the buttons a surface of their own. */
+.settings-category-button {
+  appearance: none;
+  display: grid;
+  grid-template-columns: var(--settings-category-icon-size) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--spacing-level-1);
+  min-height: var(--size-dashboard-control);
+  padding: 0;
+  padding-right: var(--spacing-level-3);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-secondary);
+  --app-icon-state-color: var(--color-text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Match each category icon to the UML's nested level-four icon box. */
+.settings-category-icon {
+  display: grid;
+  place-items: center;
+  width: var(--settings-category-icon-size);
+  height: var(--settings-category-icon-size);
+}
+
+/* Size the shared masked icon inside its level-four icon box. */
+.settings-category-icon > .masked-icon {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
+}
+
+/* Let the shared app-text base provide category label typography. */
+.settings-category-text {
+  min-width: 0;
+  overflow: hidden;
+  color: inherit;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.settings-category-button:hover,
+.settings-category-button:focus-visible {
+  color: var(--color-text-secondary);
+  --app-icon-state-color: var(--color-text-primary);
+}
+
+.settings-category-button.active {
+  color: var(--color-text-primary);
+  --app-icon-state-color: var(--color-text-primary);
+}
+
+/* Anchor About at the bottom of the vertical category navigation. */
+.settings-category-container > .settings-category-button[data-settings-category="about"] {
+  margin-top: auto;
+}
+/* !SECTION */
+
+/* SECTION settings-content-container */
+/* Keep category content inside its scrollable level-two surface. */
+.settings-content-container {
+  --settings-thumb-size: 16px;
+  --settings-thumb-radius: var(--radius-chip);
+  --settings-thumb-color: #fff;
+  container: settings-content / inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--spacing-level-2);
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding-block: calc(var(--spacing-level-1) + 4px);
+  padding-inline: calc(var(--spacing-level-1) + 2px);
+}
+
+/* Give standalone options the same gap used between options inside a group. */
+.settings-content-container > [data-settings-panel] {
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-level-1);
+  min-width: 0;
+}
+
+/* Keep a larger break where a settings group begins or ends. */
+.settings-content-container > [data-settings-panel] > .settings-option-group + *,
+.settings-content-container > [data-settings-panel] > * + .settings-option-group {
+  margin-top: calc(var(--spacing-level-0) - var(--spacing-level-1));
+}
+
+.settings-content-container > [data-settings-panel][hidden] {
+  display: none;
+}
+
+/* Group related appearance choices in a level-three surface. */
+.settings-content-container .settings-option-group {
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-level-1);
+  min-width: 0;
+  padding: var(--spacing-level-1);
+}
+
+/* Place related compact options side by side inside a group. */
+.settings-content-container .settings-option-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-level-1);
+  min-width: 0;
+}
+
+.settings-content-container .settings-storage-row {
+  align-items: start;
+}
+
+.settings-content-container .settings-storage-row.has-browser-notice {
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+}
+
+.settings-content-container .settings-file-notice {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--spacing-level-1);
+  align-self: stretch;
+  min-width: 0;
+}
+
+.settings-content-container .settings-storage-row:not(.has-browser-notice) .settings-load-layout {
+  grid-column: 1 / -1;
+}
+
+.settings-content-container .settings-file-notice > button {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-level-1);
+  justify-self: start;
+  color: var(--color-text-secondary);
+  direction: ltr;
+}
+
+.settings-content-container .settings-save-group {
+  grid-column: 1 / -1;
+}
+
+.settings-content-container .settings-load-layout {
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-level-2);
+  min-width: 0;
+}
+
+@container settings-content (width < 460px) {
+  .settings-content-container .settings-option-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Give each group title a compact level-four surface aligned with its rows. */
+.settings-content-container .settings-option-group > h3,
+.settings-content-container .settings-option-group > .settings-heading-layout > h3 {
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+  padding-block: var(--spacing-level-2);
+  padding-inline: var(--spacing-level-1);
+  border-radius: var(--radius-control-small);
+  color: var(--color-text-primary);
+  font: var(--font-weight-app) 14px var(--font-family-app);
+}
+
+/* Place group info icons in their own boxes beside the titles. */
+.settings-content-container .settings-heading-layout {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-level-2);
+  width: 100%;
+  max-width: 100%;
+}
+
+.settings-content-container .settings-heading-info {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  min-height: 30px;
+  margin-left: auto;
+  color: var(--color-text-secondary);
+}
+
+.settings-content-container .settings-heading-info::before {
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  content: "";
+  -webkit-mask: url("../assets/icons/filled/info.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/info.png") center / contain no-repeat;
+}
+
+/* Open group guidance beside the heading without moving the action buttons. */
+.settings-content-container .settings-heading-help {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + var(--spacing-level-2));
+  right: 0;
+  width: min(270px, calc(100cqi - 40px));
+  margin: 0;
+  padding: var(--spacing-level-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control-small);
+  background: var(--color-surface-level-2);
+  box-shadow: var(--shadow-surface-level-2);
+  color: var(--color-text-secondary);
+  font: 500 12px / 1.4 var(--font-family-app);
+}
+
+/* Keep the floating help readable over the settings surfaces in glass mode. */
+:root[data-theme-glass="on"] .settings-content-container .settings-heading-help {
+  background: color-mix(in srgb, var(--color-surface-level-2) 96%, transparent);
+}
+
+/* Keep standalone rows at level three and grouped rows at level four. */
+.settings-content-container .settings-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--spacing-level-0) + var(--spacing-level-1));
+  min-width: 0;
+  min-height: 54px;
+  margin: 0;
+  padding: 10px;
+}
+
+/* Allow the option label to shrink without pushing its control. */
+.settings-content-container .settings-option > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.settings-content-container .settings-option strong {
+  display: block;
+  color: var(--color-text-secondary);
+  font: 600 14px var(--font-family-app);
+}
+
+.settings-content-container .settings-option small {
+  position: absolute;
+  z-index: 10;
+  bottom: calc(100% + var(--spacing-level-2));
+  left: var(--spacing-level-2);
+  width: max-content;
+  max-width: min(260px, calc(100% - 2 * var(--spacing-level-2)));
+  margin: 0;
+  padding: var(--spacing-level-1);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control-small);
+  background: var(--color-surface-level-2);
+  box-shadow: var(--shadow-surface-level-2);
+  color: var(--color-text-secondary);
+  font: 500 12px / 1.4 var(--font-family-app);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 120ms ease, visibility 0s linear 120ms;
+}
+
+/* Reveal help on hover or keyboard-visible focus without changing row height. */
+.settings-content-container .settings-option:not(.tooltip-dismissed):hover small,
+.settings-content-container .settings-option:has(:focus-visible) small {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Wait briefly on mouse hover, but show keyboard help immediately. */
+.settings-content-container .settings-option:not(.tooltip-dismissed):hover small {
+  transition-delay: 300ms, 300ms;
+}
+
+.settings-content-container .settings-option:has(:focus-visible) small {
+  transition-delay: 0s, 0s;
+}
+
+.settings-content-container .settings-option:hover,
+.settings-content-container .settings-option:has(:focus-visible) {
+  z-index: 2;
+}
+
+.settings-content-container .settings-option input[type="checkbox"] {
+  appearance: none;
+  position: relative;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-control-small);
+  background: var(--color-surface-level-1);
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.settings-content-container .settings-option input[type="checkbox"]::before {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: var(--settings-thumb-size);
+  height: var(--settings-thumb-size);
+  border-radius: var(--settings-thumb-radius);
+  background: var(--settings-thumb-color);
+  content: "";
+  transition: transform 140ms ease;
+}
+
+.settings-content-container .settings-option input[type="checkbox"]:checked {
+  background: var(--color-accent-primary);
+}
+
+.settings-content-container .settings-option input[type="checkbox"]:checked::before {
+  transform: translateX(16px);
+}
+
+.settings-content-container .settings-option input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Position the shared down icon over each settings dropdown. */
+.settings-content-container .settings-select {
+  position: relative;
+  display: block;
+  flex: 0 1 auto;
+  width: max-content;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.settings-content-container .settings-select::after {
+  position: absolute;
+  top: calc(50% + 1px);
+  right: var(--spacing-level-1);
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  background: var(--color-text-secondary);
+  content: "";
+  pointer-events: none;
+  -webkit-mask: url("../assets/icons/filled/down.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/down.png") center / contain no-repeat;
+}
+
+/* Base class: .level-4-styling. Keep settings choices compact and legible. */
+.settings-content-container .settings-option select {
+  appearance: none;
+  field-sizing: content;
+  width: auto;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 30px;
+  padding-inline: var(--spacing-level-1) 26px;
+  color: var(--color-text-primary);
+  font: 600 12px var(--font-family-app);
+  cursor: pointer;
+}
+
+.settings-content-container .settings-option select:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+.settings-content-container .settings-option-range label {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+/* Keep each live percentage immediately to the left of its slider. */
+.settings-content-container .settings-range-control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-level-2);
+  width: min(270px, 48%);
+  min-width: 0;
+  flex: 0 1 270px;
+}
+
+.settings-content-container .settings-range-control output {
+  flex: 0 0 4ch;
+  text-align: right;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.settings-content-container .settings-option-range input[type="range"] {
+  appearance: none;
+  width: 100%;
+  min-width: 0;
+  flex: 1 1 auto;
+  height: 20px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Show the selected portion on a thicker Settings slider track. */
+.settings-content-container .settings-option-range input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-chip);
+  background: linear-gradient(to right,
+    var(--color-accent-primary) var(--settings-range-progress, 0%),
+    var(--color-surface-level-1) var(--settings-range-progress, 0%));
+}
+
+.settings-content-container .settings-option-range input[type="range"]::-moz-range-track {
+  height: 6px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-chip);
+  background: linear-gradient(to right,
+    var(--color-accent-primary) var(--settings-range-progress, 0%),
+    var(--color-surface-level-1) var(--settings-range-progress, 0%));
+}
+
+/* Match the switch thumb while keeping it centered on the track. */
+.settings-content-container .settings-option-range input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: var(--settings-thumb-size);
+  height: var(--settings-thumb-size);
+  margin-top: -5px;
+  border: 0;
+  border-radius: var(--settings-thumb-radius);
+  background: var(--settings-thumb-color);
+}
+
+.settings-content-container .settings-option-range input[type="range"]::-moz-range-thumb {
+  width: var(--settings-thumb-size);
+  height: var(--settings-thumb-size);
+  border: 0;
+  border-radius: var(--settings-thumb-radius);
+  background: var(--settings-thumb-color);
+}
+
+.settings-content-container .settings-option-range input[type="range"]:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+.settings-content-container .settings-option-range input[type="range"]:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Use level-three surfaces to group related storage, integration, and about controls. */
+.settings-content-container .backup-settings {
+  min-width: 0;
+  padding: var(--spacing-level-1);
+}
+
+.settings-content-container .backup-settings:not(.settings-option-group) h3 {
+  margin: 0 0 var(--spacing-level-1);
+  color: var(--color-text-primary);
+  font: var(--font-weight-app) 16px var(--font-family-app);
+}
+
+.settings-content-container .backup-settings > p {
+  margin: 0 0 var(--spacing-level-1);
+  color: var(--color-text-secondary);
+  font: 500 12px / 1.5 var(--font-family-app);
+}
+
+.settings-content-container .backup-settings a {
+  color: var(--color-text-accent);
+}
+
+.settings-content-container .backup-actions,
+.settings-content-container .api-key-setting {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-level-1);
+}
+
+.settings-content-container .api-key-setting input {
+  min-width: 0;
+  flex: 1 1 220px;
+}
+
+.settings-content-container .backup-status,
+.settings-content-container .backup-summary {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-app);
+  font-size: 12px;
+}
+
+/* Keep the browser file limitation visible in its own level-three notice. */
+#file-storage-status {
+  position: relative;
+  align-self: stretch;
+  margin: 0;
+  padding: calc(var(--spacing-level-1) * 0.75);
+  font: 500 11px / 1.4 var(--font-family-app);
+  white-space: pre-line;
+}
+
+.settings-content-container .settings-status-message {
+  position: relative;
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  width: fit-content;
+  max-width: min(340px, 100%);
+  min-width: 0;
+  margin: 0;
+  padding-inline: var(--spacing-level-1);
+  border-radius: var(--radius-control-small);
+  font: 500 12px / 1.2 var(--font-family-app);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#file-storage-status::before,
+.settings-content-container .settings-status-message::before {
+  position: absolute;
+  inset: 1px;
+  border: 1px solid var(--settings-status-accent, var(--palette-yellow));
+  border-radius: calc(var(--radius-surface-level-3) - 1px);
+  content: "";
+  pointer-events: none;
+}
+
+.settings-content-container .settings-status-message[data-status="success"] {
+  --settings-status-accent: var(--palette-green);
+}
+
+.settings-content-container .settings-status-message[data-status="error"] {
+  --settings-status-accent: var(--palette-red);
+}
+
+.settings-content-container .settings-status-message[data-status="warning"] {
+  --settings-status-accent: var(--palette-yellow);
+}
+
+.settings-content-container .settings-status-message::before {
+  border-radius: calc(var(--radius-control-small) - 1px);
+}
+
+/* Keep Storage and Integrations on the same inset-control system as Appearance. */
+.settings-content-container .backup-settings.settings-option-group > p {
+  margin: 0;
+}
+
+.settings-content-container .backup-settings.settings-option-group .text-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-level-2);
+  min-height: 36px;
+  padding: 8px 12px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-app);
+  line-height: 1;
+}
+
+.settings-content-container .settings-action-icon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
+}
+
+.settings-content-container .backup-settings.settings-option-group > .text-button {
+  justify-self: start;
+}
+
+.settings-content-container .backup-settings.settings-option-group .api-key-setting input {
+  min-height: 36px;
+  padding: 8px 12px;
+  color: var(--color-text-primary);
+  font: 12px var(--font-family-app);
+}
+
+#settings-panel-storage .import-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-level-1);
+  min-width: 0;
+  margin: 0;
+  padding: var(--spacing-level-1);
+  border-color: var(--color-border-subtle);
+  color: var(--color-text-secondary);
+  font: 12px var(--font-family-app);
+}
+
+#settings-panel-storage .import-options[hidden] {
+  display: none;
+}
+/* !SECTION */
+
+/* SECTION settings responsive layout */
+/* Keep category navigation and content usable in a narrow settings dialog. */
+@media (max-width: 700px) {
+  #settings-dialog.settings-container.level-1-styling[open] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    width: calc(100vw - 40px);
+    max-width: calc(100vw - 40px);
+    height: min(76dvh, 700px);
+    max-height: 76dvh;
+    gap: var(--spacing-level-0);
+    padding: var(--spacing-level-0);
+  }
+
+  .settings-category-container {
+    flex-direction: row;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .settings-category-container > .settings-category-button[data-settings-category="about"] {
+    margin-top: 0;
+  }
+
+  .settings-category-button {
+    width: auto;
+    min-width: max-content;
+  }
+
+  .settings-content-container {
+    min-height: 0;
+  }
+
+  .settings-content-container .settings-option {
+    align-items: flex-start;
+    gap: var(--spacing-level-1);
+  }
+
+}
+/* !SECTION */

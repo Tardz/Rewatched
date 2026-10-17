@@ -2,6 +2,25 @@
 // Portable JSON backups for entries and the watchlist.
 
 let selectedBackup = null;
+let backupStatusTimer = null;
+
+/** Shows a backup result with its matching status color. */
+function setBackupStatus(message, type = 'warning') {
+  const status = $('#backup-status');
+  clearTimeout(backupStatusTimer);
+  status.textContent = message;
+  status.hidden = !message;
+  if (message) status.dataset.status = type;
+  else delete status.dataset.status;
+  if (message) {
+    backupStatusTimer = setTimeout(() => {
+      if (status.textContent !== message) return;
+      status.textContent = '';
+      status.hidden = true;
+      delete status.dataset.status;
+    }, 4000);
+  }
+}
 
 /** Updates the backup dialog with a summary of the current data. */
 function updateBackupSummary() {
@@ -13,7 +32,7 @@ function updateBackupSummary() {
 /** Validates and normalizes a string field from imported backup data. */
 function backupString(value, name, optional = false) {
   if (optional && (value === undefined || value === null)) return '';
-  if (typeof value !== 'string') throw new Error(`Invalid ${name} in backup.`);
+  if (typeof value !== 'string') throw new Error(`Invalid ${name} in this file.`);
   return value;
 }
 
@@ -21,7 +40,7 @@ function backupString(value, name, optional = false) {
 function backupPoster(value) {
   const poster = backupString(value, 'poster', true);
   if (poster && !/^(https?:\/\/|data:image\/(?:jpeg|png|webp|gif);base64,)/i.test(poster)) {
-    throw new Error('A poster in this backup has an unsupported address.');
+    throw new Error('A poster in this file has an unsupported address.');
   }
   return poster;
 }
@@ -29,10 +48,10 @@ function backupPoster(value) {
 /** Normalizes stored external metadata while validating its fields. */
 function backupMetadata(value) {
   if (value === undefined || value === null) return null;
-  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid fetched metadata in backup.');
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid fetched metadata in this file.');
   const text = (field) => backupString(value[field], `metadata ${field}`, true);
   const fetchedAt = text('fetchedAt');
-  if (fetchedAt && Number.isNaN(Date.parse(fetchedAt))) throw new Error('Invalid metadata fetch date in backup.');
+  if (fetchedAt && Number.isNaN(Date.parse(fetchedAt))) throw new Error('Invalid metadata fetch date in this file.');
   const query = value.query && typeof value.query === 'object' && !Array.isArray(value.query)
     ? {
       title: backupString(value.query.title, 'metadata query title', true),
@@ -51,13 +70,13 @@ function backupMetadata(value) {
 /** Normalizes one title record from backup data. */
 function backupTitle(raw) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
-    throw new Error('This backup contains an invalid title.');
+    throw new Error('This file contains an invalid title.');
   }
 
   const id = backupString(raw.id, 'title ID').trim();
   const title = backupString(raw.title, 'title').trim();
   if (!id || !title || !['Movie', 'Show'].includes(raw.type)) {
-    throw new Error('This backup contains an invalid title, ID, or type.');
+    throw new Error('This file contains an invalid title, ID, or type.');
   }
 
   const rawCollectionIds = Array.isArray(raw.collectionIds)
@@ -82,7 +101,7 @@ function backupTitle(raw) {
 function readBackup(data) {
   if (!data || data.format !== 'rerun-backup' || data.version !== 1 ||
       !Array.isArray(data.entries) || !Array.isArray(data.watchlist)) {
-    throw new Error('Choose a Rerun JSON backup made by this app.');
+    throw new Error('Choose a Rewatched JSON file exported by this app.');
   }
 
   const importedEntries = data.entries.map((raw) => {
@@ -118,15 +137,15 @@ function readBackup(data) {
 
   for (const items of [importedEntries, importedWatchlist]) {
     if (new Set(items.map((item) => item.id)).size !== items.length) {
-      throw new Error('This backup contains duplicate title IDs.');
+      throw new Error('This file contains duplicate title IDs.');
     }
   }
 
   const importedCollections = (Array.isArray(data.collections) ? data.collections : []).map((raw) => {
-    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('This backup contains an invalid collection.');
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('This file contains an invalid collection.');
     const id = backupString(raw.id, 'collection ID').trim();
     const name = backupString(raw.name, 'collection name').trim();
-    if (!id || !name) throw new Error('This backup contains an invalid collection.');
+    if (!id || !name) throw new Error('This file contains an invalid collection.');
     const entryIds = Array.isArray(raw.entryIds)
       ? raw.entryIds.map((value) => backupString(value, 'collection entry ID').trim()).filter(Boolean)
       : [];
@@ -153,12 +172,13 @@ function downloadBackup() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `rerun-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  link.download = `rewatched-export-${new Date().toISOString().slice(0, 10)}.json`;
   document.body.append(link);
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  $('#backup-status').textContent = 'Backup downloaded. Keep the JSON file somewhere safe.';
+  window.dispatchEvent(new CustomEvent('rewatched:library-exported'));
+  setBackupStatus('File exported', 'success');
 }
 
 /** Builds a serializable snapshot of the current app data. */
@@ -182,10 +202,11 @@ function makeBackupSnapshot() {
 async function chooseBackup(file) {
   selectedBackup = null;
   $('#import-options').hidden = true;
+  setBackupStatus('');
   if (!file) return;
 
   if (file.size > 25 * 1024 * 1024) {
-    $('#backup-status').textContent = 'This backup is too large to import.';
+    setBackupStatus('This file is too large to use.', 'error');
     return;
   }
 
@@ -194,9 +215,9 @@ async function chooseBackup(file) {
     $('#backup-preview').textContent =
       `${selectedBackup.entries.length} logged titles · ${selectedBackup.watchlist.length} watchlist items`;
     $('#import-options').hidden = false;
-    $('#backup-status').textContent = 'Choose how to import this backup.';
+    setBackupStatus('Choose how to use this file.', 'warning');
   } catch (error) {
-    $('#backup-status').textContent = error.message || 'Could not read this backup.';
+    setBackupStatus(error.message || 'Could not read this file.', 'error');
   }
 }
 
@@ -211,7 +232,7 @@ function importBackup() {
   if (!selectedBackup) return;
 
   const replace = document.querySelector('input[name="import-mode"]:checked').value === 'replace';
-  if (replace && !confirm('Replace all current logged titles and watchlist items with this backup?')) {
+  if (replace && !confirm('Replace all current logged titles and watchlist items with this file?')) {
     return;
   }
 
@@ -238,7 +259,7 @@ function importBackup() {
     } catch (restoreError) {
       console.warn('Could not restore browser storage after import failed.', restoreError);
     }
-    $('#backup-status').textContent = 'Import failed. Browser storage may be full; your current data was kept.';
+    setBackupStatus('Could not apply the file. Browser storage may be full; your current data was kept.', 'error');
     console.warn('Could not import backup.', error);
     return;
   }
@@ -250,18 +271,27 @@ function importBackup() {
   bannerIndex = 0;
   render();
   updateBackupSummary();
-  $('#backup-status').textContent =
-    `Imported ${entries.length} logged titles and ${watchlist.length} watchlist items.`;
+  setBackupStatus(`File applied: ${entries.length} logged titles and ${watchlist.length} watchlist items.`, 'success');
 }
 
 /** Loads the bundled demo library after confirming replacement of current data. */
 async function loadDemoVault() {
   const button = $('#load-demo-vault');
-  const status = $('#demo-vault-status');
+  let demoStatusTimer = null;
+  const demoStatus = (message, type, detail = message) => {
+    if (showLoadStatus(message, type, detail)) return;
+    const status = $('#demo-vault-status');
+    clearTimeout(demoStatusTimer);
+    status.textContent = detail;
+    status.hidden = false;
+    demoStatusTimer = setTimeout(() => {
+      if (status.textContent === detail) status.hidden = true;
+    }, 4000);
+  };
   if (!confirm('Replace your current library, watchlist, and folders with the demo vault? If a storage file is connected, the demo may be saved to that file.')) return;
 
   button.disabled = true;
-  status.textContent = 'Loading demo vault…';
+  demoStatus('Loading demo file…', 'warning');
   try {
     const response = await fetch('assets/demo_vault.json', { cache: 'no-store' });
     if (!response.ok) throw new Error('Could not load assets/demo_vault.json.');
@@ -288,20 +318,20 @@ async function loadDemoVault() {
       throw error;
     }
 
-    activeView = 'logged';
+    activeCollectionView = 'logged';
     activeCollectionId = 'all';
     activeFilter = 'all';
-    watchedYearFilter = 'all';
-    ratingFilter = 'all';
+    watchedYearFilter = [];
+    ratingFilter = [];
     collectionSort = 'watched-desc';
     collectionPage = 0;
     bannerIndex = 0;
     $('#library-search').value = '';
     render();
     updateBackupSummary();
-    status.textContent = `Demo vault loaded: ${entries.length} titles, ${watchlist.length} watchlist items, and ${customCollections.length} folders.`;
+    demoStatus('Demo file loaded', 'success', `Demo vault loaded: ${entries.length} titles, ${watchlist.length} watchlist items, and ${customCollections.length} folders.`);
   } catch (error) {
-    status.textContent = error.message || 'Could not load the demo vault.';
+    demoStatus('Could not load demo file', 'error', error.message || 'Could not load the demo vault.');
   } finally {
     button.disabled = false;
   }

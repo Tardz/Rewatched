@@ -1,0 +1,81 @@
+/* SECTION App shell */
+
+/* ANCHOR App container */
+/* Define the app-wide grid that contains navigation and the scrollable page. */
+.app-container {
+  --navbar-sidebar-width: 160px;
+  --navbar-topbar-height: 70px;
+  --nav-horizontal-control-size: 48px;
+  --nav-inner-box-size: 40px;
+  display: grid;
+  grid-template-columns:
+    var(--navbar-sidebar-width)
+    var(--navbar-app-gap)
+    minmax(0, 1fr)
+    var(--padding-inline-layout-content);
+  grid-template-rows:
+    var(--navbar-topbar-height)
+    2px
+    minmax(0, 1fr)
+    var(--spacing-app-shell-inset);
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Keep the app shell square while its level-one class supplies the surface. */
+.app-container.level-1-styling {
+  border-radius: 0;
+}
+
+/* Place the rounded app-content frame below the toolbar and beside the sidebar. */
+.app-content-frame {
+  grid-column: 3;
+  grid-row: 3;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Scroll inside the rounded frame so its corners clip the scrollbar ends. */
+.app-content-container {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y proximity;
+  scroll-padding-block-start: 0;
+  padding: var(--padding-block-layout-content) var(--padding-inline-layout-content) calc(var(--spacing-level-1) + var(--spacing-level-1) + 4px);
+  border-radius: var(--radius-surface-level-0);
+  box-shadow: var(--shadow-surface-level-1);
+  scrollbar-color: var(--color-border-strong) transparent;
+  scrollbar-width: thin;
+}
+
+/* Inset the native WebKit scrollbar track so its ends stay inside the rounded surface. */
+.app-content-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.app-content-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-content-container::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-color: var(--color-border-strong);
+  background-clip: padding-box;
+}
+
+/* !SECTION */

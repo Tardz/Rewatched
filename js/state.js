@@ -11,7 +11,13 @@ const OMDB_DAILY_USAGE_KEY = 'rerun-omdb-daily-usage';
 const THEME_KEY = 'rerun-theme-mode';
 const POSTER_BACKGROUND_KEY = 'rerun-poster-background';
 const POSTER_BACKGROUND_STRENGTH_KEY = 'rerun-poster-background-strength';
+const ENTRY_POSTER_BACKDROP_KEY = 'rerun-entry-poster-backdrop';
 const TACTILE_DASHBOARD_KEY = 'rerun-tactile-dashboard';
+const DASHBOARD_MODE_KEY = 'rerun-dashboard-mode';
+const MACOS_BOX_BORDERS_KEY = 'rerun-macos-box-borders';
+const COLORED_VALUE_CHIPS_KEY = 'rerun-colored-value-chips';
+const HIDE_MAIN_VALUE_CHIPS_KEY = 'rerun-hide-main-value-chips';
+const CORNER_RADIUS_SCALE_KEY = 'rerun-corner-radius-scale';
 const GLASS_SURFACE_OPACITY_KEY = 'rerun-glass-surface-opacity';
 const GLASS_TRANSPARENCY_KEY = 'rerun-glass-transparency';
 const REDUCE_ANIMATIONS_KEY = 'rerun-reduce-animations';
@@ -21,11 +27,20 @@ const systemTheme = matchMedia('(prefers-color-scheme: light)');
 const reduceMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let themePreference = localStorage.getItem(THEME_KEY) || 'system';
 let posterBackgroundEnabled = localStorage.getItem(POSTER_BACKGROUND_KEY) !== 'false';
+let entryPosterBackdropEnabled = localStorage.getItem(ENTRY_POSTER_BACKDROP_KEY) !== 'false';
 const savedPosterBackgroundStrength = Number(localStorage.getItem(POSTER_BACKGROUND_STRENGTH_KEY));
 let posterBackgroundStrength = Number.isFinite(savedPosterBackgroundStrength)
   ? Math.round(Math.max(0, Math.min(100, savedPosterBackgroundStrength)) / 5) * 5
   : 20;
 let tactileDashboardEnabled = localStorage.getItem(TACTILE_DASHBOARD_KEY) !== 'false';
+let dashboardMode = localStorage.getItem(DASHBOARD_MODE_KEY) === 'dashboard' ? 'dashboard' : 'navbar';
+let macosBoxBordersEnabled = localStorage.getItem(MACOS_BOX_BORDERS_KEY) !== 'false';
+let coloredValueChipsEnabled = localStorage.getItem(COLORED_VALUE_CHIPS_KEY) !== 'false';
+let hideMainValueChipsEnabled = localStorage.getItem(HIDE_MAIN_VALUE_CHIPS_KEY) === 'true';
+const savedCornerRadiusScale = Number(localStorage.getItem(CORNER_RADIUS_SCALE_KEY));
+let cornerRadiusScale = Number.isFinite(savedCornerRadiusScale) && savedCornerRadiusScale > 0
+  ? Math.max(50, Math.min(150, Math.round(savedCornerRadiusScale / 5) * 5))
+  : 100;
 const savedGlassSurfaceOpacity = Number(localStorage.getItem(GLASS_SURFACE_OPACITY_KEY));
 let glassSurfaceOpacity = Number.isFinite(savedGlassSurfaceOpacity)
   ? Math.max(60, Math.min(100, Math.round(savedGlassSurfaceOpacity / 5) * 5))
@@ -52,7 +67,21 @@ const APP_ICON_FILES = {
   statistics: { color: 'piechart.png', black: 'piechart.png', filled: 'piechart.png' },
   folder: { color: 'folder.png', black: 'folder.png', filled: 'folder.png' },
   'folder-action': { color: 'folder.png', black: 'folder.png', filled: 'folder.png' },
+  general: { filled: 'general.png' },
+  appearance: { filled: 'appearance.png' },
+  integrations: { filled: 'integrations.png' },
+  avatar: { filled: 'avatar.png' },
+  about: { filled: 'about.png' },
+  rewatch: { filled: 'rewatch.png' },
+  add: { filled: 'add.png' },
+  edit: { filled: 'edit.png' },
+  delete: { filled: 'delete.png' },
+  fullscreen: { filled: 'fullscreen.png' },
   search: { color: 'search.png', black: 'search.png', filled: 'search.png' },
+  filter: { filled: 'filter.png' },
+  sort: { filled: 'sort.png' },
+  watched: { filled: 'watched.png' },
+  release: { filled: 'release.png' },
   all: { color: 'all.png', black: 'all.png', filled: 'all.png' },
   movie: { color: 'dvd.png', black: 'dvd.png', filled: 'disc.png' },
   show: { color: 'tv.png', black: 'tv.png', filled: 'tv.png' },
@@ -117,7 +146,7 @@ function appIconMarkup(name, className = 'icon app-icon') {
   if (iconStylePreference === 'original') return originalIconMarkup(name, className);
   if (iconStylePreference === 'filled') {
     const url = appIconUrl(name);
-    return `<span class="${className} filledIcon filled-icon" data-app-icon="${name}" style="-webkit-mask-image: url('${url}'); mask-image: url('${url}')" aria-hidden="true"></span>`;
+    return `<span class="${className} masked-icon filled-icon" data-app-icon="${name}" style="-webkit-mask-image: url('${url}'); mask-image: url('${url}')" aria-hidden="true"></span>`;
   }
   return `<img class="${className}" data-app-icon="${name}" src="${appIconPath(name)}" alt="" aria-hidden="true">`;
 }
@@ -141,7 +170,7 @@ function categoryHueForName(category) {
 /** Creates a tinted Filled icon element from the PNG's alpha mask. */
 function createFilledIconElement(name, className, originalText = '', hidden = false) {
   const replacement = document.createElement('span');
-  replacement.className = `${className} filledIcon filled-icon`;
+  replacement.className = `${className} masked-icon filled-icon`;
   replacement.dataset.appIcon = name;
   if (originalText) replacement.dataset.appIconOriginalText = originalText;
   const url = `url("${appIconUrl(name)}")`;
@@ -158,9 +187,9 @@ function refreshAppIcons() {
     const name = icon.dataset.appIcon;
     const isOriginal = iconStylePreference === 'original';
     const isFilled = iconStylePreference === 'filled';
-    const isFilledNode = icon.classList.contains('filledIcon') || icon.classList.contains('filled-icon');
+    const isFilledNode = icon.classList.contains('masked-icon') || icon.classList.contains('filled-icon');
     const iconClassName = icon.className.baseVal || icon.className;
-    const nonFilledClassName = iconClassName.replace(/\b(?:filledIcon|filled-icon)\b/g, '').trim();
+    const nonFilledClassName = iconClassName.replace(/\b(?:masked-icon|filled-icon)\b/g, '').trim();
     if (isOriginal && (icon.tagName === 'IMG' || isFilledNode)) {
       const originalText = icon.dataset.appIconOriginalText || ORIGINAL_ICON_TEXT[name];
       const replacement = originalText
@@ -222,8 +251,16 @@ function applyTheme() {
 
 applyTheme();
 document.documentElement.dataset.posterBackground = posterBackgroundEnabled ? 'on' : 'off';
+document.documentElement.dataset.entryPosterBackdrop = entryPosterBackdropEnabled ? 'on' : 'off';
 document.documentElement.style.setProperty('--poster-background-strength', `${posterBackgroundStrength}%`);
 document.documentElement.dataset.themeGlass = tactileDashboardEnabled ? 'on' : 'off';
+if (document.documentElement.dataset.cssReworkPreview === 'true') {
+  document.documentElement.dataset.dashboardMode = dashboardMode;
+}
+document.documentElement.dataset.macosBorders = macosBoxBordersEnabled ? 'on' : 'off';
+document.documentElement.dataset.valueChipFill = coloredValueChipsEnabled ? 'on' : 'off';
+document.documentElement.dataset.mainValueChips = hideMainValueChipsEnabled ? 'hidden' : 'visible';
+document.documentElement.style.setProperty('--radius-scale', String(cornerRadiusScale / 100));
 document.documentElement.style.setProperty('--glass-surface-opacity', `${glassSurfaceOpacity}%`);
 document.documentElement.dataset.glassTransparency = glassTransparencyEnabled ? 'on' : 'off';
 document.documentElement.dataset.glassOpaque = !glassTransparencyEnabled || glassSurfaceOpacity === 100 ? 'on' : 'off';
@@ -302,13 +339,17 @@ function recordOmdbApiCall() {
 }
 
 /** Creates a percentage meter with the color for its rating. */
-function createRatingMeter(fill, color, className = 'ratingsMeter') {
+function createRatingMeter(fill, color, className = 'ratings-meter') {
+  const isReworkPreview = document.documentElement.dataset.cssReworkPreview === 'true';
   const meter = document.createElement('span');
-  meter.className = className;
-  meter.classList.add('ratingsMeter', 'rating-meter'); // Keep the old meter hook until the live CSS is migrated.
+  meter.className = isReworkPreview
+    ? className.replace(/\bratingsMeter\b/g, 'ratings-meter')
+    : className;
+  meter.classList.add('ratings-meter');
+  if (!isReworkPreview) meter.classList.add('ratingsMeter', 'rating-meter'); // Preserve legacy-page meter hooks.
   meter.setAttribute('aria-hidden', 'true');
   const progress = document.createElement('span');
-  progress.className = 'ratingFill';
+  progress.className = isReworkPreview ? 'rating-fill' : 'ratingFill';
   progress.style.width = fill;
   progress.style.backgroundColor = color;
   meter.style.setProperty('--rating-color', color);
@@ -327,9 +368,10 @@ let googleSearchLoading = false;
 let bannerIndex = 0;
 let editingId = null;
 let activeFilter = 'all';
-let activeView = 'logged';
-let watchedYearFilter = 'all';
-let ratingFilter = 'all';
+let activeCollectionView = 'logged';
+let watchedYearFilter = [];
+let ratingFilter = [];
+let priorityFilter = [];
 let collectionSort = 'watched-desc';
 let activeCollectionId = 'all';
 const savedRotation = localStorage.getItem(ROTATION_KEY);

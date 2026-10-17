@@ -1,63 +1,70 @@
-/* Summary metrics for the current library view. */
-/* SECTION statsbar */
+/* The overview's summary cards and their nested rating chip. */
 
-/* Line up summary cards above the featured banner in the overview. */
-.statsbar {
-  display: grid;                                    /* Lay out the summary metrics evenly. */        
-  grid-template-columns: repeat(5, minmax(0, 1fr)); /* Give each metric an equal column. */
-  grid-template-rows: minmax(0, 1fr);               /* Keep the metrics in one row. */
-  gap: var(--spacing-level-1);                        /* Separate cards by the shared panel spacing. */
-  padding: var(--spacing-level-1);                    /* Match the inset to the gaps between cards. */ 
-  border: 1px solid var(--color-border-subtle);     /* Outline the summary group. */                 
-  border-radius: var(--radius-surface-level-1);     /* Match the shared outer panel radius. */       
-  background: var(--color-surface-level-1);         /* Set the shared outer-panel surface. */        
-  box-shadow: var(--shadow-surface-level-1);        /* Apply shared outer-panel elevation. */
+/* SECTION statsbar-container */
+/* Base class: .level-1-styling */
+/* Arrange six cards at one height; the base class supplies the surface and spacing. */
+.statsbar-container {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: stretch;
 }
 
 /* SECTION statsbar-card */
-/* Stack each metric label and value inside an inner card. */
+/* Base class: .level-2-styling */
+/* Stack a title over its data; the base class supplies the inner surface. */
 .statsbar-card {
-  display: flex;                                   /* Stack label and value. */                            
-  flex-direction: column;                          /* Put the label above its value. */                    
-  align-items: center;                             /* Center card contents. */                             
-  justify-content: center;                         /* Center contents vertically. */                       
-  gap: var(--spacing-level-2); /* Separate label and value. */                         
-  min-width: 0;                                    /* Permit content to shrink. */                         
-  padding:                                        
-    calc(var(--spacing-level-1) - 2px)  
-    calc(var(--spacing-level-1) - 4px);  /* Inset contents slightly less than the outer panel. */
-  text-align: center;                              /* Keep labels and values centered. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-level-2);
+  min-width: 0;
+  padding: calc(var(--spacing-level-1) - 2px) calc(var(--spacing-level-1) - 4px);
+  text-align: center;
 }
 
-/* ANCHOR statsbar-card-title */
-/* Style each metric label. */
-.statsbar-card-title {
-  color: var(--color-text-secondary); /* De-emphasize the label. */             
-  font: 10px var(--font-family-mono); /* Keep metric labels compact. */         
-  letter-spacing: .06em;              /* Improve uppercase label readability. */
-  text-transform: uppercase;          /* Distinguish labels from values. */
+/* ANCHOR statsbar-title */
+/* Keep the metric name compact and visually secondary. */
+.statsbar-title {
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
 
-/* ANCHOR statsbar-card-data */
-/* Emphasize each metric value. */
-.statsbar-card-data {
-  color: var(--color-text-primary); /* Use primary text color. */                
-  font-size: 19px;                  /* Make the value easy to scan. */           
-  font-weight: 500;                 /* Give values modest emphasis. */           
-  letter-spacing: .1em;             /* Match the compact dashboard typography. */
+/* SECTION statsbar-data */
+/* Emphasize the number, or hold the average rating chip. */
+.statsbar-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  color: var(--color-text-primary);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: .1em;
 }
 
-/* ANCHOR Average score chip */
-/* Base class: .valueChip */
-/* Enlarge the average-score chip to match the other metric values. */
-.statsbar-card .valueChip { font-size: calc(var(--font-size-chip) + 3px); }
+/* Fit the full formatted date without shrinking the other stat values. */
+#stat-latest-log {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
+/* ANCHOR stats-ratings-chip */
+/* Base classes when a score exists: .value-chip-styling, .rating-value-chip */
+/* Size any value chip in a stats card with the card's app font. */
+.statsbar-container .value-chip-styling {
+  font-family: inherit;
+  font-size: calc(var(--font-size-value-chip) + 3px);
+}
+/* !SECTION */
 /* !SECTION */
 
-/* SECTION Narrow statsbar layout */
-/* Collapse to two columns on narrow screens. */
+/* ANCHOR statsbar-container narrow layout */
+/* Collapse the card grid to two columns on narrow screens. */
 @media (max-width: 640px) {
-  .statsbar { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; }
+  .statsbar-container { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-/* !SECTION */
-
 /* !SECTION */

@@ -1,0 +1,292 @@
+/* Overview banner layout, content, and poster; slide motion is in 09-animations.css. */
+/* SECTION overview-banner-container */
+
+/* Base class: .banner-container */
+/* Lay out the featured content beside its poster. */
+.overview-banner-container {
+  --banner-poster-width: 150px;
+  --banner-content-height: calc(var(--banner-poster-width) * 1.5);
+  container-type: inline-size;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 18px;
+  background: linear-gradient(
+    115deg,
+    color-mix(in srgb, var(--poster-color-one, var(--color-poster-fallback-one)) var(--strength-overview-banner-poster-one), var(--color-background-app)),
+    color-mix(in srgb, var(--poster-color-two, var(--color-poster-fallback-two)) var(--strength-overview-banner-poster-two), var(--color-surface-detail))
+  );
+  cursor: pointer;
+}
+
+/* Keep the legacy watch timeline hidden until it has a reworked overview layout. */
+.overview-banner-container > .statistics-entire-timeline { display: none; }
+
+/* Show hover and keyboard focus on the banner frame. */
+.overview-banner-container:hover { border-color: var(--color-border-accent-muted); }
+.overview-banner-container:focus-visible { outline: 2px solid var(--color-accent-primary); outline-offset: 4px; }
+
+/* SECTION overview-banner-overlay */
+/* Add contrast over the poster-derived overview backdrop. */
+.overview-banner-container.has-poster::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    var(--color-overview-banner-overlay-start) 0%,
+    color-mix(in srgb, var(--poster-color-one, var(--color-poster-fallback-one)) var(--strength-overview-banner-overlay-poster), transparent) 48%,
+    var(--color-overview-banner-overlay-end) 100%
+  );
+}
+/* !SECTION */
+
+/* SECTION overview-banner-content-layout */
+/* Stack the information and controls inside the content column. */
+.overview-banner-content-layout {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--banner-content-height);
+}
+
+/* SECTION banner-info-layout */
+/* Tighten shared information and metadata spacing for the overview. */
+.overview-banner-container .banner-info-layout {
+  --banner-info-gap: var(--spacing-level-2);
+}
+
+/* SECTION banner-heading-layout */
+/* Base class: .banner-title */
+/* Fit the title on one line; JavaScript shrinks it to 38px before ellipsizing. */
+.overview-banner-container .banner-title {
+  -webkit-text-stroke: 0;
+  paint-order: normal;
+  width: 100%;
+  max-width: 650px;
+  padding: .04em 0 .12em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: clamp(38px, calc(5.5cqi + 16px), 56px);
+}
+/* !SECTION */
+
+/* SECTION banner-meta-layout */
+/* Separate the value row slightly from the heading. */
+.overview-banner-container .banner-meta-layout {
+  --banner-meta-gap: var(--spacing-level-2);
+  margin-top: var(--spacing-level-1);
+}
+
+/* SECTION banner-value-layout */
+/* Keep overview value chips slightly smaller than the shared value-chip size. */
+.overview-banner-container .value-chip-styling {
+  font-size: calc(var(--font-size-value-chip) - 2px);
+}
+
+/* Base class: .value-chip-styling */
+.overview-banner-container .rating-value-chip {
+  border-radius: var(--radius-value-chip);
+}
+
+/* Base class: .ratings-meter */
+.overview-banner-container .ratings-bar {
+  width: 125px;
+}
+
+/* Use the space freed by hidden value chips to lengthen the rating meter. */
+:root[data-main-value-chips="hidden"] .overview-banner-container .ratings-bar {
+  width: 160px;
+}
+/* !SECTION */
+/* !SECTION */
+/* !SECTION */
+
+/* SECTION overview-banner-controls-layout */
+/* Place banner controls at the bottom of the content area. */
+.overview-banner-controls-layout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-value-chip);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* Base classes: .icon-button, .level-2-styling */
+/* Give navigation and playback buttons a consistent control frame. */
+.overview-banner-controls-layout > button {
+  flex: 0 0 28px;
+  height: 28px;
+  border-radius: var(--radius-control-small);
+  border-color: var(--color-border-strong);
+  background: transparent;
+  color: var(--color-text-on-surface);
+}
+.overview-banner-controls-layout > button:focus-visible {
+  outline-offset: 2px;
+}
+.overview-banner-previous-button,
+.overview-banner-next-button { overflow: hidden; }
+.overview-banner-controls-layout .icon {
+  width: calc(var(--size-icon-filled) - 14px);
+  height: calc(var(--size-icon-filled) - 14px);
+}
+.overview-banner-count {
+  min-width: 48px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.overview-banner-media-button {
+  margin-left: 8px;
+  color: var(--color-text-secondary);
+}
+.overview-banner-media-button[data-rotation-state="paused"] .pause-icon,
+.overview-banner-media-button[data-rotation-state="playing"] .play-icon { display: none !important; }
+/* !SECTION */
+/* !SECTION */
+
+/* SECTION banner-poster */
+/* Base class: .banner-poster */
+/* Size and style the overview poster. */
+.overview-banner-container > .banner-poster {
+  display: grid;
+  flex: 0 0 var(--banner-poster-width);
+  place-items: center;
+  border: 1px solid var(--color-border-control-subtle);
+  background: var(--color-surface-detail);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* SECTION banner-type */
+/* Base classes: .type-chip-styling, .media-type-icon */
+/* Place the shared media-type icon in the overview poster's upper-right corner. */
+.overview-banner-container .banner-type {
+  top: calc(var(--spacing-level-2) + 3px);
+  right: calc(var(--spacing-level-2) + 3px);
+}
+/* !SECTION */
+/* !SECTION */
+
+/* ANCHOR Overview banner responsive sizing */
+/* Reduce the poster and banner spacing on narrow screens. */
+@media (max-width: 640px) {
+  .overview-banner-container {
+    --banner-poster-width: 105px;
+    gap: 12px;
+    min-height: 260px;
+    padding: 20px;
+  }
+}
+/* !SECTION */
+
+/* SECTION banner-details-container */
+/* Pair the featured banner with its actor and plot information panel. */
+/* Base class: .level-1-styling */
+.banner-details-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: stretch;
+  min-height: 0;
+  overflow: hidden;
+  block-size: auto;
+  min-width: 0;
+}
+
+/* SECTION details-header-container */
+/* Keep the two detail views side-by-side above their shared content panel. */
+.details-header-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-level-1);
+  min-width: 0;
+  padding: var(--spacing-level-1);
+}
+
+/* SECTION detail-option */
+/* Base classes: .text-button, .level-3-styling */
+/* Make each detail view a compact, equal-width tab button. */
+.detail-option {
+  min-width: 0;
+  padding: 8px 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.detail-option.active {
+  color: var(--color-text-primary);
+  text-shadow: 0 0 8px var(--color-glow-default);
+}
+/* !SECTION */
+/* !SECTION */
+
+/* SECTION details-content-container */
+/* Fill the remaining panel height with scrollable entry information. */
+.details-content-container {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--spacing-level-1);
+}
+
+.details-content-container > [role="tabpanel"] {
+  height: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* SECTION details-actors-layout */
+/* Stack each actor name in its own level-three surface. */
+.details-actors-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-level-1);
+  min-width: 0;
+}
+
+/* Base classes: .app-text, .level-3-styling */
+/* Keep actor names readable and padded inside their individual boxes. */
+.details-actors-layout > .app-text.level-3-styling {
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--spacing-level-1);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+/* !SECTION */
+
+.details-content-container .app-text {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* Keep the plot narrative at regular weight rather than the app's bold default. */
+.details-content-container .details-plot-text {
+  font-weight: 400;
+}
+/* !SECTION */
+/* !SECTION */

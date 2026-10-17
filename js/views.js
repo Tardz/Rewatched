@@ -4,10 +4,11 @@
 
 /** Renders the application’s currently active view. */
 function render() {
-  renderBanner();
+  const isReworkedView = document.documentElement.dataset.cssReworkPreview === 'true';
+  if (!isReworkedView) renderBanner();
   renderStatsbar();
   renderCollection();
-  renderStatisticsPanel();
+  if (!$('#statistics-panel').hidden) renderStatisticsPanel();
   renderDetail();
 }
 /** Chooses and renders the active application view. */

@@ -1,13 +1,197 @@
-/* Shared frame styles for main and detail banners. */
+/* Shared frame, poster, information, and chip layout for all banner variants. */
 
-/* SECTION Shared banner frame */
-/* Give both banner variants the same outer frame and artwork layering. */
-.banner {
-  position: relative;                           /* Anchor artwork and transition layers. */
-  isolation: isolate;                           /* Keep artwork layers behind component content. */
-  overflow: hidden;                             /* Clip artwork to the rounded frame. */
-  border: 1px solid var(--color-border-strong); /* Define the shared component edge. */
-  border-radius: var(--radius-surface-level-1); /* Use the shared outer-level radius. */
-  box-shadow: var(--shadow-surface-level-1);    /* Use the shared outer-level elevation. */
+/* SECTION banner-container */
+/* Give overview, workspace, and detail banners the same frame and layering. */
+.banner-container {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-surface-level-1);
+  box-shadow: var(--shadow-surface-level-1);
 }
+/* !SECTION */
+
+/* SECTION banner-backdrop */
+/* Echo the app canvas with a soft gradient from the banner's sampled poster colors. */
+.banner-backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: -24px;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 16% 0%, var(--poster-wash-color-one, var(--app-poster-color-one, var(--color-poster-fallback-one))) 0%, transparent 48%),
+    radial-gradient(ellipse at 88% 12%, var(--poster-wash-color-two, var(--app-poster-color-two, var(--color-poster-fallback-two))) 0%, transparent 40%);
+  filter: blur(var(--blur-poster-wash)) saturate(var(--saturation-poster-wash));
+  opacity: var(--strength-effective-poster-background);
+}
+/* !SECTION */
+
+/* SECTION banner-info-layout */
+/* Stack a banner's label, heading, and metadata. */
+.banner-info-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--banner-info-gap, calc(var(--spacing-level-1) + 8px));
+}
+
+/* SECTION banner-labels-layout */
+/* Arrange category, release, and watched-date chips above the heading. */
+.banner-labels-layout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+}
+
+/* Keep banner label chips at one height. */
+.banner-category-chip,
+.banner-release-date-chip,
+.banner-log-date-chip {
+  height: var(--size-banner-label-chip);
+}
+
+/* Base class: .category-chip-styling */
+/* Fit the category chip into the banner's label row. */
+.banner-category-chip {
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* Base class: .text-chip-styling */
+/* Truncate a long watched date within the label row. */
+.banner-log-date-chip {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  padding-inline: 4px;
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.banner-release-date-chip {
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  padding-inline: 4px;
+  color: var(--color-text-secondary);
+}
+
+.banner-log-date-chip > .banner-log-date-icon,
+.banner-release-date-chip > .banner-release-date-icon {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  color: var(--color-text-secondary);
+  --app-icon-state-color: var(--color-text-secondary);
+}
+
+.banner-log-date-chip > .banner-log-date-label {
+  display: block;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.banner-release-date-chip > .banner-release-date-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* !SECTION */
+
+/* SECTION banner-heading-layout */
+/* Keep the title and plain director credit together across banners and entries. */
+.banner-heading-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-level-3);
+  width: 100%;
+  min-width: 0;
+}
+
+/* ANCHOR banner-title */
+/* Give both banner titles their shared typography. */
+.banner-title {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-banner-title);
+  font-weight: var(--font-weight-app);
+  line-height: 1.14;
+  letter-spacing: -.06em;
+  -webkit-text-stroke: 1.4px var(--color-title-outline);
+  paint-order: stroke fill;
+  text-shadow: 0 0 14px var(--color-title-glow);
+}
+
+/* Base class: .app-text */
+/* Show the director credit as secondary text without chip styling. */
+.banner-director {
+  max-width: 100%;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+/* !SECTION */
+
+/* SECTION banner-meta-layout */
+/* Hold the rating or priority value for the banner. */
+.banner-meta-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--banner-meta-gap, calc(var(--spacing-level-1) + 8px));
+}
+
+/* Keep the value chip and meter together in one inline row. */
+.banner-value-layout {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  gap: 8px;
+}
+
+/* !SECTION */
+/* !SECTION */
+
+/* SECTION banner-poster */
+/* Share the poster frame and image crop across banner variants. */
+.banner-poster {
+  position: relative;
+  z-index: 2;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-surface-level-2);
+}
+.banner-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* SECTION banner-type */
+/* Base classes: .type-chip-styling, .media-type-icon */
+/* Overlay the media-type icon on the poster. */
+.banner-type {
+  position: absolute;
+  z-index: 1;
+  width: var(--size-media-type-chip);
+  height: var(--size-media-type-chip);
+  padding: 3px;
+}
+/* !SECTION */
 /* !SECTION */

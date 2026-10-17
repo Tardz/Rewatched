@@ -1,0 +1,61 @@
+/* Shared interaction feedback used by controls in multiple components. */
+
+/* SECTION Pressed controls */
+/* Give dashboard, banner, and workspace-container controls the same pressed feedback. */
+:is(
+  .dashboard-brand-button,
+  .dashboard-git-button,
+  .dashboard-back-button,
+  .dashboard-settings-button,
+  .dashboard-theme-button,
+  .dashboard-activity-button,
+  .dashboard-save-button,
+  .dashboard-storage-button,
+  .library-page-button,
+  .stats-page-button,
+  .overview-banner-controls-layout > button,
+  .workspace-controls-container .expandable-box > button,
+  .folder-menu-wrapper > button,
+  .search-button,
+  .search-close-button,
+  .workspace-reset-button,
+  .workspace-pagination-container > button,
+  .workspace-create-entry-button,
+  .workspace-tools-layout button
+):active {
+  box-shadow: var(--shadow-control-pressed) !important; /* Override component elevation while pressed. */
+}
+/* !SECTION */
+
+/* SECTION Text glow */
+/* Keep the profile label and Logged/Backlog controls on the same text-glow treatment. */
+:is(
+  .workspace-view-expandable > .expandable-text-button:is(:hover, :focus-visible, .active),
+.nav-profile-container:hover > .nav-profile-name
+) {
+  text-shadow: 0 0 4px color-mix(in srgb, white 45%, transparent);
+}
+/* !SECTION */
+
+/* SECTION Glow halo utility */
+/* Share the soft color halo used behind active icons. */
+.glow-halo {
+  position: relative;
+  isolation: isolate;
+}
+.glow-halo::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-halo-color, var(--palette-white)) 0%, transparent 72%);
+  filter: blur(7px);
+  opacity: var(--glow-halo-opacity, 0);
+  pointer-events: none;
+}
+.glow-halo > :is(.icon, .masked-icon) {
+  position: relative;
+  z-index: 1;
+}
+/* !SECTION */

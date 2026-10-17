@@ -5,7 +5,7 @@
 
 <p align="center">
   <img src="assets/previews/home-screen-label-v2.svg" alt="Home screen" width="220"><br>
-  <a href="assets/screenshots/app_preview.png"><img src="assets/previews/app-preview-card-v2.png" alt="ReWatched library with featured title, statistics, and movie cards" width="100%"></a>
+  <a href="assets/previews/app-home-preview.png"><img src="assets/previews/app-home-preview.png" alt="ReWatched home screen with featured title, statistics, and library" width="100%"></a>
 </p>
 
 <p align="center">

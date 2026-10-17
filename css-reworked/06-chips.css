@@ -1,0 +1,171 @@
+/* Shared label, category, media-type, rating, and priority chip styling. */
+
+/* SECTION Label and type chips */
+/* Base layout and typography shared by text, category, and media-type chips. */
+.text-chip-styling,
+.category-chip-styling,
+.type-chip-styling {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 6px;
+  font-family: var(--font-family-app);
+  font-size: var(--font-size-label-chip);
+  font-weight: calc(var(--font-weight-app) - 200);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Give category chips their shared frame; the banner can adjust its radius. */
+.category-chip-styling {
+  flex: 0 0 auto;
+  border: 1px solid var(--color-border-control-subtle);
+  border-radius: var(--radius-text-chip);
+  color: var(--color-text-secondary);
+}
+/* Color a category chip from the current category; placeholders keep their space. */
+.category-chip-styling:not(.is-placeholder) {
+  --category-chip-border: hsl(var(--category-hue) 38% 45%);
+  --category-chip-background: hsl(var(--category-hue) 34% 29%);
+  --category-chip-text: hsl(var(--category-hue) 48% 84%);
+  border-color: var(--category-chip-border);
+  background: var(--category-chip-background);
+  color: var(--category-chip-text);
+}
+.category-chip-styling.is-placeholder { visibility: hidden; }
+
+/* Give text labels and media-type chips a shared neutral surface. */
+.text-chip-styling,
+.type-chip-styling {
+  justify-content: center;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-label-chip);
+  background: var(--color-surface-level-3);
+  box-shadow: var(--shadow-surface-level-3);
+  color: var(--color-text-muted-bright);
+  letter-spacing: normal;
+  text-transform: none;
+}
+.text-chip-styling {
+  border-radius: var(--radius-text-chip);
+}
+/* !SECTION */
+
+/* SECTION Value chips */
+/* Base badge styling shared by rating and priority values. */
+.value-chip-styling {
+  display: inline-flex;                                        /* Keep the badge sized to its inline content. */
+  align-items: center;                                         /* Vertically center the value text. */
+  flex: 0 0 auto;                                              /* Prevent the badge from shrinking in flex layouts. */
+  padding: 3px 6px;
+  border: 1px solid var(--value-chip-color);                       /* Use the full semantic color for a vivid edge. */
+  border-radius: var(--radius-value-chip);                     /* Give value chips a radius suited to their height. */
+  background: color-mix(in srgb, var(--value-chip-color) 78%, var(--color-surface-deep)); /* Strengthen the color while grounding it in the dark surface. */
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 32%, transparent),   /* Add a soft top-edge sheen. */
+    var(--shadow-value-badge);                                  /* Lift the badge slightly from its background. */
+  color: white;                                                 /* Keep rating and priority values legible on bright fills. */
+  text-shadow: 0 1px 2px #0008;
+  font-family: var(--font-family-value-chip);                   /* Use the tokenized badge typeface. */
+  font-size: var(--font-size-value-chip);                       /* Use the tokenized badge size. */
+  font-weight: var(--font-weight-value-chip);                   /* Use the tokenized badge weight. */
+}
+
+/* Base class: .value-chip-styling */
+/* Use the current rating color, falling back to a neutral tone. */
+.rating-value-chip {
+  --value-chip-color: var(--rating-color, var(--color-rating-neutral));
+  font-weight: 700;
+  -webkit-text-stroke: 0.55px #000;
+}
+
+/* Base class: .value-chip-styling */
+/* Use the current priority color, falling back to medium priority. */
+.priority-value-chip {
+  --value-chip-color: var(--priority-color, var(--color-priority-medium));
+}
+
+/* Hide banner and entry-card value badges without affecting stats or filter choices. */
+:root[data-main-value-chips="hidden"] .overview-banner-container .value-chip-styling,
+:root[data-main-value-chips="hidden"] .workspace-container .workspace-banner-container .value-chip-styling {
+  display: none;
+}
+
+/* Restore the earlier tinted style when colored chip fills are disabled. */
+:root[data-value-chip-fill="off"] .value-chip-styling {
+  border: 1px solid color-mix(in srgb, var(--value-chip-color) 42%, var(--color-border-subtle));
+  background: color-mix(in srgb, var(--value-chip-color) 9%, var(--color-surface-deep));
+  box-shadow: var(--shadow-value-badge);
+  color: var(--value-chip-color);
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+/* !SECTION */
+
+/* SECTION Ratings meter */
+/* Track behind rating or priority meter fills. */
+.ratings-meter {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 88px;
+  height: 7px;
+  overflow: visible;
+  border-radius: 999px;
+  background: var(--color-surface-level-2);
+  box-shadow: inset 0 0 0 1px #ffffff20;
+  vertical-align: middle;
+}
+
+/* Base class: .ratings-meter */
+/* Apply the shared wider, taller track used by banner and entry ratings. */
+.ratings-bar {
+  width: 110px;
+  height: 9px;
+}
+
+/* Size and color the filled portion of a rating or priority meter. */
+.rating-fill,
+.priority-fill {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  min-width: 0;
+  border-radius: inherit;
+  background: var(--rating-color, var(--color-rating-neutral));
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--rating-color, var(--color-rating-neutral)) 38%, transparent);
+  transition: width 180ms ease, box-shadow 180ms ease;
+}
+
+/* Prefer the semantic priority color for priority meter fills. */
+.priority-fill {
+  background: var(--priority-color, var(--rating-color, var(--color-priority-medium)));
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--priority-color, var(--rating-color, var(--color-priority-medium))) 38%, transparent);
+}
+/* !SECTION */
+
+/* SECTION Priority dots */
+/* Base layout for the priority indicator's row of dots. */
+.priority-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-level-2);
+}
+
+/* Outline each priority dot before it is marked filled. */
+.priority-dots > span {
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--priority-color, var(--color-priority-medium));
+  border-radius: 50%;
+  background: transparent;
+}
+
+/* Highlight dots up to the selected priority. */
+.priority-dots > span.is-filled {
+  background: var(--priority-color, var(--color-priority-medium));
+  box-shadow: 0 0 5px color-mix(in srgb, var(--priority-color, var(--color-priority-medium)) 45%, transparent);
+}
+/* !SECTION */

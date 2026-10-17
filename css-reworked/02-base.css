@@ -20,70 +20,134 @@ html {
   scroll-behavior: smooth; /* Animate in-page jumps for easier navigation. */
 }
 
-/* Set the document canvas and layered poster-derived background. */
+/* Keep the plain canvas behind the rounded app surface and navbar shell. */
 body {
-  position: relative; /* Anchor the page-level poster wash. */
-  isolation: isolate; /* Keep the wash behind page content. */
-  margin: 0;          /* Remove the browser's default body gap. */
+  margin: 0; /* Remove the browser's default body gap. */
+  background: var(--color-surface-level-base);
+}
+
+/* Continue a muted version of the poster wash behind both navigation bars. */
+.app-container::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
   background:
-    radial-gradient(
-      ellipse at 16% 0%,
-      color-mix(
-        in srgb,
-        color-mix(in srgb, var(--app-poster-color-one, var(--color-poster-fallback-one)) calc(100% - var(--tint-white-poster-gradient)), white var(--tint-white-poster-gradient)) var(--strength-effective-poster-background),
-        var(--color-background-app)
-      ) 0%,
-      transparent 48%
-    ),
-    radial-gradient(
-      ellipse at 88% 12%,
-      color-mix(
-        in srgb,
-        color-mix(in srgb, var(--app-poster-color-two, var(--color-poster-fallback-two)) calc(100% - var(--tint-white-poster-gradient)), white var(--tint-white-poster-gradient)) var(--strength-effective-poster-background),
-        var(--color-background-app)
-      ) 0%,
-      transparent 40%
-    ),
-    linear-gradient(155deg, #1a1d20 0%, #141619 58%, var(--color-background-app) 100%);
-  background-attachment: fixed; /* Keep the canvas gradient stationary while scrolling. */
-  backdrop-filter: none;        /* Avoid filtering the entire page. */
+    radial-gradient(ellipse at 16% 0%, var(--app-poster-color-one, var(--color-poster-fallback-one)) 0%, transparent 48%),
+    radial-gradient(ellipse at 88% 12%, var(--app-poster-color-two, var(--color-poster-fallback-two)) 0%, transparent 40%);
+  content: "";
+  filter: blur(var(--blur-poster-wash)) saturate(var(--saturation-app-poster-wash));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
 }
 
-/* Use a blurred poster as a soft canvas wash when canvas sampling is unavailable. */
-body::before {
-  position: fixed;                                                    /* Keep the wash attached to the viewport. */
-  z-index: -1;                                                        /* Place it behind the app's content. */
-  inset: -12%;                                                        /* Extend beyond the viewport to hide blurred edges. */
-  background: var(--app-poster-image, none) center/cover no-repeat; /* Fill with the current poster image. */
-  content: "";                                                        /* Create the decorative pseudo-element. */
-  filter: blur(var(--blur-poster-wash)) 
-          saturate(var(--saturation-poster-wash));             /* Soften and enrich the poster colors. */
-  opacity: 0;                                                         /* Start hidden until enabled by app state. */
-  pointer-events: none;                                               /* Let clicks pass through to the app. */
-  transition: opacity 900ms ease;                                     /* Fade the wash in or out. */
+/* Keep the stronger poster wash contained by the rounded app surface. */
+.app-content-frame::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  clip-path: inset(0 round var(--radius-surface-level-0));
+  background:
+    radial-gradient(ellipse at 16% 0%, var(--app-poster-color-one, var(--color-poster-fallback-one)) 0%, transparent 48%),
+    radial-gradient(ellipse at 88% 12%, var(--app-poster-color-two, var(--color-poster-fallback-two)) 0%, transparent 40%);
+  content: "";
+  filter: blur(var(--blur-poster-wash)) saturate(var(--saturation-app-poster-wash));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
 }
 
-/* Reveal the poster wash only when the app has enabled that preference. */
-:root[data-poster-background="on"] body::before {
-  opacity: var(--strength-effective-poster-background); /* Show the wash at the configured strength. */
+.app-container,
+.app-content-frame {
+  position: relative;
+  isolation: isolate;
 }
 
-/* Keep the wash fully hidden when poster backgrounds are disabled. */
-:root[data-poster-background="off"] body::before {
-  opacity: 0; /* Hide the wash when the preference is off. */
+:root[data-poster-background="on"] .app-container::before {
+  opacity: calc(var(--strength-effective-poster-background) * 0.25);
 }
 
-/* Use a plain theme canvas when poster backgrounds are disabled. */
-:root[data-poster-background="off"] body {
-  background: var(--color-background-app); /* Restore the plain app canvas. */
+:root[data-poster-background="on"] .app-content-frame::before {
+  opacity: var(--strength-effective-poster-background);
 }
+
 /* !SECTION */
 
 /* SECTION Shared app elements */
+/* Share the outer-component gap while each layout owns its own grid or flex rules. */
+.outer-layout {
+  gap: var(--spacing-level-0);
+}
+
+/* Reusable app text; component classes may override size, color, and weight. */
+.app-text {
+  font-family: var(--font-family-app);
+  font-weight: var(--font-weight-app);
+  color: var(--color-text-primary);
+}
+
+/* Shared brand wordmark text that can shrink cleanly within its parent. */
+.brand-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Shared accent punctuation for brand wordmarks. */
+.brand-dot {
+  margin-left: 1px;
+  color: var(--color-brand-mark);
+  font-size: var(--size-dot-brand);
+  line-height: 0;
+  -webkit-text-stroke: 0;
+}
+
 /* Shared box surfaces; pair with component classes for layout and meaning. */
-.surfaceLevel1 { border: 1px solid var(--color-border-subtle); border-radius: var(--radius-surface-level-1); background: var(--color-surface-level-1); box-shadow: var(--shadow-surface-level-1); }
-.surfaceLevel2 { border: 1px solid var(--color-border-subtle); border-radius: var(--radius-surface-level-2); background: var(--color-surface-level-2); box-shadow: var(--shadow-surface-level-2); }
-.surfaceLevel3 { border: 1px solid var(--color-border-subtle); border-radius: var(--radius-surface-level-3); background: var(--color-surface-level-3); box-shadow: var(--shadow-surface-level-3); }
+/* Background surface one step below the level-0 app content. */
+.level-base-styling {
+  background: var(--color-surface-level-base);
+}
+
+/* Base app content surface, rounded above the navbar shell. */
+.level-0-styling {
+  width: 100%;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface-level-0);
+  background: var(--color-surface-level-0);
+  box-shadow: var(--shadow-surface-level-1);
+}
+
+/* Shared panel surface for outer app components. */
+.level-1-styling { 
+  gap: var(--spacing-level-1);
+  align-items: center;
+  padding: var(--spacing-level-1);
+  width: 100%;
+  border: 1px solid var(--color-border-subtle); 
+  border-radius: var(--radius-surface-level-1); 
+  background: var(--color-surface-level-1); 
+  box-shadow: var(--shadow-surface-level-1); 
+}
+.level-2-styling { 
+  border: 1px solid var(--color-border-subtle); 
+  border-radius: var(--radius-surface-level-2); 
+  background: var(--color-surface-level-2); 
+  box-shadow: var(--shadow-surface-level-2); 
+}
+.level-3-styling { 
+  border: 1px solid var(--color-border-subtle); 
+  border-radius: var(--radius-surface-level-3); 
+  background: var(--color-surface-level-3); 
+  box-shadow: var(--shadow-surface-level-3); 
+}
+/* Reuse the compact inset surface for controls nested inside other controls. */
+.level-4-styling {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface-level-4);
+  background: var(--color-surface-level-4);
+  box-shadow: var(--shadow-surface-level-4);
+}
 
 /* ANCHOR Save confirmation toast */
 /* Position and style the global save confirmation toast. */
@@ -122,33 +186,6 @@ a {
   text-decoration: none; /* Remove the browser's default underline. */
 }
 
-/* SECTION Icons */
-/* Give reusable interface icons a consistent default size. */
-.icon {
-  display: block;      /* Prevent inline-image baseline gaps. */       
-  flex: 0 0 auto;      /* Keep icons from shrinking in control rows. */
-  width: 24px;         /* Share the standard dashboard icon width. */  
-  height: 24px;        /* Share the standard dashboard icon height. */ 
-  color: var(--color-icon-default); /* Give inline icons the shared default color. */
-  object-fit: contain; /* Preserve raster icon proportions. */
-}
-
-/* Render filled icons as tinted masks while preserving their layout size. */
-/* Base class: .icon */
-.filledIcon {
-  width: var(--size-icon-filled);              /* Size the visible mask art. */             
-  height: var(--size-icon-filled);             /* Keep the mask square. */                  
-  flex: 0 0 var(--size-icon-filled);            /* Reserve the shared icon-size slot. */        
-  background-color: var(--app-icon-state-color, var(--color-icon-default)); /* Use the shared icon tint unless a state overrides it. */
-  -webkit-mask-position: center;                /* Center the mask in WebKit browsers. */    
-  mask-position: center;                        /* Center the mask. */                       
-  -webkit-mask-repeat: no-repeat;               /* Prevent mask tiling in WebKit browsers. */
-  mask-repeat: no-repeat;                       /* Prevent mask tiling. */                   
-  -webkit-mask-size: contain;                   /* Fit the full mask inside the icon slot. */
-  mask-size: contain;                           /* Fit the full mask inside the icon slot. */
-}
-/* !SECTION */
-
 /* ANCHOR Main app content */
 /* Center the app content and expose its width and padding as easy-to-tune tokens. */
 main {
@@ -164,4 +201,19 @@ main {
 [hidden] {
   display: none !important; /* Ensure hidden app-state elements cannot be displayed by other rules. */
 }
+
+/* SECTION Visually hidden content */
+/* Hide labels visually while keeping them available to assistive technology. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* !SECTION */
 /* !SECTION */

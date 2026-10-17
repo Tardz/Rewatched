@@ -134,8 +134,10 @@ function createTimelineItem(entry, watch, index) {
   const scoreFill = `${Number(watch.score) * 10}%`;
   const scoreColor = ratingColorForScore(watch.score);
   const scoreValue = document.createElement('span');
-  scoreValue.className = 'valueChip ratingValueChip rating-valueChip';
-  scoreValue.textContent = scoreFill;
+  scoreValue.className = document.documentElement.dataset.cssReworkPreview === 'true'
+    ? 'value-chip-styling rating-value-chip'
+    : 'valueChip ratingValueChip rating-valueChip';
+  scoreValue.textContent = `${Number(watch.score) * 10}%`;
   scoreValue.style.setProperty('--rating-color', scoreColor);
   score.append(scoreValue, createRatingMeter(scoreFill, scoreColor, 'ratingsMeter timeline-rating-meter'));
   score.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
@@ -332,15 +334,15 @@ function selectTimelineWatch(entry, index) {
 function hideDetail() {
   const detail = $('#detail');
   document.body.classList.remove('is-detail-view');
-  document.querySelector('.default-layout, .dashboard-layout').classList.remove('is-entry-fullscreen');
+  document.querySelector('.default-layout, .dashboard-layout').classList.remove('is-details-page');
   detail.hidden = true;
   detail.classList.remove('is-fullscreen');
   delete detail.dataset.entryId;
   $('#detail-back').hidden = true;
-  $('#statistics-panel').hidden = !$('.section-statistics').classList.contains('is-active');
-  $('#library').hidden = !$('.section-library').classList.contains('is-active');
-  $('.statsbar').hidden = false;
-  $('#banner').hidden = bannerEntries().length === 0;
+  $('#statistics-panel').hidden = !$('.stats-page-button, .section-statistics').classList.contains('is-active');
+  $('#library').hidden = !$('.library-page-button, .section-library').classList.contains('is-active');
+  $('.statsbar-container, .statsbar').hidden = false;
+  $('#banner').hidden = document.documentElement.dataset.cssReworkPreview !== 'true' && bannerEntries().length === 0;
 }
 
 /** Applies poster-derived colors to the hover detail without changing the page palette. */
@@ -397,8 +399,8 @@ function renderDetail() {
     ? requestedSelection
     : Number.isInteger(previousSelectedIndex) ? previousSelectedIndex : 0;
   document.body.classList.add('is-detail-view');
-  document.querySelector('.default-layout, .dashboard-layout').classList.toggle('is-entry-fullscreen', fullscreen);
-  activeView = view;
+  document.querySelector('.default-layout, .dashboard-layout').classList.toggle('is-details-page', fullscreen);
+  activeCollectionView = view;
   updateViewTabs();
   detail.dataset.entryId = id;
   const isBacklogged = view === 'watchlist';
@@ -408,10 +410,10 @@ function renderDetail() {
   detail.classList.toggle('is-fullscreen', fullscreen);
   detail.hidden = false;
   $('#detail-back').hidden = !fullscreen;
-  $('#statistics-panel').hidden = fullscreen || !$('.section-statistics').classList.contains('is-active');
-  $('#library').hidden = fullscreen || !$('.section-library').classList.contains('is-active');
-  $('.statsbar').hidden = fullscreen;
-  $('#banner').hidden = fullscreen || bannerEntries().length === 0;
+  $('#statistics-panel').hidden = fullscreen || !$('.stats-page-button, .section-statistics').classList.contains('is-active');
+  $('#library').hidden = fullscreen || !$('.library-page-button, .section-library').classList.contains('is-active');
+  $('.statsbar-container, .statsbar').hidden = fullscreen;
+  $('#banner').hidden = fullscreen || (document.documentElement.dataset.cssReworkPreview !== 'true' && bannerEntries().length === 0);
 
   $('#detail-poster').replaceChildren(posterElement(entry, 'detail-poster-art'));
   updateDetailPosterPalette(entry);
@@ -462,7 +464,11 @@ function renderDetail() {
   if (latestWatch) {
     const ratingValue = $('#detail-rating-value');
     ratingValue.textContent = `${Number(latestWatch.score) * 10}%`;
-    ratingValue.classList.add('valueChip', 'ratingValueChip', 'rating-valueChip');
+    if (document.documentElement.dataset.cssReworkPreview === 'true') {
+      ratingValue.classList.add('value-chip-styling', 'rating-value-chip');
+    } else {
+      ratingValue.classList.add('valueChip', 'ratingValueChip', 'rating-valueChip');
+    }
     ratingValue.style.setProperty('--rating-color', ratingColorForScore(latestWatch.score));
     $('#detail-latest-date').textContent = `Watched ${formatDate(latestWatch.date)}`;
   }

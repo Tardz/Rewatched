@@ -15,7 +15,7 @@ let statisticsRequestedPaletteSource = '';
 
 const statisticsTimeline = $('#statistics-timeline');
 statisticsTimeline.addEventListener('scroll', () => {
-  const section = $('#statistics-recent-watches');
+  const section = $('#statistics-entire-timeline, #statistics-recent-watches');
   document.documentElement.classList.add('statistics-timeline-scrolling');
   section.classList.add('is-scrolling');
   clearTimeout(statisticsContinuationTimer);
@@ -55,15 +55,12 @@ function updateStatisticsBackgroundFromTimeline(timeline) {
   statisticsRequestedPaletteSource = source;
   const root = document.documentElement;
   const banner = $('#banner');
-  root.style.setProperty('--app-poster-image', `url(${JSON.stringify(source)})`);
-  delete root.dataset.pagePaletteFallback;
   getPosterPalette(source).then((palette) => {
     if (source !== statisticsRequestedPaletteSource
       || root.dataset.dashboardSection !== 'statistics') return;
     if (!palette) {
       updateGlassOpacityForPagePalette(null);
       // Avoid leaving the previous poster's colors in place if this image cannot be sampled.
-      root.dataset.pagePaletteFallback = 'image';
       root.style.removeProperty('--app-poster-color-one');
       root.style.removeProperty('--app-poster-color-two');
       banner.style.removeProperty('--poster-color-one');
@@ -72,7 +69,6 @@ function updateStatisticsBackgroundFromTimeline(timeline) {
       return;
     }
 
-    delete root.dataset.pagePaletteFallback;
     updateGlassOpacityForPagePalette(palette);
     root.style.setProperty('--app-poster-color-one', `rgb(${palette.pageOne.join(', ')})`);
     root.style.setProperty('--app-poster-color-two', `rgb(${palette.pageTwo.join(', ')})`);
@@ -87,20 +83,33 @@ function renderStatsbar() {
   const average = watches.length
     ? (watches.reduce((sum, watch) => sum + Number(watch.score), 0) / watches.length).toFixed(1)
     : '—';
+  const latestWatch = watches
+    .filter((watch) => watch.date)
+    .sort((first, second) => second.date.localeCompare(first.date))[0];
 
   $('#stat-titles').textContent = entries.length;
   $('#stat-watches').textContent = watches.length;
   $('#stat-rewatches').textContent = Math.max(0, watches.length - entries.length);
+  const latestLogElement = $('#stat-latest-log');
+  if (latestLogElement) {
+    latestLogElement.textContent = latestWatch
+      ? `${['approximate', 'approximate-month', 'approximate-date'].includes(latestWatch.precision) ? '~' : ''}${formatDate(latestWatch.date)}`
+      : '—';
+    if (latestWatch) latestLogElement.dateTime = latestWatch.date;
+    else latestLogElement.removeAttribute('datetime');
+  }
 
   const averageElement = $('#stat-average');
-  averageElement.textContent = watches.length ? `${Number(average) * 10}%` : '—';
+  const ratingChipClasses = document.documentElement.dataset.cssReworkPreview === 'true'
+    ? ['value-chip-styling', 'rating-value-chip']
+    : ['valueChip', 'ratingValueChip', 'rating-valueChip'];
+  averageElement.textContent = watches.length ? `${Math.round(Number(average) * 10)}%` : '—';
   if (watches.length) {
-    averageElement.classList.add('valueChip', 'ratingValueChip', 'rating-valueChip');
+    averageElement.classList.add(...ratingChipClasses);
     averageElement.style.setProperty('--rating-color', ratingColorForScore(average));
     averageElement.setAttribute('aria-label', `Average rating ${average} out of 10`);
-    averageElement.style.color = ratingColorForScore(average);
   } else {
-    averageElement.classList.remove('valueChip', 'ratingValueChip', 'rating-valueChip');
+    averageElement.classList.remove(...ratingChipClasses);
     averageElement.style.removeProperty('--rating-color');
     averageElement.removeAttribute('aria-label');
     averageElement.style.removeProperty('color');
@@ -178,7 +187,11 @@ function createAverageRatingCard(average, watchCount) {
   value.className = 'stat-rating-value';
   value.textContent = watchCount ? `${percentage}%` : '—';
   if (watchCount) {
-    value.classList.add('valueChip', 'ratingValueChip', 'rating-valueChip');
+    if (document.documentElement.dataset.cssReworkPreview === 'true') {
+      value.classList.add('value-chip-styling', 'rating-value-chip');
+    } else {
+      value.classList.add('valueChip', 'ratingValueChip', 'rating-valueChip');
+    }
     value.style.setProperty('--rating-color', ratingColorForScore(average));
   }
 
@@ -384,7 +397,7 @@ function renderStatisticsPanel() {
 
 /** Renders every logged watch event from oldest to newest, left to right. */
 function renderRecentWatchesTimeline() {
-  const section = $('#statistics-recent-watches');
+  const section = $('#statistics-entire-timeline, #statistics-recent-watches');
   const timeline = $('#statistics-timeline');
   const recentWatches = getWatchHistory();
 
@@ -405,7 +418,7 @@ function renderRecentWatchesTimeline() {
 
 /** Shows edge markers while more watch cards remain outside the timeline viewport. */
 function updateStatisticsTimelineEdges(timeline) {
-  const section = $('#statistics-recent-watches');
+  const section = $('#statistics-entire-timeline, #statistics-recent-watches');
   const maxScrollLeft = timeline.scrollWidth - timeline.clientWidth;
   const hasMoreLeft = timeline.scrollLeft > 1;
   const hasMoreRight = maxScrollLeft - timeline.scrollLeft > 1;

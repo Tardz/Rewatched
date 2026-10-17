@@ -1,0 +1,635 @@
+/* SECTION Navbar layouts */
+
+/* ANCHOR Navigation layouts */
+/* Arrange the labeled sidebar controls on the transparent navbar shell. */
+.navbar-vertical-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-level-0);
+  grid-column: 1;
+  grid-row: 1 / -1;
+  padding-block: var(--navbar-topbar-control-inset) var(--spacing-app-shell-inset);
+  padding-left: calc(var(--spacing-level-1) + var(--navbar-app-gap));
+  padding-right: 2px;
+  min-width: 0;
+}
+
+/* Align toolbar buttons across the top of the app shell. */
+.navbar-horizontal-layout {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-level-0);
+  grid-column: 3;
+  grid-row: 1;
+  padding-left: 0;
+  padding-right: 0;
+  min-width: 0;
+}
+
+/* !SECTION */
+
+/* SECTION Vertical navbar */
+/* ANCHOR Navigation groups */
+/* Give the sidebar navigation groups consistent level-one surface spacing. */
+.navbar-vertical-layout > :is(.nav-profile-container, .nav-page-container, .nav-options-container, .nav-general-container) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-level-2);
+  width: 100%;
+  min-width: 0;
+  padding-block: calc(var(--spacing-level-2) - 1px);
+  padding-inline: calc(var(--spacing-level-2) + 2px);
+}
+
+/* Keep Options directly above General and anchor both groups at the sidebar bottom. */
+.navbar-vertical-layout > .nav-page-container { order: 1; }
+.navbar-vertical-layout > .nav-options-container {
+  order: 2;
+  margin-top: auto;
+}
+.navbar-vertical-layout > .nav-general-container {
+  order: 3;
+}
+
+/* Arrange the profile picture and text side by side inside their surface. */
+.navbar-vertical-layout > .nav-profile-container {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-level-1);
+  height: var(--nav-horizontal-control-size);
+  padding-block: 0;
+  color: var(--color-text-secondary);
+}
+
+.app-container:not(.is-sidebar-collapsed) .navbar-vertical-layout > .nav-profile-container {
+  padding-left: calc(var(--spacing-level-3) - 1px);
+}
+
+/* ANCHOR Profile */
+.nav-profile-picture {
+  display: grid;
+  flex: 0 0 calc(var(--nav-horizontal-control-size) - 7px);
+  place-items: center;
+  width: calc(var(--nav-horizontal-control-size) - 7px);
+  height: calc(var(--nav-horizontal-control-size) - 7px);
+  padding: 0;
+}
+
+.nav-profile-picture > .nav-profile-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-icon-default);
+  -webkit-mask: url("../assets/icons/filled/avatar.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/avatar.png") center / contain no-repeat;
+}
+
+.nav-profile-container:hover {
+  color: var(--color-text-primary);
+}
+
+.nav-profile-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+/* ANCHOR Destination icon palettes */
+/* Give each navigation button its color and monochrome active-icon artwork. */
+#nav-home-button {
+  --nav-item-color: var(--color-icon-home);
+  --nav-icon-mask: url("../assets/icons/filled/home.png");
+}
+#nav-library-button {
+  --nav-item-color: var(--color-icon-library);
+  --nav-icon-mask: url("../assets/icons/filled/library.png");
+}
+#nav-folders-button {
+  --nav-item-color: var(--color-icon-folder);
+  --nav-icon-mask: url("../assets/icons/filled/folder.png");
+}
+#nav-stats-button {
+  --nav-item-color: var(--color-icon-stats);
+  --nav-icon-mask: url("../assets/icons/filled/piechart.png");
+}
+#nav-timeline-button {
+  --nav-item-color: var(--color-icon-timeline);
+  --nav-icon-mask: url("../assets/icons/filled/timeline.png");
+}
+#nav-storage-button {
+  --nav-item-color: var(--color-icon-storage);
+  --nav-icon-mask: url("../assets/icons/filled/save.png");
+}
+#nav-activity-button {
+  --nav-item-color: var(--color-icon-activity);
+  --nav-icon-mask: url("../assets/icons/filled/history.png");
+}
+#nav-settings-button {
+  --nav-item-color: var(--color-icon-settings);
+  --nav-icon-mask: url("../assets/icons/filled/setting.png");
+}
+#nav-login-button {
+  --nav-item-color: var(--palette-white);
+  --nav-icon-mask: url("../assets/icons/filled/login.png");
+}
+#nav-about-button {
+  --nav-item-color: var(--palette-white);
+  --nav-icon-mask: url("../assets/icons/filled/about.png");
+}
+
+/* Separate Home from library actions and folders from the remaining pages. */
+.nav-separator {
+  flex: 0 0 1px;
+  align-self: center;
+  width: 40%;
+  height: 2px;
+  margin-block: calc(var(--spacing-level-1) - 6px);
+  background: color-mix(in srgb, var(--color-surface-level-base) 78%, var(--color-border-subtle));
+  border-radius: 999px;
+  box-shadow:
+    0 -1px 0 color-mix(in srgb, var(--color-background-app) 48%, transparent),
+    0 1px 0 color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+  opacity: 0.72;
+}
+
+/* ANCHOR Shared sidebar button */
+/* Arrange the icon surface and label inside each clickable sidebar button. */
+.navbar-vertical-layout .nav-button {
+  --nav-icon-color: var(--color-icon-default);
+  --nav-icon-glow-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-level-1);
+  width: 100%;
+  min-width: 0;
+  min-height: var(--size-dashboard-control);
+  padding: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  text-align: left;
+  transition: color 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+}
+
+/* Keep the level-two icon boxes compact while preserving their square shape. */
+.nav-button > .nav-button-icon {
+  display: grid;
+  flex: 0 0 var(--nav-inner-box-size);
+  place-items: center;
+  width: var(--nav-inner-box-size);
+  height: var(--nav-inner-box-size);
+  padding: var(--spacing-level-1);
+}
+
+/* Scale the artwork down with its smaller icon box. */
+.nav-button > .nav-button-icon > :is(.icon, .svg-icon) {
+  width: 15px;
+  height: 15px;
+}
+
+.nav-button-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Highlight active navigation text and icon without changing the icon-box border. */
+.navbar-vertical-layout .nav-button:is(.is-active, :hover, :focus-visible, [aria-expanded="true"]) {
+  --nav-icon-color: var(--nav-item-color, var(--color-accent-primary));
+  --nav-icon-glow-color: color-mix(in srgb, var(--nav-icon-color) 88%, transparent);
+  color: var(--nav-item-color, var(--color-accent-primary));
+}
+
+.navbar-vertical-layout .nav-button:is(.is-active, :hover, :focus-visible, [aria-expanded="true"]) > .nav-button-icon {
+  --glow-halo-color: var(--nav-item-color, var(--color-accent-primary));
+  --glow-halo-opacity: 0.3;
+}
+
+:is(
+  #nav-home-button,
+  #nav-library-button,
+  #nav-folders-button,
+  #nav-stats-button,
+  #nav-timeline-button,
+  #nav-storage-button,
+  #nav-activity-button,
+  #nav-settings-button,
+  #nav-login-button,
+  #nav-about-button
+) > .nav-button-icon::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 15px;
+  transform: translate(-50%, -50%);
+  background-color: var(--nav-icon-color);
+  content: "";
+  -webkit-mask: var(--nav-icon-mask) center / contain no-repeat;
+  mask: var(--nav-icon-mask) center / contain no-repeat;
+  filter: drop-shadow(0 0 2px var(--nav-icon-glow-color));
+}
+
+:is(
+  #nav-home-button,
+  #nav-library-button,
+  #nav-folders-button,
+  #nav-stats-button,
+  #nav-timeline-button,
+  #nav-storage-button,
+  #nav-activity-button,
+  #nav-settings-button,
+  #nav-login-button,
+  #nav-about-button
+) > .nav-button-icon > :is(.icon, .svg-icon) {
+  opacity: 0;
+}
+
+/* !SECTION */
+
+/* SECTION Horizontal navbar */
+/* ANCHOR Horizontal brand */
+/* Keep the wordmark compact at the right end of the horizontal navbar. */
+.navbar-horizontal-layout .nav-brand-container {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: var(--nav-horizontal-control-size);
+  min-width: 0;
+  max-width: 100%;
+  margin-left: 0;
+  padding-inline: calc(var(--spacing-level-1) + 5px);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-dashboard-brand);
+  font-size: calc(var(--font-size-dashboard-brand) - 4px);
+  font-weight: 700;
+  letter-spacing: -.07em;
+  -webkit-text-stroke: 1.4px var(--color-title-outline);
+  paint-order: stroke fill;
+}
+
+/* Lighten the Rewatched wordmark weight without changing its punctuation. */
+.navbar-horizontal-layout .nav-brand-container > .brand-name {
+  font-weight: 600;
+}
+
+/* Align the wordmark punctuation with its text. */
+.nav-brand-container > .brand-dot {
+  margin-left: 0;
+  line-height: 1;
+  transform: translateY(-.17em);
+}
+
+/* ANCHOR Toolbar groups */
+/* Keep navigation controls grouped at the left, with the brand at the right. */
+/* Group the two toolbar toggles inside one level-two surface. */
+.nav-toggle-container {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--spacing-level-3);
+  height: var(--nav-horizontal-control-size);
+  padding: 4px;
+}
+
+/* Group page history and the current page inside one level-two surface. */
+.nav-pagination-container {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--spacing-level-2);
+  height: var(--nav-horizontal-control-size);
+  padding: 4px;
+}
+
+/* Anchor the storage name and status dot at the right side of the toolbar. */
+.nav-save-button {
+  flex: 0 1 auto;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  width: max-content;
+  max-width: var(--nav-horizontal-control-size);
+  height: var(--nav-horizontal-control-size);
+  padding-inline: calc((var(--nav-horizontal-control-size) - 32px - 2px) / 2);
+  padding-block: 0;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-save-button:is(:hover, :focus-visible) {
+  gap: 7px;
+  max-width: min(34vw, 320px);
+}
+
+.nav-save-icon {
+  --glow-halo-color: var(--color-storage-saved);
+  --glow-halo-opacity: 0.3;
+  display: grid;
+  flex: 0 0 32px;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.nav-save-icon-glyph {
+  --app-icon-state-color: var(--color-storage-saved);
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  -webkit-mask-image: url("../assets/icons/filled/save-status.png");
+  mask-image: url("../assets/icons/filled/save-status.png");
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--app-icon-state-color) 88%, transparent));
+}
+
+.nav-save-icon[data-storage-state="unexported"],
+.nav-save-icon[data-storage-state="pending"],
+.nav-save-icon[data-storage-state="error"] {
+  --glow-halo-color: var(--color-storage-error);
+}
+
+.nav-save-icon:is([data-storage-state="unexported"], [data-storage-state="pending"], [data-storage-state="error"]) > .nav-save-icon-glyph {
+  --app-icon-state-color: var(--color-storage-error);
+}
+
+.nav-save-button:hover,
+.nav-save-button:focus-visible {
+  color: var(--color-text-primary);
+  text-shadow: 0 0 4px color-mix(in srgb, var(--color-text-primary) 45%, transparent);
+}
+
+.nav-save-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  opacity: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nav-save-button:is(:hover, :focus-visible) > .nav-save-text {
+  max-width: min(34vw, 260px);
+  opacity: 1;
+}
+
+/* Size the history buttons as level-three controls with compact arrow-side spacing. */
+:is(.nav-prev-button, .nav-next-button) {
+  flex: 0 0 calc(var(--nav-horizontal-control-size) - 14px);
+  width: calc(var(--nav-horizontal-control-size) - 14px);
+  height: 36px;
+  min-width: 0;
+  padding: var(--spacing-level-2);
+}
+
+/* Size each toggle as a nested level-three control. */
+.nav-toggle-container > :is(.nav-toggle-sidebar, .nav-toggle-theme) {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+/* Give the toolbar controls a white hover glow and their matching icon masks. */
+.nav-toggle-sidebar {
+  --nav-control-color: var(--palette-white);
+  --nav-control-mask: url("../assets/icons/filled/navbar-collapse.png");
+}
+.nav-toggle-theme {
+  --nav-control-color: var(--palette-white);
+}
+:root[data-theme="dark"] .nav-toggle-theme {
+  --nav-control-mask: url("../assets/icons/filled/light_mode.png");
+}
+:root[data-theme="light"] .nav-toggle-theme {
+  --nav-control-mask: url("../assets/icons/filled/dark_mode.png");
+}
+.nav-prev-button {
+  --nav-control-color: var(--palette-white);
+  --nav-control-mask: url("../assets/icons/filled/left.png");
+}
+.nav-next-button {
+  --nav-control-color: var(--palette-white);
+  --nav-control-mask: url("../assets/icons/filled/right.png");
+}
+
+.nav-page-name {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: max-content;
+  min-width: 0;
+  height: 36px;
+  padding-inline: var(--spacing-level-1);
+  color: var(--nav-page-name-color, var(--color-text-secondary));
+  font: var(--font-weight-app) 14px/1 var(--font-family-app);
+  text-transform: uppercase;
+  text-shadow: 0 0 4px color-mix(in srgb, currentColor 48%, transparent);
+  white-space: nowrap;
+}
+
+/* Remove the page-name tile when neither history arrow is available. */
+.navbar-horizontal-layout .nav-pagination-container.is-history-empty > .nav-page-name.level-3-styling {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.navbar-horizontal-layout .icon-button:is(:hover, :focus-visible) {
+  --glow-halo-color: var(--nav-control-color, var(--palette-white));
+  --glow-halo-opacity: 0.3;
+  color: var(--nav-control-color, var(--palette-white));
+}
+
+.navbar-horizontal-layout .icon-button:is(:hover, :focus-visible)::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -50%);
+  background-color: var(--nav-control-color);
+  content: "";
+  -webkit-mask: var(--nav-control-mask) center / contain no-repeat;
+  mask: var(--nav-control-mask) center / contain no-repeat;
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--nav-control-color) 88%, transparent));
+}
+
+/* Keep the tinted arrow artwork the same size as its resting icon. */
+.navbar-horizontal-layout :is(.nav-prev-button, .nav-next-button):is(:hover, :focus-visible)::after {
+  width: 13px;
+  height: 13px;
+}
+
+.navbar-horizontal-layout .icon-button:is(:hover, :focus-visible) > :is(.icon, .masked-icon, .svg-icon) {
+  opacity: 0;
+}
+
+/* Keep the other white toolbar icons stable instead of swapping their artwork on hover. */
+.navbar-horizontal-layout :is(.nav-toggle-theme, .nav-prev-button, .nav-next-button):is(:hover, :focus-visible)::after {
+  content: none;
+}
+
+.navbar-horizontal-layout :is(.nav-toggle-theme, .nav-prev-button, .nav-next-button):is(:hover, :focus-visible) > .icon {
+  opacity: 1;
+  filter: brightness(0) invert(1) drop-shadow(0 0 2px color-mix(in srgb, var(--palette-white) 88%, transparent));
+}
+
+/* Tint the sidebar toggle grey at rest and white on hover without changing artwork. */
+.navbar-horizontal-layout .nav-toggle-sidebar::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-icon-default);
+  content: "";
+  -webkit-mask: var(--nav-control-mask) center / contain no-repeat;
+  mask: var(--nav-control-mask) center / contain no-repeat;
+}
+
+.navbar-horizontal-layout .nav-toggle-sidebar:is(:hover, :focus-visible)::after {
+  background-color: var(--palette-white);
+}
+
+.navbar-horizontal-layout :is(.nav-prev-button, .nav-next-button) > .icon {
+  width: 11px;
+  height: 11px;
+}
+
+/* Keep every toolbar icon smaller and consistently proportioned. */
+.navbar-horizontal-layout .icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Use the stable masked toggle so its default tint matches secondary text. */
+.nav-toggle-sidebar > .icon {
+  opacity: 0;
+}
+.nav-expand-icon { display: none; }
+
+/* ANCHOR Collapsed sidebar state */
+/* Collapse the rail to icon-only navigation when the toggle is active. */
+.app-container.is-sidebar-collapsed {
+  --navbar-sidebar-width: 88px;
+}
+
+.app-container.is-sidebar-collapsed .nav-button-text,
+.app-container.is-sidebar-collapsed .nav-profile-name {
+  display: none;
+}
+
+.app-container.is-sidebar-collapsed .navbar-vertical-layout .nav-button {
+  justify-content: center;
+}
+
+.app-container.is-sidebar-collapsed .navbar-vertical-layout > .nav-profile-container {
+  justify-content: center;
+}
+
+.app-container.is-sidebar-collapsed .nav-separator {
+  width: 48%;
+}
+
+.app-container.is-sidebar-collapsed .nav-brand-container .brand-name {
+  font-size: 0;
+}
+
+.app-container.is-sidebar-collapsed .nav-brand-container .brand-name::before {
+  content: "R";
+  display: block;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: normal;
+  -webkit-text-stroke: 0;
+}
+
+.app-container.is-sidebar-collapsed .nav-brand-container {
+  align-items: center;
+}
+
+.app-container.is-sidebar-collapsed .nav-collapse-icon { display: none; }
+.app-container.is-sidebar-collapsed .nav-expand-icon { display: block; }
+.app-container.is-sidebar-collapsed .nav-toggle-sidebar {
+  --nav-control-mask: url("../assets/icons/filled/navbar-expand.png");
+}
+
+/* !SECTION */
+
+/* SECTION Responsive navbar */
+/* Reduce the toolbar's height on narrow screens; the script collapses the rail too. */
+@media (max-width: 700px) {
+  .app-container {
+    --navbar-topbar-height: 52px;
+    --nav-horizontal-control-size: 40px;
+  }
+
+  :root {
+    --navbar-topbar-control-inset: 6px;
+  }
+
+  .nav-toggle-container > :is(.nav-toggle-sidebar, .nav-toggle-theme) {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .navbar-horizontal-layout .icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .navbar-horizontal-layout .nav-toggle-sidebar::after {
+    width: 15px;
+    height: 15px;
+  }
+
+  .navbar-horizontal-layout .icon-button:is(:hover, :focus-visible)::after {
+    width: 15px;
+    height: 15px;
+  }
+
+  .navbar-horizontal-layout :is(.nav-prev-button, .nav-next-button) > .icon,
+  .navbar-horizontal-layout :is(.nav-prev-button, .nav-next-button):is(:hover, :focus-visible)::after {
+    width: 11px;
+    height: 11px;
+  }
+
+  .nav-profile-picture {
+    flex-basis: 33px;
+    width: 33px;
+    height: 33px;
+  }
+
+  .navbar-horizontal-layout .nav-brand-container {
+    font-size: calc(var(--font-size-dashboard-brand) - 7px);
+  }
+
+  .nav-page-name {
+    font-size: 12px;
+  }
+
+  .nav-profile-name { display: none; }
+  .nav-toggle-sidebar { flex-basis: var(--nav-horizontal-control-size); }
+}
+
+/* !SECTION */

@@ -1,0 +1,79 @@
+/* Shared icon sizing, rendering, and media-type treatments. */
+
+/* SECTION Raster and masked icons */
+/* Give reusable interface images a consistent default size. */
+.icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  color: var(--color-icon-default);
+  object-fit: contain;
+}
+
+/* Render filled artwork as a tintable mask. */
+.masked-icon {
+  width: var(--size-icon-filled);
+  height: var(--size-icon-filled);
+  flex: 0 0 var(--size-icon-filled);
+  background-color: var(--app-icon-state-color, var(--color-icon-default));
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+/* !SECTION */
+
+/* SECTION Inline SVG icons */
+/* Give inline SVG icons compact dimensions and a consistent outline. */
+.svg-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+button svg:not(.play-icon):not(.pause-icon),
+.svg-icon {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* !SECTION */
+
+/* SECTION Media type icons */
+/* Center media-type artwork within the size reserved by its component. */
+.media-type-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.media-type-icon > .icon,
+.media-type-icon > .masked-icon { width: 100%; height: 100%; }
+
+/* Apply the same semantic tint wherever a media type is shown. */
+.media-type-icon:is(.is-movie, .is-film) {
+  --app-icon-state-color: var(--color-media-film);
+  color: var(--color-media-film);
+}
+
+.media-type-icon.is-show {
+  --app-icon-state-color: var(--color-media-show);
+  color: var(--color-media-show);
+}
+
+.media-type-icon.is-game {
+  --app-icon-state-color: var(--color-media-game);
+  color: var(--color-media-game);
+}
+
+.media-type-icon.is-book {
+  --app-icon-state-color: var(--color-media-book);
+  color: var(--color-media-book);
+}
+/* !SECTION */
