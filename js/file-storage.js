@@ -17,7 +17,6 @@ let browserFileImportedThisSession = false;
 let browserFileNoticeDismissed = false;
 let loadStatusTimer = null;
 let legacyFileStatusTimer = null;
-let exportedCreateSnapshot = null;
 let storageFileName = localStorage.getItem(STORAGE_FILE_NAME_KEY) || 'Browser Vault';
 let currentStorageSaveState = 'saved';
 window.__rewatchedDirty = false;
@@ -243,6 +242,8 @@ function updateStorageIndicator() {
     ? 'Browser'
     : storageFileName === 'Browser Vault' ? 'Browser' : storageFileName;
   if (nameTarget) nameTarget.textContent = activeStorageName.replace(/\.[^.]+$/, '');
+  const summarySource = document.querySelector('.backup-summary-source');
+  if (summarySource) summarySource.textContent = activeStorageName.replace(/\.json$/i, '');
   const navStorageName = $('#nav-save-text');
   if (navStorageName) {
     navStorageName.textContent = activeStorageName.replace(/\.json$/i, '');
@@ -298,7 +299,7 @@ function updateBrowserFileNotice() {
   row.classList.toggle('has-browser-notice', show);
   wrapper.hidden = !show;
   notice.textContent = show
-    ? `This browser cannot automatically reopen or save to ${storageFileName}.\n\nYour current library is saved in this browser.\n\nImport the previous file to connect it again.`
+    ? `This browser cannot automatically reopen or save to ${storageFileName}.\n\nYour current library is saved in this browser.\n\nUse Import file to load that file again.`
     : '';
 }
 
@@ -360,9 +361,8 @@ function fileStatus(message, requestedType = '') {
     : /^(Loaded|Using)/.test(message) ? 'File loaded'
     : /^This browser cannot automatically reopen/.test(message) ? 'Browser copy loaded'
     : /^No file selected/.test(message) ? 'No file selected'
-    : /^Choose a JSON file/.test(message) ? 'Import a file'
     : message;
-  const type = requestedType || (error ? 'error' : reconnect || /^This browser cannot link|^No file selected|^Choose a JSON file|^File downloaded/.test(message) ? 'warning' : 'success');
+  const type = requestedType || (error ? 'error' : reconnect || /^This browser cannot link|^No file selected|^File downloaded/.test(message) ? 'warning' : 'success');
   if (!showLoadStatus(shortMessage, type, message)) {
     const status = $('#file-storage-status');
     clearTimeout(legacyFileStatusTimer);
@@ -564,9 +564,11 @@ async function initializeFileStorage() {
     $('#create-storage-file').disabled = false;
     if (storageFileName !== 'Browser Vault') await restoreRememberedLibrary();
     updateBrowserFileNotice();
-    fileStatus(storageFileName === 'Browser Vault'
-      ? 'Choose a JSON file to load it. This browser keeps a browser copy, but cannot reopen or save back to the selected file. Use Export file to save your changes.'
-      : `This browser cannot automatically reopen or save to ${storageFileName}.\n\nYour current library is saved in this browser.\n\nUse Export file to save a JSON copy.`);
+    if (storageFileName !== 'Browser Vault') {
+      fileStatus(`This browser cannot automatically reopen or save to ${storageFileName}.\n\nYour current library is saved in this browser.\n\nUse Export file to save a JSON copy.`);
+    } else if (!$('#load-status')) {
+      fileStatus('Choose a JSON file to load it. This browser keeps a browser copy, but cannot reopen or save back to the selected file. Use Export file to save your changes.');
+    }
     return;
   }
   try {
@@ -701,37 +703,6 @@ async function loadBasicStorageFile(file) {
   }
 }
 
-/** Reconnects the previously selected file without opening a file picker. */
-async function reconnectStorageFile() {
-  try {
-    let handle = storageFileHandle;
-    if (!handle && window.indexedDB) handle = await rememberedFileHandle();
-    if (!handle) {
-      fileStatus('No remembered file is available to reconnect. Use Import file to choose a file.');
-      return;
-    }
-    if (typeof handle.queryPermission !== 'function') {
-      fileStatus(`Stored access for ${storageFileName} is unavailable. Use Import file to choose it again.`);
-      return;
-    }
-
-    const permission = handle.requestPermission
-      ? await handle.requestPermission({ mode: 'readwrite' })
-      : await handle.queryPermission({ mode: 'readwrite' });
-    if (permission !== 'granted') {
-      fileStatus(`Access to ${handle.name} was not granted. Choose the file again to reconnect it.`);
-      return;
-    }
-
-    const library = await loadStorageFile(handle);
-    if ((entries.length || watchlist.length || customCollections.length) &&
-        !confirm(`Reconnect ${handle.name}? This will replace the library currently shown in the app.`)) return;
-    await activateStorageFile(handle, library);
-  } catch (error) {
-    if (error.name !== 'AbortError') fileStatus(`Could not reconnect file: ${error.message || 'access failed'}`);
-  }
-}
-
 /** Builds a new, empty library in the app's backup format. */
 function emptyLibrarySnapshot() {
   return {
@@ -750,7 +721,7 @@ function downloadStorageSnapshot(snapshot = makeBackupSnapshot()) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = 'rewatched-library.json';
+  link.download = 'vault.json';
   document.body.append(link);
   link.click();
   link.remove();
@@ -758,18 +729,9 @@ function downloadStorageSnapshot(snapshot = makeBackupSnapshot()) {
   fileStatus('File downloaded. Import it to load it and enable automatic saving.', 'warning');
 }
 
-/** Creates an empty storage file after exporting the current library. */
+/** Creates a new empty storage file after confirming replacement of the current library. */
 async function createStorageFile() {
-  const currentSnapshot = JSON.stringify({ entries, watchlist, collections: customCollections });
-  const hasCurrentData = entries.length || watchlist.length || customCollections.length;
-  if (hasCurrentData && exportedCreateSnapshot !== currentSnapshot) {
-    if (!confirm('Creating a new file starts an empty library. Export your current library first? Choose OK to download it, then click Create new file again. Choose Cancel to leave everything unchanged.')) return;
-    downloadBackup();
-    exportedCreateSnapshot = currentSnapshot;
-    fileStatus('Current library exported. Click Create new file again to start empty.', 'warning');
-    return;
-  }
-  if (hasCurrentData && !confirm('Create an empty library and replace the current library in the app? Your export has been downloaded.')) return;
+  if (!confirm('Create a new empty file? Your current library will be replaced. Export it first if you want to keep a copy.')) return;
 
   const emptySnapshot = emptyLibrarySnapshot();
   const emptyLibrary = { entries: [], watchlist: [], collections: [] };
@@ -784,7 +746,6 @@ async function createStorageFile() {
       setStorageFileName(file.name);
       useFileLibrary(emptyLibrary);
       await rememberedLibrarySnapshot(makeBackupSnapshot());
-      exportedCreateSnapshot = null;
       fileStatus(`Created an empty ${file.name}. Changes will save automatically.`);
     } catch (error) {
       if (error.name !== 'AbortError') fileStatus(`Could not create file: ${error.message || 'access failed'}`);
@@ -802,14 +763,13 @@ async function createStorageFile() {
       await rememberedFileHandle(null);
       await rememberedLibrarySnapshot(emptySnapshot);
     }
-    exportedCreateSnapshot = null;
-    fileStatus('Empty library created. Import the downloaded file to use it as storage.', 'warning');
+    fileStatus('Created an empty library and downloaded its JSON file. Later browser changes will need a new export to update that file.', 'warning');
     return;
   }
   try {
     const handle = await window.showSaveFilePicker({
       ...filePickerOptions(),
-      suggestedName: 'rerun-library.json',
+      suggestedName: 'vault.json',
     });
     clearTimeout(fileSaveTimer);
     await pendingFileWrite;
@@ -821,7 +781,6 @@ async function createStorageFile() {
     await rememberedFileHandle(handle);
     useFileLibrary(emptyLibrary);
     await rememberedLibrarySnapshot(makeBackupSnapshot());
-    exportedCreateSnapshot = null;
     fileStatus(`Created an empty ${handle.name}. Changes will save automatically.`);
   } catch (error) {
     if (error.name === 'SecurityError' || error.name === 'NotAllowedError') {
@@ -836,8 +795,7 @@ async function createStorageFile() {
         await rememberedFileHandle(null);
         await rememberedLibrarySnapshot(emptySnapshot);
       }
-      exportedCreateSnapshot = null;
-      fileStatus('Empty library created. Import the downloaded file to use it as storage.', 'warning');
+      fileStatus('Created an empty library and downloaded its JSON file. Later browser changes will need a new export to update that file.', 'warning');
     } else if (error.name !== 'AbortError') {
       fileStatus(`Could not create file: ${error.message || 'access failed'}`);
     }
@@ -849,5 +807,4 @@ $('#storage-file-input').addEventListener('change', (event) => {
   loadBasicStorageFile(event.target.files[0]);
 });
 $('#create-storage-file').addEventListener('click', createStorageFile);
-$('#reconnect-storage-file')?.addEventListener('click', reconnectStorageFile);
 /** Handles linked JSON storage files, autosaving, reconnection, and save-state UI. */

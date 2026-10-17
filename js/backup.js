@@ -3,21 +3,31 @@
 
 let selectedBackup = null;
 let backupStatusTimer = null;
+let backupSummarySourceObserver = null;
 
 /** Shows a backup result with its matching status color. */
-function setBackupStatus(message, type = 'warning') {
+function setBackupStatus(message, type = 'warning', detail = message) {
   const status = $('#backup-status');
   clearTimeout(backupStatusTimer);
   status.textContent = message;
   status.hidden = !message;
-  if (message) status.dataset.status = type;
-  else delete status.dataset.status;
+  if (message) {
+    status.dataset.status = type;
+    status.title = detail;
+    status.setAttribute('aria-label', detail);
+  } else {
+    delete status.dataset.status;
+    status.removeAttribute('title');
+    status.removeAttribute('aria-label');
+  }
   if (message) {
     backupStatusTimer = setTimeout(() => {
       if (status.textContent !== message) return;
       status.textContent = '';
       status.hidden = true;
       delete status.dataset.status;
+      status.removeAttribute('title');
+      status.removeAttribute('aria-label');
     }, 4000);
   }
 }
@@ -25,8 +35,35 @@ function setBackupStatus(message, type = 'warning') {
 /** Updates the backup dialog with a summary of the current data. */
 function updateBackupSummary() {
   const watches = entries.reduce((count, entry) => count + entry.watches.length, 0);
-  $('#backup-summary').textContent =
-    `${entries.length} logged titles · ${watches} watches · ${watchlist.length} watchlist items · ${customCollections.length} folders`;
+  const summary = $('#backup-summary');
+  if (!summary) return;
+  if (document.documentElement.dataset.cssReworkPreview !== 'true') {
+    summary.textContent = `${entries.length} logged titles · ${watches} watches · ${watchlist.length} watchlist items · ${customCollections.length} folders`;
+    return;
+  }
+  summary.classList.add('level-4-styling');
+  const source = document.createElement('span');
+  source.className = 'backup-summary-source level-5-styling';
+  source.textContent = $('#nav-save-text')?.textContent || 'Browser';
+  const stats = document.createElement('span');
+  stats.className = 'backup-summary-stats';
+  for (const label of [
+    `${entries.length} Logged items`,
+    `${watchlist.length} Backlogged items`,
+    `${watches} Watches`,
+    `${customCollections.length} Folders`,
+  ]) {
+    const item = document.createElement('span');
+    item.className = 'backup-summary-stat level-5-styling';
+    item.textContent = label;
+    stats.append(item);
+  }
+  summary.replaceChildren(source, stats);
+  backupSummarySourceObserver?.disconnect();
+  backupSummarySourceObserver = new ResizeObserver(() => {
+    summary.style.setProperty('--backup-summary-trunk-offset', `${source.getBoundingClientRect().width / 2}px`);
+  });
+  backupSummarySourceObserver.observe(source);
 }
 
 /** Validates and normalizes a string field from imported backup data. */
@@ -206,7 +243,7 @@ async function chooseBackup(file) {
   if (!file) return;
 
   if (file.size > 25 * 1024 * 1024) {
-    setBackupStatus('This file is too large to use.', 'error');
+    setBackupStatus('File too large', 'error', 'This file is too large to use.');
     return;
   }
 
@@ -217,7 +254,7 @@ async function chooseBackup(file) {
     $('#import-options').hidden = false;
     setBackupStatus('Choose how to use this file.', 'warning');
   } catch (error) {
-    setBackupStatus(error.message || 'Could not read this file.', 'error');
+    setBackupStatus('Could not read file', 'error', error.message || 'Could not read this file.');
   }
 }
 
@@ -259,7 +296,7 @@ function importBackup() {
     } catch (restoreError) {
       console.warn('Could not restore browser storage after import failed.', restoreError);
     }
-    setBackupStatus('Could not apply the file. Browser storage may be full; your current data was kept.', 'error');
+    setBackupStatus('Could not apply file', 'error', 'Browser storage may be full; your current data was kept.');
     console.warn('Could not import backup.', error);
     return;
   }

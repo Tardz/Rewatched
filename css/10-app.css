@@ -3,7 +3,7 @@
 /* ANCHOR App container */
 /* Define the app-wide grid that contains navigation and the scrollable page. */
 .app-container {
-  --navbar-sidebar-width: 160px;
+  --navbar-sidebar-width: 149px;
   --navbar-topbar-height: 70px;
   --nav-horizontal-control-size: 48px;
   --nav-inner-box-size: 40px;
@@ -42,6 +42,7 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+  border-radius: var(--radius-surface-level-2);
 }
 
 /* Scroll inside the rounded frame so its corners clip the scrollbar ends. */
@@ -56,7 +57,7 @@
   scroll-snap-type: y proximity;
   scroll-padding-block-start: 0;
   padding: var(--padding-block-layout-content) var(--padding-inline-layout-content) calc(var(--spacing-level-1) + var(--spacing-level-1) + 4px);
-  border-radius: var(--radius-surface-level-0);
+  border-radius: var(--radius-surface-level-2);
   box-shadow: var(--shadow-surface-level-1);
   scrollbar-color: var(--color-border-strong) transparent;
   scrollbar-width: thin;

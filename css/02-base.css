@@ -46,7 +46,7 @@ body {
   position: absolute;
   z-index: -1;
   inset: 0;
-  clip-path: inset(0 round var(--radius-surface-level-0));
+  clip-path: inset(0 round var(--radius-surface-level-2));
   background:
     radial-gradient(ellipse at 16% 0%, var(--app-poster-color-one, var(--color-poster-fallback-one)) 0%, transparent 48%),
     radial-gradient(ellipse at 88% 12%, var(--app-poster-color-two, var(--color-poster-fallback-two)) 0%, transparent 40%);
@@ -147,6 +147,14 @@ body {
   border-radius: var(--radius-surface-level-4);
   background: var(--color-surface-level-4);
   box-shadow: var(--shadow-surface-level-4);
+}
+
+/* Deepest compact surfaces nested inside level-four groups. */
+.level-5-styling {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-surface-level-5);
+  background: var(--color-surface-level-5);
+  box-shadow: var(--shadow-surface-level-5);
 }
 
 /* ANCHOR Save confirmation toast */

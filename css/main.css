@@ -1,4 +1,4 @@
-/* Isolated entry point for the CSS rework; the live app still uses /main.css. */
+/* Stylesheet entry point for the current app. */
 @import "01-tokens.css";
 @import "02-base.css";
 @import "03-buttons.css";

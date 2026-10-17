@@ -58,10 +58,12 @@ The app can optionally use Google Programmable Search for poster images and OMDb
 
 ```text
 .
-├── index.html          # Page markup and dialogs
+├── index.html          # Current page markup and dialogs
+├── index-old.html      # Preserved previous page
 ├── app.js              # Startup, navigation, and event wiring
-├── main.css            # Ordered imports for the stylesheets
-├── css/                # Base styles and feature-specific styling
+├── css/                # Current styles, imported by css/main.css
+├── main-old.css        # Imports for the previous page
+├── css-old/            # Preserved previous styles
 ├── js/                 # State, views, forms, storage, and features
 ├── electron/           # Desktop application wrapper
 └── uml/                # Editable architecture diagrams

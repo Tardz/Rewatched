@@ -399,6 +399,7 @@ function save() {
   // Keep the Electron quit prompt and save indicator aware of folder changes too.
   window.__rewatchedDirty = true;
   queueFileSave();
+  updateBackupSummary();
 }
 
 /** Commits form edits while preserving the prior entry and watch data. */

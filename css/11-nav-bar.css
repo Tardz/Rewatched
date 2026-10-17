@@ -10,8 +10,7 @@
   grid-column: 1;
   grid-row: 1 / -1;
   padding-block: var(--navbar-topbar-control-inset) var(--spacing-app-shell-inset);
-  padding-left: calc(var(--spacing-level-1) + var(--navbar-app-gap));
-  padding-right: 2px;
+  padding-inline: var(--navbar-app-gap) 0;
   min-width: 0;
 }
 
@@ -416,10 +415,10 @@
   --nav-control-color: var(--palette-white);
 }
 :root[data-theme="dark"] .nav-toggle-theme {
-  --nav-control-mask: url("../assets/icons/filled/light_mode.png");
+  --nav-control-mask: url("../assets/icons/color/light_mode.png");
 }
 :root[data-theme="light"] .nav-toggle-theme {
-  --nav-control-mask: url("../assets/icons/filled/dark_mode.png");
+  --nav-control-mask: url("../assets/icons/filled/dark-mode.png");
 }
 .nav-prev-button {
   --nav-control-color: var(--palette-white);
@@ -530,7 +529,7 @@
 /* ANCHOR Collapsed sidebar state */
 /* Collapse the rail to icon-only navigation when the toggle is active. */
 .app-container.is-sidebar-collapsed {
-  --navbar-sidebar-width: 88px;
+  --navbar-sidebar-width: 77px;
 }
 
 .app-container.is-sidebar-collapsed .nav-button-text,

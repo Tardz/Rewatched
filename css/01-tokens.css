@@ -76,6 +76,7 @@
   --color-surface-level-2: #3d3e41;       /* Shared fill for controls and cards inside panels. */  
   --color-surface-level-3: #55555b;       /* Shared fill for nested tiles. */
   --color-surface-level-4: color-mix(in srgb, #414247 80%, transparent); /* Muted translucent fill for compact inset controls. */
+  --color-surface-level-5: color-mix(in srgb, var(--color-surface-level-4) 65%, var(--color-surface-level-3)); /* Deepest nested storage and compact detail boxes. */
   
   --color-surface-detail: #171b22;        /* Dark surface for branding and fallback artwork. */
   --color-surface-accent: #243745;          /* Accent surface for selected dashboard sections. */
@@ -132,6 +133,7 @@
   --radius-surface-level-2: calc(12px * var(--radius-scale)); /* Mid-level boxes and grouped controls. */
   --radius-surface-level-3: calc(10px * var(--radius-scale)); /* Small nested controls and tiles. */
   --radius-surface-level-4: calc(9px * var(--radius-scale)); /* Round compact inset controls more generously. */
+  --radius-surface-level-5: calc(8px * var(--radius-scale)); /* Keep the deepest small boxes slightly sharper. */
   --radius-chip: calc(var(--radius-control-small) - 2px);      /* Sharpen chips relative to compact controls. */
   --radius-control-small: calc(var(--radius-surface-level-4) - 1px); /* Sharpen small controls while following the shared radius scale. */
   --radius-control-compact: var(--radius-surface-level-3);    /* Compact controls and value badges. */                  
@@ -221,6 +223,7 @@
   --shadow-surface-level-4:
     var(--shadow-border-highlight),
     0 1px 3px var(--shadow-color-black-medium);                                /* Soft depth for the smallest controls. */
+  --shadow-surface-level-5: var(--shadow-surface-level-4); /* Share compact depth until level five needs its own treatment. */
   --shadow-value-badge: 0 3px 8px var(--shadow-color-black-medium);            /* Subtle lift for compact rating and priority badges. */
   /* Shared glass opacity by surface level; the settings slider scales the hierarchy. */
   --opacity-glass-surface: var(--glass-surface-opacity, 80%); /* Read the live app's glass-opacity setting. */
@@ -229,6 +232,7 @@
   --opacity-glass-level-2: max(20%, calc(var(--opacity-glass-level-1) - 45%)); /* Make inner boxes more transparent than outer panels. */
   --opacity-glass-level-3: max(15%, calc(var(--opacity-glass-level-2) - 10%)); /* Keep nested tiles just more transparent than level two. */
   --opacity-glass-level-4: max(10%, calc(var(--opacity-glass-level-3) - 20%)); /* Keep compact inset controls legible. */
+  --opacity-glass-level-5: var(--opacity-glass-level-4); /* Keep the deepest nested boxes readable. */
   --color-glass-highlight: #ffffff24;                         /* Light edge on glass surfaces. */              
   --shadow-color-glass-edge: #00000020;                       /* Dark edge beneath glass surfaces. */          
   --shadow-color-glass: #00000048;                            /* Main depth shadow for glass surfaces. */      
@@ -299,7 +303,7 @@
   --padding-inline-layout-content: 20px;  /* Horizontal breathing room inside main. */
   --padding-block-layout-content: 20px;   /* Vertical breathing room inside main. */
   --spacing-app-shell-inset: 16px;        /* Keep the vertical navigation clear of the bottom edge. */
-  --navbar-app-gap: 8px;                 /* Match the sidebar inset to the app-content column gap. */
+  --navbar-app-gap: var(--spacing-level-0); /* Separate the sidebar and app content by the shared outer gap. */
   --navbar-topbar-control-inset: 11px;   /* Match the vertical navbar's top control inset. */
   --blur-poster-wash: 16px;               /* Soften the poster wash with a lighter rendering cost. */
   --saturation-poster-wash: 1.6;           /* Color intensity of the banner poster wash. */

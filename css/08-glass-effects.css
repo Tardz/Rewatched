@@ -42,6 +42,14 @@
   box-shadow: var(--shadow-glass-level-3);
 }
 
+:root[data-theme-glass="on"] .level-5-styling {
+  border-color: var(--color-border-glass-level-3);
+  background: color-mix(in srgb, var(--color-surface-level-5) var(--opacity-glass-level-5), transparent);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: var(--shadow-glass-level-3);
+}
+
 /* Keep the create-entry action red while giving it the shared level-three glass depth. */
 :root[data-theme-glass="on"] .workspace-create-entry-button.level-3-styling {
   border-color: var(--color-border-glass-level-3);

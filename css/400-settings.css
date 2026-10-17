@@ -198,8 +198,6 @@
 .settings-content-container .settings-file-notice {
   grid-column: 2;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: var(--spacing-level-1);
   align-self: stretch;
   min-width: 0;
 }
@@ -208,19 +206,25 @@
   grid-column: 1 / -1;
 }
 
-.settings-content-container .settings-file-notice > button {
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-level-1);
-  justify-self: start;
-  color: var(--color-text-secondary);
-  direction: ltr;
-}
-
 .settings-content-container .settings-save-group {
   grid-column: 1 / -1;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: start;
+}
+
+/* Keep the Save heading above the storage tree and its actions. */
+.settings-content-container .settings-save-group > .settings-heading-layout,
+.settings-content-container .settings-save-group > .import-options {
+  grid-column: 1 / -1;
+}
+
+/* Put export and merge beside the storage summary instead of below it. */
+.settings-content-container .settings-save-group > .backup-actions {
+  grid-column: 2;
+  align-self: end;
+  justify-self: start;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .settings-content-container .settings-load-layout {
@@ -233,6 +237,15 @@
 @container settings-content (width < 460px) {
   .settings-content-container .settings-option-row {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-content-container .settings-save-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settings-content-container .settings-save-group > .backup-actions {
+    grid-column: 1;
+    flex-direction: row;
   }
 }
 
@@ -571,13 +584,87 @@
   font-size: 12px;
 }
 
+/* Branch the current storage source into its live library counts. */
+.settings-content-container .backup-summary:has(.backup-summary-source) {
+  --backup-summary-branch-length: 120px;
+  display: grid;
+  justify-items: start;
+  gap: 0;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--spacing-level-1);
+}
+
+.settings-content-container .backup-summary-source {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 8px 12px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: var(--font-weight-app);
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.settings-content-container .backup-summary-stats {
+  position: relative;
+  display: grid;
+  gap: var(--spacing-level-1);
+  margin-left: var(--backup-summary-trunk-offset, 32px);
+  padding-block: var(--spacing-level-2);
+}
+
+.settings-content-container .backup-summary-stats::before {
+  position: absolute;
+  top: 0;
+  bottom: calc(var(--spacing-level-2) + 14px + 8px);
+  left: 0;
+  border-left: 1px solid #fff;
+  content: "";
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.65));
+}
+
+.settings-content-container .backup-summary-stat {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  width: max-content;
+  min-height: 28px;
+  margin-left: var(--backup-summary-branch-length);
+  padding: var(--spacing-level-2) var(--spacing-level-1);
+}
+
+.settings-content-container .backup-summary-stat:nth-child(1) { --backup-summary-branch-length: 72px; }
+.settings-content-container .backup-summary-stat:nth-child(2) { --backup-summary-branch-length: 88px; }
+.settings-content-container .backup-summary-stat:nth-child(3) { --backup-summary-branch-length: 104px; }
+
+.settings-content-container .backup-summary-stat::before {
+  position: absolute;
+  top: calc(50% - 8px);
+  right: 100%;
+  width: var(--backup-summary-branch-length);
+  height: 8px;
+  border-bottom: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-bottom-left-radius: 8px;
+  content: "";
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.65));
+}
+
 /* Keep the browser file limitation visible in its own level-three notice. */
 #file-storage-status {
   position: relative;
   align-self: stretch;
   margin: 0;
   padding: calc(var(--spacing-level-1) * 0.75);
-  font: 500 11px / 1.4 var(--font-family-app);
+  font: 600 11px / 1.4 var(--font-family-app);
   white-space: pre-line;
 }
 
@@ -592,20 +679,10 @@
   margin: 0;
   padding-inline: var(--spacing-level-1);
   border-radius: var(--radius-control-small);
-  font: 500 12px / 1.2 var(--font-family-app);
+  font: 600 12px / 1.2 var(--font-family-app);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-#file-storage-status::before,
-.settings-content-container .settings-status-message::before {
-  position: absolute;
-  inset: 1px;
-  border: 1px solid var(--settings-status-accent, var(--palette-yellow));
-  border-radius: calc(var(--radius-surface-level-3) - 1px);
-  content: "";
-  pointer-events: none;
 }
 
 .settings-content-container .settings-status-message[data-status="success"] {
@@ -620,8 +697,13 @@
   --settings-status-accent: var(--palette-yellow);
 }
 
-.settings-content-container .settings-status-message::before {
-  border-radius: calc(var(--radius-control-small) - 1px);
+/* Use one readable status color for the surface and border. */
+#file-storage-status,
+:root .settings-content-container .settings-status-message.level-3-styling {
+  --settings-status-fill: color-mix(in srgb, var(--settings-status-accent, var(--palette-yellow)) 55%, #182029);
+  border-color: var(--settings-status-fill);
+  background: var(--settings-status-fill);
+  color: #fff;
 }
 
 /* Keep Storage and Integrations on the same inset-control system as Appearance. */
