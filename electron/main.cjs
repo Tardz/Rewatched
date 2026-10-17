@@ -73,7 +73,7 @@ function registerStorageHandlers() {
     validateVaultContents(contents);
     const result = await dialog.showSaveDialog(mainWindow, {
       title: 'Create Rewatched storage file',
-      defaultPath: 'rewatched-library.json',
+      defaultPath: 'vault.json',
       filters: [{ name: 'Rewatched JSON', extensions: ['json'] }],
     });
     if (result.canceled || !result.filePath) return null;

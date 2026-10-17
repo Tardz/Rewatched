@@ -191,7 +191,7 @@
   --strength-overview-banner-overlay-poster: 35%;                             /* Poster-color share in the copy-contrast overlay. */
   --color-overview-banner-overlay-start: #111722f2;                            /* Dark-theme copy contrast at the overlay start. */
   --color-overview-banner-overlay-end: #121722a3;                              /* Dark-theme copy contrast at the overlay end. */
-  --strength-poster-background: var(--poster-background-strength, 22%);       /* Read the live app's poster-strength setting. */
+  --strength-poster-background: var(--poster-background-strength, 90%);       /* Read the live app's poster-strength setting. */
   --factor-theme-poster-background: 0.9;                                      /* Set the poster-color wash strength for the current theme. */
   --factor-entry-poster-backdrop: 0.7;                                         /* Soften poster colors on entry-card surfaces. */
   --strength-entry-poster-backdrop: calc(var(--strength-effective-poster-background) * var(--factor-entry-poster-backdrop));
@@ -226,7 +226,7 @@
   --shadow-surface-level-5: var(--shadow-surface-level-4); /* Share compact depth until level five needs its own treatment. */
   --shadow-value-badge: 0 3px 8px var(--shadow-color-black-medium);            /* Subtle lift for compact rating and priority badges. */
   /* Shared glass opacity by surface level; the settings slider scales the hierarchy. */
-  --opacity-glass-surface: var(--glass-surface-opacity, 80%); /* Read the live app's glass-opacity setting. */
+  --opacity-glass-surface: var(--glass-surface-opacity, 70%); /* Read the live app's glass-opacity setting. */
   --opacity-glass-level-0: var(--opacity-glass-level-1); /* Keep the app canvas aligned with other outer surfaces. */
   --opacity-glass-level-1: var(--opacity-glass-surface); /* Use the slider value for outer app panels. */
   --opacity-glass-level-2: max(20%, calc(var(--opacity-glass-level-1) - 45%)); /* Make inner boxes more transparent than outer panels. */

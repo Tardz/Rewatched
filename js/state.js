@@ -28,23 +28,23 @@ const reduceMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let themePreference = localStorage.getItem(THEME_KEY) || 'system';
 let posterBackgroundEnabled = localStorage.getItem(POSTER_BACKGROUND_KEY) !== 'false';
 let entryPosterBackdropEnabled = localStorage.getItem(ENTRY_POSTER_BACKDROP_KEY) !== 'false';
-const savedPosterBackgroundStrength = Number(localStorage.getItem(POSTER_BACKGROUND_STRENGTH_KEY));
-let posterBackgroundStrength = Number.isFinite(savedPosterBackgroundStrength)
-  ? Math.round(Math.max(0, Math.min(100, savedPosterBackgroundStrength)) / 5) * 5
-  : 20;
+const savedPosterBackgroundStrength = localStorage.getItem(POSTER_BACKGROUND_STRENGTH_KEY);
+let posterBackgroundStrength = savedPosterBackgroundStrength !== null && Number.isFinite(Number(savedPosterBackgroundStrength))
+  ? Math.round(Math.max(0, Math.min(100, Number(savedPosterBackgroundStrength))) / 5) * 5
+  : 90;
 let tactileDashboardEnabled = localStorage.getItem(TACTILE_DASHBOARD_KEY) !== 'false';
 let dashboardMode = localStorage.getItem(DASHBOARD_MODE_KEY) === 'dashboard' ? 'dashboard' : 'navbar';
-let macosBoxBordersEnabled = localStorage.getItem(MACOS_BOX_BORDERS_KEY) !== 'false';
-let coloredValueChipsEnabled = localStorage.getItem(COLORED_VALUE_CHIPS_KEY) !== 'false';
+let macosBoxBordersEnabled = localStorage.getItem(MACOS_BOX_BORDERS_KEY) === 'true';
+let coloredValueChipsEnabled = localStorage.getItem(COLORED_VALUE_CHIPS_KEY) === 'true';
 let hideMainValueChipsEnabled = localStorage.getItem(HIDE_MAIN_VALUE_CHIPS_KEY) === 'true';
 const savedCornerRadiusScale = Number(localStorage.getItem(CORNER_RADIUS_SCALE_KEY));
 let cornerRadiusScale = Number.isFinite(savedCornerRadiusScale) && savedCornerRadiusScale > 0
   ? Math.max(50, Math.min(150, Math.round(savedCornerRadiusScale / 5) * 5))
   : 100;
-const savedGlassSurfaceOpacity = Number(localStorage.getItem(GLASS_SURFACE_OPACITY_KEY));
-let glassSurfaceOpacity = Number.isFinite(savedGlassSurfaceOpacity)
-  ? Math.max(60, Math.min(100, Math.round(savedGlassSurfaceOpacity / 5) * 5))
-  : 80;
+const savedGlassSurfaceOpacity = localStorage.getItem(GLASS_SURFACE_OPACITY_KEY);
+let glassSurfaceOpacity = savedGlassSurfaceOpacity !== null && Number.isFinite(Number(savedGlassSurfaceOpacity))
+  ? Math.max(60, Math.min(100, Math.round(Number(savedGlassSurfaceOpacity) / 5) * 5))
+  : 70;
 let glassTransparencyEnabled = localStorage.getItem(GLASS_TRANSPARENCY_KEY) !== 'false';
 const savedReduceAnimations = localStorage.getItem(REDUCE_ANIMATIONS_KEY);
 let reduceAnimationsEnabled = savedReduceAnimations === null

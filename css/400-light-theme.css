@@ -52,7 +52,7 @@
   --color-rating-neutral: #8a96a6;
   --color-title-outline: #202733cc;
   --color-title-glow: #6485a54d;
-  --opacity-glass-level-1: min(100%, calc(var(--glass-surface-opacity, 80%) + 20%));
+  --opacity-glass-level-1: min(100%, calc(var(--glass-surface-opacity, 70%) + 20%));
   --opacity-glass-chip: 82%;
 
   /* Lighten the poster wash while retaining the shared strength control. */
