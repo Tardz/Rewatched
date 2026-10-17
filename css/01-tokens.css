@@ -127,7 +127,7 @@
   /* SECTION Radii */
   /* Sequoia-inspired radius hierarchy; these are app choices, not Apple specifications. */
   /* Change the multiplier to scale all migrated corners together. */
-  --radius-scale: 1; /* Global multiplier; increase to round the UI more, decrease to sharpen it. */
+  --radius-scale: 1.2; /* Global multiplier; increase to round the UI more, decrease to sharpen it. */
   --radius-surface-level-0: var(--radius-surface-level-1); /* Round the main app content surface. */
   --radius-surface-level-1: calc(18px * var(--radius-scale)); /* Large outer panels and containers. */
   --radius-surface-level-2: calc(12px * var(--radius-scale)); /* Mid-level boxes and grouped controls. */

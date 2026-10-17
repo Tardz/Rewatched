@@ -40,7 +40,7 @@ let hideMainValueChipsEnabled = localStorage.getItem(HIDE_MAIN_VALUE_CHIPS_KEY) 
 const savedCornerRadiusScale = Number(localStorage.getItem(CORNER_RADIUS_SCALE_KEY));
 let cornerRadiusScale = Number.isFinite(savedCornerRadiusScale) && savedCornerRadiusScale > 0
   ? Math.max(50, Math.min(150, Math.round(savedCornerRadiusScale / 5) * 5))
-  : 100;
+  : 120;
 const savedGlassSurfaceOpacity = localStorage.getItem(GLASS_SURFACE_OPACITY_KEY);
 let glassSurfaceOpacity = savedGlassSurfaceOpacity !== null && Number.isFinite(Number(savedGlassSurfaceOpacity))
   ? Math.max(60, Math.min(100, Math.round(Number(savedGlassSurfaceOpacity) / 5) * 5))
