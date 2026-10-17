@@ -1,68 +1,1067 @@
 {
   "format": "rerun-backup",
   "version": 1,
-  "exportedAt": "2026-09-26T02:03:50.532Z",
+  "exportedAt": "2026-10-02T08:32:27.499Z",
   "entries": [
     {
-      "id": "93689b7d-5cc4-4951-9c08-a397006c5825",
-      "title": "The Hunger Games: The Ballad of Songbirds & Snakes",
+      "id": "a1003827-a019-471c-ae8c-93549fe55582",
+      "title": "The Thing",
+      "director": "John Carpenter",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-10-02T08:32:08.022Z",
+        "query": {
+          "title": "the thing",
+          "type": "Movie",
+          "year": "1982"
+        },
+        "imdbId": "tt0084787",
+        "imdbRating": "8.2",
+        "runtime": "109 min",
+        "plot": "A research team in Antarctica is hunted by a shape-shifting alien that assumes the appearance of its victims.",
+        "actors": "Kurt Russell, Wilford Brimley, Keith David",
+        "writer": "Bill Lancaster, John W. Campbell Jr.",
+        "director": "John Carpenter",
+        "genre": "Horror",
+        "year": "1982",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYTA3NDU5MWEtNTk4Yy00ZDNkLThmZTQtMjU3ZGVhYzAyMzU4XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Horror",
+      "year": "1982",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYTA3NDU5MWEtNTk4Yy00ZDNkLThmZTQtMjU3ZGVhYzAyMzU4XkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2018",
+          "score": 9,
+          "notes": "",
+          "kind": "first",
+          "precision": "approximate"
+        }
+      ]
+    },
+    {
+      "id": "28e4595f-2ec9-4851-9b26-b58c6e4ba343",
+      "title": "Silo",
+      "director": "Graham Yost",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-10-02T00:34:38.501Z",
+        "query": {
+          "title": "silo",
+          "type": "Show",
+          "year": "2023"
+        },
+        "imdbId": "tt14688458",
+        "imdbRating": "8.1",
+        "runtime": "",
+        "plot": "Men and women live in a giant silo underground with several regulations which they believe are in place to protect them from the toxic and ruined world on the surface.",
+        "actors": "Rebecca Ferguson, Common, Chinaza Uche",
+        "writer": "Graham Yost",
+        "director": "",
+        "genre": "Drama",
+        "year": "2023",
+        "poster": "https://m.media-amazon.com/images/M/MV5BN2E5ODJmOTUtYTk0NS00NmFiLTk0MTgtZDRlNzE1YmExMjk4XkEyXkFqcGc@._V1_QL75_UX380_CR0,4,380,562_.jpg"
+      },
+      "type": "Show",
+      "category": "Drama",
+      "year": "2023",
+      "poster": "https://m.media-amazon.com/images/M/MV5BZjYzMjkyM2ItNTA1Yy00MGNiLWExYjEtNTgyMGU0NWMyZTA0XkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2026-10-02",
+          "score": 8.5,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "235325e7-51c9-4de5-97e4-79eefc37240a",
+      "title": "Eternal Sunshine of The Spotless Mind",
+      "director": "Michel Gondry",
+      "metadata": null,
+      "type": "Movie",
+      "category": "Drama",
+      "year": "2004",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTY4NzcwODg3Nl5BMl5BanBnXkFtZTcwNTEwOTMyMw@@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2026-08",
+          "score": 9.5,
+          "notes": "",
+          "kind": "previous"
+        },
+        {
+          "date": "2019",
+          "score": 9.5,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "846b2af2-abb8-4ca7-bc7d-4bba18ed876a",
+      "title": "It Follows",
+      "director": "David Robert Mitchell",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-27T00:09:42.389Z",
+        "query": {
+          "title": "it follows",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt3235888",
+        "imdbRating": "6.8",
+        "runtime": "100 min",
+        "plot": "A young woman is followed by an unknown supernatural force after a sexual encounter.",
+        "actors": "Maika Monroe, Keir Gilchrist, Olivia Luccardi",
+        "writer": "David Robert Mitchell",
+        "director": "David Robert Mitchell",
+        "genre": "Horror",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNGZiYWRiYjAtODU0NS00YzAzLTk2MzQtZGVlMzVjM2M3MGQ3XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Horror",
+      "year": "2014",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNGZiYWRiYjAtODU0NS00YzAzLTk2MzQtZGVlMzVjM2M3MGQ3XkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2026-07",
+          "score": 7,
+          "notes": "Såg med Jesper",
+          "kind": "previous"
+        },
+        {
+          "date": "2015",
+          "score": 7,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "37168f4b-b48e-4635-89e3-0f1a0b4f4f95",
+      "title": "The Fault in Our Stars",
+      "director": "Josh Boone",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-27T00:03:48.560Z",
+        "query": {
+          "title": "the fault in our stars",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt2582846",
+        "imdbRating": "7.6",
+        "runtime": "126 min",
+        "plot": "Hazel and Gus are teenagers who meet at a cancer support group and fall in love. They both share the same acerbic wit and a love of books, especially \"An Imperial Affliction\", so they embark on a journey to visit an author in Amst...",
+        "actors": "Shailene Woodley, Ansel Elgort, Nat Wolff",
+        "writer": "Scott Neustadter, Michael H. Weber, John Green",
+        "director": "Josh Boone",
+        "genre": "Drama",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYTA4ODg5YWUtYmZiYy00Y2M4LWE0NjEtODE5MzhkYmJmZGEwXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Romance",
+      "year": "2014",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYTA4ODg5YWUtYmZiYy00Y2M4LWE0NjEtODE5MzhkYmJmZGEwXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2016",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "dd777897-7b1c-4edd-a1d2-03e715e476d6",
+      "title": "Ex Machina",
+      "director": "Alex Garland",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-27T00:03:00.108Z",
+        "query": {
+          "title": "ex machina",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt0470752",
+        "imdbRating": "7.7",
+        "runtime": "108 min",
+        "plot": "A young programmer is selected to participate in a ground-breaking experiment in synthetic intelligence by evaluating the human qualities of a highly advanced humanoid A.I.",
+        "actors": "Alicia Vikander, Domhnall Gleeson, Oscar Isaac",
+        "writer": "Alex Garland",
+        "director": "Alex Garland",
+        "genre": "Drama",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTUxNzc0OTIxMV5BMl5BanBnXkFtZTgwNDI3NzU2NDE@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Science Fiction",
+      "year": "2014",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTUxNzc0OTIxMV5BMl5BanBnXkFtZTgwNDI3NzU2NDE@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2023",
+          "score": 7.5,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "94a8b6e2-5c42-4f7b-bf64-8e647141397c",
+      "title": "The Greatest Showman",
+      "director": "Michael Gracey",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-27T00:01:41.989Z",
+        "query": {
+          "title": "the greatest showman",
+          "type": "Movie",
+          "year": "2017"
+        },
+        "imdbId": "tt1485796",
+        "imdbRating": "7.5",
+        "runtime": "105 min",
+        "plot": "Celebrates the birth of show business and tells of a visionary who rose from nothing to create a spectacle that became a worldwide sensation.",
+        "actors": "Hugh Jackman, Michelle Williams, Zac Efron",
+        "writer": "Jenny Bicks, Bill Condon",
+        "director": "Michael Gracey",
+        "genre": "Biography",
+        "year": "2017",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMjI1NDYzNzY2Ml5BMl5BanBnXkFtZTgwODQwODczNTM@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Biography",
+      "year": "2017",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjI1NDYzNzY2Ml5BMl5BanBnXkFtZTgwODQwODczNTM@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2021",
+          "score": 8,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "13199b36-0d54-4e97-9533-2bea6a6c617b",
+      "title": "The Martian",
+      "director": "Ridley Scott",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-27T00:00:15.468Z",
+        "query": {
+          "title": "the martian",
+          "type": "Movie",
+          "year": "2015"
+        },
+        "imdbId": "tt3659388",
+        "imdbRating": "8.0",
+        "runtime": "144 min",
+        "plot": "An astronaut becomes stranded on Mars after his team assumes him dead, and must rely on his ingenuity to find a way to signal to Earth that he is alive and can survive until a potential rescue.",
+        "actors": "Matt Damon, Jessica Chastain, Kristen Wiig",
+        "writer": "Drew Goddard, Andy Weir",
+        "director": "Ridley Scott",
+        "genre": "Adventure",
+        "year": "2015",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTc2MTQ3MDA1Nl5BMl5BanBnXkFtZTgwODA3OTI4NjE@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Science Fiction",
+      "year": "2015",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNmM1NDFhZTUtMjk2Ny00YjU5LThkOWYtNmUyOTM4MjM4ODNiXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2025",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
+        },
+        {
+          "date": "2017",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "d0078b89-9fd8-4a7d-a6ce-53e4a5219297",
+      "title": "The Imitation Game",
+      "director": "Morten Tyldum",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:58:41.586Z",
+        "query": {
+          "title": "the imitation game",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt2084970",
+        "imdbRating": "8.0",
+        "runtime": "114 min",
+        "plot": "During World War II, the English mathematical genius Alan Turing tries to crack the German Enigma code with help from fellow mathematicians while attempting to come to terms with his troubled private life.",
+        "actors": "Benedict Cumberbatch, Keira Knightley, Matthew Goode",
+        "writer": "Graham Moore, Andrew Hodges",
+        "director": "Morten Tyldum",
+        "genre": "Biography",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNjI3NjY1Mjg3MV5BMl5BanBnXkFtZTgwMzk5MDQ3MjE@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Biography",
+      "year": "2014",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNjI3NjY1Mjg3MV5BMl5BanBnXkFtZTgwMzk5MDQ3MjE@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2023",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "ae2b472e-3f65-450d-8d02-989b3ef73d1b",
+      "title": "La La Land",
+      "director": "Damien Chazelle",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:58:02.847Z",
+        "query": {
+          "title": "la la land",
+          "type": "Movie",
+          "year": "2016"
+        },
+        "imdbId": "tt3783958",
+        "imdbRating": "8.0",
+        "runtime": "128 min",
+        "plot": "When Sebastian, a pianist, and Mia, an actress, follow their passion and achieve success in their respective fields, they find themselves torn between their love for each other and their careers.",
+        "actors": "Ryan Gosling, Emma Stone, Rosemarie DeWitt",
+        "writer": "Damien Chazelle",
+        "director": "Damien Chazelle",
+        "genre": "Comedy",
+        "year": "2016",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMzUzNDM2NzM2MV5BMl5BanBnXkFtZTgwNTM3NTg4OTE@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Romance",
+      "year": "2016",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMzUzNDM2NzM2MV5BMl5BanBnXkFtZTgwNTM3NTg4OTE@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2022",
+          "score": 8,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "315d69c0-0dde-457d-bd11-2e9102822cb5",
+      "title": "Spider-Man: Brand New Day",
+      "director": "Destin Daniel Cretton",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:20:06.182Z",
+        "query": {
+          "title": "spider-man: brand new day",
+          "type": "Movie",
+          "year": "2026"
+        },
+        "imdbId": "tt22084616",
+        "imdbRating": "8.1",
+        "runtime": "145 min",
+        "plot": "A forgotten Peter Parker lives alone as a full-time Spider-Man until mounting pressure triggers a dangerous change and a powerful new enemy emerges.",
+        "actors": "Tom Holland, Zendaya, Mark Ruffalo",
+        "writer": "Chris McKenna, Erik Sommers, Stan Lee",
+        "director": "Destin Daniel Cretton",
+        "genre": "Action",
+        "year": "2026",
+        "poster": "https://m.media-amazon.com/images/M/MV5BOWNjYWM3NWItOGE0ZS00MWRjLThiZWEtYjc4ZmNmMmU5ZTVmXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
       "type": "Movie",
       "category": "Action",
-      "year": "2023",
-      "poster": "https://m.media-amazon.com/images/M/MV5BZDk2YjNhYzEtYzg2ZC00OWEwLWJhYzgtMGUzMWVjNDFmYzI5XkEyXkFqcGc@._V1_QL75_UX190_CR0,6,190,281_.jpg",
+      "year": "2026",
+      "poster": "https://m.media-amazon.com/images/M/MV5BOWNjYWM3NWItOGE0ZS00MWRjLThiZWEtYjc4ZmNmMmU5ZTVmXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2026-07-29",
+          "score": 8,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "44efeb95-39f9-40db-8f5f-3ded2bfc3ae2",
+      "title": "Beautiful Boy",
+      "director": "Felix van Groeningen",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:17:57.003Z",
+        "query": {
+          "title": "beautiful boy",
+          "type": "Movie",
+          "year": "2018"
+        },
+        "imdbId": "tt1226837",
+        "imdbRating": "7.4",
+        "runtime": "120 min",
+        "plot": "A family coping with addiction over many years goes through the heartbreaking and inspiring experience of survival, relapse and recovery.",
+        "actors": "Steve Carell, Maura Tierney, Jack Dylan Grazer",
+        "writer": "Luke Davies, Felix van Groeningen, David Sheff",
+        "director": "Felix van Groeningen",
+        "genre": "Biography",
+        "year": "2018",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNTRhNjg3NGMtMDM3Mi00ZmRmLTg0ZDMtYTBhMThiN2YxMTdjXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Biography",
+      "year": "2018",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNTRhNjg3NGMtMDM3Mi00ZmRmLTg0ZDMtYTBhMThiN2YxMTdjXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2026-08",
+          "score": 8,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "41d6b9de-b86b-4d28-8b33-ccd642a4734a",
+      "title": "Paris, Texas",
+      "director": "Wim Wenders",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T21:52:19.411Z",
+        "query": {
+          "title": "paris, texas",
+          "type": "Movie",
+          "year": "1984"
+        },
+        "imdbId": "tt0087884",
+        "imdbRating": "8.1",
+        "runtime": "145 min",
+        "plot": "Travis Henderson, an aimless drifter who has been missing for four years, wanders out of the desert and must reconnect with society, himself, his life, and his family.",
+        "actors": "Harry Dean Stanton, Nastassja Kinski, Dean Stockwell",
+        "writer": "L.M. Kit Carson, Sam Shepard, Walter Donohue",
+        "director": "Wim Wenders",
+        "genre": "Drama",
+        "year": "1984",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYWY5YzE4YmUtZWFhMS00YjYxLWI5ZGUtNDEyNmMzNDVjMGEwXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "1984",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYWY5YzE4YmUtZWFhMS00YjYxLWI5ZGUtNDEyNmMzNDVjMGEwXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2026-05",
+          "score": 7.5,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "144fb2dc-da29-4986-8a5e-d037b92cda5e",
+      "title": "Your Name.",
+      "director": "Makoto Shinkai",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T13:36:23.807Z",
+        "query": {
+          "title": "your name.",
+          "type": "Movie",
+          "year": "2016"
+        },
+        "imdbId": "tt5311514",
+        "imdbRating": "8.4",
+        "runtime": "106 min",
+        "plot": "Two teenagers share a profound, magical connection upon discovering they are swapping bodies. Things manage to become even more complicated when the boy and girl decide to meet in person.",
+        "actors": "Ryûnosuke Kamiki, Mone Kamishiraishi, Ryo Narita",
+        "writer": "Makoto Shinkai",
+        "director": "Makoto Shinkai",
+        "genre": "Animation",
+        "year": "2016",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMjI1ODZkYTgtYTY3Yy00ZTJkLWFkOTgtZDUyYWM4MzQwNjk0XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Animation",
+      "year": "2016",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjI1ODZkYTgtYTY3Yy00ZTJkLWFkOTgtZDUyYWM4MzQwNjk0XkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2018",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "b071b31f-0e17-47ae-929d-b8d71487790c",
+      "title": "A Quiet Place",
+      "director": "John Krasinski",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T12:19:00.498Z",
+        "query": {
+          "title": "a quiet place",
+          "type": "Movie",
+          "year": "2018"
+        },
+        "imdbId": "tt6644200",
+        "imdbRating": "7.5",
+        "runtime": "90 min",
+        "plot": "A family struggles for survival in a world invaded by blind alien creatures with ultra-sensitive hearing.",
+        "actors": "Emily Blunt, John Krasinski, Millicent Simmonds",
+        "writer": "Bryan Woods, Scott Beck, John Krasinski",
+        "director": "John Krasinski",
+        "genre": "Drama",
+        "year": "2018",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMjI0MDMzNTQ0M15BMl5BanBnXkFtZTgwMTM5NzM3NDM@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Horror",
+      "year": "2018",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjI0MDMzNTQ0M15BMl5BanBnXkFtZTgwMTM5NzM3NDM@._V1_FMjpg_UX1000_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2021",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "2c38b415-f402-4f78-8163-fb26f4e4e302",
+      "title": "Lucy",
+      "director": "Luc Besson",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T11:46:59.545Z",
+        "query": {
+          "title": "lucy",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt2872732",
+        "imdbRating": "6.4",
+        "runtime": "89 min",
+        "plot": "A woman who has become accidentally trapped in a dark deal with a mysterious and brutal criminal overlord transforms into a merciless warrior evolved beyond previously known human evolutionary limits and turns the tables on her ca...",
+        "actors": "Scarlett Johansson, Morgan Freeman, Choi Min-sik",
+        "writer": "Luc Besson",
+        "director": "Luc Besson",
+        "genre": "Action",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BODcxMzY3ODY1NF5BMl5BanBnXkFtZTgwNzg1NDY4MTE@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Action",
+      "year": "2014",
+      "poster": "https://m.media-amazon.com/images/M/MV5BODcxMzY3ODY1NF5BMl5BanBnXkFtZTgwNzg1NDY4MTE@._V1_SX300.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2025",
+          "score": 4.5,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "220a443d-1c31-408b-b12f-cb20c635258f",
+      "title": "Alien",
+      "director": "Ridley Scott",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T11:42:47.830Z",
+        "query": {
+          "title": "alien",
+          "type": "Movie",
+          "year": "1979"
+        },
+        "imdbId": "tt0078748",
+        "imdbRating": "8.5",
+        "runtime": "117 min",
+        "plot": "After investigating a mysterious transmission of unknown origin, the crew of a commercial spacecraft encounters a deadly lifeform.",
+        "actors": "Sigourney Weaver, Tom Skerritt, John Hurt",
+        "writer": "Dan O'Bannon, Ronald Shusett",
+        "director": "Ridley Scott",
+        "genre": "Horror",
+        "year": "1979",
+        "poster": "https://m.media-amazon.com/images/M/MV5BN2NhMDk2MmEtZDQzOC00MmY5LThhYzAtMDdjZGFjOGZjMjdjXkEyXkFqcGc@._V1_QL75_UX380_CR0,6,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Horror",
+      "year": "1979",
+      "poster": "https://m.media-amazon.com/images/M/MV5BN2NhMDk2MmEtZDQzOC00MmY5LThhYzAtMDdjZGFjOGZjMjdjXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
       "collectionIds": [
         "f64f5d16-9900-4586-9567-deeb18092d56"
       ],
       "watches": [
         {
-          "date": "2023",
+          "date": "2025",
+          "score": 9.5,
+          "notes": "",
+          "kind": "first"
+        },
+        {
+          "date": "2024",
+          "score": 9.5,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "4d90750b-9f8d-4322-a6e5-06c2a26775e0",
+      "title": "Spider-Man: No Way Home",
+      "director": "Jon Watts",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T18:03:41.699Z",
+        "query": {
+          "title": "spider-man: no way home",
+          "type": "Movie",
+          "year": "2021"
+        },
+        "imdbId": "tt10872600",
+        "imdbRating": "8.1",
+        "runtime": "148 min",
+        "plot": "With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear.",
+        "actors": "Tom Holland, Zendaya, Benedict Cumberbatch",
+        "writer": "Chris McKenna, Erik Sommers, Stan Lee",
+        "director": "Jon Watts",
+        "genre": "Action",
+        "year": "2021",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMmFiZGZjMmEtMTA0Ni00MzA2LTljMTYtZGI2MGJmZWYzZTQ2XkEyXkFqcGc@._V1_QL75_UX380_CR0,4,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Action",
+      "year": "2021",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYTA1NTYyZDMtMjliYy00YTlhLTgzNDAtODc3ZTE5OWZkMjY1XkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2021-12",
           "score": 8.5,
           "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "84b9be16-3b30-49e9-bb69-96d0dfaad7f6",
+      "title": "Spider-Man: Far From Home",
+      "director": "Jon Watts",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T18:03:09.951Z",
+        "query": {
+          "title": "spider-man: far from home",
+          "type": "Movie",
+          "year": "2019"
+        },
+        "imdbId": "tt6320628",
+        "imdbRating": "7.3",
+        "runtime": "129 min",
+        "plot": "Peter Parker, the beloved superhero Spider-Man, faces four destructive elemental monsters while on holiday in Europe. Soon, he receives help from Mysterio, a fellow hero with mysterious origins.",
+        "actors": "Tom Holland, Samuel L. Jackson, Jake Gyllenhaal",
+        "writer": "Chris McKenna, Erik Sommers, Stan Lee",
+        "director": "Jon Watts",
+        "genre": "Action",
+        "year": "2019",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMzNhNTE0NWQtN2E1Ny00NjcwLTg1YTctMGY1NmMwODJmY2NmXkEyXkFqcGc@._V1_QL75_UX380_CR0,1,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Action",
+      "year": "2019",
+      "poster": "https://m.media-amazon.com/images/M/MV5BM2Y2YzE5MGEtMGZjYS00MGM5LTlmYzEtYTNmMGZjZDY4YTkzXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2020",
+          "score": 7,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "178c8305-53aa-4855-b946-1b9e7387490d",
+      "title": "Chernobyl",
+      "director": "Johan Renck",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T18:02:30.341Z",
+        "query": {
+          "title": "chernobyl",
+          "type": "Show",
+          "year": "2019"
+        },
+        "imdbId": "tt7366338",
+        "imdbRating": "9.3",
+        "runtime": "330 min",
+        "plot": "In April 1986, the city of Chernobyl in the Soviet Union suffers one of the worst nuclear disasters in the history of mankind. Consequently, many heroes put their lives on the line in the following days, weeks and months.",
+        "actors": "Jared Harris, Jessie Buckley, Stellan Skarsgård",
+        "writer": "Craig Mazin",
+        "director": "",
+        "genre": "Drama",
+        "year": "2019",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNzU0OTI4YTQtNGQ1ZS00ZjA4LTg3MTMtZjkyZWNjN2RiZDJmXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
+      "type": "Show",
+      "category": "Documentary",
+      "year": "2019",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNzU0OTI4YTQtNGQ1ZS00ZjA4LTg3MTMtZjkyZWNjN2RiZDJmXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2021",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "dee273b8-0cab-483c-8377-eff14a38a322",
+      "title": "Spider-Man: Homecoming",
+      "director": "Jon Watts",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:50:54.079Z",
+        "query": {
+          "title": "spider-man: homecoming",
+          "type": "Movie",
+          "year": "2017"
+        },
+        "imdbId": "tt2250912",
+        "imdbRating": "7.4",
+        "runtime": "133 min",
+        "plot": "Peter Parker tries to stop Adrian 'The Vulture' Toomes from selling weapons made with advanced Chitauri technology while trying to balance his life as an ordinary high school student.",
+        "actors": "Tom Holland, Michael Keaton, Robert Downey Jr.",
+        "writer": "Jonathan Goldstein, John Francis Daley, Jon Watts",
+        "director": "Jon Watts",
+        "genre": "Action",
+        "year": "2017",
+        "poster": "https://m.media-amazon.com/images/M/MV5BODY2MTAzOTQ4M15BMl5BanBnXkFtZTgwNzg5MTE0MjI@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Action",
+      "year": "2017",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNTk4ODQ1MzgzNl5BMl5BanBnXkFtZTgwMTMyMzM4MTI@._V1_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2017",
+          "score": 7.5,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "058250a7-2dc2-4dd5-a20a-b2be5ff2dc9d",
+      "title": "Everything Everywhere All at Once",
+      "director": "Daniel Kwan, Daniel Scheinert",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T18:01:55.624Z",
+        "query": {
+          "title": "everything everywhere all at once",
+          "type": "Movie",
+          "year": "2022"
+        },
+        "imdbId": "tt6710474",
+        "imdbRating": "7.7",
+        "runtime": "139 min",
+        "plot": "A middle-aged Chinese immigrant is swept up into an insane adventure in which she alone can save existence by exploring other universes and connecting with the lives she could have led.",
+        "actors": "Michelle Yeoh, Stephanie Hsu, Jamie Lee Curtis",
+        "writer": "Daniel Kwan, Daniel Scheinert",
+        "director": "Daniel Kwan, Daniel Scheinert",
+        "genre": "Action",
+        "year": "2022",
+        "poster": "https://m.media-amazon.com/images/M/MV5BOWNmMzAzZmQtNDQ1NC00Nzk5LTkyMmUtNGI2N2NkOWM4MzEyXkEyXkFqcGc@._V1_QL75_UY562_CR4,0,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Adventure",
+      "year": "2022",
+      "poster": "https://m.media-amazon.com/images/M/MV5BOWNmMzAzZmQtNDQ1NC00Nzk5LTkyMmUtNGI2N2NkOWM4MzEyXkEyXkFqcGc@._V1_QL75_UY562_CR4,0,380,562_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2023",
+          "score": 8,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "3c85b8a3-cfbd-4e27-96b9-69f76ebdbe7c",
+      "title": "Seven",
+      "director": "David Fincher",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T11:39:29.518Z",
+        "query": {
+          "title": "seven",
+          "type": "Movie",
+          "year": "1995"
+        },
+        "imdbId": "tt0114369",
+        "imdbRating": "8.6",
+        "runtime": "127 min",
+        "plot": "Two detectives try to track down a serial killer who chooses his victims based on the Seven Deadly Sins.",
+        "actors": "Morgan Freeman, Brad Pitt, Kevin Spacey",
+        "writer": "Andrew Kevin Walker",
+        "director": "David Fincher",
+        "genre": "Crime",
+        "year": "1995",
+        "poster": "https://m.media-amazon.com/images/M/MV5BY2IzNzMxZjctZjUxZi00YzAxLTk3ZjMtODFjODdhMDU5NDM1XkEyXkFqcGc@._V1_QL75_UX380_CR0,16,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Crime",
+      "year": "1995",
+      "poster": "https://m.media-amazon.com/images/M/MV5BOWEwZGY1ZGUtNGJkNi00YTZmLTk0NzYtZDIxYTU5MjI4ZDJjXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [
+        "f64f5d16-9900-4586-9567-deeb18092d56"
+      ],
+      "watches": [
+        {
+          "date": "2025",
+          "score": 9,
+          "notes": "",
           "kind": "previous"
+        },
+        {
+          "date": "2018",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "f750563b-51a0-47f6-9cf9-fb2c224e624a",
+      "title": "Gattaca",
+      "director": "Andrew Niccol",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T12:10:51.215Z",
+        "query": {
+          "title": "gattaca",
+          "type": "Movie",
+          "year": "1997"
+        },
+        "imdbId": "tt0119177",
+        "imdbRating": "7.7",
+        "runtime": "106 min",
+        "plot": "Vincent, an \"In-Valid,\" assumes the identity of a member of the genetic elite to pursue his goal of traveling into space with the Gattaca Aerospace Corporation. However, a week before his mission, a murder marks Vincent as a suspect.",
+        "actors": "Ethan Hawke, Uma Thurman, Jude Law",
+        "writer": "Andrew Niccol",
+        "director": "Andrew Niccol",
+        "genre": "Drama",
+        "year": "1997",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZjQxNTc3YzQtZDA5ZC00MmM5LWE3NGYtMGE0Yjk3MDYwODVlXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Science Fiction",
+      "year": "1997",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjY4MjM0OWItYzVlNi00OTg3LTg0N2MtOWNkMDRhMjI5YWNiXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [
+        "f64f5d16-9900-4586-9567-deeb18092d56"
+      ],
+      "watches": [
+        {
+          "date": "2026",
+          "score": 9.5,
+          "notes": "",
+          "kind": "first"
+        },
+        {
+          "date": "2023",
+          "score": 9.5,
+          "notes": "",
+          "kind": "previous"
+        },
+        {
+          "date": "2018",
+          "score": 9.5,
+          "notes": "",
+          "kind": "first"
+        }
+      ]
+    },
+    {
+      "id": "93689b7d-5cc4-4951-9c08-a397006c5825",
+      "title": "The Hunger Games: The Ballad of Songbirds & Snakes",
+      "director": "Francis Lawrence",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T18:00:56.434Z",
+        "query": {
+          "title": "the hunger games: the ballad of songbirds & snakes",
+          "type": "Movie",
+          "year": "2023"
+        },
+        "imdbId": "tt10545296",
+        "imdbRating": "6.6",
+        "runtime": "157 min",
+        "plot": "Coriolanus Snow mentors and develops feelings for the female District 12 tribute during the 10th Hunger Games.",
+        "actors": "Rachel Zegler, Tom Blyth, Viola Davis",
+        "writer": "Michael Lesslie, Michael Arndt, Suzanne Collins",
+        "director": "Francis Lawrence",
+        "genre": "Action",
+        "year": "2023",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZDk2YjNhYzEtYzg2ZC00OWEwLWJhYzgtMGUzMWVjNDFmYzI5XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Action",
+      "year": "2023",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNTM2OTgyMjUtNzFjMC00OGI2LWE1OGItMGY4NzIyYTFjNzJkXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "watches": [
+        {
+          "date": "2023",
+          "score": 7.5,
+          "notes": "",
+          "kind": "first"
         }
       ]
     },
     {
       "id": "f62ba8d0-7b7b-401a-a93d-858ad2ff8cb8",
       "title": "Avatar: The Way of Water",
+      "director": "James Cameron",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T18:00:45.036Z",
+        "query": {
+          "title": "avatar: the way of water",
+          "type": "Movie",
+          "year": "2022"
+        },
+        "imdbId": "tt1630029",
+        "imdbRating": "7.5",
+        "runtime": "192 min",
+        "plot": "Jake Sully lives with his newfound family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na'vi race to protect their home.",
+        "actors": "Sam Worthington, Zoe Saldaña, Sigourney Weaver",
+        "writer": "James Cameron, Rick Jaffa, Amanda Silver",
+        "director": "James Cameron",
+        "genre": "Animation",
+        "year": "2022",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNWI0Y2NkOWEtMmM2OC00MjQ3LWI1YzItZGQxYzQ3NzI4NWZmXkEyXkFqcGc@._V1_SX300.jpg"
+      },
       "type": "Movie",
-      "category": "Science Fiction",
+      "category": "Adventure",
       "year": "2022",
-      "poster": "https://media.themoviedb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+      "poster": "https://alternativemovieposters.com/wp-content/uploads/2022/12/ARTWORK-Avatar-II-Poster-Ryan-Smallman.jpg",
       "collectionIds": [],
       "watches": [
         {
           "date": "2022",
           "score": 6.5,
           "notes": "",
-          "kind": "previous"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "cb6cc7e3-acc5-4e82-9a09-8c736a7bfdd7",
       "title": "Cyberpunk: Edgerunners",
+      "director": "Rafal Jaki",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:40:23.753Z",
+        "query": {
+          "title": "cyberpunk: edgerunners",
+          "type": "Show",
+          "year": "2022"
+        },
+        "imdbId": "tt12590266",
+        "imdbRating": "8.3",
+        "runtime": "",
+        "plot": "A Street Kid trying to survive in a technology and body modification-obsessed city of the future. Having everything to lose, he chooses to stay alive by becoming an Edgerunner, a Mercenary outlaw also known as a Cyberpunk.",
+        "actors": "Zach Aguilar, Kenn, Emi Lo",
+        "writer": "Rafal Jaki",
+        "director": "",
+        "genre": "Animation",
+        "year": "2022",
+        "poster": "https://m.media-amazon.com/images/M/MV5BM2JkMzM2ZmYtNWU4MS00MjZhLWFhZWUtYWFjYTJkN2RhZDliXkEyXkFqcGc@._V1_SX300.jpg"
+      },
       "type": "Show",
-      "category": "Science Fiction",
+      "category": "Animation",
       "year": "2022",
       "poster": "https://m.media-amazon.com/images/M/MV5BNDZmNzlmNDktZTZmNi00MjhhLThmZjctODdlNjdlYTcxYWRhXkEyXkFqcGc@._V1_.jpg",
-      "collectionIds": [],
+      "collectionIds": [
+        "f64f5d16-9900-4586-9567-deeb18092d56"
+      ],
       "watches": [
         {
           "date": "2024",
           "score": 9.5,
           "notes": "",
-          "kind": "previous"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "9cca550e-d745-4e7c-904c-a558b3d521a2",
       "title": "The Time Traveler's Wife",
+      "director": "Robert Schwentke",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T11:39:04.688Z",
+        "query": {
+          "title": "the time traveler's wife",
+          "type": "Movie",
+          "year": "2009"
+        },
+        "imdbId": "tt0452694",
+        "imdbRating": "7.1",
+        "runtime": "107 min",
+        "plot": "Henry DeTamble, a librarian, possesses a unique gene that lets him involuntarily travel through time. His wife, Claire Abshire, finds it difficult to cope with it.",
+        "actors": "Eric Bana, Rachel McAdams, Ron Livingston",
+        "writer": "Bruce Joel Rubin, Audrey Niffenegger",
+        "director": "Robert Schwentke",
+        "genre": "Drama",
+        "year": "2009",
+        "poster": "https://m.media-amazon.com/images/M/MV5BOGU4M2JjNmEtYTVkOS00ZWY5LTllODQtNWExN2U1NzQwZGEwXkEyXkFqcGc@._V1_SX300.jpg"
+      },
       "type": "Movie",
-      "category": "Romance",
+      "category": "Drama",
       "year": "2009",
-      "poster": "https://m.media-amazon.com/images/M/MV5BOGU4M2JjNmEtYTVkOS00ZWY5LTllODQtNWExN2U1NzQwZGEwXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+      "poster": "https://m.media-amazon.com/images/M/MV5BM2ZhN2QzZGUtNzYyNi00NGY2LWE0YjYtOTYyOTJjNzlhOTQyXkEyXkFqcGc@._V1_.jpg",
       "collectionIds": [],
       "watches": [
         {
@@ -74,33 +1073,28 @@
       ]
     },
     {
-      "id": "4e6a3853-9255-4a8f-a386-5fbdfa8c50bd",
-      "title": "Eternal Sunshine of The Spotless Mind",
-      "type": "Movie",
-      "category": "Romance",
-      "year": "2004",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYzE2MzI2NTUtMmFlNS00ZTY5LTkxOTgtODVmZDc4ODhkMWM0XkEyXkFqcGc@._V1_.jpg",
-      "collectionIds": [],
-      "watches": [
-        {
-          "date": "2026-08",
-          "score": 9.5,
-          "notes": "testing",
-          "kind": "first",
-          "precision": "month"
-        },
-        {
-          "date": "2019",
-          "score": 9.5,
-          "notes": "",
-          "kind": "previous",
-          "precision": "approximate"
-        }
-      ]
-    },
-    {
       "id": "bb73c247-aa79-4805-91fb-3af27f131a99",
       "title": "Call Me by Your Name",
+      "director": "Luca Guadagnino",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:59:17.263Z",
+        "query": {
+          "title": "call me by your name",
+          "type": "Movie",
+          "year": "2017"
+        },
+        "imdbId": "tt5726616",
+        "imdbRating": "7.8",
+        "runtime": "132 min",
+        "plot": "In the summer of 1983, 17-year-old Elio is spending the days with his family at their villa in Lombardy, Italy. He soon meets 24-year-old Oliver, an intern working for Elio's father. They discover the heady beauty of awakening des...",
+        "actors": "Timothée Chalamet, Armie Hammer, Michael Stuhlbarg",
+        "writer": "James Ivory, André Aciman",
+        "director": "Luca Guadagnino",
+        "genre": "Drama",
+        "year": "2017",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNDk3NTEwNjc0MV5BMl5BanBnXkFtZTgwNzYxNTMwMzI@._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Romance",
       "year": "2017",
@@ -110,16 +1104,42 @@
       ],
       "watches": [
         {
-          "date": "2024",
+          "date": "2025",
           "score": 9,
           "notes": "",
           "kind": "previous"
+        },
+        {
+          "date": "2024",
+          "score": 9,
+          "notes": "",
+          "kind": "first"
         }
       ]
     },
     {
       "id": "8055ebb7-a045-42e6-ad5a-69b5b3bd9dde",
       "title": "1917",
+      "director": "Sam Mendes",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:57:50.601Z",
+        "query": {
+          "title": "1917",
+          "type": "Movie",
+          "year": "2019"
+        },
+        "imdbId": "tt24820246",
+        "imdbRating": "",
+        "runtime": "",
+        "plot": "",
+        "actors": "",
+        "writer": "",
+        "director": "",
+        "genre": "",
+        "year": "2019",
+        "poster": ""
+      },
       "type": "Movie",
       "category": "Action",
       "year": "2019",
@@ -130,48 +1150,107 @@
           "date": "2021",
           "score": 8,
           "notes": "",
-          "kind": "previous",
-          "precision": "approximate"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "9afdfd10-df82-4e2d-8fda-4a91ffe3d4a8",
-      "title": "Dune Part 2",
+      "title": "Dune: Part Two",
+      "director": "Denis Villeneuve",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:57:26.779Z",
+        "query": {
+          "title": "dune: part two",
+          "type": "Movie",
+          "year": "2024"
+        },
+        "imdbId": "tt15239678",
+        "imdbRating": "8.4",
+        "runtime": "166 min",
+        "plot": "Paul Atreides unites with the Fremen while on a warpath of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe, he endeavors to prevent a terrible fu...",
+        "actors": "Timothée Chalamet, Zendaya, Rebecca Ferguson",
+        "writer": "Denis Villeneuve, Jon Spaihts, Frank Herbert",
+        "director": "Denis Villeneuve",
+        "genre": "Action",
+        "year": "2024",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNTc0YmQxMjEtODI5MC00NjFiLTlkMWUtOGQ5NjFmYWUyZGJhXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
       "type": "Movie",
-      "category": "Adventure",
+      "category": "Science Fiction",
       "year": "2024",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMmQ0ZjlkYTktNzMwMC00M2FiLTllYjAtMTQ3YmE4YWVhODQ4XkEyXkFqcGc@._V1_.jpg",
+      "poster": "https://m.media-amazon.com/images/M/MV5BODM5OTVlNDQtZTk2NS00NGJmLThkYWUtZjgxMGFhN2YxNmJkXkEyXkFqcGc@._V1_.jpg",
       "collectionIds": [],
       "watches": [
         {
           "date": "2024",
           "score": 8.5,
           "notes": "",
-          "kind": "previous"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "bbb7516f-e767-4a02-b9c6-90dad01cbff0",
-      "title": "Dune Part 1",
+      "title": "Dune: Part One",
+      "director": "Denis Villeneuve",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:57:03.486Z",
+        "query": {
+          "title": "dune: part one",
+          "type": "Movie",
+          "year": "2021"
+        },
+        "imdbId": "tt1160419",
+        "imdbRating": "8.0",
+        "runtime": "155 min",
+        "plot": "Paul Atreides arrives on Arrakis after his father accepts the stewardship of the dangerous planet. However, chaos ensues after a betrayal as forces clash to control melange, a precious resource.",
+        "actors": "Timothée Chalamet, Rebecca Ferguson, Zendaya",
+        "writer": "Jon Spaihts, Denis Villeneuve, Eric Roth",
+        "director": "Denis Villeneuve",
+        "genre": "Action",
+        "year": "2021",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNWIyNmU5MGYtZDZmNi00ZjAwLWJlYjgtZTc0ZGIxMDE4ZGYwXkEyXkFqcGc@._V1_QL75_UY562_CR1,0,380,562_.jpg"
+      },
       "type": "Movie",
-      "category": "Adventure",
+      "category": "Science Fiction",
       "year": "2021",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMWUwZjRmNDktNGZiNC00Y2NhLTllYTctYjYwMDQ1YmU2MDM3XkEyXkFqcGc@._V1_.jpg",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjFlNTNkNTAtNmQyMi00ZDY3LWJhYjEtYmJkNjRlN2NkMGNjXkEyXkFqcGc@._V1_.jpg",
       "collectionIds": [],
       "watches": [
         {
           "date": "2021",
           "score": 7.5,
           "notes": "",
-          "kind": "previous"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "79c2ccf1-3f23-47d8-ad3a-b2140720c41d",
       "title": "The Odyssey",
+      "director": "Christopher Nolan",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T12:08:50.672Z",
+        "query": {
+          "title": "the odyssey",
+          "type": "Movie",
+          "year": "2026"
+        },
+        "imdbId": "tt33764258",
+        "imdbRating": "8.4",
+        "runtime": "172 min",
+        "plot": "After the Trojan War, Odysseus faces a dangerous voyage back to Ithaca, meeting creatures like the Cyclops Polyphemus, Sirens, and Calypso along the way.",
+        "actors": "Matt Damon, Tom Holland, Anne Hathaway",
+        "writer": "Christopher Nolan, Homer",
+        "director": "Christopher Nolan",
+        "genre": "Action",
+        "year": "2026",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNTcyNmJlZmQtNDUwYy00NDBjLTg1NGQtYTY2Y2UxMWM3NmI1XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
       "type": "Movie",
       "category": "Adventure",
       "year": "2026",
@@ -189,6 +1268,26 @@
     {
       "id": "8eccf3f5-6171-4f0d-a1fc-9cd98f66ceb4",
       "title": "The Walking Dead",
+      "director": "Robert Kirkman",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T12:10:00.603Z",
+        "query": {
+          "title": "the walking dead",
+          "type": "Show",
+          "year": "2010"
+        },
+        "imdbId": "tt1520211",
+        "imdbRating": "8.1",
+        "runtime": "44 min",
+        "plot": "Sheriff Deputy Rick Grimes wakes up from a coma to learn the world is in ruins and must lead a group of survivors to stay alive.",
+        "actors": "Andrew Lincoln, Norman Reedus, Melissa McBride",
+        "writer": "Frank Darabont",
+        "director": "",
+        "genre": "Drama",
+        "year": "2010",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYWQwMGRhNGEtZTNhMy00MzVjLWJhMjItYjcwMDljMTkyNTg2XkEyXkFqcGc@._V1_SX300.jpg"
+      },
       "type": "Show",
       "category": "Drama",
       "year": "2010",
@@ -199,30 +1298,70 @@
           "date": "2025",
           "score": 6,
           "notes": "",
-          "kind": "previous"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "345df20a-7815-4fcb-8344-c5632e92ebe1",
       "title": "Sinners",
+      "director": "Ryan Coogler",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T12:01:05.987Z",
+        "query": {
+          "title": "sinners",
+          "type": "Movie",
+          "year": "2025"
+        },
+        "imdbId": "tt31193180",
+        "imdbRating": "7.5",
+        "runtime": "137 min",
+        "plot": "Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.",
+        "actors": "Michael B. Jordan, Jack O&apos;Connell, Hailee Steinfeld",
+        "writer": "Ryan Coogler",
+        "director": "Ryan Coogler",
+        "genre": "Action",
+        "year": "2025",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNjIwZWY4ZDEtMmIxZS00NDA4LTg4ZGMtMzUwZTYyNzgxMzk5XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
       "type": "Movie",
       "category": "Horror",
       "year": "2025",
-      "poster": "https://media.themoviedb.org/t/p/w220_and_h330_face/cuM1rGXxTd28KEQXBG683ODtWPY.jpg",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNjIwZWY4ZDEtMmIxZS00NDA4LTg4ZGMtMzUwZTYyNzgxMzk5XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
       "collectionIds": [],
       "watches": [
         {
           "date": "2026",
           "score": 8,
           "notes": "",
-          "kind": "previous"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "c902f64a-1b50-4a04-ad84-09366b7ee414",
       "title": "Before Midnight",
+      "director": "Richard Linklater",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:50:31.943Z",
+        "query": {
+          "title": "before midnight",
+          "type": "Movie",
+          "year": "2013"
+        },
+        "imdbId": "tt2209418",
+        "imdbRating": "7.9",
+        "runtime": "109 min",
+        "plot": "We meet Jesse and Celine nine years on in Greece. Almost two decades have passed since their first meeting on that train bound for Vienna.",
+        "actors": "Ethan Hawke, Julie Delpy, Seamus Davey-Fitzpatrick",
+        "writer": "Richard Linklater, Julie Delpy, Ethan Hawke",
+        "director": "Richard Linklater",
+        "genre": "Drama",
+        "year": "2013",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMjA5NzgxODE2NF5BMl5BanBnXkFtZTcwNTI1NTI0OQ@@._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Romance",
       "year": "2013",
@@ -233,38 +1372,78 @@
           "date": "2023",
           "score": 7.5,
           "notes": "",
-          "kind": "previous",
-          "precision": "approximate"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "bac1888f-2840-42f3-b021-2e01949eba4a",
       "title": "Before Sunrise",
+      "director": "Richard Linklater",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T12:06:27.949Z",
+        "query": {
+          "title": "before sunrise",
+          "type": "Movie",
+          "year": "1995"
+        },
+        "imdbId": "tt0112471",
+        "imdbRating": "8.1",
+        "runtime": "101 min",
+        "plot": "A young man and woman meet on a train in Europe, and wind up spending one evening together in Vienna. Unfortunately, both know that this will probably be their only night together.",
+        "actors": "Ethan Hawke, Julie Delpy, Andrea Eckert",
+        "writer": "Richard Linklater, Kim Krizan",
+        "director": "Richard Linklater",
+        "genre": "Comedy",
+        "year": "1995",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZDZhZmI1ZTUtYWI3NC00NTMwLTk3NWMtNDc0OGNjM2I0ZjlmXkEyXkFqcGc@._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Romance",
       "year": "1995",
       "poster": "https://m.media-amazon.com/images/M/MV5BZTZhNDdkNDgtMjkwOC00MzBjLThlYzEtNzRhYWY1MGI1NmJiXkEyXkFqcGc@._V1_.jpg",
-      "collectionIds": [],
+      "collectionIds": [
+        "f64f5d16-9900-4586-9567-deeb18092d56"
+      ],
       "watches": [
         {
           "date": "2026",
           "score": 9.5,
-          "notes": "",
+          "notes": "Loved it",
           "kind": "previous"
         },
         {
           "date": "2023",
           "score": 9.5,
           "notes": "",
-          "kind": "previous",
-          "precision": "approximate"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "ae521819-6850-407d-b934-d0850843bf46",
       "title": "Before Sunset",
+      "director": "Richard Linklater",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:56:24.431Z",
+        "query": {
+          "title": "before sunset",
+          "type": "Movie",
+          "year": "2004"
+        },
+        "imdbId": "tt0381681",
+        "imdbRating": "8.1",
+        "runtime": "80 min",
+        "plot": "Nine years after Jesse and Celine first met, they encounter each other again on the French leg of Jesse's book tour.",
+        "actors": "Ethan Hawke, Julie Delpy, Vernon Dobtcheff",
+        "writer": "Richard Linklater, Julie Delpy, Ethan Hawke",
+        "director": "Richard Linklater",
+        "genre": "Drama",
+        "year": "2004",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTQ1MjAwNTM5Ml5BMl5BanBnXkFtZTYwNDM0MTc3._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Romance",
       "year": "2004",
@@ -275,108 +1454,1146 @@
           "date": "2023",
           "score": 9,
           "notes": "",
-          "kind": "previous",
-          "precision": "approximate"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "d6a761a4-8deb-431c-bfd5-1474d9eff9f5",
       "title": "When Harry Met Sally",
+      "director": "Rob Reiner",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:55:42.148Z",
+        "query": {
+          "title": "when harry met sally",
+          "type": "Movie",
+          "year": "1989"
+        },
+        "imdbId": "tt0098635",
+        "imdbRating": "7.7",
+        "runtime": "95 min",
+        "plot": "Harry and Sally have known each other for years, and are very good friends, but they fear sex would ruin the friendship.",
+        "actors": "Billy Crystal, Meg Ryan, Carrie Fisher",
+        "writer": "Nora Ephron",
+        "director": "Rob Reiner",
+        "genre": "Comedy",
+        "year": "1989",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMjE0ODEwNjM2NF5BMl5BanBnXkFtZTcwMjU2Mzg3NA@@._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Romance",
       "year": "1989",
-      "poster": "https://image.tmdb.org/t/p/original/rFOiFUhTMtDetqCGClC9PIgnC1P.jpg",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjE0ODEwNjM2NF5BMl5BanBnXkFtZTcwMjU2Mzg3NA@@._V1_SX300.jpg",
       "collectionIds": [],
       "watches": [
         {
           "date": "2026",
           "score": 8.5,
           "notes": "",
-          "kind": "previous"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "f47a3fb3-8d10-431f-b257-11b70b6eb3be",
       "title": "About time",
+      "director": "Richard Curtis",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T12:16:41.767Z",
+        "query": {
+          "title": "about time",
+          "type": "Movie",
+          "year": "2013"
+        },
+        "imdbId": "tt2194499",
+        "imdbRating": "7.8",
+        "runtime": "123 min",
+        "plot": "At the age of 21, Tim discovers he can travel in time and change what happens and has happened in his own life. His decision to make his world a better place by getting a girlfriend turns out not to be as easy as you might think.",
+        "actors": "Domhnall Gleeson, Rachel McAdams, Bill Nighy",
+        "writer": "Richard Curtis",
+        "director": "Richard Curtis",
+        "genre": "Comedy",
+        "year": "2013",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTA1ODUzMDA3NzFeQTJeQWpwZ15BbWU3MDgxMTYxNTk@._V1_SX300.jpg"
+      },
       "type": "Movie",
-      "category": "Romance",
+      "category": "Comedy",
       "year": "2013",
       "poster": "https://m.media-amazon.com/images/M/MV5BMTA1ODUzMDA3NzFeQTJeQWpwZ15BbWU3MDgxMTYxNTk@._V1_.jpg",
-      "collectionIds": [],
+      "collectionIds": [
+        "f64f5d16-9900-4586-9567-deeb18092d56"
+      ],
       "watches": [
         {
           "date": "2026",
           "score": 8.5,
           "notes": "",
-          "kind": "first",
-          "precision": "year"
+          "kind": "first"
         },
         {
           "date": "2022",
           "score": 8.5,
           "notes": "",
-          "kind": "previous",
-          "precision": "approximate"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "7b72ab14-8e35-43af-9063-00c02f04f3f9",
-      "title": "Bladerunner 2049",
+      "title": "Blade Runner 2049",
+      "director": "Denis Villeneuve",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T17:52:37.808Z",
+        "query": {
+          "title": "blade runner 2049",
+          "type": "Movie",
+          "year": "2018"
+        },
+        "imdbId": "tt7879362",
+        "imdbRating": "7.4",
+        "runtime": "",
+        "plot": "A behind the scenes look at the casting of Blade Runner 2049 originally produced for the home entertainment release.",
+        "actors": "Dave Bautista, Mackenzie Davis, Ana de Armas, Harrison Ford",
+        "writer": "",
+        "director": "",
+        "genre": "Documentary",
+        "year": "2018",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMjRjZDVkMTMtMzZlZC00YzBhLWJkYjQtNWVjNzVhNzg1NjAxXkEyXkFqcGdeQXVyMjA3NzQyMA@@._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Science Fiction",
       "year": "2018",
-      "poster": "https://m.media-amazon.com/images/M/MV5BNzA1Njg4NzYxOV5BMl5BanBnXkFtZTgwODk5NjU3MzI@._V1_.jpg",
-      "collectionIds": [],
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjJkODA5NjUtOWE0Ny00N2ViLThmZDktNTRhOWE3ODUyNGM2XkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [
+        "f64f5d16-9900-4586-9567-deeb18092d56"
+      ],
       "watches": [
         {
           "date": "2020",
           "score": 9,
           "notes": "",
-          "kind": "previous",
-          "precision": "approximate"
+          "kind": "first"
         }
       ]
     },
     {
       "id": "cb6e4979-ba62-4eb7-b0fe-36491fcc8689",
       "title": "Obsession",
+      "director": "Curry Barker",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T12:25:14.115Z",
+        "query": {
+          "title": "obsession",
+          "type": "Movie",
+          "year": "2026"
+        },
+        "imdbId": "tt37287335",
+        "imdbRating": "7.9",
+        "runtime": "109 min",
+        "plot": "Baron \"Bear\" Bailey breaks a novelty charm to force his co-worker Nikki Freeman to love him, but the supernatural compulsion warps her mind into violent obsession, trapping him in a nightmare he cannot wish away.",
+        "actors": "Michael Johnston, Inde Navarrette, Cooper Tomlinson",
+        "writer": "Curry Barker",
+        "director": "Curry Barker",
+        "genre": "Horror",
+        "year": "2026",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYzc1NWUwMDgtNGZlMS00ZmYzLWIzMzktNmMxMmY1MTUzNWExXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
       "type": "Movie",
       "category": "Horror",
       "year": "2026",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYzc1NWUwMDgtNGZlMS00ZmYzLWIzMzktNmMxMmY1MTUzNWExXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-      "collectionIds": [],
+      "poster": "https://m.media-amazon.com/images/M/MV5BYzc1NWUwMDgtNGZlMS00ZmYzLWIzMzktNmMxMmY1MTUzNWExXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+      "collectionIds": [
+        "f64f5d16-9900-4586-9567-deeb18092d56"
+      ],
       "watches": [
         {
           "date": "2026-09-04",
-          "score": 10,
+          "score": 9.5,
           "notes": "",
-          "kind": "first",
-          "precision": "exact"
+          "kind": "first"
         }
       ]
     }
   ],
   "watchlist": [
     {
-      "id": "03c29de1-d1a8-4cda-98fd-a9a5ce62b4e2",
-      "title": "The Wild Robot",
+      "id": "359d2457-3412-46bf-a603-bd6db15db2b2",
+      "title": "The Terminator",
+      "director": "James Cameron",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:56:43.796Z",
+        "query": {
+          "title": "the terminator",
+          "type": "Movie",
+          "year": "1984"
+        },
+        "imdbId": "tt0088247",
+        "imdbRating": "8.1",
+        "runtime": "107 min",
+        "plot": "A cyborg assassin from the future attempts to find and kill a young woman who is destined to give birth to a warrior that will lead a resistance to save humankind from extinction.",
+        "actors": "Arnold Schwarzenegger, Linda Hamilton, Michael Biehn",
+        "writer": "James Cameron, Gale Anne Hurd, William Wisher",
+        "director": "James Cameron",
+        "genre": "Action",
+        "year": "1984",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZmE0YzIxM2QtMGNlMi00MjRmLWE3MWMtOWQzMGVjMmU0YTFmXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Action",
+      "year": "1984",
+      "poster": "https://m.media-amazon.com/images/M/MV5BZmE0YzIxM2QtMGNlMi00MjRmLWE3MWMtOWQzMGVjMmU0YTFmXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "014793f6-bd7d-401a-b071-3d58107aed3e",
+      "title": "The Lighthouse",
+      "director": "Robert Eggers",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:55:53.083Z",
+        "query": {
+          "title": "the lighthouse",
+          "type": "Movie",
+          "year": "2019"
+        },
+        "imdbId": "tt7984734",
+        "imdbRating": "7.4",
+        "runtime": "109 min",
+        "plot": "Two lighthouse keepers try to maintain their sanity while living on a remote and mysterious New England island in the 1890s.",
+        "actors": "Robert Pattinson, Willem Dafoe, Valeriia Karaman",
+        "writer": "Robert Eggers, Max Eggers",
+        "director": "Robert Eggers",
+        "genre": "Drama",
+        "year": "2019",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTI4MjFhMjAtNmQxYi00N2IxLWJjMGEtYWY1YmU3OTQ0Zjk3XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "2019",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTI4MjFhMjAtNmQxYi00N2IxLWJjMGEtYWY1YmU3OTQ0Zjk3XkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 1
+    },
+    {
+      "id": "2f01a153-15f8-4ab1-90ad-9b596b7d4c1b",
+      "title": "Psycho",
+      "director": "Alfred Hitchcock",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:54:31.206Z",
+        "query": {
+          "title": "psycho",
+          "type": "Movie",
+          "year": "1960"
+        },
+        "imdbId": "tt0054215",
+        "imdbRating": "8.5",
+        "runtime": "109 min",
+        "plot": "A secretary on the run for embezzlement takes refuge at a secluded California motel owned by a repressed man and his overbearing mother.",
+        "actors": "Anthony Perkins, Janet Leigh, Vera Miles",
+        "writer": "Joseph Stefano, Robert Bloch",
+        "director": "Alfred Hitchcock",
+        "genre": "Drama",
+        "year": "1960",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYjZhMzFiZjItODA3ZC00MmRhLWIzMGYtMmVjOWUwYTA3MTRjXkEyXkFqcGc@._V1_QL75_UX380_CR0,1,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "1960",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjZhMzFiZjItODA3ZC00MmRhLWIzMGYtMmVjOWUwYTA3MTRjXkEyXkFqcGc@._V1_QL75_UX380_CR0,1,380,562_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "096084ff-6458-4f6f-a898-6a96e668480d",
+      "title": "Nope",
+      "director": "Jordan Peele",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:53:52.952Z",
+        "query": {
+          "title": "nope",
+          "type": "Movie",
+          "year": "2022"
+        },
+        "imdbId": "tt10954984",
+        "imdbRating": "6.8",
+        "runtime": "130 min",
+        "plot": "The residents of a lonely gulch in inland California bear witness to an uncanny and chilling phenomenon.",
+        "actors": "Daniel Kaluuya, Keke Palmer, Brandon Perea",
+        "writer": "Jordan Peele",
+        "director": "Jordan Peele",
+        "genre": "Horror",
+        "year": "2022",
+        "poster": "https://m.media-amazon.com/images/M/MV5BODRlNWRhZWUtMzdlZC00ZDIyLWFhZjMtYTcxNjI1ZDIwODhjXkEyXkFqcGc@._V1_QL75_UX380_CR0,20,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Horror",
+      "year": "2022",
+      "poster": "https://m.media-amazon.com/images/M/MV5BODRlNWRhZWUtMzdlZC00ZDIyLWFhZjMtYTcxNjI1ZDIwODhjXkEyXkFqcGc@._V1_QL75_UX380_CR0,20,380,562_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "e0243ea1-eb8a-44bc-9755-f8564c88d63e",
+      "title": "Black Swan",
+      "director": "Darren Aronofsky",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:53:32.964Z",
+        "query": {
+          "title": "black swan",
+          "type": "Movie",
+          "year": "2010"
+        },
+        "imdbId": "tt0947798",
+        "imdbRating": "8.0",
+        "runtime": "108 min",
+        "plot": "Nina is a talented but unstable ballerina on the verge of stardom. Pushed to the breaking point by her artistic director and a seductive rival, Nina's grip on reality slips, plunging her into a waking nightmare.",
+        "actors": "Natalie Portman, Mila Kunis, Vincent Cassel",
+        "writer": "Mark Heyman, Andres Heinz, John J. McLaughlin",
+        "director": "Darren Aronofsky",
+        "genre": "Drama",
+        "year": "2010",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNzY2NzI4OTE5MF5BMl5BanBnXkFtZTcwMjMyNDY4Mw@@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "2010",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNzY2NzI4OTE5MF5BMl5BanBnXkFtZTcwMjMyNDY4Mw@@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 1
+    },
+    {
+      "id": "8ade6fa1-a38e-4e86-8ea6-aff2a5bc91b1",
+      "title": "Zoolander",
+      "director": "Ben Stiller",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:52:54.516Z",
+        "query": {
+          "title": "zoolander",
+          "type": "Movie",
+          "year": "2001"
+        },
+        "imdbId": "tt0196229",
+        "imdbRating": "6.5",
+        "runtime": "90 min",
+        "plot": "At the end of his career, a clueless fashion model is brainwashed to kill the Prime Minister of Malaysia.",
+        "actors": "Ben Stiller, Owen Wilson, Christine Taylor",
+        "writer": "Drake Sather, Ben Stiller, John Hamburg",
+        "director": "Ben Stiller",
+        "genre": "Comedy",
+        "year": "2001",
+        "poster": "https://m.media-amazon.com/images/M/MV5BODI4NDY2NDM5M15BMl5BanBnXkFtZTgwNzEwOTMxMDE@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Comedy",
+      "year": "2001",
+      "poster": "https://m.media-amazon.com/images/M/MV5BODI4NDY2NDM5M15BMl5BanBnXkFtZTgwNzEwOTMxMDE@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "88ba6fa6-5d8c-4976-8af4-6703186b48f3",
+      "title": "Akira",
+      "director": "Katsuhiro Ôtomo",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:41:24.625Z",
+        "query": {
+          "title": "akira",
+          "type": "Movie",
+          "year": "1988"
+        },
+        "imdbId": "tt0094625",
+        "imdbRating": "8.0",
+        "runtime": "124 min",
+        "plot": "A secret military project endangers Neo-Tokyo when it turns a teenage biker gang member into a rampaging psychic psychopath who can only be stopped by his best friend.",
+        "actors": "Mitsuo Iwata, Nozomu Sasaki, Mami Koyama",
+        "writer": "Katsuhiro Ôtomo, Izô Hashimoto",
+        "director": "Katsuhiro Ôtomo",
+        "genre": "Animation",
+        "year": "1988",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYWUxMGRhZDQtMTBmMi00N2IxLWE5NmYtMDMyMWExODAwNWYzXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Animation",
+      "year": "1988",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYWUxMGRhZDQtMTBmMi00N2IxLWE5NmYtMDMyMWExODAwNWYzXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 3
+    },
+    {
+      "id": "8742b106-5eb0-4487-bbdc-1a5eb298b6de",
+      "title": "Pulp Fiction",
+      "director": "Quentin Tarantino",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:38:57.749Z",
+        "query": {
+          "title": "pulp fiction",
+          "type": "Movie",
+          "year": "1994"
+        },
+        "imdbId": "tt0110912",
+        "imdbRating": "8.8",
+        "runtime": "154 min",
+        "plot": "The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.",
+        "actors": "John Travolta, Uma Thurman, Samuel L. Jackson",
+        "writer": "Quentin Tarantino, Roger Avary",
+        "director": "Quentin Tarantino",
+        "genre": "Crime",
+        "year": "1994",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYTViYTE3ZGQtNDBlMC00ZTAyLTkyODMtZGRiZDg0MjA2YThkXkEyXkFqcGc@._V1_QL75_UY562_CR3,0,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Crime",
+      "year": "1994",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYTViYTE3ZGQtNDBlMC00ZTAyLTkyODMtZGRiZDg0MjA2YThkXkEyXkFqcGc@._V1_QL75_UY562_CR3,0,380,562_.jpg",
+      "collectionIds": [
+        "4b47c23d-9500-4d3e-a604-4594a53da440"
+      ],
+      "notes": "",
+      "priority": 4
+    },
+    {
+      "id": "7e713a6c-e1d9-4ec0-80e5-fc2f37c1f4fd",
+      "title": "Whiplash",
+      "director": "Damien Chazelle",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:38:27.610Z",
+        "query": {
+          "title": "whiplash",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt2582802",
+        "imdbRating": "8.5",
+        "runtime": "106 min",
+        "plot": "A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing to realize a student's potential.",
+        "actors": "Miles Teller, J.K. Simmons, Melissa Benoist",
+        "writer": "Damien Chazelle",
+        "director": "Damien Chazelle",
+        "genre": "Drama",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMDFjOWFkYzktYzhhMC00NmYyLTkwY2EtYjViMDhmNzg0OGFkXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "2014",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNDE1ZDdiZTQtNzE0OC00N2IwLTlhOTItNzMyMDZhNzk0ZmQwXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 3
+    },
+    {
+      "id": "47620cb7-8c40-4e61-899f-f1ec3a8f6aff",
+      "title": "Jojo Rabbit",
+      "director": "Taika Waititi",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:33:50.122Z",
+        "query": {
+          "title": "jojo rabbit",
+          "type": "Movie",
+          "year": "2019"
+        },
+        "imdbId": "tt2584384",
+        "imdbRating": "7.9",
+        "runtime": "108 min",
+        "plot": "A young German boy in the Hitler Youth, whose hero and imaginary friend is the country's dictator, is shocked to discover that his mother is hiding a Jewish girl in their home.",
+        "actors": "Roman Griffin Davis, Thomasin McKenzie, Scarlett Johansson",
+        "writer": "Christine Leunens, Taika Waititi",
+        "director": "Taika Waititi",
+        "genre": "Comedy",
+        "year": "2019",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYmFmNmUyMjYtZTFjNS00OWQyLThhZmMtMGZkYTQ3YjY0ZDQ1XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Comedy",
+      "year": "2019",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYmFmNmUyMjYtZTFjNS00OWQyLThhZmMtMGZkYTQ3YjY0ZDQ1XkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 4
+    },
+    {
+      "id": "306d94cd-ae68-4509-8f91-1899927580d9",
+      "title": "The Grand Budapest Hotel",
+      "director": "Wes Anderson",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:33:32.490Z",
+        "query": {
+          "title": "the grand budapest hotel",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt2278388",
+        "imdbRating": "8.1",
+        "runtime": "99 min",
+        "plot": "A writer encounters the owner of an aging high-class hotel, who tells him of his early years serving as a lobby boy in the hotel's glorious years under an exceptional concierge.",
+        "actors": "Ralph Fiennes, F. Murray Abraham, Mathieu Amalric",
+        "writer": "Stefan Zweig, Wes Anderson, Hugo Guinness",
+        "director": "Wes Anderson",
+        "genre": "Comedy",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMzM5NjUxOTEyMl5BMl5BanBnXkFtZTgwNjEyMDM0MDE@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Comedy",
+      "year": "2014",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMzM5NjUxOTEyMl5BMl5BanBnXkFtZTgwNjEyMDM0MDE@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 3
+    },
+    {
+      "id": "eb5d5a8c-4d66-4e02-acf5-b327cfb24203",
+      "title": "The Silence of the Lambs",
+      "director": "Jonathan Demme",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:33:07.035Z",
+        "query": {
+          "title": "the silence of the lambs",
+          "type": "Movie",
+          "year": "1991"
+        },
+        "imdbId": "tt0102926",
+        "imdbRating": "8.6",
+        "runtime": "118 min",
+        "plot": "A young F.B.I. cadet must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer, a madman who skins his victims.",
+        "actors": "Jodie Foster, Anthony Hopkins, Scott Glenn",
+        "writer": "Thomas Harris, Ted Tally",
+        "director": "Jonathan Demme",
+        "genre": "Crime",
+        "year": "1991",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNDdhOGJhYzctYzYwZC00YmI2LWI0MjctYjg4ODdlMDExYjBlXkEyXkFqcGc@._V1_QL75_UY562_CR1,0,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Crime",
+      "year": "1991",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNDdhOGJhYzctYzYwZC00YmI2LWI0MjctYjg4ODdlMDExYjBlXkEyXkFqcGc@._V1_QL75_UY562_CR1,0,380,562_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "fad94aca-8039-4c18-8965-2a7931f9f1e1",
+      "title": "Donnie Darko",
+      "director": "Richard Kelly",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:32:09.101Z",
+        "query": {
+          "title": "donnie darko",
+          "type": "Movie",
+          "year": "2001"
+        },
+        "imdbId": "tt0246578",
+        "imdbRating": "8.0",
+        "runtime": "113 min",
+        "plot": "After narrowly escaping a bizarre accident, a troubled teenager is plagued by visions of a man in a large rabbit suit who manipulates him to commit a series of crimes.",
+        "actors": "Jake Gyllenhaal, Jena Malone, Mary McDonnell",
+        "writer": "Richard Kelly",
+        "director": "Richard Kelly",
+        "genre": "Drama",
+        "year": "2001",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMWE3NTYzZmEtM2U5MS00MDZhLTk2ZTQtZTgzNjg0ZGQ5ZjM0XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "2001",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMWE3NTYzZmEtM2U5MS00MDZhLTk2ZTQtZTgzNjg0ZGQ5ZjM0XkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "45164e5d-ee03-4719-9979-cd753aaeb18e",
+      "title": "Dead Poets Society",
+      "director": "Peter Weir",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:31:44.835Z",
+        "query": {
+          "title": "dead poets society",
+          "type": "Movie",
+          "year": "1989"
+        },
+        "imdbId": "tt0097165",
+        "imdbRating": "8.1",
+        "runtime": "128 min",
+        "plot": "Maverick teacher John Keating returns in 1959 to the prestigious New England boys' boarding school where he was once a star student, using poetry to embolden his pupils to new heights of self-expression.",
+        "actors": "Robin Williams, Robert Sean Leonard, Ethan Hawke",
+        "writer": "Tom Schulman",
+        "director": "Peter Weir",
+        "genre": "Comedy",
+        "year": "1989",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMDYwNGVlY2ItMWYxMS00YjZiLWE5MTAtYWM5NWQ2ZWJjY2Q3XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Comedy",
+      "year": "1989",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMDYwNGVlY2ItMWYxMS00YjZiLWE5MTAtYWM5NWQ2ZWJjY2Q3XkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 5
+    },
+    {
+      "id": "b61a63ae-13b3-4d19-8cf7-a3241872ac27",
+      "title": "GoodFellas",
+      "director": "Martin Scorsese",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:31:10.020Z",
+        "query": {
+          "title": "goodfellas",
+          "type": "Movie",
+          "year": "1990"
+        },
+        "imdbId": "tt0099685",
+        "imdbRating": "8.7",
+        "runtime": "145 min",
+        "plot": "The story of Henry Hill and his life in the mafia, covering his relationship with his wife Karen and his mob partners Jimmy Conway and Tommy DeVito.",
+        "actors": "Robert De Niro, Ray Liotta, Joe Pesci",
+        "writer": "Nicholas Pileggi, Martin Scorsese",
+        "director": "Martin Scorsese",
+        "genre": "Biography",
+        "year": "1990",
+        "poster": "https://m.media-amazon.com/images/M/MV5BN2E5NzI2ZGMtY2VjNi00YTRjLWI1MDUtZGY5OWU1MWJjZjRjXkEyXkFqcGc@._V1_QL75_UX380_CR0,3,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Biography",
+      "year": "1990",
+      "poster": "https://m.media-amazon.com/images/M/MV5BN2E5NzI2ZGMtY2VjNi00YTRjLWI1MDUtZGY5OWU1MWJjZjRjXkEyXkFqcGc@._V1_QL75_UX380_CR0,3,380,562_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "0c00dec7-b6ce-4273-ac61-2115774ef93e",
+      "title": "Little Miss Sunshine",
+      "director": "Jonathan Dayton, Valerie Faris",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:30:33.077Z",
+        "query": {
+          "title": "little miss sunshine",
+          "type": "Movie",
+          "year": "2006"
+        },
+        "imdbId": "tt0449059",
+        "imdbRating": "7.8",
+        "runtime": "101 min",
+        "plot": "A family determined to get their young daughter into the finals of a beauty pageant take a cross-country trip in their VW bus.",
+        "actors": "Steve Carell, Toni Collette, Greg Kinnear",
+        "writer": "Michael Arndt",
+        "director": "Jonathan Dayton, Valerie Faris",
+        "genre": "Comedy",
+        "year": "2006",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTgzNTgzODU0NV5BMl5BanBnXkFtZTcwMjEyMjMzMQ@@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Comedy",
+      "year": "2006",
+      "poster": "https://m.media-amazon.com/images/M/MV5BM2ZhNjljYWYtMGVhOS00ZGU1LTg0MWItZDQ1NWEyMjRhZmM3XkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "335cab79-31d3-4cff-b39e-485ece316809",
+      "title": "Nightcrawler",
+      "director": "Dan Gilroy",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:29:58.335Z",
+        "query": {
+          "title": "nightcrawler",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt2872718",
+        "imdbRating": "7.8",
+        "runtime": "117 min",
+        "plot": "A petty thief desperate for work muscles into the world of crime journalism and becomes the star of his own story as he blurs the line between observer and participant.",
+        "actors": "Jake Gyllenhaal, Rene Russo, Bill Paxton",
+        "writer": "Dan Gilroy",
+        "director": "Dan Gilroy",
+        "genre": "Crime",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYjMwMmI5MWQtOTU4OS00OTAyLTg0OTYtNmQ5YzExZTQ3ZWJhXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Crime",
+      "year": "2014",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMjE4NDg2NTcwNl5BMl5BanBnXkFtZTgwMTIwMDYyMjI@._V1_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 4
+    },
+    {
+      "id": "0a429e54-a327-445d-b6f9-8d98a3961324",
+      "title": "A Clockwork Orange",
+      "director": "Stanley Kubrick",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:29:40.937Z",
+        "query": {
+          "title": "a clockwork orange",
+          "type": "Movie",
+          "year": "1971"
+        },
+        "imdbId": "tt0066921",
+        "imdbRating": "8.2",
+        "runtime": "136 min",
+        "plot": "Alex DeLarge and his droogs barbarize a decaying near-future.",
+        "actors": "Malcolm McDowell, Patrick Magee, Michael Bates",
+        "writer": "Stanley Kubrick, Anthony Burgess",
+        "director": "Stanley Kubrick",
+        "genre": "Crime",
+        "year": "1971",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTY3MjM1Mzc4N15BMl5BanBnXkFtZTgwODM0NzAxMDE@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Crime",
+      "year": "1971",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTY3MjM1Mzc4N15BMl5BanBnXkFtZTgwODM0NzAxMDE@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 3
+    },
+    {
+      "id": "fc59113c-4954-43cc-ad9f-830c100070c4",
+      "title": "The Secret Life of Walter Mitty",
+      "director": "Ben Stiller",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:29:20.504Z",
+        "query": {
+          "title": "the secret life of walter mitty",
+          "type": "Movie",
+          "year": "2013"
+        },
+        "imdbId": "tt0359950",
+        "imdbRating": "7.3",
+        "runtime": "114 min",
+        "plot": "When both he and a colleague are about to lose their job, Walter takes action by embarking on an adventure more extraordinary than anything he ever imagined.",
+        "actors": "Ben Stiller, Kristen Wiig, Jon Daly",
+        "writer": "Steve Conrad, James Thurber",
+        "director": "Ben Stiller",
+        "genre": "Adventure",
+        "year": "2013",
+        "poster": "https://m.media-amazon.com/images/M/MV5BODYwNDYxNDk1Nl5BMl5BanBnXkFtZTgwOTAwMTk2MDE@._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Adventure",
+      "year": "2013",
+      "poster": "https://m.media-amazon.com/images/M/MV5BODYwNDYxNDk1Nl5BMl5BanBnXkFtZTgwOTAwMTk2MDE@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 3
+    },
+    {
+      "id": "b29df5a5-1f92-4d47-b9ba-fbb29d167c48",
+      "title": "Ferris Bueller’s Day Off",
+      "director": "John Hughes",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:29:07.421Z",
+        "query": {
+          "title": "ferris bueller’s day off",
+          "type": "Movie",
+          "year": "1986"
+        },
+        "imdbId": "tt0091042",
+        "imdbRating": "7.8",
+        "runtime": "103 min",
+        "plot": "A brash, cocky high school senior, tired of skipping school to spend a boring day at home, is determined to enjoy an epic day roaring around his favorite Chicago sites, enlisting his best friend and girlfriend to join him on the a...",
+        "actors": "Matthew Broderick, Alan Ruck, Mia Sara",
+        "writer": "John Hughes",
+        "director": "John Hughes",
+        "genre": "Comedy",
+        "year": "1986",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZWYwMjUxNjMtMzE0MC00NDM3LWIxMmQtYmEyNWVjNjdlZGZjXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Comedy",
+      "year": "1986",
+      "poster": "https://m.media-amazon.com/images/M/MV5BZWYwMjUxNjMtMzE0MC00NDM3LWIxMmQtYmEyNWVjNjdlZGZjXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [
+        "f64f5d16-9900-4586-9567-deeb18092d56"
+      ],
+      "notes": "",
+      "priority": 5
+    },
+    {
+      "id": "d8bc0e26-bac5-4aa4-a869-9a85caa0677d",
+      "title": "Apocalypse Now",
+      "director": "Francis Ford Coppola",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:28:26.026Z",
+        "query": {
+          "title": "apocalypse now",
+          "type": "Movie",
+          "year": "1979"
+        },
+        "imdbId": "tt0078788",
+        "imdbRating": "8.4",
+        "runtime": "147 min",
+        "plot": "A U.S. Army officer serving in Vietnam is tasked with assassinating a renegade Special Forces Colonel who sees himself as a god.",
+        "actors": "Martin Sheen, Marlon Brando, Robert Duvall",
+        "writer": "John Milius, Francis Ford Coppola, Michael Herr",
+        "director": "Francis Ford Coppola",
+        "genre": "Drama",
+        "year": "1979",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZDhiMTljYjYtODc1Yy00MmEwLTg2OTYtYmE1YTRmNDE4MmEwXkEyXkFqcGc@._V1_QL75_UX380_CR0,11,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "1979",
+      "poster": "https://m.media-amazon.com/images/M/MV5BN2QwNjhiYjUtYmRkNS00YTExLWEzMDItNjZlZjZhNDIzMTFiXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 4
+    },
+    {
+      "id": "08f6eb94-e8fe-44e7-ac6f-6a934c5ae071",
+      "title": "The Fifth Element",
+      "director": "Luc Besson",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:27:56.145Z",
+        "query": {
+          "title": "the fifth element",
+          "type": "Movie",
+          "year": "1997"
+        },
+        "imdbId": "tt0119116",
+        "imdbRating": "7.6",
+        "runtime": "126 min",
+        "plot": "In the colorful future, cabdriver Korben Dallas unwittingly becomes the central figure in the search for a legendary cosmic weapon to keep the great evil and Jean-Baptiste Emmanuel Zorg at bay.",
+        "actors": "Bruce Willis, Milla Jovovich, Gary Oldman",
+        "writer": "Luc Besson, Robert Mark Kamen",
+        "director": "Luc Besson",
+        "genre": "Action",
+        "year": "1997",
+        "poster": "https://m.media-amazon.com/images/M/MV5BODU4ZTE5MWYtNmY2MC00NDkyLTk0NDgtNTk5YjgzMzc4NmQwXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Action",
+      "year": "1997",
+      "poster": "https://m.media-amazon.com/images/M/MV5BODU4ZTE5MWYtNmY2MC00NDkyLTk0NDgtNTk5YjgzMzc4NmQwXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "a01f5d37-ceab-49ad-b53c-7a3f9ff76061",
+      "title": "Contact",
+      "director": "Robert Zemeckis",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:27:10.225Z",
+        "query": {
+          "title": "contact",
+          "type": "Movie",
+          "year": "1997"
+        },
+        "imdbId": "tt0118884",
+        "imdbRating": "7.5",
+        "runtime": "150 min",
+        "plot": "Dr. Ellie Arroway, after years of searching, finds conclusive radio proof of extraterrestrial intelligence, sending plans for a mysterious machine.",
+        "actors": "Jodie Foster, Matthew McConaughey, Tom Skerritt",
+        "writer": "James V. Hart, Michael Goldenberg, Carl Sagan",
+        "director": "Robert Zemeckis",
+        "genre": "Drama",
+        "year": "1997",
+        "poster": "https://m.media-amazon.com/images/M/MV5BM2JiYmE1Y2UtNDQ3YS00YTZhLTk5MzAtYzEzMzIyNTM4OTRlXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "1997",
+      "poster": "https://m.media-amazon.com/images/M/MV5BM2JiYmE1Y2UtNDQ3YS00YTZhLTk5MzAtYzEzMzIyNTM4OTRlXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 4
+    },
+    {
+      "id": "0aec9633-1a77-4dcc-8acd-a7cfbdb27639",
+      "title": "Vertigo",
+      "director": "Alfred Hitchcock",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:25:55.752Z",
+        "query": {
+          "title": "vertigo",
+          "type": "Movie",
+          "year": "1958"
+        },
+        "imdbId": "tt0052357",
+        "imdbRating": "8.2",
+        "runtime": "128 min",
+        "plot": "A former San Francisco police detective juggles wrestling with his personal demons and becoming obsessed with the hauntingly beautiful woman he has been hired to trail, who may be deeply disturbed.",
+        "actors": "James Stewart, Kim Novak, Barbara Bel Geddes",
+        "writer": "Alec Coppel, Samuel A. Taylor, Pierre Boileau",
+        "director": "Alfred Hitchcock",
+        "genre": "Mystery",
+        "year": "1958",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNzEyZTUxMWItMGVhYy00Y2NlLTljYTMtYzBmMzI1YmUyMDBkXkEyXkFqcGc@._V1_QL75_UX380_CR0,13,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Mystery",
+      "year": "1958",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNzM2MmM0NGYtYTQ1Yi00MDQwLWE1OTgtOWNhN2UzYzBjZWEyXkEyXkFqcGc@._V1_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 3
+    },
+    {
+      "id": "a907f0fc-8147-4f57-b328-0f310d22a949",
+      "title": "All Quiet on the Western Front",
+      "director": "Edward Berger",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:24:37.417Z",
+        "query": {
+          "title": "all quiet on the western front",
+          "type": "Movie",
+          "year": "2022"
+        },
+        "imdbId": "tt1016150",
+        "imdbRating": "7.8",
+        "runtime": "148 min",
+        "plot": "A young German soldier's eagerness to serve his country quickly fades when he witnesses the horrors of combat on the Western Front during World War I.",
+        "actors": "Felix Kammerer, Albrecht Schuch, Aaron Hilmer",
+        "writer": "Edward Berger, Lesley Paterson, Ian Stokell",
+        "director": "Edward Berger",
+        "genre": "Drama",
+        "year": "2022",
+        "poster": "https://m.media-amazon.com/images/M/MV5BOWJiYWMyYTktZThhOS00ZjgxLWE0YTQtZDMyNTQxMjMyYjI2XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "2022",
+      "poster": "https://m.media-amazon.com/images/M/MV5BOWJiYWMyYTktZThhOS00ZjgxLWE0YTQtZDMyNTQxMjMyYjI2XkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "18867369-32fc-4583-9d1f-029cee073df7",
+      "title": "Citizen Kane",
+      "director": "Orson Welles",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:24:15.991Z",
+        "query": {
+          "title": "citizen kane",
+          "type": "Movie",
+          "year": "1941"
+        },
+        "imdbId": "tt0033467",
+        "imdbRating": "8.2",
+        "runtime": "119 min",
+        "plot": "Following the death of publishing tycoon Charles Foster Kane, reporters scramble to uncover the meaning of his final utterance: 'Rosebud.'",
+        "actors": "Orson Welles, Joseph Cotten, Dorothy Comingore",
+        "writer": "Herman J. Mankiewicz, Orson Welles, Roger Q. Denny",
+        "director": "Orson Welles",
+        "genre": "Drama",
+        "year": "1941",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYjk1ZDJlMmUtOWQ0Zi00MDM5LTk1OGYtODczNjFmMGYwZGVkXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "1941",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYjk1ZDJlMmUtOWQ0Zi00MDM5LTk1OGYtODczNjFmMGYwZGVkXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 3
+    },
+    {
+      "id": "07274ada-59b3-49a0-b27e-cf95cd45dff3",
+      "title": "Pride & Prejudice",
+      "director": "Joe Wright",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:23:32.457Z",
+        "query": {
+          "title": "pride & prejudice",
+          "type": "Movie",
+          "year": "2005"
+        },
+        "imdbId": "tt0414387",
+        "imdbRating": "7.8",
+        "runtime": "129 min",
+        "plot": "When Elizabeth Bennet meets the handsome Mr. Darcy, she believes he is the last man she could ever marry, but as their lives become intertwined, she finds herself captivated by the man she has sworn to hate forever.",
+        "actors": "Keira Knightley, Matthew Macfadyen, Brenda Blethyn",
+        "writer": "Deborah Moggach, Jane Austen, Emma Thompson",
+        "director": "Joe Wright",
+        "genre": "Drama",
+        "year": "2005",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTA1NDQ3NTcyOTNeQTJeQWpwZ15BbWU3MDA0MzA4MzE@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "2005",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTA1NDQ3NTcyOTNeQTJeQWpwZ15BbWU3MDA0MzA4MzE@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "d101d818-1786-4925-8a8d-a598700f6fb0",
+      "title": "American Beauty",
+      "director": "Sam Mendes",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:23:13.539Z",
+        "query": {
+          "title": "american beauty",
+          "type": "Movie",
+          "year": "1999"
+        },
+        "imdbId": "tt0169547",
+        "imdbRating": "8.3",
+        "runtime": "122 min",
+        "plot": "A sexually frustrated suburban father has a mid-life crisis after becoming infatuated with his daughter's best friend.",
+        "actors": "Kevin Spacey, Annette Bening, Thora Birch",
+        "writer": "Alan Ball",
+        "director": "Sam Mendes",
+        "genre": "Drama",
+        "year": "1999",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMDI1MDE0OTMtMmI2MS00Yjc2LTg2MTItMWExYTg5NzA1OGUzXkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Drama",
+      "year": "1999",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMDI1MDE0OTMtMmI2MS00Yjc2LTg2MTItMWExYTg5NzA1OGUzXkEyXkFqcGc@._V1_SX300.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 1
+    },
+    {
+      "id": "d7da2cbb-b093-416d-8726-4f5264be0fa1",
+      "title": "Gladiator",
+      "director": "Ridley Scott",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T23:22:15.868Z",
+        "query": {
+          "title": "gladiator",
+          "type": "Movie",
+          "year": "2000"
+        },
+        "imdbId": "tt0172495",
+        "imdbRating": "8.5",
+        "runtime": "155 min",
+        "plot": "A former Roman General sets out to exact vengeance against the corrupt emperor who murdered his family and sent him into slavery.",
+        "actors": "Russell Crowe, Joaquin Phoenix, Connie Nielsen",
+        "writer": "David Franzoni, John Logan, William Nicholson",
+        "director": "Ridley Scott",
+        "genre": "Action",
+        "year": "2000",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYWQ4YmNjYjEtOWE1Zi00Y2U4LWI4NTAtMTU0MjkxNWQ1ZmJiXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
+      "type": "Movie",
+      "category": "Action",
+      "year": "2000",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYWQ4YmNjYjEtOWE1Zi00Y2U4LWI4NTAtMTU0MjkxNWQ1ZmJiXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 2
+    },
+    {
+      "id": "5ef82ddd-2195-4b03-9793-9b2c9657fbeb",
+      "title": "Cyberpunk: Edgerunners 2",
+      "director": "",
+      "metadata": null,
+      "type": "Movie",
+      "category": "Science Fiction",
+      "year": "2026",
+      "poster": "https://m.media-amazon.com/images/M/MV5BNGNiZjJkZmItYjJhYy00N2M5LTg4ZmYtMzUxZWI0ZTU2MmEzXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+      "collectionIds": [],
+      "notes": "",
+      "priority": 5
+    },
+    {
+      "id": "03c29de1-d1a8-4cda-98fd-a9a5ce62b4e2",
+      "title": "The Wild Robot",
+      "director": "Chris Sanders",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T11:42:26.375Z",
+        "query": {
+          "title": "the wild robot",
+          "type": "Movie",
+          "year": "2024"
+        },
+        "imdbId": "tt29623480",
+        "imdbRating": "8.2",
+        "runtime": "102 min",
+        "plot": "After a shipwreck, an intelligent robot called Roz is stranded on an uninhabited island. To survive the harsh environment, Roz bonds with the island's animals and cares for an orphaned baby goose.",
+        "actors": "Lupita Nyong'o, Pedro Pascal, Kit Connor",
+        "writer": "Chris Sanders, Peter Brown",
+        "director": "Chris Sanders",
+        "genre": "Animation",
+        "year": "2024",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZWNiZjVlZTUtNGUwYi00MjJmLTg2MDctNWEzYTJiMzY1ODc4XkEyXkFqcGc@._V1_SX300.jpg"
+      },
+      "type": "Movie",
+      "category": "Animation",
       "year": "2024",
       "poster": "https://image.tmdb.org/t/p/original/9w0Vh9eizfBXrcomiaFWTIPdboo.jpg",
+      "collectionIds": [],
       "notes": "",
       "priority": 1
     },
     {
       "id": "fceceace-daaf-4b19-933f-174abe4784c0",
       "title": "Boyhood",
+      "director": "Richard Linklater",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T11:40:21.452Z",
+        "query": {
+          "title": "boyhood",
+          "type": "Movie",
+          "year": "2014"
+        },
+        "imdbId": "tt1065073",
+        "imdbRating": "7.9",
+        "runtime": "165 min",
+        "plot": "The life of Mason, from early childhood to his arrival at college.",
+        "actors": "Ellar Coltrane, Patricia Arquette, Ethan Hawke",
+        "writer": "Richard Linklater",
+        "director": "Richard Linklater",
+        "genre": "Drama",
+        "year": "2014",
+        "poster": "https://m.media-amazon.com/images/M/MV5BMTYzNDc2MDc0N15BMl5BanBnXkFtZTgwOTcwMDQ5MTE@._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Drama",
       "year": "2014",
-      "poster": "https://m.media-amazon.com/images/M/MV5BMTYzNDc2MDc0N15BMl5BanBnXkFtZTgwOTcwMDQ5MTE@._V1_.jpg",
+      "poster": "https://m.media-amazon.com/images/M/MV5BMTYzNDc2MDc0N15BMl5BanBnXkFtZTgwOTcwMDQ5MTE@._V1_SX300.jpg",
       "collectionIds": [],
       "notes": "",
       "priority": 4
@@ -384,6 +2601,8 @@
     {
       "id": "6bd0eff2-986e-4307-bbdb-97f2414e7808",
       "title": "Reservoir Dogs",
+      "director": "",
+      "metadata": null,
       "type": "Movie",
       "category": "Thriller",
       "year": "1992",
@@ -395,19 +2614,59 @@
     {
       "id": "c4eea965-018f-481f-b9af-0d9b6c79cf63",
       "title": "Serendipity",
+      "director": "Peter Chelsom",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T11:40:45.385Z",
+        "query": {
+          "title": "serendipity",
+          "type": "Movie",
+          "year": "2001"
+        },
+        "imdbId": "tt0240890",
+        "imdbRating": "6.8",
+        "runtime": "90 min",
+        "plot": "A couple search for each other years after the night they first met, fell in love, and separated, convinced that one day they'd end up together.",
+        "actors": "John Cusack, Kate Beckinsale, Jeremy Piven",
+        "writer": "Marc Klein",
+        "director": "Peter Chelsom",
+        "genre": "Comedy",
+        "year": "2001",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYTQzMjE3YTAtYzc2MC00OTk4LTg0NTYtYzg3YzQ2ZTM3ODY1XkEyXkFqcGc@._V1_QL75_UX380_CR0,1,380,562_.jpg"
+      },
       "type": "Movie",
-      "category": "Romance",
+      "category": "Comedy",
       "year": "2001",
-      "poster": "https://m.media-amazon.com/images/M/MV5BYTM0MzRlYjItZjg0Ni00NTI5LThiOTktOGRjOGMxMjQ5MTg4XkEyXkFqcGc@._V1_.jpg",
+      "poster": "https://m.media-amazon.com/images/M/MV5BYTQzMjE3YTAtYzc2MC00OTk4LTg0NTYtYzg3YzQ2ZTM3ODY1XkEyXkFqcGc@._V1_QL75_UX380_CR0,1,380,562_.jpg",
       "collectionIds": [],
       "notes": "",
-      "priority": 2
+      "priority": 3
     },
     {
       "id": "7c2f9d5f-b965-47a1-b84d-3f2645c05bf0",
       "title": "Parasite",
+      "director": "Bong Joon Ho",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T11:41:57.312Z",
+        "query": {
+          "title": "parasite",
+          "type": "Movie",
+          "year": "2019"
+        },
+        "imdbId": "tt6751668",
+        "imdbRating": "8.5",
+        "runtime": "132 min",
+        "plot": "Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan.",
+        "actors": "Song Kang-ho, Lee Sun-kyun, Cho Yeo-jeong",
+        "writer": "Bong Joon Ho, Han Jin-won",
+        "director": "Bong Joon Ho",
+        "genre": "Drama",
+        "year": "2019",
+        "poster": "https://m.media-amazon.com/images/M/MV5BYjk1Y2U4MjQtY2ZiNS00OWQyLWI3MmYtZWUwNmRjYWRiNWNhXkEyXkFqcGc@._V1_SX300.jpg"
+      },
       "type": "Movie",
-      "category": "Thriller",
+      "category": "Drama",
       "year": "2019",
       "poster": "https://image.tmdb.org/t/p/original/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
       "collectionIds": [],
@@ -417,6 +2676,26 @@
     {
       "id": "94ed46cf-65e0-40ab-86ab-b9a4df24936f",
       "title": "Memento",
+      "director": "Christopher Nolan",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T14:09:31.560Z",
+        "query": {
+          "title": "memento",
+          "type": "Movie",
+          "year": "2000"
+        },
+        "imdbId": "tt24735934",
+        "imdbRating": "",
+        "runtime": "",
+        "plot": "",
+        "actors": "",
+        "writer": "",
+        "director": "",
+        "genre": "",
+        "year": "2000",
+        "poster": "https://m.media-amazon.com/images/M/MV5BZmJlNzYxMmMtMzQ2YS00NTM5LWJjMjYtMzRmY2NhNDZkMjE1XkEyXkFqcGdeQXVyNjc5Mjg4Nzc@._V1_SX300.jpg"
+      },
       "type": "Movie",
       "category": "Crime",
       "year": "2000",
@@ -427,9 +2706,29 @@
     },
     {
       "id": "d2fd99e2-28f3-4836-81de-e2239748344c",
-      "title": "Project Hailmary",
+      "title": "Project Hail Mary",
+      "director": "Phil Lord, Christopher Miller",
+      "metadata": {
+        "source": "OMDb",
+        "fetchedAt": "2026-09-26T14:08:24.878Z",
+        "query": {
+          "title": "project hail mary",
+          "type": "Movie",
+          "year": "2026"
+        },
+        "imdbId": "tt12042730",
+        "imdbRating": "8.2",
+        "runtime": "156 min",
+        "plot": "A science teacher wakes up alone on a spaceship. As his memory returns, he uncovers a mission to stop a mysterious substance killing Earth's sun, and realizes that an unexpected friendship may be the key.",
+        "actors": "Ryan Gosling, Sandra Hüller, James Ortiz",
+        "writer": "Drew Goddard, Andy Weir",
+        "director": "Phil Lord, Christopher Miller",
+        "genre": "Adventure",
+        "year": "2026",
+        "poster": "https://m.media-amazon.com/images/M/MV5BNTkwNzJiYTctNzI3NC00NjE1LTlhYjktY2Q5MTdmMWFmNzcxXkEyXkFqcGc@._V1_QL75_UX380_CR0,0,380,562_.jpg"
+      },
       "type": "Movie",
-      "category": "Science Fiction",
+      "category": "Adventure",
       "year": "2026",
       "poster": "https://image.tmdb.org/t/p/w500/yihdXomYb5kTeSivtFndMy5iDmf.jpg",
       "collectionIds": [],
@@ -442,9 +2741,36 @@
       "id": "f64f5d16-9900-4586-9567-deeb18092d56",
       "name": "Favorites",
       "entryIds": [
-        "93689b7d-5cc4-4951-9c08-a397006c5825",
-        "bb73c247-aa79-4805-91fb-3af27f131a99"
+        "220a443d-1c31-408b-b12f-cb20c635258f",
+        "3c85b8a3-cfbd-4e27-96b9-69f76ebdbe7c",
+        "f750563b-51a0-47f6-9cf9-fb2c224e624a",
+        "cb6cc7e3-acc5-4e82-9a09-8c736a7bfdd7",
+        "bb73c247-aa79-4805-91fb-3af27f131a99",
+        "bac1888f-2840-42f3-b021-2e01949eba4a",
+        "f47a3fb3-8d10-431f-b257-11b70b6eb3be",
+        "7b72ab14-8e35-43af-9063-00c02f04f3f9",
+        "cb6e4979-ba62-4eb7-b0fe-36491fcc8689"
       ]
+    },
+    {
+      "id": "4b47c23d-9500-4d3e-a604-4594a53da440",
+      "name": "Together",
+      "entryIds": []
+    },
+    {
+      "id": "9852ffbd-5e00-4ff0-93df-7f46652bb990",
+      "name": "School",
+      "entryIds": []
+    },
+    {
+      "id": "dde838b3-283c-4d71-ae1e-d32230392b56",
+      "name": "Hello",
+      "entryIds": []
+    },
+    {
+      "id": "c182d00b-476e-41cd-91be-1a963e354625",
+      "name": "test",
+      "entryIds": []
     }
   ]
 }

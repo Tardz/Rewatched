@@ -866,5 +866,31 @@ resetBannerTimer();
 
 syncRotationControls();
 syncAppearanceControls();
-initializeFileStorage().finally(render);
+
+/** Seeds a new web visitor's browser library without replacing saved or linked data. */
+async function loadFirstVisitDemo() {
+  if (window.rewatchedStorage || !['http:', 'https:'].includes(location.protocol)) return;
+  const hasLibrary = () => [STORAGE_KEY, WATCHLIST_KEY, COLLECTIONS_KEY, STORAGE_FILE_NAME_KEY]
+    .some((key) => localStorage.getItem(key) !== null);
+  if (hasLibrary() || storageFileHandle || useElectronStorage) return;
+
+  try {
+    const response = await fetch('assets/demo_vault.json');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const demo = readBackup(await response.json());
+    // A visitor may import or create a library while the demo is downloading.
+    if (hasLibrary() || storageFileHandle || useElectronStorage) return;
+    entries = demo.entries;
+    watchlist = demo.watchlist;
+    customCollections = demo.collections;
+    save();
+  } catch (error) {
+    console.warn('Could not load the first-visit demo library.', error);
+  }
+}
+
+initializeFileStorage()
+  .then(loadFirstVisitDemo)
+  .catch((error) => console.warn('Could not initialize file storage.', error))
+  .finally(render);
 /** App entry point: wires UI events, navigation, settings, keyboard shortcuts, and startup behavior. */
