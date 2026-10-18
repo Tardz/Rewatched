@@ -16,7 +16,6 @@ let useElectronStorage = false;
 let browserFileImportedThisSession = false;
 let browserFileNoticeDismissed = false;
 let loadStatusTimer = null;
-let legacyFileStatusTimer = null;
 let storageFileName = localStorage.getItem(STORAGE_FILE_NAME_KEY) || 'Browser Vault';
 let currentStorageSaveState = 'saved';
 window.__rewatchedDirty = false;
@@ -243,7 +242,11 @@ function updateStorageIndicator() {
     : storageFileName === 'Browser Vault' ? 'Browser' : storageFileName;
   if (nameTarget) nameTarget.textContent = activeStorageName.replace(/\.[^.]+$/, '');
   const summarySource = document.querySelector('.backup-summary-source');
-  if (summarySource) summarySource.textContent = activeStorageName.replace(/\.json$/i, '');
+  const summarySourceName = summarySource?.querySelector('.backup-summary-source-name');
+  if (summarySource) {
+    summarySource.dataset.storageSource = activeStorageName === 'Browser' ? 'browser' : 'file';
+    if (summarySourceName) summarySourceName.textContent = activeStorageName;
+  }
   const navStorageName = $('#nav-save-text');
   if (navStorageName) {
     navStorageName.textContent = activeStorageName.replace(/\.json$/i, '');
@@ -269,6 +272,10 @@ function updateStorageIndicator() {
       : state === 'error' ? 'Could not save storage changes'
         : state === 'pending' ? 'Storage changes are not saved yet' : 'Storage is up to date';
     navSaveIcon?.setAttribute('data-storage-state', state);
+    navSaveIcon?.setAttribute(
+      'data-storage-source',
+      isBrowserStorage && !browserFileImportedThisSession ? 'browser' : 'file',
+    );
     navSaveIcon?.setAttribute('title', stateLabel);
     navSaveButton?.setAttribute('aria-label', `${activeStorageName}. ${stateLabel}. Open storage settings`);
     navSaveButton?.setAttribute('title', `${activeStorageName} — ${stateLabel}`);
@@ -289,18 +296,19 @@ function setStorageFileName(name) {
   updateBrowserFileNotice();
 }
 
-/** Reserves the right-hand panel only when this browser has a file it cannot reopen. */
+/** Shows an important-info trigger when this browser cannot reopen its selected file. */
 function updateBrowserFileNotice() {
-  const notice = document.querySelector('#file-storage-status');
-  const wrapper = notice?.closest('.settings-file-notice');
-  const row = wrapper?.closest('.settings-storage-row');
-  if (!row || !document.querySelector('#load-status')) return;
+  const button = document.querySelector('#storage-notice-info-button');
+  const popup = document.querySelector('#storage-notice-info-help');
+  if (!button || !popup || !document.querySelector('#load-status')) return;
   const show = useBasicFilePicker && storageFileName !== 'Browser Vault' && !browserFileNoticeDismissed;
-  row.classList.toggle('has-browser-notice', show);
-  wrapper.hidden = !show;
-  notice.textContent = show
-    ? `This browser cannot automatically reopen or save to ${storageFileName}.\n\nYour current library is saved in this browser.\n\nUse Import file to load that file again.`
-    : '';
+  button.hidden = !show;
+  if (show) {
+    popup.textContent = `This browser cannot automatically reopen or save to ${storageFileName}. Your current library is saved in the browser storage. Import the previous file to connect it again or export the current browser storage to save it.`;
+  } else {
+    popup.hidden = true;
+    button.setAttribute('aria-expanded', 'false');
+  }
 }
 
 /** Hides the browser limitation notice after a file is successfully loaded. */
@@ -362,16 +370,8 @@ function fileStatus(message, requestedType = '') {
     : /^This browser cannot automatically reopen/.test(message) ? 'Browser copy loaded'
     : /^No file selected/.test(message) ? 'No file selected'
     : message;
-  const type = requestedType || (error ? 'error' : reconnect || /^This browser cannot link|^No file selected|^File downloaded/.test(message) ? 'warning' : 'success');
-  if (!showLoadStatus(shortMessage, type, message)) {
-    const status = $('#file-storage-status');
-    clearTimeout(legacyFileStatusTimer);
-    status.textContent = message;
-    status.hidden = false;
-    legacyFileStatusTimer = setTimeout(() => {
-      if (status.textContent === message) status.hidden = true;
-    }, 4000);
-  }
+  const type = requestedType || (error ? 'error' : reconnect || /^This browser cannot link|^No file selected|^File downloaded|^This browser cannot automatically reopen/.test(message) ? 'warning' : 'success');
+  if (!showLoadStatus(shortMessage, type, message)) console.warn('Could not display the file status because the Load message element is missing.', message);
 }
 
 /** Opens the browser database used to persist file access handles. */

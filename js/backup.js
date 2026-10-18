@@ -2,6 +2,7 @@
 // Portable JSON backups for entries and the watchlist.
 
 let selectedBackup = null;
+let selectedBackupFileName = '';
 let backupStatusTimer = null;
 let backupSummarySourceObserver = null;
 
@@ -37,33 +38,150 @@ function updateBackupSummary() {
   const watches = entries.reduce((count, entry) => count + entry.watches.length, 0);
   const summary = $('#backup-summary');
   if (!summary) return;
+  const actions = summary.querySelector('.backup-actions') || summary.parentElement?.querySelector(':scope > .backup-actions');
   if (document.documentElement.dataset.cssReworkPreview !== 'true') {
+    if (actions && summary.contains(actions)) summary.after(actions);
     summary.textContent = `${entries.length} logged titles · ${watches} watches · ${watchlist.length} watchlist items · ${customCollections.length} folders`;
     return;
   }
-  summary.classList.add('level-4-styling');
-  const source = document.createElement('span');
-  source.className = 'backup-summary-source level-5-styling';
-  source.textContent = $('#nav-save-text')?.textContent || 'Browser';
+  const sourceName = document.createElement('span');
+  sourceName.className = 'backup-summary-source-name';
+  sourceName.textContent = $('#nav-save-text')?.textContent || 'Browser';
+  const sourceComparison = document.createElement('span');
+  sourceComparison.className = 'backup-summary-source backup-summary-source-comparison level-5-styling';
+  sourceComparison.append(sourceName);
+  if (selectedBackup && selectedBackupFileName) {
+    const combineBox = document.createElement('span');
+    combineBox.className = 'backup-summary-combine-box';
+    const combineIcon = document.createElement('span');
+    combineIcon.className = 'masked-icon backup-summary-combine-icon';
+    combineIcon.setAttribute('aria-hidden', 'true');
+    combineBox.append(combineIcon);
+    const incomingFile = document.createElement('span');
+    incomingFile.className = 'backup-summary-incoming-file';
+    incomingFile.textContent = selectedBackupFileName;
+    sourceComparison.append(combineBox, incomingFile);
+  }
+  const sourceRow = document.createElement('div');
+  sourceRow.className = 'backup-summary-source-row';
+  sourceRow.append(sourceComparison);
+  if (actions) sourceRow.append(actions);
   const stats = document.createElement('span');
   stats.className = 'backup-summary-stats';
-  for (const label of [
-    `${entries.length} Logged items`,
-    `${watchlist.length} Backlogged items`,
-    `${watches} Watches`,
-    `${customCollections.length} Folders`,
-  ]) {
+  const countNotes = (loggedItems, backloggedItems = []) =>
+    loggedItems.reduce((count, entry) => count + Number(Boolean(entry.notes?.trim())) +
+      (entry.watches || []).reduce((watchCount, watch) => watchCount + Number(Boolean(watch.notes?.trim())), 0), 0) +
+    backloggedItems.reduce((count, item) => count + Number(Boolean(item.notes?.trim())), 0);
+  const currentCounts = {
+    logged: entries.length,
+    backlogged: watchlist.length,
+    watches,
+    folders: customCollections.length,
+    notes: countNotes(entries, watchlist),
+  };
+  const selectedMode = document.querySelector('input[name="import-mode"]:checked')?.value || 'merge';
+  const currentEntryIds = new Set(entries.map((entry) => entry.id));
+  const currentWatchlistIds = new Set(watchlist.map((item) => item.id));
+  const currentCollectionIds = new Set(customCollections.map((item) => item.id));
+  const addedEntries = selectedBackup
+    ? selectedBackup.entries.filter((entry) => !currentEntryIds.has(entry.id))
+    : [];
+  const addedWatchlist = selectedBackup
+    ? selectedBackup.watchlist.filter((item) => !currentWatchlistIds.has(item.id))
+    : [];
+  const additions = selectedBackup ? {
+    logged: addedEntries.length,
+    backlogged: addedWatchlist.length,
+    watches: addedEntries.reduce((count, entry) => count + entry.watches.length, 0),
+    folders: selectedBackup.collections.filter((item) => !currentCollectionIds.has(item.id)).length,
+    notes: countNotes(addedEntries, addedWatchlist),
+  } : null;
+  const replacementCounts = selectedBackup ? {
+    logged: selectedBackup.entries.length,
+    backlogged: selectedBackup.watchlist.length,
+    watches: selectedBackup.entries.reduce((count, entry) => count + entry.watches.length, 0),
+    folders: selectedBackup.collections.length,
+    notes: countNotes(selectedBackup.entries, selectedBackup.watchlist),
+  } : null;
+  const typeCounts = (items) => items.reduce((counts, item) => {
+    const type = item.type || 'Other';
+    counts[type] = (counts[type] || 0) + 1;
+    return counts;
+  }, {});
+  const currentTypeCounts = typeCounts([...entries, ...watchlist]);
+  const addedTypeCounts = typeCounts([...addedEntries, ...addedWatchlist]);
+  const incomingTypeCounts = selectedBackup
+    ? typeCounts([...selectedBackup.entries, ...selectedBackup.watchlist])
+    : {};
+  const typeLabels = (types) => [...types].sort((a, b) => a.localeCompare(b)).map((type) => ({
+    key: `type:${type}`,
+    label: type === 'Movie' ? 'Movies' : type === 'Show' ? 'Shows' : type === 'Other' ? 'Other' : `${type}s`,
+    current: currentTypeCounts[type] || 0,
+    added: addedTypeCounts[type] || 0,
+    incoming: incomingTypeCounts[type] || 0,
+  }));
+  const baseStats = [
+    { key: 'logged', label: 'Logged items' },
+    { key: 'backlogged', label: 'Backlogged items' },
+    { key: 'watches', label: 'Watches' },
+    { key: 'folders', label: 'Folders' },
+    { key: 'notes', label: 'Notes' },
+  ];
+  const mediaItems = [...entries, ...watchlist, ...(selectedBackup?.entries || []), ...(selectedBackup?.watchlist || [])];
+  const mediaTypes = new Set(mediaItems.map((item) => item.type || 'Other'));
+  const mediaStats = typeLabels(mediaTypes).map(({ key, label, current, added, incoming }) => ({
+    key,
+    label,
+    current,
+    added,
+    incoming,
+  }));
+  const summaryStats = [...baseStats, ...mediaStats];
+  for (const { key, label, current: typeCurrent, added: typeAdded, incoming: typeIncoming } of summaryStats) {
+    const currentValue = key.startsWith('type:') ? typeCurrent : currentCounts[key];
+    const addedValue = key.startsWith('type:') ? typeAdded : additions?.[key];
+    const incomingValue = key.startsWith('type:') ? typeIncoming : replacementCounts?.[key];
+    const row = document.createElement('span');
+    row.className = 'backup-summary-stat-row';
     const item = document.createElement('span');
     item.className = 'backup-summary-stat level-5-styling';
-    item.textContent = label;
-    stats.append(item);
+    const current = document.createElement('span');
+    current.className = 'backup-summary-stat-current';
+    current.textContent = `${currentValue} ${label}`;
+    item.append(current);
+    row.append(item);
+    if (selectedBackup && selectedMode === 'replace') {
+      current.classList.add('is-replaced');
+      const result = document.createElement('span');
+      result.className = 'backup-summary-stat backup-summary-stat-result level-5-styling';
+      result.textContent = `${incomingValue} ${label}`;
+      row.append(result);
+    } else if (selectedBackup) {
+      const change = document.createElement('span');
+      change.className = 'backup-summary-stat backup-summary-stat-change level-5-styling';
+      change.textContent = `+${addedValue}`;
+      row.append(change);
+
+      const fileCount = document.createElement('span');
+      fileCount.className = 'backup-summary-stat backup-summary-stat-file level-5-styling';
+      fileCount.textContent = `${incomingValue} ${label}`;
+      row.append(fileCount);
+    }
+    stats.append(row);
   }
-  summary.replaceChildren(source, stats);
+  summary.replaceChildren(sourceRow, stats);
+  // The navbar abbreviates file names; the storage tree shows the full .json name.
+  if (typeof updateStorageIndicator === 'function') updateStorageIndicator();
   backupSummarySourceObserver?.disconnect();
-  backupSummarySourceObserver = new ResizeObserver(() => {
-    summary.style.setProperty('--backup-summary-trunk-offset', `${source.getBoundingClientRect().width / 2}px`);
-  });
-  backupSummarySourceObserver.observe(source);
+  const updateSummarySourceLayout = () => {
+    const summaryRect = summary.getBoundingClientRect();
+    const sourceNameRect = sourceName.getBoundingClientRect();
+    const sourceNameCenter = sourceNameRect.left - summaryRect.left + sourceNameRect.width / 2;
+    summary.style.setProperty('--backup-summary-trunk-offset', `${sourceNameCenter}px`);
+  };
+  updateSummarySourceLayout();
+  backupSummarySourceObserver = new ResizeObserver(updateSummarySourceLayout);
+  backupSummarySourceObserver.observe(sourceName);
 }
 
 /** Validates and normalizes a string field from imported backup data. */
@@ -238,7 +356,9 @@ function makeBackupSnapshot() {
 /** Reads and imports the selected backup file. */
 async function chooseBackup(file) {
   selectedBackup = null;
+  selectedBackupFileName = '';
   $('#import-options').hidden = true;
+  updateBackupSummary();
   setBackupStatus('');
   if (!file) return;
 
@@ -249,10 +369,9 @@ async function chooseBackup(file) {
 
   try {
     selectedBackup = readBackup(JSON.parse(await file.text()));
-    $('#backup-preview').textContent =
-      `${selectedBackup.entries.length} logged titles · ${selectedBackup.watchlist.length} watchlist items`;
+    selectedBackupFileName = file.name;
     $('#import-options').hidden = false;
-    setBackupStatus('Choose how to use this file.', 'warning');
+    updateBackupSummary();
   } catch (error) {
     setBackupStatus('Could not read file', 'error', error.message || 'Could not read this file.');
   }
@@ -307,8 +426,11 @@ function importBackup() {
   queueFileSave();
   bannerIndex = 0;
   render();
+  selectedBackup = null;
+  selectedBackupFileName = '';
+  $('#import-options').hidden = true;
   updateBackupSummary();
-  setBackupStatus(`File applied: ${entries.length} logged titles and ${watchlist.length} watchlist items.`, 'success');
+  setBackupStatus('File applied', 'success');
 }
 
 /** Loads the bundled demo library after confirming replacement of current data. */
@@ -375,12 +497,26 @@ async function loadDemoVault() {
 }
 
 $('#export-backup').addEventListener('click', downloadBackup);
+$('#preview-notification').addEventListener('click', () => {
+  setBackupStatus('File applied', 'success');
+});
 $('#choose-backup').addEventListener('click', () => {
   $('#backup-file').value = '';
   $('#backup-file').click();
 });
 $('#backup-file').addEventListener('change', (event) => {
   chooseBackup(event.target.files[0]);
+});
+$('#cancel-import').addEventListener('click', () => {
+  selectedBackup = null;
+  selectedBackupFileName = '';
+  $('#backup-file').value = '';
+  $('#import-options').hidden = true;
+  setBackupStatus('');
+  updateBackupSummary();
+});
+document.querySelectorAll('input[name="import-mode"]').forEach((input) => {
+  input.addEventListener('change', updateBackupSummary);
 });
 $('#import-backup').addEventListener('click', importBackup);
 $('#load-demo-vault').addEventListener('click', loadDemoVault);

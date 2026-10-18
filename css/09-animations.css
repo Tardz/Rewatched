@@ -42,22 +42,9 @@
 @keyframes workspace-entry-open { to { transform: translateY(-6px) scale(1.012); } }
 /* !SECTION */
 
-/* SECTION Navbar storage-label reveal */
-/* Expand the storage control and fade its label in on hover or keyboard focus. */
-.nav-save-button {
-  transition: max-width 180ms ease, gap 180ms ease;
-}
-
-.nav-save-text {
-  transition: max-width 180ms ease, opacity 140ms ease;
-}
-/* !SECTION */
-
 /* SECTION Reduced motion */
 /* Preserve the existing no-animation behavior for workspace-container navigation. */
 @media (prefers-reduced-motion: reduce) {
   .workspace-banner-container.is-opening { animation: none; }
-  .nav-save-button,
-  .nav-save-text { transition: none; }
 }
 /* !SECTION */

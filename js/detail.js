@@ -332,6 +332,7 @@ function selectTimelineWatch(entry, index) {
 
 /** Closes the entry detail view and returns to the collection. */
 function hideDetail() {
+  setNavbarPageContextOverride('');
   const detail = $('#detail');
   document.body.classList.remove('is-detail-view');
   document.querySelector('.default-layout, .dashboard-layout').classList.remove('is-details-page');
@@ -385,6 +386,7 @@ function renderDetail() {
     location.hash = '#library';
     return;
   }
+  setNavbarPageContextOverride(fullscreen ? entry.title : '');
 
   const detail = $('#detail');
   const sameEntryAlreadyOpen = detail.dataset.entryId === id;

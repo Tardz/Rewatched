@@ -33,6 +33,10 @@
 /* Keep the app shell square while its level-one class supplies the surface. */
 .app-container.level-1-styling {
   border-radius: 0;
+  border-top-color: transparent;
+  box-shadow:
+    0 12px 28px var(--shadow-color-black-31),
+    0 3px 8px var(--shadow-color-black-medium);
 }
 
 /* Place the rounded app-content frame below the toolbar and beside the sidebar. */

@@ -17,6 +17,15 @@
   box-shadow: var(--shadow-glass-level-1);
 }
 
+/* Remove the app shell's top rim while retaining its glass depth and other edges. */
+:root[data-theme-glass="on"] .app-container.level-1-styling {
+  border-top-color: transparent;
+  box-shadow:
+    inset 0 -1px 0 var(--shadow-color-glass-edge),
+    0 16px 36px var(--shadow-color-glass),
+    0 4px 12px var(--shadow-color-glass-edge);
+}
+
 :root[data-theme-glass="on"] .level-2-styling {
   border-color: var(--color-border-glass-level-2);
   background: color-mix(in srgb, var(--color-surface-level-2) var(--opacity-glass-level-2), transparent);

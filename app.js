@@ -76,16 +76,18 @@ $('.stats-page-button, .section-statistics').addEventListener('click', () => {
 });
 
 let navbarPageBeforeSettings = null;
+let navbarPageContextBeforeSettings = '';
+let navbarPageContextOverride = '';
 // Keep the non-modal settings dialog outside the clipped app shell so it can overlay the blur.
 document.body.append($('#settings-dialog'));
 function closeSettingsHeadingHelp() {
-  document.querySelectorAll('#settings-dialog .settings-heading-info[aria-controls]').forEach((button) => {
+  document.querySelectorAll('#settings-dialog .settings-heading-info[aria-controls], #settings-dialog .settings-heading-important[aria-controls]').forEach((button) => {
     document.getElementById(button.getAttribute('aria-controls')).hidden = true;
     button.setAttribute('aria-expanded', 'false');
   });
 }
 $('#settings-dialog')?.addEventListener('click', (event) => {
-  const button = event.target.closest('.settings-heading-info[aria-controls]');
+  const button = event.target.closest('.settings-heading-info[aria-controls], .settings-heading-important[aria-controls]');
   if (button) {
     const help = document.getElementById(button.getAttribute('aria-controls'));
     const shouldOpen = help.hidden;
@@ -101,17 +103,43 @@ document.querySelectorAll('#settings-dialog .settings-option').forEach((option) 
   option.addEventListener('pointerdown', () => option.classList.add('tooltip-dismissed'));
   option.addEventListener('pointerleave', () => option.classList.remove('tooltip-dismissed'));
 });
+
+const omdbKeyInput = $('#omdb-api-key');
+const omdbKeyVisibilityButton = $('#omdb-key-visibility');
+const omdbKeyVisibilityIcon = omdbKeyVisibilityButton?.querySelector('img');
+function setOmdbKeyVisible(visible) {
+  if (!omdbKeyInput || !omdbKeyVisibilityButton || !omdbKeyVisibilityIcon) return;
+  omdbKeyInput.type = visible ? 'text' : 'password';
+  omdbKeyVisibilityIcon.src = visible
+    ? 'assets/icons/filled/hide-text.png'
+    : 'assets/icons/filled/show-text.png';
+  omdbKeyVisibilityButton.setAttribute('aria-pressed', String(visible));
+  omdbKeyVisibilityButton.setAttribute('aria-label', visible ? 'Release to hide API key' : 'Hold to show API key');
+}
+omdbKeyVisibilityButton?.addEventListener('pointerdown', (event) => {
+  event.preventDefault();
+  setOmdbKeyVisible(true);
+});
+['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach((eventName) => {
+  omdbKeyVisibilityButton?.addEventListener(eventName, () => setOmdbKeyVisible(false));
+});
+omdbKeyVisibilityButton?.addEventListener('keydown', (event) => {
+  if (event.key === ' ' || event.key === 'Enter') {
+    event.preventDefault();
+    setOmdbKeyVisible(true);
+  }
+});
+omdbKeyVisibilityButton?.addEventListener('keyup', (event) => {
+  if (event.key === ' ' || event.key === 'Enter') setOmdbKeyVisible(false);
+});
 const navbarUrlHistory = [location.hash];
 let navbarUrlHistoryIndex = 0;
 let navbarHistoryTraversalDirection = 0;
 
-/** Show Back and Forward only when a URL/hash page exists in that direction. */
-function updateNavbarHistoryControls() {
-  const backButton = $('.nav-prev-button');
-  const forwardButton = $('.nav-next-button');
-  backButton.hidden = navbarUrlHistoryIndex <= 0;
-  forwardButton.hidden = navbarUrlHistoryIndex >= navbarUrlHistory.length - 1;
-  $('.nav-pagination-container').classList.toggle('is-history-empty', backButton.hidden && forwardButton.hidden);
+/** Enable the page-name back button only when app URL history is available. */
+function updateNavbarBackButton() {
+  const backButton = $('#nav-page-name-container');
+  backButton.disabled = navbarUrlHistoryIndex <= 0;
 }
 
 /** Track actual URL/hash navigation, not navbar tab selection, for arrow history. */
@@ -135,11 +163,11 @@ function recordNavbarUrlHistory(event) {
     navbarUrlHistoryIndex = navbarUrlHistory.length - 1;
   }
 
-  updateNavbarHistoryControls();
+  updateNavbarBackButton();
 }
 
 window.addEventListener('hashchange', recordNavbarUrlHistory);
-updateNavbarHistoryControls();
+updateNavbarBackButton();
 
 /** Keeps the top-level navbar selection in sync with the current page. */
 function setNavbarPage(activeButton) {
@@ -155,20 +183,29 @@ function setNavbarPage(activeButton) {
   const activeLabel = activeButton.querySelector('.nav-button-text');
   if (pageName && activeLabel) {
     pageName.textContent = activeLabel.textContent.trim();
-    pageName.style.setProperty('--nav-page-name-color', getComputedStyle(activeButton).getPropertyValue('--nav-item-color').trim());
+    const colorTokens = {
+      'nav-home-button': '--color-icon-home',
+      'nav-library-button': '--color-icon-library',
+      'nav-folders-button': '--color-icon-folder',
+      'nav-stats-button': '--color-icon-stats',
+      'nav-timeline-button': '--color-icon-timeline',
+      'nav-storage-button': '--color-icon-storage',
+      'nav-activity-button': '--color-icon-activity',
+      'nav-settings-button': '--color-icon-settings',
+      'nav-login-button': '--palette-white',
+      'nav-about-button': '--palette-white',
+    };
+    const colorToken = colorTokens[activeButton.id];
+    if (colorToken) pageName.style.setProperty('--nav-page-name-color', `var(${colorToken})`);
   }
+  updateNavbarPageContext();
 }
 
 setNavbarPage($('#nav-home-button'));
-$('.nav-prev-button')?.addEventListener('click', () => {
+$('#nav-page-name-container')?.addEventListener('click', () => {
   if (navbarUrlHistoryIndex <= 0) return;
   navbarHistoryTraversalDirection = -1;
   window.history.back();
-});
-$('.nav-next-button')?.addEventListener('click', () => {
-  if (navbarUrlHistoryIndex >= navbarUrlHistory.length - 1) return;
-  navbarHistoryTraversalDirection = 1;
-  window.history.forward();
 });
 
 $('#nav-settings-button')?.addEventListener('click', () => {
@@ -177,17 +214,10 @@ $('#nav-settings-button')?.addEventListener('click', () => {
     dialog.close();
     return;
   }
-  navbarPageBeforeSettings = $('.navbar-vertical-layout .nav-button.is-active') || $('#nav-home-button');
-  setNavbarPage($('#nav-settings-button'));
   openSettings();
 });
 
 function openStorageSettingsFromNavigation() {
-  const dialog = $('#settings-dialog');
-  if (!dialog.open) {
-    navbarPageBeforeSettings = $('.navbar-vertical-layout .nav-button.is-active') || $('#nav-home-button');
-    setNavbarPage($('#nav-settings-button'));
-  }
   setSettingsCategory('storage');
   openSettings();
 }
@@ -200,6 +230,9 @@ $('#settings-dialog').addEventListener('close', () => {
   pauseLoadStatusTimer();
   if (navbarPageBeforeSettings) setNavbarPage(navbarPageBeforeSettings);
   navbarPageBeforeSettings = null;
+  navbarPageContextOverride = navbarPageContextBeforeSettings;
+  navbarPageContextBeforeSettings = '';
+  updateNavbarPageContext();
 });
 
 $('.app-content-frame')?.addEventListener('click', () => {
@@ -212,14 +245,63 @@ function setSettingsCategory(category) {
   document.querySelectorAll('.settings-category-button').forEach((button) => {
     const active = button.dataset.settingsCategory === category;
     button.classList.toggle('active', active);
-    button.setAttribute('aria-selected', String(active));
+    button.setAttribute('aria-pressed', String(active));
     button.tabIndex = active ? 0 : -1;
+  });
+  document.querySelectorAll('.settings-subcategory-list').forEach((list) => {
+    list.hidden = list.dataset.settingsSubcategories !== category;
   });
   document.querySelectorAll('[data-settings-panel]').forEach((panel) => {
     panel.hidden = panel.dataset.settingsPanel !== category;
   });
+  updateNavbarPageContext();
   if (category === 'storage') startLoadStatusTimer();
   else pauseLoadStatusTimer();
+  if (document.querySelector(`.settings-subcategory-list[data-settings-subcategories="${category}"]`)) {
+    requestAnimationFrame(updateActiveSettingsSubcategory);
+  }
+}
+
+/** Show the selected settings category beside the navbar page indicator. */
+function updateNavbarPageContext() {
+  const dialog = $('#settings-dialog');
+  const pageLocation = $('.navbar-horizontal-layout > .nav-page-container');
+  const pageNameButton = $('#nav-page-name-container');
+  const pageName = $('.nav-page-name');
+  const context = $('.nav-page-context-container');
+  const contextName = $('.nav-page-context-name');
+  const activeCategory = $('.settings-category-button.active');
+  if (!context || !contextName) return;
+  const setPageContextSurface = (hasContext) => {
+    pageLocation?.classList.toggle('has-page-context', hasContext);
+    pageNameButton?.classList.toggle('level-2-styling', hasContext);
+    pageName?.classList.toggle('level-3-styling', !hasContext);
+  };
+  if (navbarPageContextOverride) {
+    contextName.textContent = navbarPageContextOverride;
+    const pageColor = pageName ? getComputedStyle(pageName).color : 'var(--color-text-secondary)';
+    context.style.setProperty('--nav-page-context-color', pageColor);
+    context.removeAttribute('hidden');
+    setPageContextSurface(true);
+    return;
+  }
+  if (!dialog?.open || !activeCategory) {
+    context?.setAttribute('hidden', '');
+    setPageContextSurface(false);
+    return;
+  }
+
+  contextName.textContent = activeCategory.querySelector('.settings-category-text')?.textContent.trim() || '';
+  const pageColor = pageName ? getComputedStyle(pageName).color : 'var(--color-text-secondary)';
+  context.style.setProperty('--nav-page-context-color', pageColor);
+  context.removeAttribute('hidden');
+  setPageContextSurface(true);
+}
+
+/** Temporarily show a page-specific label in the navbar context slot. */
+function setNavbarPageContextOverride(label = '') {
+  navbarPageContextOverride = label.trim();
+  updateNavbarPageContext();
 }
 
 document.querySelectorAll('.settings-category-button').forEach((button, index, buttons) => {
@@ -235,6 +317,66 @@ document.querySelectorAll('.settings-category-button').forEach((button, index, b
     const nextIndex = (index + direction + buttons.length) % buttons.length;
     buttons[nextIndex].focus();
     setSettingsCategory(buttons[nextIndex].dataset.settingsCategory);
+  });
+});
+
+function setActiveSettingsSubcategory(activeButton) {
+  const list = activeButton.parentElement;
+  list.querySelectorAll('.settings-subcategory-button').forEach((button) => {
+    const active = button === activeButton;
+    button.classList.toggle('active', active);
+    if (active) button.setAttribute('aria-current', 'location');
+    else button.removeAttribute('aria-current');
+  });
+  const branchEnd = activeButton.offsetTop + activeButton.offsetHeight / 2;
+  list.style.setProperty('--settings-active-branch-height', `${branchEnd - 4}px`);
+}
+
+function updateActiveSettingsSubcategory() {
+  const content = $('.settings-content-container');
+  const list = document.querySelector('.settings-subcategory-list:not([hidden])');
+  const buttons = [...(list?.querySelectorAll('.settings-subcategory-button') ?? [])];
+  if (!content || !list || !buttons.length) return;
+
+  const contentTop = content.getBoundingClientRect().top + content.clientTop;
+  const activationLine = contentTop + 48;
+  let activeButton = buttons[0];
+  let nearestDistance = Infinity;
+
+  buttons.forEach((button) => {
+    const target = document.getElementById(button.dataset.settingsTarget);
+    if (!target) return;
+    const distance = Math.abs(target.getBoundingClientRect().top - activationLine);
+    if (distance < nearestDistance) {
+      activeButton = button;
+      nearestDistance = distance;
+    }
+  });
+
+  if (content.scrollTop + content.clientHeight >= content.scrollHeight - 2) {
+    activeButton = buttons[buttons.length - 1];
+  }
+  setActiveSettingsSubcategory(activeButton);
+}
+
+let settingsSubcategoryScrollFrame = 0;
+$('.settings-content-container')?.addEventListener('scroll', () => {
+  if (settingsSubcategoryScrollFrame) return;
+  settingsSubcategoryScrollFrame = requestAnimationFrame(() => {
+    settingsSubcategoryScrollFrame = 0;
+    updateActiveSettingsSubcategory();
+  });
+});
+
+document.querySelectorAll('.settings-subcategory-button').forEach((button) => {
+  button.addEventListener('click', () => {
+    const target = document.getElementById(button.dataset.settingsTarget);
+    const content = $('.settings-content-container');
+    if (!target || !content) return;
+
+    setActiveSettingsSubcategory(button);
+    const top = target.getBoundingClientRect().top - content.getBoundingClientRect().top + content.scrollTop;
+    content.scrollTo({ top: Math.max(0, top - 8), behavior: 'smooth' });
   });
 });
 
@@ -421,8 +563,17 @@ $('#pause').addEventListener('click', () => setRotation(paused));
 function openSettings() {
   const dialog = $('#settings-dialog');
   if (!dialog) return;
+  if (!dialog.open) {
+    navbarPageBeforeSettings = $('.navbar-vertical-layout .nav-button.is-active') || $('#nav-home-button');
+    navbarPageContextBeforeSettings = navbarPageContextOverride;
+    navbarPageContextOverride = '';
+    setNavbarPage($('#nav-settings-button'));
+  }
+  const activeCategory = document.querySelector('.settings-category-button.active')?.dataset.settingsCategory || 'general';
+  setSettingsCategory(activeCategory);
   centerSettingsDialog(dialog);
   if (!dialog.open) dialog.show();
+  updateNavbarPageContext();
   startLoadStatusTimer();
 
   try {

@@ -10,13 +10,13 @@
   grid-template-columns: max-content minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   align-items: stretch;
-  gap: calc(var(--spacing-level-1) + 3px);
-  width: min(680px, calc(100vw - 64px));
+  gap: calc(var(--spacing-level-1) + 4px);
+  width: min(740px, calc(100vw - 64px));
   max-width: calc(100vw - 64px);
   height: min(68dvh, 600px);
   max-height: min(68dvh, 600px);
   margin: 0;
-  padding: calc(var(--spacing-level-1) + 3px);
+  padding: calc(var(--spacing-level-1) + 4px);
   transform: translate(-50%, -50%);
   overflow: hidden;
 }
@@ -60,6 +60,7 @@
 /* SECTION settings-category-container */
 /* Style and vertically arrange category buttons inside the level-two surface. */
 .settings-category-container {
+  --settings-branch-line-color: var(--color-text-secondary);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -76,10 +77,11 @@
 /* Lay out category controls without giving the buttons a surface of their own. */
 .settings-category-button {
   appearance: none;
+  position: relative;
   display: grid;
   grid-template-columns: var(--settings-category-icon-size) minmax(0, 1fr);
   align-items: center;
-  gap: var(--spacing-level-1);
+  gap: 4px;
   min-height: var(--size-dashboard-control);
   padding: 0;
   padding-right: var(--spacing-level-3);
@@ -90,6 +92,109 @@
   --app-icon-state-color: var(--color-text-secondary);
   white-space: nowrap;
   cursor: pointer;
+}
+
+/* Give each category its palette color only during interaction or selection. */
+.settings-category-button[data-settings-category="general"],
+.settings-subcategory-list[data-settings-subcategories="general"] { --settings-category-color: var(--color-settings-general); }
+.settings-category-button[data-settings-category="appearance"],
+.settings-subcategory-list[data-settings-subcategories="appearance"] { --settings-category-color: var(--color-settings-appearance); }
+.settings-category-button[data-settings-category="storage"],
+.settings-subcategory-list[data-settings-subcategories="storage"] { --settings-category-color: var(--color-settings-storage); }
+.settings-category-button[data-settings-category="integrations"],
+.settings-subcategory-list[data-settings-subcategories="integrations"] { --settings-category-color: var(--color-settings-integrations); }
+.settings-category-button[data-settings-category="account"],
+.settings-subcategory-list[data-settings-subcategories="account"] { --settings-category-color: var(--color-settings-account); }
+
+/* Show section shortcuts as child branches beneath the active category. */
+.settings-category-container .settings-subcategory-list {
+  --settings-subcategory-row-height: 24px;
+  --settings-subcategory-indent: 36px;
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: var(--spacing-level-2);
+  min-width: 0;
+  margin-top: -6px;
+  margin-left: calc(var(--settings-category-icon-size) / 2);
+  padding-left: var(--settings-subcategory-indent);
+  padding-right: var(--spacing-level-1);
+}
+
+.settings-category-container .settings-subcategory-list::before {
+  position: absolute;
+  top: -4px;
+  bottom: calc(var(--settings-subcategory-row-height) / 2 + 8px);
+  left: 0;
+  border-left: 2px solid var(--settings-branch-line-color);
+  content: "";
+  filter: var(--settings-branch-line-shadow, drop-shadow(-1px 0 0 rgba(0, 0, 0, 0.4)));
+}
+
+.settings-category-container .settings-subcategory-list::after {
+  position: absolute;
+  z-index: 2;
+  top: -4px;
+  left: 0;
+  height: var(--settings-active-branch-height, 0px);
+  border-left: 2px solid var(--settings-category-color, var(--color-settings-storage));
+  content: "";
+  filter: var(--settings-branch-line-shadow, drop-shadow(-1px 0 0 rgba(0, 0, 0, 0.4)));
+  pointer-events: none;
+}
+
+.settings-category-container .settings-subcategory-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: calc(100% - var(--backup-summary-trunk-offset, 32px));
+  height: var(--settings-subcategory-row-height);
+  min-height: var(--settings-subcategory-row-height);
+  padding: 0;
+  padding-inline: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-secondary);
+  font: 550 14px var(--font-family-app);
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.settings-category-container .settings-subcategory-button::before {
+  position: absolute;
+  top: calc(50% - 14px);
+  left: calc(-1 * var(--settings-subcategory-indent));
+  width: 28px;
+  height: 16px;
+  border-bottom: 2px solid var(--settings-branch-line-color);
+  border-left: 2px solid var(--settings-branch-line-color);
+  border-bottom-left-radius: 8px;
+  content: "";
+  filter: var(--settings-branch-line-shadow, drop-shadow(-1px 0 0 rgba(0, 0, 0, 0.4)));
+}
+
+.settings-category-container .settings-subcategory-button:hover,
+.settings-category-container .settings-subcategory-button:focus-visible,
+.settings-category-container .settings-subcategory-button.active {
+  color: var(--settings-category-color, var(--color-text-primary));
+}
+
+/* Raise the active subsection above the shared trunk and highlight its branch green. */
+.settings-category-container .settings-subcategory-button.active {
+  z-index: 1;
+}
+
+.settings-category-container .settings-subcategory-button.active::before {
+  z-index: 1;
+  border-color: var(--settings-category-color, var(--color-settings-storage));
+}
+
+:root[data-theme="light"] .settings-category-container {
+  --settings-branch-line-color: var(--color-text-secondary);
+  --settings-branch-line-shadow: none;
 }
 
 /* Match each category icon to the UML's nested level-four icon box. */
@@ -120,13 +225,13 @@
 
 .settings-category-button:hover,
 .settings-category-button:focus-visible {
-  color: var(--color-text-secondary);
-  --app-icon-state-color: var(--color-text-primary);
+  color: var(--settings-category-color, var(--color-text-primary));
+  --app-icon-state-color: var(--settings-category-color, var(--color-text-primary));
 }
 
 .settings-category-button.active {
-  color: var(--color-text-primary);
-  --app-icon-state-color: var(--color-text-primary);
+  color: var(--settings-category-color, var(--color-text-primary));
+  --app-icon-state-color: var(--settings-category-color, var(--color-text-primary));
 }
 
 /* Anchor About at the bottom of the vertical category navigation. */
@@ -140,7 +245,8 @@
 .settings-content-container {
   --settings-thumb-size: 16px;
   --settings-thumb-radius: var(--radius-chip);
-  --settings-thumb-color: #fff;
+  --settings-thumb-color: var(--palette-white);
+  --settings-thumb-border: 1px solid transparent;
   container: settings-content / inline-size;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -156,8 +262,15 @@
 .settings-content-container > [data-settings-panel] {
   display: grid;
   align-content: start;
-  gap: var(--spacing-level-1);
+  gap: 4px;
   min-width: 0;
+}
+
+/* Keep the storage tree and its branches from creating horizontal page scroll. */
+#settings-panel-storage {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 /* Keep a larger break where a settings group begins or ends. */
@@ -187,47 +300,41 @@
   min-width: 0;
 }
 
-.settings-content-container .settings-storage-row {
-  align-items: start;
+.settings-content-container .settings-toggle-row {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-level-1);
+  width: 100%;
 }
 
-.settings-content-container .settings-storage-row.has-browser-notice {
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-}
-
-.settings-content-container .settings-file-notice {
-  grid-column: 2;
-  display: grid;
-  align-self: stretch;
-  min-width: 0;
-}
-
-.settings-content-container .settings-storage-row:not(.has-browser-notice) .settings-load-layout {
-  grid-column: 1 / -1;
+.settings-content-container .settings-toggle-row > .settings-option {
+  flex: 0 1 auto;
+  max-width: calc((100% - var(--spacing-level-1)) / 2);
 }
 
 .settings-content-container .settings-save-group {
   grid-column: 1 / -1;
-  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
 }
 
-/* Keep the Save heading above the storage tree and its actions. */
+/* Keep the Save heading and import controls on their own rows. */
 .settings-content-container .settings-save-group > .settings-heading-layout,
 .settings-content-container .settings-save-group > .import-options {
   grid-column: 1 / -1;
 }
 
-/* Put export and merge beside the storage summary instead of below it. */
-.settings-content-container .settings-save-group > .backup-actions {
-  grid-column: 2;
-  align-self: end;
-  justify-self: start;
-  flex-direction: column;
-  align-items: stretch;
+/* Keep the storage summary as one content-sized item in the Save section. */
+.settings-content-container .backup-summary-actions-layout {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-level-2);
+  min-width: 0;
 }
 
 .settings-content-container .settings-load-layout {
+  grid-column: 1 / -1;
   display: grid;
   align-content: start;
   gap: var(--spacing-level-2);
@@ -239,23 +346,21 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .settings-content-container .settings-save-group {
-    grid-template-columns: minmax(0, 1fr);
+  .settings-content-container .settings-toggle-row {
+    display: flex;
   }
 
-  .settings-content-container .settings-save-group > .backup-actions {
-    grid-column: 1;
-    flex-direction: row;
-  }
 }
 
 /* Give each group title a compact level-four surface aligned with its rows. */
 .settings-content-container .settings-option-group > h3,
 .settings-content-container .settings-option-group > .settings-heading-layout > h3 {
+  box-sizing: border-box;
   width: max-content;
   max-width: 100%;
-  margin: 0;
-  padding-block: var(--spacing-level-2);
+  margin: 0 0 6px;
+  min-height: 36px;
+  padding-block: calc(var(--spacing-level-2) + 4px);
   padding-inline: var(--spacing-level-1);
   border-radius: var(--radius-control-small);
   color: var(--color-text-primary);
@@ -272,22 +377,55 @@
   max-width: 100%;
 }
 
-.settings-content-container .settings-heading-info {
+.settings-content-container .settings-heading-info,
+.settings-content-container .settings-heading-important {
   display: grid;
   place-items: center;
-  width: 30px;
-  min-height: 30px;
+  align-self: center;
+  width: 38px;
+  height: 36px;
+  min-height: 36px;
+}
+
+.settings-content-container .settings-heading-info {
   margin-left: auto;
   color: var(--color-text-secondary);
 }
 
-.settings-content-container .settings-heading-info::before {
+.settings-content-container .settings-heading-important {
+  order: 0;
+  margin-left: auto;
+  border-color: var(--color-button-primary);
+  background: var(--color-button-primary);
+  color: #000;
+}
+
+.settings-content-container .settings-heading-important:not([hidden]) + .settings-heading-info {
+  margin-left: 0;
+}
+
+:root[data-theme-glass="on"] .settings-content-container .settings-heading-important.level-4-styling {
+  border-color: var(--color-button-primary);
+  background: var(--color-button-primary);
+  box-shadow: var(--shadow-glass-level-3);
+}
+
+.settings-content-container .settings-heading-info::before,
+.settings-content-container .settings-heading-important::before {
   width: 12px;
   height: 12px;
   background: currentColor;
   content: "";
+}
+
+.settings-content-container .settings-heading-info::before {
   -webkit-mask: url("../assets/icons/filled/info.png") center / contain no-repeat;
   mask: url("../assets/icons/filled/info.png") center / contain no-repeat;
+}
+
+.settings-content-container .settings-heading-important::before {
+  -webkit-mask: url("../assets/icons/filled/important-info.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/important-info.png") center / contain no-repeat;
 }
 
 /* Open group guidance beside the heading without moving the action buttons. */
@@ -307,6 +445,10 @@
   font: 500 12px / 1.4 var(--font-family-app);
 }
 
+#storage-notice-info-help {
+  white-space: pre-line;
+}
+
 /* Keep the floating help readable over the settings surfaces in glass mode. */
 :root[data-theme-glass="on"] .settings-content-container .settings-heading-help {
   background: color-mix(in srgb, var(--color-surface-level-2) 96%, transparent);
@@ -323,6 +465,17 @@
   min-height: 54px;
   margin: 0;
   padding: 10px;
+}
+
+/* Keep toggle option surfaces content-sized instead of stretching across the row. */
+.settings-content-container .settings-option:has(> input[type="checkbox"]) {
+  width: max-content;
+  max-width: 100%;
+}
+
+.settings-content-container .settings-option:has(> .settings-select) {
+  width: max-content;
+  max-width: 100%;
 }
 
 /* Allow the option label to shrink without pushing its control. */
@@ -399,6 +552,7 @@
   left: 1px;
   width: var(--settings-thumb-size);
   height: var(--settings-thumb-size);
+  border: var(--settings-thumb-border);
   border-radius: var(--settings-thumb-radius);
   background: var(--settings-thumb-color);
   content: "";
@@ -519,7 +673,7 @@
   width: var(--settings-thumb-size);
   height: var(--settings-thumb-size);
   margin-top: -5px;
-  border: 0;
+  border: var(--settings-thumb-border);
   border-radius: var(--settings-thumb-radius);
   background: var(--settings-thumb-color);
 }
@@ -527,7 +681,7 @@
 .settings-content-container .settings-option-range input[type="range"]::-moz-range-thumb {
   width: var(--settings-thumb-size);
   height: var(--settings-thumb-size);
-  border: 0;
+  border: var(--settings-thumb-border);
   border-radius: var(--settings-thumb-radius);
   background: var(--settings-thumb-color);
 }
@@ -560,6 +714,18 @@
   font: 500 12px / 1.5 var(--font-family-app);
 }
 
+.settings-content-container .backup-settings.settings-option-group .imdb-api-key-setting .api-usage-counter.level-4-styling {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  flex: 0 0 auto;
+  margin: 0;
+  background-color: var(--palette-orange-strong);
+  color: #000;
+  white-space: nowrap;
+}
+
 .settings-content-container .backup-settings a {
   color: var(--color-text-accent);
 }
@@ -570,6 +736,34 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--spacing-level-1);
+}
+
+.settings-content-container .imdb-api-key-setting {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: nowrap;
+}
+
+.settings-content-container .imdb-api-key-setting #omdb-api-key {
+  width: 0;
+  flex: 1 1 0;
+}
+
+.settings-content-container .imdb-api-key-setting #save-omdb-key {
+  flex: 0 0 auto;
+}
+
+.settings-content-container .imdb-api-key-setting .api-key-visibility-button {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+}
+
+.settings-content-container .api-key-visibility-button img {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
 }
 
 .settings-content-container .api-key-setting input {
@@ -587,24 +781,38 @@
 /* Branch the current storage source into its live library counts. */
 .settings-content-container .backup-summary:has(.backup-summary-source) {
   --backup-summary-branch-length: 120px;
+  --storage-tree-line-color: var(--color-text-secondary);
   display: grid;
   justify-items: start;
-  gap: 0;
-  width: fit-content;
+  gap: calc(var(--spacing-level-1) + var(--spacing-level-3));
+  width: 100%;
   max-width: 100%;
   margin: 0;
-  padding: var(--spacing-level-1);
+  padding: 0;
+}
+
+.settings-content-container .backup-summary-source-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-level-2);
+  width: 100%;
+  max-width: 100%;
+}
+
+.settings-content-container .backup-summary-source-row > .backup-actions {
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .settings-content-container .backup-summary-source {
+  --backup-summary-source-color: var(--color-storage-saved);
   position: relative;
   z-index: 1;
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   width: max-content;
   max-width: 100%;
-  min-height: 36px;
-  padding: 8px 12px;
   color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: var(--font-weight-app);
@@ -612,62 +820,164 @@
   overflow-wrap: anywhere;
 }
 
+.settings-content-container .backup-summary-source-comparison {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  max-width: 100%;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+}
+
+.settings-content-container .backup-summary-source[data-storage-source="browser"] {
+  --backup-summary-source-color: var(--palette-yellow);
+}
+
+.settings-content-container .backup-summary-source-name {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 240px;
+  width: max-content;
+  height: 36px;
+  min-height: 36px;
+  padding-inline: var(--spacing-level-1);
+  overflow: hidden;
+  color: var(--backup-summary-source-color);
+  text-overflow: ellipsis;
+  text-shadow: 0 0 4px color-mix(in srgb, var(--backup-summary-source-color) 45%, transparent);
+  white-space: nowrap;
+}
+
+.settings-content-container .backup-summary-combine-box {
+  display: grid;
+  align-self: center;
+  flex: 0 0 28px;
+  place-items: center;
+  width: 28px;
+  height: 36px;
+}
+
+.settings-content-container .backup-summary-combine-icon {
+  width: 20px;
+  height: 20px;
+  transform: translateY(1px);
+  --app-icon-state-color: var(--color-text-secondary);
+  -webkit-mask: url("../assets/icons/filled/combine.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/combine.png") center / contain no-repeat;
+}
+
+.settings-content-container .backup-summary-incoming-file {
+  display: flex;
+  align-items: center;
+  flex: 0 1 auto;
+  width: max-content;
+  min-width: 0;
+  max-width: 220px;
+  min-height: 28px;
+  padding-inline: var(--spacing-level-1);
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .settings-content-container .backup-summary-stats {
   position: relative;
   display: grid;
   gap: var(--spacing-level-1);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   margin-left: var(--backup-summary-trunk-offset, 32px);
   padding-block: var(--spacing-level-2);
 }
 
 .settings-content-container .backup-summary-stats::before {
   position: absolute;
-  top: 0;
-  bottom: calc(var(--spacing-level-2) + 14px + 8px);
-  left: 0;
-  border-left: 1px solid #fff;
+  top: calc(-1 * (var(--spacing-level-1) + var(--spacing-level-3)));
+  /* Overlap the final rounded elbow by one pixel so no gap appears. */
+  bottom: calc(var(--spacing-level-2) + 14px + 7px);
+  left: -1px;
+  border-left: 2px solid var(--storage-tree-line-color);
   content: "";
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.65));
 }
 
 .settings-content-container .backup-summary-stat {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-level-2);
+  width: max-content;
+  min-height: 28px;
+  padding: var(--spacing-level-2) var(--spacing-level-1);
+}
+
+.settings-content-container .backup-summary-stat-row {
   position: relative;
   display: flex;
   align-items: center;
   justify-self: start;
+  gap: var(--spacing-level-1);
   width: max-content;
-  min-height: 28px;
+  min-width: 0;
+  max-width: 100%;
   margin-left: var(--backup-summary-branch-length);
-  padding: var(--spacing-level-2) var(--spacing-level-1);
 }
 
-.settings-content-container .backup-summary-stat:nth-child(1) { --backup-summary-branch-length: 72px; }
-.settings-content-container .backup-summary-stat:nth-child(2) { --backup-summary-branch-length: 88px; }
-.settings-content-container .backup-summary-stat:nth-child(3) { --backup-summary-branch-length: 104px; }
+.settings-content-container .backup-summary-stat-current.is-replaced {
+  opacity: 0.58;
+  text-decoration: line-through;
+}
 
-.settings-content-container .backup-summary-stat::before {
+.settings-content-container .backup-summary-stat-change {
+  color: var(--color-storage-saved);
+  font-weight: 700;
+  text-shadow: 0 0 3px color-mix(in srgb, var(--color-storage-saved) 40%, transparent);
+  white-space: nowrap;
+}
+
+.settings-content-container .backup-summary-stat-result {
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.settings-content-container .backup-summary-stat-file {
+  box-sizing: border-box;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: min(220px, 100%);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.settings-content-container .backup-summary-stat-row:nth-child(1) { --backup-summary-branch-length: 32px; }
+.settings-content-container .backup-summary-stat-row:nth-child(2) { --backup-summary-branch-length: 72px; }
+.settings-content-container .backup-summary-stat-row:nth-child(3) { --backup-summary-branch-length: 112px; }
+.settings-content-container .backup-summary-stat-row:nth-child(4) { --backup-summary-branch-length: 152px; }
+.settings-content-container .backup-summary-stat-row:nth-child(5) { --backup-summary-branch-length: 112px; }
+.settings-content-container .backup-summary-stat-row:nth-child(6) { --backup-summary-branch-length: 72px; }
+.settings-content-container .backup-summary-stat-row:nth-child(n+7) { --backup-summary-branch-length: 32px; }
+
+.settings-content-container .backup-summary-stat-row::before {
   position: absolute;
   top: calc(50% - 8px);
+  /* Extend the elbow one pixel left while keeping its endpoint at the stat. */
   right: 100%;
-  width: var(--backup-summary-branch-length);
+  width: calc(var(--backup-summary-branch-length) + 1px);
   height: 8px;
-  border-bottom: 1px solid #fff;
-  border-left: 1px solid #fff;
+  border-bottom: 2px solid var(--storage-tree-line-color);
+  border-left: 2px solid var(--storage-tree-line-color);
   border-bottom-left-radius: 8px;
   content: "";
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.65));
 }
 
 /* Keep the browser file limitation visible in its own level-three notice. */
-#file-storage-status {
-  position: relative;
-  align-self: stretch;
-  margin: 0;
-  padding: calc(var(--spacing-level-1) * 0.75);
-  font: 600 11px / 1.4 var(--font-family-app);
-  white-space: pre-line;
-}
-
 .settings-content-container .settings-status-message {
   position: relative;
   display: flex;
@@ -676,11 +986,14 @@
   width: fit-content;
   max-width: min(340px, 100%);
   min-width: 0;
+  height: 36px;
+  min-height: 36px;
   margin: 0;
   padding-inline: var(--spacing-level-1);
   border-radius: var(--radius-control-small);
   font: 600 12px / 1.2 var(--font-family-app);
   overflow: hidden;
+  color: var(--settings-status-accent, var(--palette-yellow));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -697,13 +1010,9 @@
   --settings-status-accent: var(--palette-yellow);
 }
 
-/* Use one readable status color for the surface and border. */
-#file-storage-status,
+/* Keep the shared level-three glass surface and tint only the status border. */
 :root .settings-content-container .settings-status-message.level-3-styling {
-  --settings-status-fill: color-mix(in srgb, var(--settings-status-accent, var(--palette-yellow)) 55%, #182029);
-  border-color: var(--settings-status-fill);
-  background: var(--settings-status-fill);
-  color: #fff;
+  border-color: var(--settings-status-accent, var(--palette-yellow));
 }
 
 /* Keep Storage and Integrations on the same inset-control system as Appearance. */
@@ -726,7 +1035,16 @@
 .settings-content-container .settings-action-icon {
   width: 16px;
   height: 16px;
-  filter: brightness(0) invert(1);
+  filter: var(--settings-action-icon-filter, brightness(0) invert(1));
+}
+
+/* Keep storage action icons legible on light surfaces. */
+:root[data-theme="light"] .settings-content-container .settings-action-icon {
+  --settings-action-icon-filter: brightness(0) opacity(0.58);
+}
+
+:root[data-theme="light"] .settings-content-container .api-key-visibility-button img {
+  filter: brightness(0) opacity(0.58);
 }
 
 .settings-content-container .backup-settings.settings-option-group > .text-button {
@@ -751,6 +1069,71 @@
   border-color: var(--color-border-subtle);
   color: var(--color-text-secondary);
   font: 12px var(--font-family-app);
+}
+
+/* Match the import controls' separation from the tree to its name-to-first-row spacing. */
+#settings-panel-storage .import-options:not([hidden]) {
+  margin-top: calc(var(--spacing-level-3) + var(--spacing-level-2));
+}
+
+#settings-panel-storage .import-options > label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-level-2);
+  min-height: 36px;
+  padding: var(--spacing-level-1);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+#settings-panel-storage .import-options > label > span {
+  font-size: 13px;
+  font-weight: var(--font-weight-app);
+  color: inherit;
+}
+
+#settings-panel-storage .import-options input[type="radio"] {
+  appearance: none;
+  position: relative;
+  display: grid;
+  flex: 0 0 22px;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-chip);
+  background: var(--color-surface-level-1);
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+#settings-panel-storage .import-options input[type="radio"]::before {
+  color: var(--palette-white);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  content: "";
+}
+
+#settings-panel-storage .import-options input[type="radio"]:checked {
+  background: var(--color-accent-primary);
+  border-color: var(--color-accent-primary);
+}
+
+#settings-panel-storage .import-options input[type="radio"]:checked::before {
+  content: "✓";
+}
+
+#settings-panel-storage .import-options input[type="radio"]:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+#settings-panel-storage .import-options > .import-actions {
+  display: flex;
+  gap: var(--spacing-level-1);
+  margin-left: auto;
 }
 
 #settings-panel-storage .import-options[hidden] {

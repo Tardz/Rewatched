@@ -3,6 +3,8 @@
 /* SECTION Light theme tokens */
 :root[data-theme="light"] {
   color-scheme: light;
+  --settings-thumb-color: var(--color-surface-level-3);
+  --settings-thumb-border: 1px solid var(--color-border-strong);
 
   /* Use dark, readable text and softly contrasted neutral surfaces. */
   --color-text-primary: #202733;
@@ -85,6 +87,17 @@
     0 -1px 0 color-mix(in srgb, var(--color-border-strong) 25%, transparent),
     0 1px 0 color-mix(in srgb, var(--color-surface-level-3) 25%, transparent);
   opacity: 0.82;
+}
+
+/* Keep navbar status labels readable on light surfaces without losing page color. */
+:root[data-theme="light"] .navbar-horizontal-layout .nav-save-text {
+  color: var(--color-text-secondary);
+  text-shadow: 0 0 4px color-mix(in srgb, var(--color-text-secondary) 36%, transparent);
+}
+
+:root[data-theme="light"] .navbar-horizontal-layout .nav-page-context-container {
+  color: color-mix(in srgb, var(--nav-page-context-color) 78%, var(--color-text-primary));
+  text-shadow: none;
 }
 
 /* Give category labels a light tint while retaining their hue identity. */

@@ -106,7 +106,14 @@
   --color-icon-stats: var(--palette-orange);      /* Statistics navigation. */
   --color-icon-timeline: var(--palette-yellow);   /* Timeline navigation. */
 
-  --color-log: var(--palette-blue);               /* Log action and logged-item state. */                                      
+  /* Settings category colors, shown on hover, focus, and selection. */
+  --color-settings-general: var(--palette-blue);
+  --color-settings-appearance: var(--palette-purple);
+  --color-settings-storage: var(--palette-green);
+  --color-settings-integrations: var(--palette-orange);
+  --color-settings-account: var(--palette-red);
+
+  --color-log: var(--palette-blue);               /* Log action and logged-item state. */
   --color-backlog: var(--palette-green);          /* Backlog and watchlist state. */
 
   /* Storage feedback colors. */
