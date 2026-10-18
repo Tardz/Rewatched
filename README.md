@@ -3,7 +3,11 @@
 A watch journal for films and shows. Log ratings and rewatches, organize your library and backlog, and explore timelines and statistics.
 
 <p align="center">
-  <a href="assets/previews/app-preview.png"><img src="assets/previews/app-preview.png" alt="ReWatched home screen" width="100%"></a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/previews/app-preview-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="assets/previews/app-preview-light.png">
+    <img src="assets/previews/app-preview-dark.png" alt="ReWatched home screen" width="100%">
+  </picture>
 </p>
 
 ## Run
