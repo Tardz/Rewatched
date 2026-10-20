@@ -24,3 +24,25 @@ For the web version, open `index.html` or run `python3 -m http.server 8000` and 
 ## Data
 
 Entries are stored in the browser by default. In Settings, you can import or export JSON files and, in supported browsers, save directly to a linked file. Poster search and movie details can optionally use Google Programmable Search and OMDb.
+
+## Copyright and third-party assets
+
+© 2026 Jonathan Almstedt. All rights reserved.
+
+This project’s code and original assets may not be used, copied, modified, or distributed without permission. Viewing or forking the public repository through GitHub does not grant permission for commercial use or other use beyond GitHub’s permitted functionality.
+
+Some icons used in Rewatched are from Flaticon, see sample below. See [CREDITS.md](CREDITS.md) for full creator attributions.
+
+<p align="center">
+  <img src="assets/icons/filled/appearance.png" alt="Appearance icon" width="38">
+  &nbsp;&nbsp;
+  <img src="assets/icons/filled/library.png" alt="Library icon" width="38">
+  &nbsp;&nbsp;
+  <img src="assets/icons/filled/book.png" alt="Book icon" width="38">
+  &nbsp;&nbsp;
+  <img src="assets/icons/filled/disc.png" alt="Film icon" width="38">
+  &nbsp;&nbsp;
+  <img src="assets/icons/filled/game-controller.png" alt="Game icon" width="38">
+  &nbsp;&nbsp;
+  <img src="assets/icons/filled/save.png" alt="Save icon" width="38">
+</p>
