@@ -289,19 +289,28 @@
   text-transform: none;
 }
 
+.settings-content-container .about-author,
 .settings-content-container .about-details {
   color: var(--color-text-secondary);
   font-weight: 450;
   text-align: center;
 }
 
+.settings-content-container .about-author { margin: 0; }
+
 .settings-content-container .about-details > p {
   margin: 0;
 }
 
+.settings-content-container .about-footer {
+  display: grid;
+  justify-items: center;
+  gap: var(--spacing-level-1);
+  margin-top: auto;
+}
+
 .settings-content-container .about-credits-link {
   align-self: center;
-  margin-top: auto;
   color: var(--color-text-secondary);
   font-size: inherit;
   font-weight: 450;
