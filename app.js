@@ -24,14 +24,10 @@ function setSidebarCollapsed(collapsed, persist = false) {
 }
 
 if ($('.navbar-vertical-layout')) {
-  const compactSidebarQuery = window.matchMedia('(max-width: 700px)');
   const savedSidebarState = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
-  setSidebarCollapsed(savedSidebarState === null ? compactSidebarQuery.matches : savedSidebarState === 'true');
+  setSidebarCollapsed(savedSidebarState === 'true');
   $('.nav-toggle-sidebar').addEventListener('click', () => {
     setSidebarCollapsed(!$('.app-container').classList.contains('is-sidebar-collapsed'), true);
-  });
-  compactSidebarQuery.addEventListener('change', (event) => {
-    if (localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === null) setSidebarCollapsed(event.matches);
   });
 }
 

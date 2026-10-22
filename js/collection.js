@@ -59,6 +59,65 @@ document.addEventListener('click', (event) => {
   if (folderDropdown && !folderDropdown.contains(event.target)) setFolderMenuOpen(false);
 });
 
+/* Open entry-card tools with the context menu; keep the panel styled through its closing transition. */
+const entryCardToolsTimers = new WeakMap();
+
+function setEntryCardToolsOpen(layout, isOpen) {
+  const tools = layout.querySelector('.entry-card-tools');
+  const pendingTimer = entryCardToolsTimers.get(layout);
+  if (pendingTimer) {
+    window.clearTimeout(pendingTimer);
+    entryCardToolsTimers.delete(layout);
+  }
+  if (isOpen) {
+    layout.classList.add('tools-visible', 'tools-open');
+    tools?.classList.add('level-2-styling');
+    return;
+  }
+
+  layout.classList.remove('tools-open');
+  if (tools && layout.classList.contains('tools-visible')) {
+    const timer = window.setTimeout(() => {
+      if (!layout.classList.contains('tools-open')) {
+        layout.classList.remove('tools-visible');
+        tools.classList.remove('level-2-styling');
+      }
+      entryCardToolsTimers.delete(layout);
+    }, 170);
+    entryCardToolsTimers.set(layout, timer);
+  }
+}
+
+collection.addEventListener('pointerout', (event) => {
+  const layout = event.target.closest('.entry-card-layout.tools-open');
+  if (!layout || layout.contains(event.relatedTarget)) return;
+  setEntryCardToolsOpen(layout, false);
+});
+
+document.addEventListener('pointerdown', (event) => {
+  if (event.target.closest('.entry-card-layout.tools-open')) return;
+  collection.querySelectorAll('.entry-card-layout.tools-open').forEach((layout) => setEntryCardToolsOpen(layout, false));
+});
+
+document.addEventListener('contextmenu', () => {
+  collection.querySelectorAll('.entry-card-layout.tools-open').forEach((layout) => setEntryCardToolsOpen(layout, false));
+});
+
+collection.addEventListener('contextmenu', (event) => {
+  const layout = event.target.closest('.entry-card-layout');
+  if (!layout) return;
+  event.preventDefault();
+  const shouldOpen = !layout.classList.contains('tools-open');
+  collection.querySelectorAll('.entry-card-layout.tools-open').forEach((item) => setEntryCardToolsOpen(item, false));
+  if (shouldOpen) setEntryCardToolsOpen(layout, true);
+  event.stopPropagation();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape') return;
+  collection.querySelectorAll('.entry-card-layout.tools-open').forEach((layout) => setEntryCardToolsOpen(layout, false));
+});
+
 window.addEventListener('resize', () => {
   if (folderPicker && !folderPicker.hidden) positionFolderMenu();
 });
@@ -909,6 +968,8 @@ function handleCollectionResize() {
 function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView) {
   const watch = isBacklogged ? null : latest(entry);
   const isReworkPreview = document.documentElement.dataset.cssReworkPreview === 'true';
+  const cardLayout = document.createElement('div');
+  cardLayout.className = 'entry-card-layout';
   const card = document.createElement('article');
   card.className = `${isReworkPreview ? 'entry-container banner-container' : 'workspace-content-entry'} level-2-styling entry ${isBacklogged ? 'is-backlogged' : 'is-logged'}`;
   if (isReworkPreview && entry.poster) {
@@ -975,14 +1036,14 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
   label.className = isReworkPreview
     ? 'banner-labels-layout'
     : 'entry-type';
+  let mediaIcon;
   if (isReworkPreview) {
     const mediaType = entry.type.toLowerCase();
-    const mediaIcon = document.createElement('span');
-    mediaIcon.className = `type-chip-styling media-type-icon banner-type is-${mediaType}`;
+    mediaIcon = document.createElement('span');
+    mediaIcon.className = `text-chip-styling media-type-icon banner-type is-${mediaType}`;
     mediaIcon.setAttribute('role', 'img');
     mediaIcon.setAttribute('aria-label', entry.type);
     mediaIcon.innerHTML = appIconMarkup(mediaTypeIconName(entry.type), 'icon');
-    poster.append(mediaIcon);
     label.append(tag);
   } else {
     label.textContent = entry.type;
@@ -1014,6 +1075,7 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
     label.append(date);
   }
   if (isReworkPreview) {
+    label.append(mediaIcon);
     if (entry.director) {
       const director = document.createElement('span');
       director.className = 'banner-director';
@@ -1027,6 +1089,17 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
 
   const meta = document.createElement('div');
   if (isReworkPreview) meta.className = 'banner-meta-layout';
+  const fullscreen = iconButton(
+    `Open ${entry.title} fullscreen`,
+    'Fullscreen',
+    () => openEntryFromCard(card, `#entry/${sourceView}/${encodeURIComponent(entry.id)}/full`),
+    isReworkPreview ? 'action-fullscreen' : 'entry-open-fullscreen',
+    isReworkPreview,
+  );
+  if (isReworkPreview) {
+    fullscreen.classList.remove('level-2-styling');
+    fullscreen.classList.add('text-chip-styling');
+  }
 
   if (watch) {
     const score = document.createElement('div');
@@ -1047,7 +1120,7 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
     score.append(scoreValue, createRatingMeter(scoreFill, scoreColor, meterClass));
     score.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
     if (isReworkPreview) {
-      meta.append(score);
+      meta.append(score, fullscreen);
     } else {
       const date = document.createElement('div');
       date.className = 'workspace-content-entry-detail-date entry-date';
@@ -1077,20 +1150,26 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
       priorityValue.textContent = `P${priority}`;
       priorityValue.style.setProperty('--priority-color', priorityColor);
       value.append(priorityValue, indicator);
-      meta.append(value);
+      meta.append(value, fullscreen);
     }
     else details.append(indicator);
   }
+
+  if (isReworkPreview && !fullscreen.parentElement) meta.append(fullscreen);
 
   const actions = document.createElement('div');
   actions.className = 'entry-actions';
   const actionList = isBacklogged
     ? [['Edit', () => openDialog(entry.id, false, null, true, 'watchlist')], ['Folder', () => openFolderPicker(entry)], ['Remove', () => removeEntry(entry, true)]]
-    : [['Rewatch', () => openDialog(entry.id, true)], ['Edit', () => openDialog(entry.id, false, null, true)], ['Folder', () => openFolderPicker(entry)], ['Remove', () => removeEntry(entry, false)]];
+    : [['Edit', () => openDialog(entry.id, false, null, true)], ['Rewatch', () => openDialog(entry.id, true)], ['Folder', () => openFolderPicker(entry)], ['Remove', () => removeEntry(entry, false)]];
 
   actionList.forEach(([label, action]) => {
     const buttonLabel = label === 'Folder' ? `Add ${entry.title} to folder` : `${label} ${entry.title}`;
     const button = iconButton(buttonLabel, label, action, `action-${label.toLowerCase()}`, isReworkPreview);
+    if (isReworkPreview) {
+      button.classList.remove('level-2-styling');
+      button.classList.add('level-3-styling');
+    }
     if (label === 'Remove') button.classList.add('remove-button');
     actions.append(button);
   });
@@ -1101,21 +1180,20 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
     info.append(header, details);
   }
   const tools = document.createElement('div');
-  tools.className = `${isReworkPreview ? 'workspace-tools-layout' : 'workspace-content-entry-tools'} entry-card-tools`;
-  const fullscreen = iconButton(
-    `Open ${entry.title} fullscreen`,
-    'Fullscreen',
-    () => openEntryFromCard(card, `#entry/${sourceView}/${encodeURIComponent(entry.id)}/full`),
-    isReworkPreview ? 'action-fullscreen' : 'entry-open-fullscreen',
-    isReworkPreview,
-  );
-  if (isReworkPreview) tools.append(...actions.children, fullscreen);
+  tools.className = 'entry-card-tools';
+  if (isReworkPreview) tools.append(...actions.children);
   else tools.append(actions, fullscreen);
+  if (isReworkPreview) {
+    tools.addEventListener('click', () => setEntryCardToolsOpen(cardLayout, false));
+    card.append(info);
+    cardLayout.append(card, tools);
+    return cardLayout;
+  }
   card.append(info, tools);
   return card;
 }
 
-/** Opens a card’s entry in hover or fullscreen mode. */
+/** Opens an entry with the shared transition when enabled. */
 function openEntryFromCard(card, destination) {
   if (card.classList.contains('is-opening')) return;
   const hash = destination.startsWith('#') ? destination : new URL(destination).hash;

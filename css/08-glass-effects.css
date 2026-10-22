@@ -110,6 +110,9 @@
   content: "";
   pointer-events: none;
 }
+:root:not([data-theme="light"])[data-theme-glass="on"] .banner-poster::after {
+  background: linear-gradient(145deg, rgb(190 198 210 / 28%) 0%, rgb(150 160 174 / 12%) 38%, transparent 68%);
+}
 
 /* SECTION Dashboard panels and controls */
 /* Apply translucent fills and shared elevation to outer app panels. */
@@ -167,6 +170,11 @@
     box-shadow 160ms ease,                         
     background 160ms ease,                         
     border-color 160ms ease;                        /* Smooth glass state changes. */
+}
+
+/* Keep entry action tools legible against poster art without changing their level. */
+:root[data-theme-glass="on"] .workspace-tools-layout .icon-button.level-2-styling {
+  background: color-mix(in srgb, var(--color-surface-level-2) 88%, transparent);
 }
 
 /* Give shared level-two app surfaces the same glass hover treatment. */

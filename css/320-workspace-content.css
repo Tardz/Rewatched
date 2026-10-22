@@ -58,7 +58,7 @@
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
 
-/* Reveal each card's poster-color wash only while it is hovered or keyboard-focused. */
+/* Reveal each card's poster-color wash only while the pointer is over it. */
 .entry-container::before {
   position: absolute;
   z-index: 1;
@@ -71,7 +71,9 @@
   pointer-events: none;
   transition: opacity 180ms ease;
 }
-:root[data-entry-poster-backdrop="on"] .entry-container:is(:hover, :focus-within)::before {
+:root[data-entry-poster-backdrop="on"] .entry-container:hover::before,
+:root[data-entry-poster-backdrop="on"] .entry-card-layout:hover > .entry-container::before,
+:root[data-entry-poster-backdrop="on"] .entry-card-layout.tools-visible > .entry-container::before {
   opacity: 1;
 }
 
@@ -87,13 +89,26 @@
 }
 
 /* Base classes: .type-chip-styling, .media-type-icon */
-/* Place the media-type chip over the poster's upper-left corner. */
+/* Keep the media-type icon compact in the card. */
 .entry-container .banner-type {
-  top: var(--spacing-level-2);
-  left: var(--spacing-level-2);
   box-sizing: border-box;
+  padding: 2px;
   width: 20px;
   height: 20px;
+}
+
+.entry-container .banner-type.is-movie { --entry-type-color: var(--color-media-film); }
+.entry-container .banner-type.is-show { --entry-type-color: var(--color-media-show); }
+.entry-container .banner-type.is-game { --entry-type-color: var(--color-media-game); }
+.entry-container .banner-type.is-book { --entry-type-color: var(--color-media-book); }
+.entry-container .banner-type > :is(.icon, .masked-icon, .svg-icon) {
+  color: var(--color-text-secondary);
+  --app-icon-state-color: currentColor;
+  transition: color 140ms ease;
+}
+.entry-container:hover .banner-type > :is(.icon, .masked-icon, .svg-icon) {
+  color: var(--entry-type-color, var(--color-text-secondary));
+  --app-icon-state-color: currentColor;
 }
 /* !SECTION */
 
@@ -121,6 +136,18 @@
   color: var(--color-text-secondary);
   font-size: 11px;
   line-height: 1.4;
+}
+
+.entry-container .banner-labels-layout > .banner-type {
+  position: static;
+  flex: 0 0 20px;
+  align-self: center;
+  margin-left: auto;
+}
+
+.entry-container .banner-type > :is(.icon, .masked-icon, .svg-icon) {
+  width: 12px;
+  height: 12px;
 }
 
 /* Base classes: .category-chip-styling or .text-chip-styling */
@@ -181,7 +208,50 @@
 /* Stack the rating or priority row above the log date. */
 .entry-container .banner-meta-layout {
   --banner-meta-gap: calc(var(--spacing-level-1) - 2px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-level-1);
+  width: 100%;
   margin-top: auto;
+}
+
+.entry-container .banner-meta-layout > .banner-value-layout {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.entry-container .banner-meta-layout .ratings-bar {
+  flex: 0 1 120px;
+  min-width: 0;
+  max-width: calc(100cqi - 76px);
+}
+
+.entry-container .banner-meta-layout > .action-fullscreen {
+  flex: 0 0 var(--workspace-tool-button-size);
+  width: var(--workspace-tool-button-size);
+  height: var(--workspace-tool-button-size);
+  padding: 0;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 120ms ease, visibility 120ms ease;
+}
+
+.entry-container .banner-meta-layout > .action-fullscreen > :is(.icon, .masked-icon, .svg-icon) {
+  flex: 0 0 calc(var(--size-icon-filled) - 8px);
+  width: calc(var(--size-icon-filled) - 8px);
+  height: calc(var(--size-icon-filled) - 8px);
+  color: currentColor;
+  --app-icon-state-color: currentColor;
+}
+
+.entry-container:hover .banner-meta-layout > .action-fullscreen,
+.entry-container .banner-meta-layout > .action-fullscreen:focus-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* SECTION banner-value-layout */
@@ -230,87 +300,127 @@
 /* !SECTION */
 
 /* ANCHOR workspace-banner-link */
-/* Cover the card with a detail link below its interactive tools. */
+/* Keep a full-card link as the pointer target for revealing the action panel. */
 .workspace-banner-link {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 1;
   border-radius: inherit;
 }
+.entry-container .banner-poster,
+.entry-container .banner-info-layout { pointer-events: none; }
+.entry-container .banner-meta-layout > .action-fullscreen { position: relative; z-index: 4; }
 .workspace-banner-link:focus-visible {
   outline: 2px solid var(--color-accent-primary);
   outline-offset: 3px;
 }
 
-/* SECTION workspace-tools-layout */
-/* Overlay the card actions when the card is hovered or focused. */
-.workspace-tools-layout {
-  --workspace-tool-button-size: calc(var(--size-icon-filled) + 6px);
-  position: absolute;
-  top: var(--spacing-level-1);
-  right: var(--spacing-level-1);
-  z-index: 4;
+/* SECTION entry-card-layout */
+/* Keep the tools surface at the card's full size while the card shrinks over it. */
+.entry-card-layout {
+  --workspace-tool-button-size: calc(var(--size-icon-filled) + 2px);
+  --workspace-tool-panel-inset: calc(var(--spacing-level-1) - 1px);
+  --workspace-tool-panel-width: calc(var(--workspace-tool-button-size) + var(--workspace-tool-panel-inset) + var(--workspace-tool-panel-inset));
   display: grid;
-  grid-template-columns: repeat(2, var(--workspace-tool-button-size));
-  grid-template-rows: repeat(3, var(--workspace-tool-button-size));
-  align-content: start;
-  gap: var(--spacing-level-3);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-3px);
-  transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
+  grid-template-columns: minmax(0, 1fr) 0px;
+  position: relative;
+  min-width: 0;
+  transition: grid-template-columns 150ms ease;
 }
 
-.entry-container:is(:hover, :focus-within) .workspace-tools-layout {
-  opacity: 1;
+.entry-card-layout.tools-open {
+  z-index: 5;
+  grid-template-columns: minmax(0, 1fr) var(--workspace-tool-panel-width);
+}
+
+/* Keep the level-two tools surface full-card-sized behind the card, with actions in one column. */
+.entry-card-tools {
+  box-sizing: border-box;
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  grid-template-columns: var(--workspace-tool-button-size);
+  grid-auto-rows: var(--workspace-tool-button-size);
+  justify-content: end;
+  align-content: space-between;
+  justify-items: center;
+  row-gap: 0;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  transition: transform 180ms ease, background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.entry-card-layout.tools-visible > .entry-card-tools {
+  display: grid;
+  padding: calc(var(--spacing-level-1) - 2px) var(--workspace-tool-panel-inset);
   visibility: visible;
-  transform: translateY(0);
+  pointer-events: auto;
 }
 
-/* Base classes: .icon-button, .level-2-styling */
-/* Give each action a legible icon in a compact, less-rounded level-two button. */
-.workspace-tools-layout .icon-button {
+.entry-card-layout > .entry-container {
+  position: relative;
+  z-index: 1;
+  grid-column: 1;
+  min-width: 0;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+:root .entry-card-layout.tools-visible > .entry-container,
+:root .entry-card-layout.tools-visible > .entry-container:hover {
+  background: var(--color-surface-level-2);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 0s;
+}
+
+/* Base classes: .icon-button, .level-3-styling */
+/* Give each action a legible icon in a compact, less-rounded level-three button. */
+.entry-card-tools .icon-button {
   position: static;
   width: var(--workspace-tool-button-size);
   height: var(--workspace-tool-button-size);
-  border-radius: calc(8px * var(--radius-scale));
-  color: var(--color-text-on-surface);
+  flex: 0 0 var(--workspace-tool-button-size);
+  border-radius: calc(var(--radius-control-small) - 2px);
+  color: var(--color-text-secondary);
   transform: none;
   opacity: 1;
   visibility: visible;
 }
 
-/* Give each action a stable grid position, including backlog cards without Rewatch. */
-.workspace-tools-layout .action-rewatch { grid-column: 1; grid-row: 1; }
-.workspace-tools-layout .action-edit { grid-column: 2; grid-row: 1; }
-.workspace-tools-layout .action-folder { grid-column: 1; grid-row: 2; }
-.workspace-tools-layout .action-remove { grid-column: 2; grid-row: 2; }
-.workspace-tools-layout .action-fullscreen { grid-column: 2; grid-row: 3; }
-
-.workspace-tools-layout svg,
-.workspace-tools-layout .icon {
-  flex-basis: calc(var(--size-icon-filled) - 8px);
-  width: calc(var(--size-icon-filled) - 8px);
-  height: calc(var(--size-icon-filled) - 8px);
+.entry-card-tools svg,
+.entry-card-tools .icon {
+  flex-basis: calc(var(--size-icon-filled) - 10px);
+  width: calc(var(--size-icon-filled) - 10px);
+  height: calc(var(--size-icon-filled) - 10px);
 }
-.workspace-tools-layout .masked-icon { --app-icon-state-color: currentColor; }
+.entry-card-tools .masked-icon { --app-icon-state-color: currentColor; }
+.entry-card-tools .icon-button > :is(.icon, .masked-icon, .svg-icon) { color: currentColor; }
 
-/* Apply each action's color to its hovered icon. */
-.workspace-tools-layout button:hover { border-color: var(--color-border-accent-muted); color: var(--color-text-accent); }
-.workspace-tools-layout .action-rewatch:hover { color: var(--color-log); }
-.workspace-tools-layout .action-folder:hover { color: var(--color-icon-library); }
-.workspace-tools-layout .action-remove:hover { color: var(--color-media-film); }
+/* Keep action icons secondary grey on hover as well as at rest. */
+.entry-card-tools button:hover { border-color: var(--color-border-accent-muted); color: var(--color-text-secondary); }
 
-@media (hover: none) {
-  .workspace-tools-layout { opacity: 1; visibility: visible; transform: none; }
-}
-/* !SECTION */
+/* !SECTION entry-card-layout */
 
 /* ANCHOR entry-container states */
-/* Lift the focused or hovered card without blocking its link. */
-.entry-container:is(:hover, :focus-within) {
+/* Keep the card lifted while the pointer is anywhere over the card-and-tools group. */
+.entry-container:hover {
   transform: translateY(-4px);
   border-color: var(--color-border-accent-muted);
+}
+.entry-card-layout:hover > .entry-container {
+  transform: translateY(-4px);
+  border-color: var(--color-border-accent-muted);
+}
+:root[data-theme-glass="on"] .entry-card-layout:hover > .entry-container {
+  border-color: var(--color-border-glass-level-2-hover);
+  box-shadow: var(--shadow-glass-level-2-hover);
+}
+.entry-card-layout:hover > .entry-card-tools {
+  transform: translateY(-4px);
 }
 .entry-container.is-opening { pointer-events: none; }
 
@@ -319,10 +429,10 @@
 @container app-content (width < 1550px) {
   .workspace-content-layout { --workspace-entry-columns: 4; }
 }
-@container app-content (width < 1400px) {
+@container app-content (width < 1940px) {
   .workspace-content-layout { --workspace-entry-columns: 3; }
 }
-@container app-content (width < 850px) {
+@container app-content (width <= 1240px) {
   .workspace-content-layout { --workspace-entry-columns: 2; }
 }
 @container app-content (width < 560px) {
