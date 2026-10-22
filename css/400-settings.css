@@ -486,9 +486,9 @@
   justify-content: space-between;
   gap: calc(var(--spacing-level-0) + var(--spacing-level-1));
   min-width: 0;
-  min-height: 54px;
+  min-height: 46px;
   margin: 0;
-  padding: 10px;
+  padding: 7px 10px;
 }
 
 /* Keep toggle option surfaces content-sized instead of stretching across the row. */
@@ -496,6 +496,13 @@
   width: max-content;
   max-width: 100%;
 }
+
+/* Match each setting switch to its settings category color. */
+.settings-content-container [data-settings-panel="general"] { --settings-toggle-color: var(--color-settings-general); }
+.settings-content-container [data-settings-panel="appearance"] { --settings-toggle-color: var(--color-settings-appearance); }
+.settings-content-container [data-settings-panel="storage"] { --settings-toggle-color: var(--color-settings-storage); }
+.settings-content-container [data-settings-panel="integrations"] { --settings-toggle-color: var(--color-settings-integrations); }
+.settings-content-container [data-settings-panel="account"] { --settings-toggle-color: var(--color-settings-account); }
 
 .settings-content-container .settings-option:has(> .settings-select) {
   width: max-content;
@@ -564,10 +571,13 @@
   height: 20px;
   margin: 0;
   border: 1px solid var(--color-border-subtle);
-  border-radius: var(--radius-control-small);
+  border-radius: min(var(--radius-control-small), 8px);
   background: var(--color-surface-level-1);
+  box-shadow: var(--shadow-surface-inset);
   cursor: pointer;
-  transition: background-color 140ms ease;
+  transition:
+    background-color 140ms ease,
+    box-shadow 140ms ease;
 }
 
 .settings-content-container .settings-option input[type="checkbox"]::before {
@@ -577,14 +587,14 @@
   width: var(--settings-thumb-size);
   height: var(--settings-thumb-size);
   border: var(--settings-thumb-border);
-  border-radius: var(--settings-thumb-radius);
+  border-radius: min(var(--settings-thumb-radius), 6px);
   background: var(--settings-thumb-color);
   content: "";
   transition: transform 140ms ease;
 }
 
 .settings-content-container .settings-option input[type="checkbox"]:checked {
-  background: var(--color-accent-primary);
+  background: var(--settings-toggle-color, var(--color-accent-primary));
 }
 
 .settings-content-container .settings-option input[type="checkbox"]:checked::before {
@@ -672,22 +682,24 @@
   cursor: pointer;
 }
 
-/* Show the selected portion on a thicker Settings slider track. */
+/* Show the selected portion on a thick track tinted for its settings category. */
 .settings-content-container .settings-option-range input[type="range"]::-webkit-slider-runnable-track {
-  height: 6px;
+  height: 10px;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-chip);
+  box-shadow: var(--shadow-surface-inset);
   background: linear-gradient(to right,
-    var(--color-accent-primary) var(--settings-range-progress, 0%),
+    var(--settings-toggle-color, var(--color-accent-primary)) var(--settings-range-progress, 0%),
     var(--color-surface-level-1) var(--settings-range-progress, 0%));
 }
 
 .settings-content-container .settings-option-range input[type="range"]::-moz-range-track {
-  height: 6px;
+  height: 10px;
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-chip);
+  box-shadow: var(--shadow-surface-inset);
   background: linear-gradient(to right,
-    var(--color-accent-primary) var(--settings-range-progress, 0%),
+    var(--settings-toggle-color, var(--color-accent-primary)) var(--settings-range-progress, 0%),
     var(--color-surface-level-1) var(--settings-range-progress, 0%));
 }
 
@@ -695,18 +707,18 @@
 .settings-content-container .settings-option-range input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   width: var(--settings-thumb-size);
-  height: var(--settings-thumb-size);
-  margin-top: -5px;
+  height: calc(var(--settings-thumb-size) - 1px);
+  margin-top: -2px;
   border: var(--settings-thumb-border);
-  border-radius: var(--settings-thumb-radius);
+  border-radius: min(var(--settings-thumb-radius), 6px);
   background: var(--settings-thumb-color);
 }
 
 .settings-content-container .settings-option-range input[type="range"]::-moz-range-thumb {
   width: var(--settings-thumb-size);
-  height: var(--settings-thumb-size);
+  height: calc(var(--settings-thumb-size) - 1px);
   border: var(--settings-thumb-border);
-  border-radius: var(--settings-thumb-radius);
+  border-radius: min(var(--settings-thumb-radius), 6px);
   background: var(--settings-thumb-color);
 }
 

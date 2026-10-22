@@ -35,6 +35,7 @@ body.workspace-filter-menu-open :is(
   .library-page-button,
   .stats-page-button,
   .overview-banner-controls-layout > button,
+  .settings-option,
   .workspace-reset-button,
   .workspace-create-entry-button,
   .workspace-tools-layout button
