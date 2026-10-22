@@ -1,6 +1,6 @@
 /* SECTION settings-container */
-/* Present settings as a level-one dialog with separate level-two navigation and content surfaces. */
-#settings-dialog.settings-container.level-1-styling[open] {
+/* Present settings as a level-one dialog with separate navigation and content surfaces. */
+.settings-container[open] {
   --settings-category-icon-size: 40px;
   position: fixed;
   z-index: 1000;
@@ -16,114 +16,78 @@
   height: min(68dvh, 600px);
   max-height: min(68dvh, 600px);
   margin: 0;
-  padding: calc(var(--spacing-level-1) + 4px);
+  padding-block: calc(var(--padding-block-nav-group) + 8px);
+  padding-inline: calc(var(--padding-inline-nav-group) + 8px);
   transform: translate(-50%, -50%);
   overflow: hidden;
 }
 
-/* Keep the settings shell more opaque than other level-one surfaces. */
-:root[data-theme-glass="on"] #settings-dialog.settings-container {
-  background: color-mix(
-    in srgb,
-    var(--color-surface-level-1) max(94%, var(--opacity-glass-level-1)),
-    transparent
-  );
-}
-
 /* Keep native form controls matched to the dark default theme. */
-:root:not([data-theme="light"]) #settings-dialog.settings-container {
+:root:not([data-theme="light"]) .settings-container {
   color-scheme: dark;
 }
 
-/* Keep app content blurred and intercept its clicks without blocking the navbar. */
-.app-content-frame {
-  position: relative;
-}
-
-:root:has(#settings-dialog[open]) .app-content-frame::after {
-  position: absolute;
-  z-index: 1;
-  inset: 0;
-  content: "";
-}
-
-/* Blur only the page content while the non-modal settings dialog is open. */
-.app-content-container {
-  transition: filter 180ms ease;
-}
-
-:root:has(#settings-dialog[open]) .app-content-container {
+/* Blur app content and route clicks on it to the scroll container while settings is open. */
+:root:has(.settings-container[open]) .app-content-container > * {
   filter: blur(4px);
+  pointer-events: none;
 }
 /* !SECTION */
 
-/* SECTION settings-category-container */
+/* SECTION settings-category-layout */
 /* Style and vertically arrange category buttons inside the level-two surface. */
-.settings-category-container {
+.settings-category-layout {
   --settings-branch-line-color: var(--color-text-secondary);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: var(--spacing-level-2);
+  gap: var(--gap-nav-group);
   width: max-content;
   max-width: 100%;
   height: 100%;
   min-width: 0;
   min-height: 0;
-  padding-block: calc(var(--spacing-level-2) - 1px);
-  padding-inline: calc(var(--spacing-level-2) + 2px);
 }
 
-/* Lay out category controls without giving the buttons a surface of their own. */
+/* Base classes: .text-button, .icon-text-button. Add category-specific state and branch behavior. */
 .settings-category-button {
   appearance: none;
   position: relative;
-  display: grid;
-  grid-template-columns: var(--settings-category-icon-size) minmax(0, 1fr);
-  align-items: center;
-  gap: 4px;
-  min-height: var(--size-dashboard-control);
-  padding: 0;
   padding-right: var(--spacing-level-3);
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  color: var(--color-text-secondary);
-  --app-icon-state-color: var(--color-text-secondary);
+  --app-icon-state-color: var(--color-icon-default);
   white-space: nowrap;
-  cursor: pointer;
 }
 
 /* Give each category its palette color only during interaction or selection. */
-.settings-category-button[data-settings-category="general"],
-.settings-subcategory-list[data-settings-subcategories="general"] { --settings-category-color: var(--color-settings-general); }
-.settings-category-button[data-settings-category="appearance"],
-.settings-subcategory-list[data-settings-subcategories="appearance"] { --settings-category-color: var(--color-settings-appearance); }
-.settings-category-button[data-settings-category="storage"],
-.settings-subcategory-list[data-settings-subcategories="storage"] { --settings-category-color: var(--color-settings-storage); }
-.settings-category-button[data-settings-category="integrations"],
-.settings-subcategory-list[data-settings-subcategories="integrations"] { --settings-category-color: var(--color-settings-integrations); }
-.settings-category-button[data-settings-category="account"],
-.settings-subcategory-list[data-settings-subcategories="account"] { --settings-category-color: var(--color-settings-account); }
+.settings-general-button,
+.settings-general-button + .settings-subcategory-list { --settings-category-color: var(--color-settings-general); }
+.settings-appearance-button,
+.settings-appearance-button + .settings-subcategory-list { --settings-category-color: var(--color-settings-appearance); }
+.settings-storage-button,
+.settings-storage-button + .settings-subcategory-list { --settings-category-color: var(--color-settings-storage); }
+.settings-integrations-button,
+.settings-integrations-button + .settings-subcategory-list { --settings-category-color: var(--color-settings-integrations); }
+.settings-account-button,
+.settings-account-button + .settings-subcategory-list { --settings-category-color: var(--color-settings-account); }
 
 /* Show section shortcuts as child branches beneath the active category. */
-.settings-category-container .settings-subcategory-list {
+.settings-category-layout .settings-subcategory-list {
   --settings-subcategory-row-height: 24px;
   --settings-subcategory-indent: 36px;
   position: relative;
   display: grid;
   align-content: start;
-  gap: var(--spacing-level-2);
+  gap: var(--gap-nav-group);
   min-width: 0;
-  margin-top: -6px;
-  margin-left: calc(var(--settings-category-icon-size) / 2);
+  margin-top: -14px;
+  margin-left: calc(var(--settings-category-icon-size) / 2 - 1px);
   padding-left: var(--settings-subcategory-indent);
   padding-right: var(--spacing-level-1);
 }
 
-.settings-category-container .settings-subcategory-list::before {
+.settings-category-layout .settings-subcategory-list::before {
   position: absolute;
-  top: -4px;
+  top: 0;
   bottom: calc(var(--settings-subcategory-row-height) / 2 + 8px);
   left: 0;
   border-left: 2px solid var(--settings-branch-line-color);
@@ -131,10 +95,10 @@
   filter: var(--settings-branch-line-shadow, drop-shadow(-1px 0 0 rgba(0, 0, 0, 0.4)));
 }
 
-.settings-category-container .settings-subcategory-list::after {
+.settings-category-layout .settings-subcategory-list::after {
   position: absolute;
   z-index: 2;
-  top: -4px;
+  top: -2px;
   left: 0;
   height: var(--settings-active-branch-height, 0px);
   border-left: 2px solid var(--settings-category-color, var(--color-settings-storage));
@@ -143,7 +107,7 @@
   pointer-events: none;
 }
 
-.settings-category-container .settings-subcategory-button {
+.settings-category-layout .settings-subcategory-button {
   position: relative;
   display: flex;
   align-items: center;
@@ -163,7 +127,7 @@
   cursor: pointer;
 }
 
-.settings-category-container .settings-subcategory-button::before {
+.settings-category-layout .settings-subcategory-button::before {
   position: absolute;
   top: calc(50% - 14px);
   left: calc(-1 * var(--settings-subcategory-indent));
@@ -176,23 +140,23 @@
   filter: var(--settings-branch-line-shadow, drop-shadow(-1px 0 0 rgba(0, 0, 0, 0.4)));
 }
 
-.settings-category-container .settings-subcategory-button:hover,
-.settings-category-container .settings-subcategory-button:focus-visible,
-.settings-category-container .settings-subcategory-button.active {
+.settings-category-layout .settings-subcategory-button:hover,
+.settings-category-layout .settings-subcategory-button:focus-visible,
+.settings-category-layout .settings-subcategory-button.active {
   color: var(--settings-category-color, var(--color-text-primary));
 }
 
 /* Raise the active subsection above the shared trunk and highlight its branch green. */
-.settings-category-container .settings-subcategory-button.active {
+.settings-category-layout .settings-subcategory-button.active {
   z-index: 1;
 }
 
-.settings-category-container .settings-subcategory-button.active::before {
+.settings-category-layout .settings-subcategory-button.active::before {
   z-index: 1;
   border-color: var(--settings-category-color, var(--color-settings-storage));
 }
 
-:root[data-theme="light"] .settings-category-container {
+:root[data-theme="light"] .settings-category-layout {
   --settings-branch-line-color: var(--color-text-secondary);
   --settings-branch-line-shadow: none;
 }
@@ -200,6 +164,7 @@
 /* Match each category icon to the UML's nested level-four icon box. */
 .settings-category-icon {
   display: grid;
+  flex: 0 0 var(--settings-category-icon-size);
   place-items: center;
   width: var(--settings-category-icon-size);
   height: var(--settings-category-icon-size);
@@ -212,7 +177,7 @@
   flex-basis: 20px;
 }
 
-/* Let the shared app-text base provide category label typography. */
+/* Let the active category button supply its label color. */
 .settings-category-text {
   min-width: 0;
   overflow: hidden;
@@ -235,13 +200,13 @@
 }
 
 /* Anchor About at the bottom of the vertical category navigation. */
-.settings-category-container > .settings-category-button[data-settings-category="about"] {
+.settings-category-layout > .settings-about-button {
   margin-top: auto;
 }
 /* !SECTION */
 
 /* SECTION settings-content-container */
-/* Keep category content inside its scrollable level-two surface. */
+/* Recess the scrollable content surface into the settings dialog. */
 .settings-content-container {
   --settings-thumb-size: 16px;
   --settings-thumb-radius: var(--radius-chip);
@@ -250,40 +215,112 @@
   container: settings-content / inline-size;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--spacing-level-2);
+  gap: var(--gap-nav-group);
   min-width: 0;
   min-height: 0;
   overflow: auto;
-  padding-block: calc(var(--spacing-level-1) + 4px);
-  padding-inline: calc(var(--spacing-level-1) + 2px);
+  padding-block: calc(var(--padding-block-nav-group) + 8px);
+  padding-inline: calc(var(--padding-inline-nav-group) + 8px);
+}
+
+/* Replace the raised level-two shadow with a subtle inset edge. */
+.settings-content-container.level-2-styling,
+:root[data-theme-glass="on"] .settings-content-container.level-2-styling {
+  box-shadow: var(--shadow-surface-inset);
 }
 
 /* Give standalone options the same gap used between options inside a group. */
 .settings-content-container > [data-settings-panel] {
   display: grid;
   align-content: start;
-  gap: 4px;
+  gap: var(--gap-nav-group);
   min-width: 0;
 }
 
 /* Keep the storage tree and its branches from creating horizontal page scroll. */
-#settings-panel-storage {
+[data-settings-panel="storage"] {
   min-width: 0;
   max-width: 100%;
   overflow-x: clip;
 }
 
-/* Keep a larger break where a settings group begins or ends. */
-.settings-content-container > [data-settings-panel] > .settings-option-group + *,
-.settings-content-container > [data-settings-panel] > * + .settings-option-group {
-  margin-top: calc(var(--spacing-level-0) - var(--spacing-level-1));
+/* Reduce only the heading-to-group gap while leaving group-to-group spacing intact. */
+.settings-content-container .option-group-header-layout + .settings-option-group {
+  margin-block-start: calc(-1 * var(--spacing-level-2) - 2px);
+}
+
+.settings-content-container [data-settings-panel="storage"] > .settings-option-row {
+  row-gap: var(--gap-nav-group);
 }
 
 .settings-content-container > [data-settings-panel][hidden] {
   display: none;
 }
 
-/* Group related appearance choices in a level-three surface. */
+/* Center a large shared Rewatched wordmark at the top of About. */
+.settings-content-container .about-brand-container {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  width: fit-content;
+  max-width: 100%;
+  align-self: center;
+  padding-block: var(--spacing-level-2);
+  padding-inline: calc(var(--spacing-level-2) + var(--spacing-level-1));
+}
+
+.settings-content-container .about-brand-layout {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  min-width: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-dashboard-brand);
+  font-size: clamp(42px, 8cqi, 64px);
+  font-weight: 700;
+  letter-spacing: -.07em;
+  -webkit-text-stroke: 1.4px var(--color-title-outline);
+  paint-order: stroke fill;
+}
+
+.settings-content-container .about-brand-layout > .brand-text {
+  overflow: visible;
+  text-overflow: clip;
+  text-transform: none;
+}
+
+.settings-content-container .about-details {
+  color: var(--color-text-secondary);
+  font-weight: 450;
+  text-align: center;
+}
+
+.settings-content-container .about-details > p {
+  margin: 0;
+}
+
+.settings-content-container .about-credits-link {
+  align-self: center;
+  margin-top: auto;
+  color: var(--color-text-secondary);
+  font-size: inherit;
+  font-weight: 450;
+}
+
+.settings-content-container > [data-settings-panel="about"] {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.settings-content-container .about-credits-link:hover,
+.settings-content-container .about-credits-link:focus-visible {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Group related settings choices in a level-three surface. */
 .settings-content-container .settings-option-group {
   display: grid;
   align-content: start;
@@ -300,6 +337,11 @@
   min-width: 0;
 }
 
+/* Keep each Storage section heading and its options surface full width. */
+.settings-content-container [data-settings-panel="storage"] .settings-option-row > :is(.option-group-header-layout, .settings-option-group) {
+  grid-column: 1 / -1;
+}
+
 .settings-content-container .settings-toggle-row {
   display: flex;
   align-items: stretch;
@@ -310,18 +352,6 @@
 .settings-content-container .settings-toggle-row > .settings-option {
   flex: 0 1 auto;
   max-width: calc((100% - var(--spacing-level-1)) / 2);
-}
-
-.settings-content-container .settings-save-group {
-  grid-column: 1 / -1;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: start;
-}
-
-/* Keep the Save heading and import controls on their own rows. */
-.settings-content-container .settings-save-group > .settings-heading-layout,
-.settings-content-container .settings-save-group > .import-options {
-  grid-column: 1 / -1;
 }
 
 /* Keep the storage summary as one content-sized item in the Save section. */
@@ -337,7 +367,7 @@
   grid-column: 1 / -1;
   display: grid;
   align-content: start;
-  gap: var(--spacing-level-2);
+  gap: var(--gap-nav-group);
   min-width: 0;
 }
 
@@ -352,29 +382,29 @@
 
 }
 
-/* Give each group title a compact level-four surface aligned with its rows. */
-.settings-content-container .settings-option-group > h3,
-.settings-content-container .settings-option-group > .settings-heading-layout > h3 {
+/* Give each section title its own compact level-three surface. */
+.settings-content-container .option-group-heading {
   box-sizing: border-box;
-  width: max-content;
+  width: fit-content;
   max-width: 100%;
-  margin: 0 0 6px;
+  margin: 0 auto 0 0;
   min-height: 36px;
   padding-block: calc(var(--spacing-level-2) + 4px);
   padding-inline: var(--spacing-level-1);
-  border-radius: var(--radius-control-small);
   color: var(--color-text-primary);
   font: var(--font-weight-app) 14px var(--font-family-app);
 }
 
-/* Place group info icons in their own boxes beside the titles. */
-.settings-content-container .settings-heading-layout {
+/* Place shared section headings on the left and status or info controls on the right. */
+.settings-content-container .option-group-header-layout {
   position: relative;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   gap: var(--spacing-level-2);
+  justify-self: stretch;
   width: 100%;
   max-width: 100%;
+  min-width: 0;
 }
 
 .settings-content-container .settings-heading-info,
@@ -388,13 +418,11 @@
 }
 
 .settings-content-container .settings-heading-info {
-  margin-left: auto;
   color: var(--color-text-secondary);
 }
 
 .settings-content-container .settings-heading-important {
   order: 0;
-  margin-left: auto;
   border-color: var(--color-button-primary);
   background: var(--color-button-primary);
   color: #000;
@@ -404,7 +432,7 @@
   margin-left: 0;
 }
 
-:root[data-theme-glass="on"] .settings-content-container .settings-heading-important.level-4-styling {
+:root[data-theme-glass="on"] .settings-content-container .settings-heading-important.level-3-styling {
   border-color: var(--color-button-primary);
   background: var(--color-button-primary);
   box-shadow: var(--shadow-glass-level-3);
@@ -443,10 +471,6 @@
   box-shadow: var(--shadow-surface-level-2);
   color: var(--color-text-secondary);
   font: 500 12px / 1.4 var(--font-family-app);
-}
-
-#storage-notice-info-help {
-  white-space: pre-line;
 }
 
 /* Keep the floating help readable over the settings surfaces in glass mode. */
@@ -696,25 +720,14 @@
   cursor: not-allowed;
 }
 
-/* Use level-three surfaces to group related storage, integration, and about controls. */
-.settings-content-container .backup-settings {
-  min-width: 0;
-  padding: var(--spacing-level-1);
-}
-
-.settings-content-container .backup-settings:not(.settings-option-group) h3 {
-  margin: 0 0 var(--spacing-level-1);
-  color: var(--color-text-primary);
-  font: var(--font-weight-app) 16px var(--font-family-app);
-}
-
-.settings-content-container .backup-settings > p {
-  margin: 0 0 var(--spacing-level-1);
+/* Keep standalone group descriptions compact and secondary. */
+.settings-content-container .settings-option-group > p {
+  margin: 0;
   color: var(--color-text-secondary);
   font: 500 12px / 1.5 var(--font-family-app);
 }
 
-.settings-content-container .backup-settings.settings-option-group .imdb-api-key-setting .api-usage-counter.level-4-styling {
+.settings-content-container .imdb-api-key-setting .api-usage-counter.level-4-styling {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -726,8 +739,12 @@
   white-space: nowrap;
 }
 
-.settings-content-container .backup-settings a {
-  color: var(--color-text-accent);
+.settings-content-container .imdb-api-key-setting .api-usage-counter > strong {
+  color: #000;
+}
+
+.settings-content-container .imdb-api-key-setting .api-usage-label {
+  color: #000;
 }
 
 .settings-content-container .backup-actions,
@@ -738,6 +755,17 @@
   gap: var(--spacing-level-1);
 }
 
+.settings-content-container .settings-load-layout .backup-actions {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  justify-content: start;
+}
+
+.settings-content-container .settings-load-layout .backup-actions > button:first-of-type {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
 .settings-content-container .imdb-api-key-setting {
   width: 100%;
   min-width: 0;
@@ -745,12 +773,12 @@
   flex-wrap: nowrap;
 }
 
-.settings-content-container .imdb-api-key-setting #omdb-api-key {
+.settings-content-container .imdb-api-key-setting .omdb-api-key-input {
   width: 0;
   flex: 1 1 0;
 }
 
-.settings-content-container .imdb-api-key-setting #save-omdb-key {
+.settings-content-container .imdb-api-key-setting .omdb-save-key-button {
   flex: 0 0 auto;
 }
 
@@ -833,7 +861,7 @@
 }
 
 .settings-content-container .backup-summary-source[data-storage-source="browser"] {
-  --backup-summary-source-color: var(--palette-yellow);
+  --backup-summary-source-color: var(--color-storage-error);
 }
 
 .settings-content-container .backup-summary-source-name {
@@ -1010,17 +1038,17 @@
   --settings-status-accent: var(--palette-yellow);
 }
 
+.settings-content-container .settings-status-message[data-status="warning"][data-warning-kind="browser-copy"] {
+  --settings-status-accent: var(--palette-red);
+}
+
 /* Keep the shared level-three glass surface and tint only the status border. */
 :root .settings-content-container .settings-status-message.level-3-styling {
   border-color: var(--settings-status-accent, var(--palette-yellow));
 }
 
 /* Keep Storage and Integrations on the same inset-control system as Appearance. */
-.settings-content-container .backup-settings.settings-option-group > p {
-  margin: 0;
-}
-
-.settings-content-container .backup-settings.settings-option-group .text-button {
+.settings-content-container :is([data-settings-panel="storage"], [data-settings-panel="integrations"]) .settings-option-group .text-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1047,18 +1075,14 @@
   filter: brightness(0) opacity(0.58);
 }
 
-.settings-content-container .backup-settings.settings-option-group > .text-button {
-  justify-self: start;
-}
-
-.settings-content-container .backup-settings.settings-option-group .api-key-setting input {
+.settings-content-container [data-settings-panel="integrations"] .api-key-setting input {
   min-height: 36px;
   padding: 8px 12px;
   color: var(--color-text-primary);
   font: 12px var(--font-family-app);
 }
 
-#settings-panel-storage .import-options {
+[data-settings-panel="storage"] .import-options {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1072,11 +1096,11 @@
 }
 
 /* Match the import controls' separation from the tree to its name-to-first-row spacing. */
-#settings-panel-storage .import-options:not([hidden]) {
+[data-settings-panel="storage"] .import-options:not([hidden]) {
   margin-top: calc(var(--spacing-level-3) + var(--spacing-level-2));
 }
 
-#settings-panel-storage .import-options > label {
+[data-settings-panel="storage"] .import-options > label {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-level-2);
@@ -1086,13 +1110,13 @@
   cursor: pointer;
 }
 
-#settings-panel-storage .import-options > label > span {
+[data-settings-panel="storage"] .import-options > label > span {
   font-size: 13px;
   font-weight: var(--font-weight-app);
   color: inherit;
 }
 
-#settings-panel-storage .import-options input[type="radio"] {
+[data-settings-panel="storage"] .import-options input[type="radio"] {
   appearance: none;
   position: relative;
   display: grid;
@@ -1108,7 +1132,7 @@
   transition: background-color 140ms ease, border-color 140ms ease;
 }
 
-#settings-panel-storage .import-options input[type="radio"]::before {
+[data-settings-panel="storage"] .import-options input[type="radio"]::before {
   color: var(--palette-white);
   font-size: 12px;
   font-weight: 700;
@@ -1116,27 +1140,27 @@
   content: "";
 }
 
-#settings-panel-storage .import-options input[type="radio"]:checked {
+[data-settings-panel="storage"] .import-options input[type="radio"]:checked {
   background: var(--color-accent-primary);
   border-color: var(--color-accent-primary);
 }
 
-#settings-panel-storage .import-options input[type="radio"]:checked::before {
+[data-settings-panel="storage"] .import-options input[type="radio"]:checked::before {
   content: "✓";
 }
 
-#settings-panel-storage .import-options input[type="radio"]:focus-visible {
+[data-settings-panel="storage"] .import-options input[type="radio"]:focus-visible {
   outline: 2px solid var(--color-accent-primary);
   outline-offset: 2px;
 }
 
-#settings-panel-storage .import-options > .import-actions {
+[data-settings-panel="storage"] .import-options > .import-actions {
   display: flex;
   gap: var(--spacing-level-1);
   margin-left: auto;
 }
 
-#settings-panel-storage .import-options[hidden] {
+[data-settings-panel="storage"] .import-options[hidden] {
   display: none;
 }
 /* !SECTION */
@@ -1144,7 +1168,7 @@
 /* SECTION settings responsive layout */
 /* Keep category navigation and content usable in a narrow settings dialog. */
 @media (max-width: 700px) {
-  #settings-dialog.settings-container.level-1-styling[open] {
+  .settings-container[open] {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
     width: calc(100vw - 40px);
@@ -1155,14 +1179,14 @@
     padding: var(--spacing-level-0);
   }
 
-  .settings-category-container {
+  .settings-category-layout {
     flex-direction: row;
     width: max-content;
     max-width: 100%;
     overflow-x: auto;
   }
 
-  .settings-category-container > .settings-category-button[data-settings-category="about"] {
+  .settings-category-layout > .settings-about-button {
     margin-top: 0;
   }
 

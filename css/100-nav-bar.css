@@ -1,0 +1,25 @@
+/* Shared contracts for the vertical and horizontal navigation layouts. */
+
+/* SECTION Shared navbar layout */
+
+/* ANCHOR Shared layout defaults */
+/* Share the outer gap and minimum-width behavior between both navigation rails. */
+.navbar-vertical-layout,
+.navbar-horizontal-layout {
+  gap: var(--spacing-level-0);
+  min-width: 0;
+}
+
+/* Keep both rails' control sizing in sync at narrow widths. */
+@media (max-width: 700px) {
+  .app-container {
+    --navbar-topbar-height: 52px;
+    --nav-horizontal-control-size: 40px;
+  }
+
+  :root {
+    --navbar-topbar-control-inset: 6px;
+  }
+}
+
+/* !SECTION */

@@ -1,12 +1,16 @@
 /* Empty states and repeated banners inside the workspace. */
 
-/* SECTION workspace-content-container */
+/* SECTION workspace-content-layout */
 /* Arrange horizontally scrollable pages of entry banners below the workspace controls. */
-.workspace-content-container {
+.workspace-content-layout {
   --workspace-entry-columns: 5;
+  --workspace-entry-poster-height: 108px;
+  --workspace-entry-row-min-height: calc(var(--workspace-entry-poster-height) + var(--spacing-level-1) + var(--spacing-level-1) + 2px);
   display: flex;
   column-gap: 0;
   min-width: 0;
+  margin-block: calc(-1 * var(--spacing-level-1));
+  padding-block: var(--spacing-level-1);
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
@@ -15,7 +19,7 @@
   scrollbar-width: none;
 }
 
-.workspace-content-container::-webkit-scrollbar {
+.workspace-content-layout::-webkit-scrollbar {
   display: none;
 }
 
@@ -24,6 +28,7 @@
   display: grid;
   flex: 0 0 100%;
   grid-template-columns: repeat(var(--workspace-entry-columns), minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(var(--workspace-entry-row-min-height), auto));
   align-content: start;
   gap: calc(var(--spacing-level-1) + 4px);
   min-width: 0;
@@ -32,12 +37,11 @@
   scroll-snap-stop: normal;
 }
 
-/* SECTION workspace-banner-container */
+/* SECTION entry-container */
 /* Base classes: .banner-container, .level-2-styling */
 /* Size each entry banner as a compact poster-and-information card. */
-.workspace-banner-container {
+.entry-container {
   --workspace-entry-poster-width: 72px;
-  --workspace-entry-poster-height: 108px;
   --workspace-entry-poster-backdrop:
     radial-gradient(ellipse at 0% 0%, color-mix(in srgb, var(--entry-poster-color-one, transparent) var(--strength-entry-poster-backdrop), transparent), transparent 72%),
     radial-gradient(ellipse at 100% 100%, color-mix(in srgb, var(--entry-poster-color-two, transparent) var(--strength-entry-poster-backdrop), transparent), transparent 68%);
@@ -55,7 +59,7 @@
 }
 
 /* Reveal each card's poster-color wash only while it is hovered or keyboard-focused. */
-.workspace-banner-container::before {
+.entry-container::before {
   position: absolute;
   z-index: 1;
   inset: 0;
@@ -67,13 +71,13 @@
   pointer-events: none;
   transition: opacity 180ms ease;
 }
-:root[data-entry-poster-backdrop="on"] .workspace-banner-container:is(:hover, :focus-within)::before {
+:root[data-entry-poster-backdrop="on"] .entry-container:is(:hover, :focus-within)::before {
   opacity: 1;
 }
 
 /* SECTION banner-poster */
 /* Use the shared poster crop at the compact card size. */
-.workspace-banner-container .banner-poster {
+.entry-container .banner-poster {
   width: 100%;
   height: var(--workspace-entry-poster-height);
   min-height: 0;
@@ -84,7 +88,7 @@
 
 /* Base classes: .type-chip-styling, .media-type-icon */
 /* Place the media-type chip over the poster's upper-left corner. */
-.workspace-banner-container .banner-type {
+.entry-container .banner-type {
   top: var(--spacing-level-2);
   left: var(--spacing-level-2);
   box-sizing: border-box;
@@ -95,7 +99,7 @@
 
 /* SECTION banner-info-layout */
 /* Tighten the shared banner layout for an entry card. */
-.workspace-banner-container .banner-info-layout {
+.entry-container .banner-info-layout {
   --banner-info-gap: calc(var(--spacing-level-1) - 2px);
   align-items: flex-start;
   align-self: center;
@@ -108,7 +112,7 @@
 
 /* SECTION banner-labels-layout */
 /* Keep the category and release chips in one row without clipping their shadows. */
-.workspace-banner-container .banner-labels-layout {
+.entry-container .banner-labels-layout {
   align-self: stretch;
   flex-wrap: nowrap;
   gap: var(--spacing-level-2);
@@ -121,14 +125,14 @@
 
 /* Base classes: .category-chip-styling or .text-chip-styling */
 /* Give category and release chips the same compact height. */
-.workspace-banner-container :is(.banner-category-chip, .banner-release-date-chip, .banner-log-date-chip) {
+.entry-container :is(.banner-category-chip, .banner-release-date-chip, .banner-log-date-chip) {
   height: 20px;
   font-size: calc(var(--font-size-label-chip) - 1px);
 }
 
 /* Base class: .category-chip-styling */
 /* Keep the category chip compact and prevent it from shrinking. */
-.workspace-banner-container .banner-category-chip {
+.entry-container .banner-category-chip {
   flex: 0 0 auto;
   padding: 2px 4px;
   letter-spacing: normal;
@@ -137,7 +141,7 @@
 
 /* Base class: .text-chip-styling */
 /* Allow the release chip to truncate within the label row. */
-.workspace-banner-container .banner-release-date-chip {
+.entry-container .banner-release-date-chip {
   flex: 0 1 auto;
   min-width: 0;
   overflow: hidden;
@@ -149,7 +153,7 @@
 /* ANCHOR banner-title */
 /* Base class: .banner-title */
 /* Scale title text with the available column width and truncate it to one line. */
-.workspace-banner-container .banner-title {
+.entry-container .banner-title {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -168,14 +172,14 @@
 
 /* Base class: .banner-director */
 /* Use compact secondary text below entry titles. */
-.workspace-banner-container .banner-director {
+.entry-container .banner-director {
   font-size: 11px;
 }
 /* !SECTION */
 
 /* SECTION banner-meta-layout */
 /* Stack the rating or priority row above the log date. */
-.workspace-banner-container .banner-meta-layout {
+.entry-container .banner-meta-layout {
   --banner-meta-gap: calc(var(--spacing-level-1) - 2px);
   margin-top: auto;
 }
@@ -183,31 +187,35 @@
 /* SECTION banner-value-layout */
 /* Base classes: .value-chip-styling, .ratings-meter, or .priority-dots */
 /* Size the value chip and indicator for the compact card. */
-.workspace-banner-container .banner-value-layout .value-chip-styling {
+.entry-container .banner-value-layout .value-chip-styling {
+  --radius-value-chip: calc(var(--radius-chip) - 1px);
   padding: 2px 5px;
   font-size: calc(var(--font-size-value-chip) - 3px);
 }
-.workspace-banner-container .banner-value-layout .rating-value-chip {
+.entry-container .banner-value-layout .rating-value-chip {
   border-radius: var(--radius-value-chip);
+  justify-content: center;
+  text-align: center;
 }
 
 /* Base classes: .ratings-meter, .ratings-bar */
 /* Keep the entry-card meter compact and independent of the watched chip. */
-.workspace-banner-container .ratings-bar {
+.entry-container .ratings-bar {
   width: 120px;
   max-width: calc(100cqi - 38px);
   height: 7px;
 }
 
-:root[data-main-value-chips="hidden"] .workspace-container .workspace-banner-container .ratings-bar {
+:root[data-main-value-chips="hidden"] .workspace-container .entry-container .ratings-bar {
   width: 120px;
+  transform: translateY(-8px);
 }
 
-.workspace-banner-container .banner-value-layout .priority-dots {
+.entry-container .banner-value-layout .priority-dots {
   --priority-color: var(--color-priority-medium);
 }
 
-.workspace-banner-container .banner-value-layout .priority-value-chip {
+.entry-container .banner-value-layout .priority-value-chip {
   --priority-color: var(--color-priority-medium);
   font-size: calc(var(--font-size-value-chip) - 3px);
 }
@@ -215,7 +223,7 @@
 
 /* Base class: .text-chip-styling */
 /* Let the date truncate independently of the value row. */
-.workspace-banner-container .banner-log-date-chip {
+.entry-container .banner-log-date-chip {
   font-size: calc(var(--font-size-label-chip) - 1px);
 }
 /* !SECTION */
@@ -253,7 +261,7 @@
   transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
 }
 
-.workspace-banner-container:is(:hover, :focus-within) .workspace-tools-layout {
+.entry-container:is(:hover, :focus-within) .workspace-tools-layout {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -298,27 +306,27 @@
 }
 /* !SECTION */
 
-/* ANCHOR workspace-banner-container states */
+/* ANCHOR entry-container states */
 /* Lift the focused or hovered card without blocking its link. */
-.workspace-banner-container:is(:hover, :focus-within) {
+.entry-container:is(:hover, :focus-within) {
   transform: translateY(-4px);
   border-color: var(--color-border-accent-muted);
 }
-.workspace-banner-container.is-opening { pointer-events: none; }
+.entry-container.is-opening { pointer-events: none; }
 
-/* ANCHOR workspace-content-container responsive grid */
+/* ANCHOR workspace-content-layout responsive grid */
 /* Show five cards on very wide screens, then step down as content narrows. */
 @container app-content (width < 1550px) {
-  .workspace-content-container { --workspace-entry-columns: 4; }
+  .workspace-content-layout { --workspace-entry-columns: 4; }
 }
 @container app-content (width < 1400px) {
-  .workspace-content-container { --workspace-entry-columns: 3; }
+  .workspace-content-layout { --workspace-entry-columns: 3; }
 }
 @container app-content (width < 850px) {
-  .workspace-content-container { --workspace-entry-columns: 2; }
+  .workspace-content-layout { --workspace-entry-columns: 2; }
 }
 @container app-content (width < 560px) {
-  .workspace-content-container { --workspace-entry-columns: 1; }
+  .workspace-content-layout { --workspace-entry-columns: 1; }
 }
 /* !SECTION */
 /* !SECTION */

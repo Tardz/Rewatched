@@ -1,0 +1,98 @@
+/* Styles for the actor and plot details panel beside the overview banner. */
+
+/* SECTION details-container */
+/* Base class: .level-1-styling */
+/* Pair the featured banner with its actor and plot information panel. */
+.details-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-self: stretch;
+  min-height: 0;
+  overflow: hidden;
+  block-size: auto;
+  min-width: 0;
+}
+
+/* SECTION details-header-container */
+/* Keep the two detail views side-by-side above their shared content panel. */
+.details-header-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-level-1);
+  min-width: 0;
+  padding: var(--spacing-level-1);
+}
+
+/* SECTION detail-option */
+/* Base classes: .text-button, .level-3-styling */
+/* Make each detail view a compact, equal-width tab button. */
+.detail-option {
+  min-width: 0;
+  padding: 8px 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  border-radius: var(--radius-control-small);
+}
+
+.detail-option.active {
+  color: var(--color-text-primary);
+  text-shadow: 0 0 8px var(--color-glow-default);
+}
+/* !SECTION */
+/* !SECTION */
+
+/* SECTION details-content-container */
+/* Fill the remaining panel height with scrollable entry information. */
+.details-content-container {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: var(--spacing-level-1);
+}
+
+.details-content-container > div {
+  height: 100%;
+  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* SECTION details-actors-layout */
+/* Stack each actor name in its own level-three surface. */
+.details-actors-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-level-1);
+  min-width: 0;
+}
+
+/* Base class: .level-3-styling */
+/* Keep actor names readable and padded inside their individual boxes. */
+.details-actors-layout > .level-3-styling {
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: var(--spacing-level-1);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+/* !SECTION */
+
+.details-actors-layout > p,
+.details-content-container .details-plot-layout {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+/* !SECTION */

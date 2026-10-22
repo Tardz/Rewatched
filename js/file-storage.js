@@ -25,7 +25,7 @@ window.__rewatchedDirty = false;
 window.addEventListener('beforeunload', (event) => {
   // Electron shows its own save/discard dialog from the main process.
   if (navigator.userAgent.includes('Electron')) return;
-  const statusTarget = $('#storage-save-indicator') || $('#open-storage-check');
+  const statusTarget = $('#storage-save-indicator') || $('.dashboard-save-button');
   if (!statusTarget || !window.__rewatchedDirty) return;
   event.preventDefault();
   event.returnValue = '';
@@ -33,7 +33,7 @@ window.addEventListener('beforeunload', (event) => {
 
 /** Updates the saved/unsaved state on the legacy indicator or reworked save button. */
 function storageSaveState(state) {
-  const statusTarget = $('#storage-save-indicator') || $('#open-storage-check');
+  const statusTarget = $('#storage-save-indicator') || $('.dashboard-save-button');
   currentStorageSaveState = state;
   window.__rewatchedDirty = state === 'pending' || state === 'error';
   if (statusTarget) {
@@ -49,7 +49,7 @@ function storageSaveState(state) {
     statusTarget.title = status;
     statusTarget.setAttribute('aria-label', status);
   }
-  const checkButton = $('#open-storage-check');
+  const checkButton = $('.dashboard-save-button');
   if (checkButton) {
     checkButton.title = `Storage Consistency Check — ${status}`;
     checkButton.setAttribute('aria-label', `Open Storage Consistency Check. ${status}`);
@@ -176,7 +176,7 @@ async function showStorageComparison() {
   }
 }
 
-$('#open-storage-check').addEventListener('click', showStorageComparison);
+$('.dashboard-save-button').addEventListener('click', showStorageComparison);
 
 $('#save-confirmation-save').addEventListener('click', async (event) => {
   const button = event.currentTarget;
@@ -235,7 +235,7 @@ async function saveLinkedFileNow() {
 
 /** Refreshes the storage name on the legacy label or reworked button. */
 function updateStorageIndicator() {
-  const nameTarget = $('#current-storage-name') || $('#open-storage-settings');
+  const nameTarget = $('#current-storage-name') || $('.dashboard-storage-button');
   const isBrowserStorage = !useElectronStorage && !storageFileHandle;
   const activeStorageName = isBrowserStorage && !browserFileImportedThisSession
     ? 'Browser'
@@ -247,11 +247,11 @@ function updateStorageIndicator() {
     summarySource.dataset.storageSource = activeStorageName === 'Browser' ? 'browser' : 'file';
     if (summarySourceName) summarySourceName.textContent = activeStorageName;
   }
-  const navStorageName = $('#nav-save-text');
+  const navStorageName = $('.nav-storage-text');
   if (navStorageName) {
     navStorageName.textContent = activeStorageName.replace(/\.json$/i, '');
-    const navSaveButton = $('#nav-save-button');
-    const navSaveIcon = $('#nav-save-icon');
+    const navSaveButton = $('.nav-storage-button');
+    const navSaveIcon = $('.nav-storage-icon');
     let hasUnexportedData = false;
     if (isBrowserStorage) {
       const hasData = entries.length > 0 || watchlist.length > 0 || customCollections.length > 0;
@@ -325,6 +325,8 @@ function showLoadStatus(message, type = 'warning', detail = message) {
   status.textContent = message;
   status.hidden = !message;
   status.dataset.status = type;
+  if (type === 'warning' && message === 'Browser copy loaded') status.dataset.warningKind = 'browser-copy';
+  else delete status.dataset.warningKind;
   status.title = detail;
   status.setAttribute('aria-label', detail);
   if (message) startLoadStatusTimer();
@@ -334,7 +336,7 @@ function showLoadStatus(message, type = 'warning', detail = message) {
 /** Starts the Load message timer only while its settings panel is visible. */
 function startLoadStatusTimer() {
   const status = document.querySelector('#load-status');
-  if (!status || status.hidden || !status.textContent || !$('#settings-dialog')?.open || $('#settings-panel-storage')?.hidden) return;
+  if (!status || status.hidden || !status.textContent || !$('.settings-container')?.open || $('#settings-panel-storage')?.hidden) return;
   pauseLoadStatusTimer();
   const message = status.textContent;
   loadStatusTimer = setTimeout(() => {
@@ -342,6 +344,7 @@ function startLoadStatusTimer() {
     status.textContent = '';
     status.hidden = true;
     delete status.dataset.status;
+    delete status.dataset.warningKind;
     status.removeAttribute('title');
     status.removeAttribute('aria-label');
   }, 4000);

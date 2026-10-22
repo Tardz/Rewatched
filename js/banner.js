@@ -3,64 +3,73 @@
 
 const posterPaletteCache = new Map();
 let currentPagePalette = null;
-const bannerDateElement = $('#banner-date');
+const bannerElement = $('.overview-banner-container');
+const bannerBackdropElement = $('.overview-banner-container > .banner-backdrop');
+const bannerLabelElement = $('.overview-banner-container .banner-labels-layout');
+const bannerDateElement = $('.overview-banner-container .banner-log-date-chip');
+const bannerTitleElement = $('.overview-banner-container .banner-title');
+const bannerScoreElement = $('.overview-banner-container .banner-value-layout');
+const bannerImageElement = $('.overview-banner-container > .banner-poster > img');
+const bannerPlaceholderElement = $('.overview-banner-container > .banner-poster > span');
+const BANNER_ROTATION_LIMIT = 10;
 
 /** Keep the director chip available when entries omit a director. */
 function ensureBannerDirector() {
-  const existing = $('#banner-director');
+  const existing = $('.overview-banner-container .banner-director');
   if (existing) return existing;
   const director = document.createElement('span');
-  director.id = 'banner-director';
+  director.className = 'banner-director';
   return director;
 }
 
 /** Switches the overview details panel between its two information tabs. */
 function selectOverviewDetailsTab(tabName) {
-  const actorsTab = $('#banner-details-actors-tab');
-  const plotTab = $('#banner-details-plot-tab');
-  if (!actorsTab || !plotTab) return;
+  const details = $('.details-container');
+  const [actorsTab, plotTab] = details.querySelectorAll('.details-header-container > .detail-option');
+  const [actorsPanel, plotPanel] = details.querySelectorAll('.details-content-container > div');
+  if (!actorsTab || !plotTab || !actorsPanel || !plotPanel) return;
 
   const showActors = tabName === 'actors';
   actorsTab.classList.toggle('active', showActors);
   plotTab.classList.toggle('active', !showActors);
   actorsTab.setAttribute('aria-selected', String(showActors));
   plotTab.setAttribute('aria-selected', String(!showActors));
-  $('#banner-details-actors-content').hidden = !showActors;
-  $('#banner-details-plot-content').hidden = showActors;
+  actorsPanel.hidden = !showActors;
+  plotPanel.hidden = showActors;
 }
 
 /** Updates the actor and plot text for the currently featured entry. */
 function renderOverviewBannerDetails(entry) {
-  if (!$('#banner-details')) return;
+  const details = $('.details-container');
+  if (!details) return;
 
   const actors = entry?.metadata?.actors?.split(',').map((name) => name.trim()).filter(Boolean) || [];
   const plot = entry?.metadata?.plot?.trim() || '';
-  const actorList = $('#banner-details-actors-list');
+  const actorList = details.querySelector('.details-actors-layout');
   const actorItems = actors.map((name) => {
     const actor = document.createElement('div');
-    actor.className = 'app-text level-3-styling';
+    actor.className = 'level-3-styling';
     actor.setAttribute('role', 'listitem');
     actor.textContent = name;
     return actor;
   });
   if (!actorItems.length) {
     const emptyMessage = document.createElement('p');
-    emptyMessage.className = 'app-text';
     emptyMessage.textContent = entry ? 'Cast details have not been saved for this title yet.' : 'No title selected.';
     actorItems.push(emptyMessage);
   }
   actorList.replaceChildren(...actorItems);
-  $('#banner-details-plot-text').textContent = entry
+  details.querySelector('.details-content-container > div:last-child .details-plot-layout').textContent = entry
     ? plot || 'Plot details have not been saved for this title yet.'
     : 'No title selected.';
 }
 
-$('#banner-details-actors-tab')?.addEventListener('click', () => selectOverviewDetailsTab('actors'));
-$('#banner-details-plot-tab')?.addEventListener('click', () => selectOverviewDetailsTab('plot'));
+$('.details-container .details-header-container > .detail-option:first-child')?.addEventListener('click', () => selectOverviewDetailsTab('actors'));
+$('.details-container .details-header-container > .detail-option:last-child')?.addEventListener('click', () => selectOverviewDetailsTab('plot'));
 
 /** Fits the featured title on one line, stopping at a readable minimum size. */
 function fitReworkedBannerTitle() {
-  const title = $('#banner-title');
+  const title = bannerTitleElement;
   title.style.removeProperty('font-size');
   if (!title.clientWidth) return;
 
@@ -110,8 +119,8 @@ function updateGlassOpacityForPagePalette(palette = currentPagePalette) {
 /** Renders the active featured entry and its banner details. */
 function renderBanner() {
   const source = bannerEntries();
-  const recent = source.slice(0, 7);
-  const banner = $('#banner');
+  const recent = source.slice(0, BANNER_ROTATION_LIMIT);
+  const banner = bannerElement;
   const isReworkPreview = document.documentElement.dataset.cssReworkPreview === 'true';
   banner.hidden = !isReworkPreview && !recent.length;
   if (!recent.length) {
@@ -122,20 +131,19 @@ function renderBanner() {
     const director = ensureBannerDirector();
     director.textContent = '';
     director.hidden = true;
-    $('#banner-label').replaceChildren(...(isReworkPreview ? [] : [director]));
-    $('#banner-label').hidden = true;
-    $('#banner-title').textContent = hasEntries ? 'No matching entries' : 'No entries yet';
-    $('#banner-title').style.removeProperty('font-size');
-    $('#banner-score').replaceChildren();
-    $('#banner-score').removeAttribute('aria-label');
-    $('#banner-score').parentElement.hidden = true;
+    bannerLabelElement.replaceChildren(...(isReworkPreview ? [] : [director]));
+    bannerLabelElement.hidden = true;
+    bannerTitleElement.textContent = hasEntries ? 'No matching entries' : 'No entries yet';
+    bannerTitleElement.style.removeProperty('font-size');
+    bannerScoreElement.replaceChildren();
+    bannerScoreElement.removeAttribute('aria-label');
+    bannerScoreElement.parentElement.hidden = true;
     $('.overview-banner-controls-layout').hidden = true;
-    $('#banner-image').hidden = true;
-    $('#banner-image').removeAttribute('src');
-    $('#banner-placeholder').textContent = hasEntries ? 'Adjust search or filters' : 'Add an entry to get started';
-    $('#banner-placeholder').hidden = false;
-    $('#banner-backdrop').hidden = !isReworkPreview;
-    $('#banner-backdrop-image')?.removeAttribute('src');
+    bannerImageElement.hidden = true;
+    bannerImageElement.removeAttribute('src');
+    bannerPlaceholderElement.textContent = hasEntries ? 'Adjust search or filters' : 'Add an entry to get started';
+    bannerPlaceholderElement.hidden = false;
+    bannerBackdropElement.hidden = !isReworkPreview;
     $('.overview-banner-container > .banner-poster .banner-type')?.remove();
     resetBannerPalette({ updatePage: !location.hash.endsWith('/full') });
     if (isReworkPreview) fitReworkedBannerTitle();
@@ -143,10 +151,10 @@ function renderBanner() {
   }
 
   if (isReworkPreview) {
-    $('#banner-label').hidden = false;
-    $('#banner-score').parentElement.hidden = false;
+    bannerLabelElement.hidden = false;
+    bannerScoreElement.parentElement.hidden = false;
     $('.overview-banner-controls-layout').hidden = false;
-    $('#banner-placeholder').innerHTML = 'Add a poster<br>to see it here';
+    bannerPlaceholderElement.innerHTML = 'Add a poster<br>to see it here';
   }
 
   bannerIndex = (bannerIndex + recent.length) % recent.length;
@@ -159,7 +167,7 @@ function renderBanner() {
     ? { score: Number(entry.priority || 3) * 2, date: '' }
     : latest(entry);
 
-  const bannerLabel = $('#banner-label');
+  const bannerLabel = bannerLabelElement;
   const mediaType = entry.type.toLowerCase();
   const mediaIcon = document.createElement('span');
   mediaIcon.className = isReworkPreview
@@ -167,7 +175,7 @@ function renderBanner() {
     : `labelChip media-type-icon banner-content-info-label-type banner-media-type-icon is-${mediaType}`;
   mediaIcon.setAttribute('role', 'img');
   mediaIcon.setAttribute('aria-label', entry.type);
-  mediaIcon.innerHTML = appIconMarkup(mediaTypeIconName(entry.type), 'icon app-icon banner-media-type-icon-image');
+  mediaIcon.innerHTML = appIconMarkup(mediaTypeIconName(entry.type), 'icon banner-media-type-icon-image');
   if (isReworkPreview) {
     const poster = $('.overview-banner-container > .banner-poster');
     poster.querySelector('.banner-type')?.remove();
@@ -181,7 +189,7 @@ function renderBanner() {
     ? `WATCHLIST${entry.year ? ` · ${entry.year}` : ''}`
     : entry.year || '';
   if (isReworkPreview && entry.year) {
-    labelContext.innerHTML = appIconMarkup('release', 'icon app-icon banner-release-date-icon');
+    labelContext.innerHTML = appIconMarkup('release', 'icon banner-release-date-icon');
     const releaseLabel = document.createElement('span');
     releaseLabel.className = 'banner-release-date-label';
     releaseLabel.textContent = releaseText;
@@ -191,7 +199,7 @@ function renderBanner() {
   }
   const director = ensureBannerDirector();
   director.className = isReworkPreview
-    ? 'app-text banner-director'
+    ? 'banner-director'
     : 'labelChip banner-content-info-label-director';
   director.textContent = entry.director
     ? isReworkPreview ? `By ${entry.director}` : entry.director
@@ -218,14 +226,14 @@ function renderBanner() {
   }
   if (!isReworkPreview) labelParts.push(director);
   bannerLabel.replaceChildren(...labelParts);
-  const bannerTitle = $('#banner-title');
+  const bannerTitle = bannerTitleElement;
   bannerTitle.textContent = entry.title;
-  const bannerScore = $('#banner-score');
+  const bannerScore = bannerScoreElement;
   const bannerDate = bannerDateElement;
   if (isReworkPreview) {
     bannerDate.className = 'text-chip-styling banner-log-date-chip';
     bannerDate.hidden = isBacklogged;
-    bannerDate.innerHTML = appIconMarkup('watched', 'icon app-icon banner-log-date-icon');
+    bannerDate.innerHTML = appIconMarkup('watched', 'icon banner-log-date-icon');
     const dateLabel = document.createElement('span');
     dateLabel.className = 'banner-log-date-label';
     dateLabel.textContent = isBacklogged ? '' : formatDate(watch.date);
@@ -241,7 +249,7 @@ function renderBanner() {
   const scoreColor = isBacklogged
     ? priority <= 2 ? '#7edb9a' : priority === 3 ? '#8fc9ff' : '#ff7970'
     : ratingColorForScore(watch.score);
-  $('#banner-score').dataset.priority = priority;
+  bannerScoreElement.dataset.priority = priority;
   if (isBacklogged) {
     bannerScore.style.setProperty('--priority-color', scoreColor);
     const priorityValue = document.createElement('span');
@@ -268,7 +276,7 @@ function renderBanner() {
     ratingValue.className = isReworkPreview
       ? 'value-chip-styling rating-value-chip banner-ratings-chip'
       : 'valueChip ratingValueChip rating-valueChip banner-content-info-meta-value-ratingChip';
-    ratingValue.textContent = `${Number(watch.score) * 10}%`;
+    ratingValue.textContent = formatRatingChipValue(Number(watch.score) * 10);
     ratingValue.style.setProperty('--rating-color', scoreColor);
     bannerScore.append(
       ratingValue,
@@ -282,25 +290,25 @@ function renderBanner() {
     );
     bannerScore.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
   }
-  $('#banner-count').textContent = `${bannerIndex + 1} / ${recent.length}`;
+  const bannerCount = $('.overview-banner-controls-layout > .pagination-container > .pagination-text-container');
+  bannerCount.firstElementChild.textContent = `${bannerIndex + 1}`;
+  bannerCount.lastElementChild.textContent = `${recent.length}`;
 
   const hasPoster = Boolean(entry.poster);
-  $('#banner-image').hidden = !hasPoster;
-  $('#banner-placeholder').hidden = hasPoster;
-  $('#banner-backdrop').hidden = !isReworkPreview && !hasPoster;
+  bannerImageElement.hidden = !hasPoster;
+  bannerPlaceholderElement.hidden = hasPoster;
+  bannerBackdropElement.hidden = !isReworkPreview && !hasPoster;
   banner.classList.toggle('has-poster', hasPoster);
 
   if (hasPoster) {
-    $('#banner-image').src = entry.poster;
-    $('#banner-image').alt = `${entry.title} poster`;
-    if (!isReworkPreview) $('#banner-backdrop-image').src = entry.poster;
+    bannerImageElement.src = entry.poster;
+    bannerImageElement.alt = `${entry.title} poster`;
     updateBannerPalette(entry.poster, {
       updatePage: !location.hash.endsWith('/full')
         && !$('.stats-page-button, .section-statistics')?.classList.contains('is-active'),
     });
   } else {
-    $('#banner-image').removeAttribute('src');
-    $('#banner-backdrop-image')?.removeAttribute('src');
+    bannerImageElement.removeAttribute('src');
     resetBannerPalette({ updatePage: !location.hash.endsWith('/full') });
   }
   if (isReworkPreview) fitReworkedBannerTitle();
@@ -308,7 +316,7 @@ function renderBanner() {
 
 /** Clears poster-derived banner colors and optionally the page palette. */
 function resetBannerPalette({ updatePage = false } = {}) {
-  const banner = $('#banner');
+  const banner = bannerElement;
   delete banner.dataset.paletteSource;
   banner.style.removeProperty('--poster-color-one');
   banner.style.removeProperty('--poster-color-two');
@@ -428,7 +436,7 @@ function getPosterPalette(source) {
 
 /** Extracts and applies colors from the banner poster. */
 function updateBannerPalette(source, { updatePage = true } = {}) {
-  const banner = $('#banner');
+  const banner = bannerElement;
   const root = document.documentElement;
   banner.dataset.paletteSource = source;
   if (updatePage) {
@@ -469,10 +477,10 @@ function updateBannerPalette(source, { updatePage = true } = {}) {
 function bannerEntries() {
   const isBacklogged = activeCollectionView === 'watchlist';
   const source = (isBacklogged ? watchlist : entries).filter((entry) =>
-    matchesCollectionSearch(entry, $('#library-search')?.value.trim().toLocaleLowerCase() || '')
+    matchesCollectionSearch(entry, $('.library-search-container > .search-input')?.value.trim().toLocaleLowerCase() || '')
     && matchesCollectionFilters(entry, isBacklogged));
   const sorted = sortCollectionItems(source, isBacklogged);
-  if (document.documentElement.dataset.cssReworkPreview !== 'true') return sorted.slice(0, 7);
+  if (document.documentElement.dataset.cssReworkPreview !== 'true') return sorted.slice(0, BANNER_ROTATION_LIMIT);
 
   const pageSize = getCollectionColumnCount() * collectionRowsPerPage;
   return sorted.slice(collectionPage * pageSize, (collectionPage + 1) * pageSize);
@@ -480,7 +488,7 @@ function bannerEntries() {
 
 /** Moves the banner to the previous or next eligible entry. */
 async function slideBanner(direction) {
-  const banner = $('#banner');
+  const banner = bannerElement;
   if (bannerSliding || bannerEntries().length < 2 || banner.hidden) return;
 
   bannerSliding = true;
@@ -517,10 +525,10 @@ async function slideBanner(direction) {
   }
 }
 
-$('#banner-image').addEventListener('error', () => {
-  $('#banner-image').hidden = true;
-  $('#banner-placeholder').hidden = false;
-  $('#banner-backdrop').hidden = document.documentElement.dataset.cssReworkPreview !== 'true';
-  $('#banner').classList.remove('has-poster');
+bannerImageElement.addEventListener('error', () => {
+  bannerImageElement.hidden = true;
+  bannerPlaceholderElement.hidden = false;
+  bannerBackdropElement.hidden = document.documentElement.dataset.cssReworkPreview !== 'true';
+  bannerElement.classList.remove('has-poster');
 });
 /** Renders the featured title banner and manages its palette and rotation. */

@@ -28,12 +28,21 @@ function getCollectionColumnCount() {
   return columns === 'none' ? 1 : Math.max(1, columns.split(/\s+/).filter(Boolean).length);
 }
 
-// The desktop entry point still uses the legacy folder markup while the
-// isolated CSS preview uses the shared menu markup.
+// The current page uses the shared sidebar menu; index-old.html retains legacy markup.
 const folderDropdown = $('.folder-menu-wrapper, #library-folder-dropdown');
 const folderPicker = folderDropdown?.querySelector('.menu-container, #library-folder-picker');
 const folderList = folderPicker?.querySelector('[data-menu-options], #library-folder-list');
-const folderButton = $('#library-folder-button');
+const folderButton = $('.nav-folders-button, #library-folder-button');
+
+/** Keep the sidebar popup over the app content and aligned with its trigger. */
+function positionFolderMenu() {
+  if (!isReworkedCollection || !folderPicker || !folderButton) return;
+  const content = $('.app-content-container')?.getBoundingClientRect();
+  const trigger = folderButton.getBoundingClientRect();
+  if (!content) return;
+  folderPicker.style.left = `${content.left + 8}px`;
+  folderPicker.style.top = `${Math.max(content.top + 8, Math.min(trigger.top, content.bottom - folderPicker.offsetHeight - 8))}px`;
+}
 
 /** Opens or closes the library folder menu. */
 function setFolderMenuOpen(isOpen) {
@@ -41,13 +50,17 @@ function setFolderMenuOpen(isOpen) {
   folderPicker.hidden = !isOpen;
   folderDropdown?.classList.toggle('is-open', isOpen);
   folderButton.setAttribute('aria-expanded', String(isOpen));
-  $('#nav-folder-button')?.setAttribute('aria-expanded', String(isOpen));
+  if (isOpen) positionFolderMenu();
 }
 
 folderButton?.addEventListener('click', () => setFolderMenuOpen(folderPicker.hidden));
 
 document.addEventListener('click', (event) => {
-  if (!folderDropdown.contains(event.target)) setFolderMenuOpen(false);
+  if (folderDropdown && !folderDropdown.contains(event.target)) setFolderMenuOpen(false);
+});
+
+window.addEventListener('resize', () => {
+  if (folderPicker && !folderPicker.hidden) positionFolderMenu();
 });
 
 document.addEventListener('keydown', (event) => {
@@ -57,11 +70,14 @@ document.addEventListener('keydown', (event) => {
   folderButton?.focus();
 });
 
-const workspaceFilterMenuSelector = '.workspace-value-filter-wrapper, .workspace-year-filter-wrapper, .workspace-sort-wrapper';
+const workspaceFilterMenuSelector = '.workspace-type-menu-wrapper, .workspace-ratings-menu-wrapper, .workspace-year-menu-wrapper, .workspace-sort-menu-wrapper';
 const workspaceFilterMenus = [...document.querySelectorAll(workspaceFilterMenuSelector)];
+let hasPendingWorkspaceMenuChanges = false;
 
 function getWorkspaceFilterButton(wrapper) {
-  return wrapper.querySelector(':scope > button, :scope > .workspace-sort-control > .workspace-sort-trigger');
+  return wrapper.classList.contains('workspace-sort-menu-wrapper')
+    ? wrapper.querySelector(':scope > .workspace-sort-menu-button')
+    : wrapper.querySelector(':scope > button');
 }
 
 /** Opens one workspace filter menu and closes the others. */
@@ -71,34 +87,90 @@ function setWorkspaceFilterMenuOpen(wrapper, isOpen) {
   menu.hidden = !isOpen;
   wrapper.classList.toggle('is-open', isOpen);
   trigger.setAttribute('aria-expanded', String(isOpen));
+  document.body.classList.toggle(
+    'workspace-filter-menu-open',
+    workspaceFilterMenus.some((item) => !item.querySelector('.menu-container').hidden),
+  );
 }
 
 function closeWorkspaceFilterMenus() {
+  const wasOpen = workspaceFilterMenus.some((wrapper) => !wrapper.querySelector('.menu-container').hidden);
   workspaceFilterMenus.forEach((wrapper) => setWorkspaceFilterMenuOpen(wrapper, false));
+  if (wasOpen && hasPendingWorkspaceMenuChanges) {
+    hasPendingWorkspaceMenuChanges = false;
+    renderCollection();
+  }
 }
 
 workspaceFilterMenus.forEach((wrapper) => {
   const trigger = getWorkspaceFilterButton(wrapper);
   const select = wrapper.querySelector('select');
   const resetButton = wrapper.querySelector('.workspace-filter-reset-button, .workspace-sort-reset-button');
+  const directionButton = wrapper.querySelector('.workspace-sort-direction-button');
 
-  select.addEventListener('change', () => {
+  select?.addEventListener('change', () => {
     if (select.id === 'collection-value-filter') {
       const selectedValues = [...select.selectedOptions].map((option) => Number(option.value));
-      if (activeCollectionView === 'watchlist') priorityFilter = selectedValues;
-      else ratingFilter = selectedValues;
+      const isPriorityFilter = select.getAttribute('aria-label') === 'Filter by priority';
+      if (isPriorityFilter) priorityFilter = selectedValues;
+      else {
+        const addedValues = selectedValues.filter((value) => !ratingFilter.includes(value));
+        if (selectedValues.length > 2 && addedValues.length) {
+          const nextValue = addedValues.at(-1);
+          const endpointToMove = ratingFilter.reduce((closest, value) => (
+            Math.abs(value - nextValue) < Math.abs(closest - nextValue) ? value : closest
+          ), ratingFilter[0]);
+          ratingFilter = [...ratingFilter.filter((value) => value !== endpointToMove), nextValue];
+        } else {
+          const retainedValues = ratingFilter.filter((value) => selectedValues.includes(value));
+          ratingFilter = [...retainedValues, ...addedValues].slice(0, 2);
+          if (ratingFilter.length === 0) ratingFilter = [100, 0];
+        }
+        [...select.options].forEach((option) => {
+          option.selected = ratingFilter.includes(Number(option.value));
+        });
+      }
     }
-    if (select.id === 'watched-year-filter') {
-      watchedYearFilter = [...select.selectedOptions].map((option) => option.value);
+    if (select.id === 'release-year-filter') {
+      const selectedYears = [...select.selectedOptions].map((option) => option.value);
+      const addedYears = selectedYears.filter((year) => !releaseYearFilter.includes(year));
+      if (selectedYears.length > 2 && addedYears.length) {
+        const nextYear = addedYears.at(-1);
+        const endpointToMove = releaseYearFilter.reduce((closest, year) => (
+          Math.abs(Number(year) - Number(nextYear)) < Math.abs(Number(closest) - Number(nextYear)) ? year : closest
+        ), releaseYearFilter[0]);
+        releaseYearFilter = [...releaseYearFilter.filter((year) => year !== endpointToMove), nextYear];
+      } else {
+        releaseYearFilter = [
+          ...releaseYearFilter.filter((year) => selectedYears.includes(year)),
+          ...addedYears,
+        ].slice(0, 2);
+      }
+      [...select.options].forEach((option) => {
+        option.selected = releaseYearFilter.includes(option.value);
+      });
     }
     collectionPage = 0;
-    renderCollection();
+    hasPendingWorkspaceMenuChanges = true;
+    syncWorkspaceFilterMenu(select);
   });
 
-  trigger.addEventListener('click', () => {
+  trigger.addEventListener('click', (event) => {
     const willOpen = wrapper.querySelector('.menu-container').hidden;
     closeWorkspaceFilterMenus();
     setWorkspaceFilterMenuOpen(wrapper, willOpen);
+  });
+
+  directionButton?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const [sortKey, direction] = collectionSort.split('-');
+    if (!['watched', 'recent', 'rating', 'priority', 'title', 'release'].includes(sortKey)) return;
+    collectionSort = `${sortKey}-${direction === 'desc' ? 'asc' : 'desc'}`;
+    collectionPage = 0;
+    hasPendingWorkspaceMenuChanges = true;
+    select.value = collectionSort;
+    syncWorkspaceFilterMenu(select);
+    directionButton.focus();
   });
 
   trigger.addEventListener('keydown', (event) => {
@@ -111,21 +183,29 @@ workspaceFilterMenus.forEach((wrapper) => {
     (selectedOption || (event.key === 'ArrowDown' ? options[0] : options[options.length - 1]))?.focus();
   });
 
+  if (!select) return;
+
   resetButton?.addEventListener('click', (event) => {
     event.stopPropagation();
-    if (wrapper.classList.contains('workspace-sort-wrapper')) {
+    if (wrapper.classList.contains('workspace-sort-menu-wrapper')) {
       collectionSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
+      select.value = collectionSort;
     } else {
       [...select.options].forEach((option) => { option.selected = false; });
       if (select.id === 'collection-value-filter') {
         if (activeCollectionView === 'watchlist') priorityFilter = [];
-        else ratingFilter = [];
+        else {
+          ratingFilter = [100, 0];
+          [...select.options].forEach((option) => {
+            option.selected = ratingFilter.includes(Number(option.value));
+          });
+        }
       }
-      if (select.id === 'watched-year-filter') watchedYearFilter = [];
+      if (select.id === 'release-year-filter') releaseYearFilter = [];
     }
     collectionPage = 0;
-    renderCollection();
-    setWorkspaceFilterMenuOpen(wrapper, true);
+    hasPendingWorkspaceMenuChanges = true;
+    syncWorkspaceFilterMenu(select);
     resetButton.focus();
   });
 
@@ -133,11 +213,12 @@ workspaceFilterMenus.forEach((wrapper) => {
     const option = event.target.closest('.menu-option');
     if (!option || !wrapper.contains(option)) return;
     event.stopPropagation();
-    if (wrapper.classList.contains('workspace-sort-wrapper')) {
+    if (wrapper.classList.contains('workspace-sort-menu-wrapper')) {
       collectionSort = option.dataset.filterValue;
       collectionPage = 0;
-      renderCollection();
-      setWorkspaceFilterMenuOpen(wrapper, true);
+      hasPendingWorkspaceMenuChanges = true;
+      select.value = collectionSort;
+      syncWorkspaceFilterMenu(select);
       wrapper.querySelector('.menu-option.active')?.focus();
       return;
     }
@@ -161,44 +242,33 @@ workspaceFilterMenus.forEach((wrapper) => {
   });
 });
 
-const sortDirectionButton = $('.workspace-sort-wrapper .workspace-direction-button');
-sortDirectionButton?.addEventListener('click', (event) => {
-  event.stopPropagation();
-  const [sortKey, direction] = collectionSort.split('-');
-  if (!['watched', 'recent', 'rating', 'priority', 'title', 'release'].includes(sortKey)) return;
-  const sortWrapper = sortDirectionButton.closest('.workspace-sort-wrapper');
-  const wasMenuOpen = !sortWrapper.querySelector('.menu-container').hidden;
-  collectionSort = `${sortKey}-${direction === 'desc' ? 'asc' : 'desc'}`;
-  collectionPage = 0;
-  renderCollection();
-  if (wasMenuOpen) setWorkspaceFilterMenuOpen(sortWrapper, true);
-  sortDirectionButton.focus();
-});
-
-const resetCollectionFiltersButton = $('#reset-collection-filter-sort');
+const resetCollectionFiltersButton = $('.workspace-reset-button');
 resetCollectionFiltersButton?.addEventListener('click', () => {
-  activeFilter = 'all';
-  watchedYearFilter = [];
-  ratingFilter = [];
+  hasPendingWorkspaceMenuChanges = false;
+  activeFilters = [...workspaceMediaTypes];
+  releaseYearFilter = [];
+  ratingFilter = [100, 0];
   priorityFilter = [];
   collectionSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
-  document.querySelectorAll('#media-type-filters .type-switch-option, #media-type-filters .media-type-filter').forEach((button) => {
-    button.classList.toggle('active', button.dataset.filter === 'all');
-  });
   collectionPage = 0;
   renderCollection();
 });
 
 document.addEventListener('click', (event) => {
-  if (!event.target.closest(workspaceFilterMenuSelector)) closeWorkspaceFilterMenus();
-});
+  const openMenu = workspaceFilterMenus.find((wrapper) => !wrapper.querySelector('.menu-container').hidden);
+  if (!openMenu || openMenu.querySelector('.menu-container').contains(event.target)) return;
+
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  closeWorkspaceFilterMenus();
+}, true);
 
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape') return;
   const openMenu = workspaceFilterMenus.find((wrapper) => !wrapper.querySelector('.menu-container').hidden);
   if (!openMenu) return;
   event.preventDefault();
-  setWorkspaceFilterMenuOpen(openMenu, false);
+  closeWorkspaceFilterMenus();
   getWorkspaceFilterButton(openMenu).focus();
 });
 
@@ -209,61 +279,102 @@ function syncWorkspaceFilterMenu(select) {
 
   const trigger = getWorkspaceFilterButton(wrapper);
   const menu = wrapper.querySelector('.menu-container');
-  const triggerLabel = trigger.querySelector('.menu-button-label');
-  const directionButton = wrapper.querySelector('.workspace-direction-button');
+  const triggerLabel = trigger.querySelector('.menu-button-text');
+  const directionButton = select.id === 'collection-sort'
+    ? wrapper.querySelector('.workspace-sort-direction-button')
+    : null;
+  const directionIcon = directionButton?.querySelector('.masked-icon');
   const optionsContainer = wrapper.querySelector('[data-menu-options]');
   const selectedOptions = [...select.selectedOptions];
   const selectedOption = selectedOptions[0];
   const filterLabel = select.getAttribute('aria-label');
   const isValueFilter = select.id === 'collection-value-filter';
-  const isPriorityFilter = isValueFilter && activeCollectionView === 'watchlist';
+  const isPriorityFilter = isValueFilter && select.getAttribute('aria-label') === 'Filter by priority';
+  const resetButton = wrapper.querySelector('.workspace-filter-reset-button, .workspace-sort-reset-button');
+  if (resetButton) {
+    const defaultSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
+    const hasActiveSetting = select.id === 'collection-sort'
+      ? collectionSort !== defaultSort
+      : select.id === 'release-year-filter'
+        ? releaseYearFilter.length > 0
+        : isPriorityFilter
+          ? priorityFilter.length > 0
+          : !isDefaultRatingRange(ratingFilter);
+    resetButton.disabled = !hasActiveSetting;
+  }
+  const rangeValues = isValueFilter && !isPriorityFilter
+    ? selectedOptions.map((option) => Number(option.value))
+    : select.id === 'release-year-filter'
+      ? selectedOptions.map((option) => Number(option.value))
+      : [];
+  const rangeBounds = rangeValues.length === 2
+    ? [Math.min(...rangeValues), Math.max(...rangeValues)]
+    : null;
   menu.setAttribute('aria-label', filterLabel);
   const selectedText = select.multiple
     ? selectedOptions.length === 0
-      ? isValueFilter ? (isPriorityFilter ? 'Any priority' : 'Any rating') : 'All years'
-      : selectedOptions.length === 1
-        ? selectedOption.textContent
-        : `${selectedOptions.length} selected`
+      ? isValueFilter
+        ? (isPriorityFilter ? 'P5 - P1' : `100 - 0${hideRatingChipPercentage ? '' : '%'}`)
+        : select.id === 'release-year-filter'
+          ? select.options.length
+            ? `${select.options[0].value} - ${select.options[select.options.length - 1].value}`
+            : 'No years'
+          : 'All years'
+      : isValueFilter && !isPriorityFilter && selectedOptions.length === 2
+        ? `${Math.max(...selectedOptions.map((option) => Number(option.value)))} - ${Math.min(...selectedOptions.map((option) => Number(option.value)))}${hideRatingChipPercentage ? '' : '%'}`
+        : select.id === 'release-year-filter' && selectedOptions.length === 2
+          ? `${Math.max(...selectedOptions.map((option) => Number(option.value)))} - ${Math.min(...selectedOptions.map((option) => Number(option.value)))}`
+        : selectedOptions.length === 1
+          ? selectedOption.textContent
+          : `${selectedOptions.length} selected`
     : selectedOption?.textContent ?? '';
   const directionalSort = select.id === 'collection-sort' && /^(watched|recent|rating|priority|title|release)-(asc|desc)$/.exec(selectedOption?.value ?? '');
   triggerLabel.textContent = selectedText;
   if (directionButton) {
-    directionButton.hidden = !directionalSort;
+    directionButton.disabled = !directionalSort;
     if (directionalSort) {
       const direction = directionalSort[2];
-      directionButton.textContent = direction === 'desc' ? '↓' : '↑';
-      directionButton.setAttribute('aria-label', `Change sort to ${direction === 'desc' ? 'ascending' : 'descending'}`);
+      directionIcon.dataset.direction = direction;
+      directionButton.setAttribute('aria-label', `Change to ${direction === 'desc' ? 'ascending' : 'descending'} sort order`);
       directionButton.title = `Change to ${direction === 'desc' ? 'ascending' : 'descending'} order`;
     }
   }
   trigger.setAttribute('aria-label', `${filterLabel}: ${triggerLabel.textContent}`);
   trigger.classList.toggle('active', select.classList.contains('active'));
-  wrapper.querySelector('.workspace-sort-control')?.classList.toggle('active', select.classList.contains('active'));
 
   optionsContainer.replaceChildren(...[...select.options].map((selectOption) => {
     const button = document.createElement('button');
+    const optionValue = Number(selectOption.value);
+    const isInSelectedRange = rangeBounds
+      && optionValue >= rangeBounds[0]
+      && optionValue <= rangeBounds[1];
+    const isOptionActive = selectOption.selected || isInSelectedRange;
     button.type = 'button';
     button.className = isValueFilter
-      ? 'menu-option menu-option-value'
+      ? 'menu-option menu-option-value level-3-styling'
       : 'menu-option level-3-styling';
     button.dataset.filterValue = selectOption.value;
     if (isValueFilter) {
-      const valueChip = document.createElement('span');
-      valueChip.className = isPriorityFilter
-        ? 'value-chip-styling priority-value-chip'
-        : 'value-chip-styling rating-value-chip';
-      valueChip.textContent = selectOption.textContent;
-      if (isPriorityFilter) {
-        valueChip.style.setProperty('--priority-color', priorityColorForValue(Number(selectOption.value)));
+      if (isOptionActive) {
+        const valueChip = document.createElement('span');
+        valueChip.className = isPriorityFilter
+          ? 'value-chip-styling priority-value-chip'
+          : 'value-chip-styling rating-value-chip';
+        valueChip.textContent = selectOption.textContent;
+        if (isPriorityFilter) {
+          valueChip.style.setProperty('--priority-color', priorityColorForValue(Number(selectOption.value)));
+        } else {
+          valueChip.style.setProperty('--rating-color', ratingColorForScore(Number(selectOption.value) / 10));
+        }
+        button.append(valueChip);
       } else {
-        valueChip.style.setProperty('--rating-color', ratingColorForScore(Number(selectOption.value) / 10));
+        button.textContent = selectOption.textContent;
       }
-      button.append(valueChip);
     } else {
       button.textContent = selectOption.textContent;
     }
-    button.setAttribute('aria-pressed', String(selectOption.selected));
-    button.classList.toggle('active', selectOption.selected);
+    button.setAttribute('aria-pressed', String(isOptionActive));
+    button.classList.toggle('active', isOptionActive);
     return button;
   }));
 }
@@ -278,26 +389,11 @@ function priorityColorForValue(priority) {
   return getComputedStyle(document.documentElement).getPropertyValue(token).trim();
 }
 
-const expandableSourceControls = [
-  $('#collection-source-controls .library-view-switcher, #collection-source-controls .collection-view-switcher'),
-  $('#media-type-filters'),
-];
-expandableSourceControls.forEach((control) => control.addEventListener('pointerenter', () => {
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  control.classList.add('is-pointer-active');
-}));
-expandableSourceControls.forEach((control) => {
-  control.addEventListener('pointerleave', () => {
-    control.classList.remove('is-pointer-active');
-    if (control.contains(document.activeElement)) document.activeElement.blur();
-  });
-});
-
 /** Updates active styling for the Log and Backlog view controls. */
 function updateViewTabs() {
   const folderSelected = activeCollectionView === 'logged' && activeCollectionId !== 'all';
   const collapsedView = folderSelected ? folderReturnView : activeCollectionView;
-  document.querySelectorAll('#collection-source-controls .library-view-switcher > [data-view], #collection-source-controls .collection-view-switcher > [data-view]').forEach((button) => {
+  document.querySelectorAll('.workspace-controls-container :is(.library-view-switcher, .collection-view-switcher) > [data-view]').forEach((button) => {
     const selected = !folderSelected && button.dataset.view === activeCollectionView;
     button.classList.toggle('is-collapsed-current', folderSelected && button.dataset.view === collapsedView);
     button.classList.toggle('active', selected);
@@ -322,16 +418,11 @@ function renderCollectionPicker() {
   const selectedFolder = activeCollectionView === 'logged'
     ? customCollections.find((folder) => folder.id === activeCollectionId)
     : null;
-  folderDropdown?.classList.toggle('folder-active', Boolean(selectedFolder));
+  if (!isReworkedCollection) folderDropdown?.classList.toggle('folder-active', Boolean(selectedFolder));
   folderButton.setAttribute('aria-label', selectedFolder ? `Folder: ${selectedFolder.name}` : 'Choose a folder');
   folderButton.title = selectedFolder ? `Folder: ${selectedFolder.name}` : 'Choose a folder';
-  const navFolderButton = $('#nav-folder-button');
-  if (navFolderButton) {
-    navFolderButton.classList.toggle('is-active', Boolean(selectedFolder));
-    navFolderButton.setAttribute('aria-label', selectedFolder ? `Folder: ${selectedFolder.name}` : 'Choose a folder');
-    navFolderButton.title = selectedFolder ? `Folder: ${selectedFolder.name}` : 'Choose a folder';
-  }
-  const folderButtonLabel = folderButton.lastElementChild;
+  if (isReworkedCollection) folderButton.classList.toggle('is-active', Boolean(selectedFolder));
+  const folderButtonLabel = !isReworkedCollection && folderButton.lastElementChild;
   if (folderButtonLabel && folderButtonLabel.tagName !== 'IMG') {
     folderButtonLabel.textContent = selectedFolder?.name ?? '';
   }
@@ -348,7 +439,7 @@ function renderCollectionPicker() {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = document.documentElement.dataset.cssReworkPreview === 'true'
-      ? 'menu-option level-3-styling entry-folder-choice'
+      ? 'menu-option level-3-styling'
       : 'entry-folder-choice';
     button.dataset.folderId = folder.id;
     button.textContent = folder.name;
@@ -390,8 +481,6 @@ function keepControlOrderUntilCollapsed(group, buttonSelector) {
   group.addEventListener('focusout', releaseOrderAfterCollapse);
 }
 
-keepControlOrderUntilCollapsed(document.querySelector('.library-view-switcher, .collection-view-switcher'), '[data-view]');
-keepControlOrderUntilCollapsed($('#media-type-filters'), '.type-switch-option');
 
 /** Selects a library or folder and refreshes the collection view. */
 function selectCollection(collectionId) {
@@ -401,6 +490,7 @@ function selectCollection(collectionId) {
   collectionPage = 0;
   updateViewTabs();
   renderWithoutScrollCollapse();
+  if (typeof updateNavbarPageContext === 'function') updateNavbarPageContext();
 }
 
 /** Deletes a folder and removes its ID from entries. */
@@ -418,6 +508,7 @@ function deleteCollection(folder) {
   if (activeCollectionId === folder.id) activeCollectionId = 'all';
   save();
   render();
+  if (typeof updateNavbarPageContext === 'function') updateNavbarPageContext();
 }
 
 /** Starts the create-folder flow. */
@@ -449,6 +540,7 @@ function finishCreateCollection(name) {
   activeCollectionView = 'logged';
   updateViewTabs();
   render();
+  if (typeof updateNavbarPageContext === 'function') updateNavbarPageContext();
 }
 
 let folderPickerEntry = null;
@@ -527,7 +619,7 @@ function removeEntry(entry, isWatchlist) {
 
 /** Checks whether an entry matches the current search query. */
 function matchesCollectionSearch(entry, query) {
-  if (activeFilter !== 'all' && entry.type !== activeFilter) return false;
+  if (!activeFilters.includes(entry.type)) return false;
   if (!query) return true;
 
   return [
@@ -542,42 +634,99 @@ function matchesCollectionSearch(entry, query) {
 
 /** Refreshes filter and sort controls for the active collection. */
 function updateCollectionTools(isWatchlist) {
-  closeWorkspaceFilterMenus();
-  document.querySelectorAll('#media-type-filters .type-switch-option, #media-type-filters .media-type-filter').forEach((button) => {
-    button.classList.toggle('active', button.dataset.filter === activeFilter);
-  });
+  const typeWrapper = $('.workspace-type-menu-wrapper');
+  if (typeWrapper) {
+    const trigger = getWorkspaceFilterButton(typeWrapper);
+    const activeTypes = activeFilters;
+    typeWrapper.querySelectorAll('.menu-option').forEach((button) => {
+      const selected = activeTypes.includes(button.dataset.filter);
+      button.classList.toggle('active', selected);
+      button.setAttribute('aria-pressed', String(selected));
+      const iconName = mediaTypeIconName(button.dataset.filter);
+      let optionIcon = button.querySelector(':scope > .icon, :scope > .masked-icon');
+      if (optionIcon && !optionIcon.classList.contains('masked-icon')) {
+        optionIcon.classList.add('masked-icon', 'workspace-type-option-icon');
+        optionIcon.removeAttribute('src');
+      }
+      if (optionIcon) {
+        const iconUrl = appIconUrl(iconName);
+        optionIcon.dataset.icon = iconName;
+        optionIcon.style.webkitMaskImage = `url("${iconUrl}")`;
+        optionIcon.style.maskImage = `url("${iconUrl}")`;
+        optionIcon.style.setProperty(
+          '--app-icon-state-color',
+          selected ? 'var(--workspace-type-highlight, var(--color-text-secondary))' : 'var(--color-text-secondary)',
+        );
+      }
+    });
+    const selectedOptions = [...typeWrapper.querySelectorAll('.menu-option')]
+      .filter((button) => activeTypes.includes(button.dataset.filter));
+    const selectedLabels = selectedOptions.map((button) => button.querySelector('.menu-option-label')?.textContent.trim());
+    const allTypesSelected = workspaceMediaTypes.every((type) => activeTypes.includes(type));
+    const accessibleLabel = allTypesSelected
+      ? 'All'
+      : selectedLabels.length ? selectedLabels.join(', ') : 'No types';
+    const selectedIcons = allTypesSelected
+      ? ['all']
+      : selectedOptions.map((button) => mediaTypeIconName(button.dataset.filter));
+    const typeStateClass = activeTypes.length === 1 ? `is-${String(activeTypes[0]).toLowerCase()}` : '';
+    trigger.classList.remove('is-movie', 'is-show', 'is-game', 'is-book');
+    if (typeStateClass) trigger.classList.add(typeStateClass);
+    trigger.querySelector('.menu-button-text').innerHTML = allTypesSelected
+      ? `<span class="icon workspace-type-icon masked-icon" data-icon="all" style="--app-icon-state-color: var(--color-text-secondary); -webkit-mask-image: url('${appIconUrl('all')}'); mask-image: url('${appIconUrl('all')}')" aria-hidden="true"></span>`
+      : selectedIcons.map((iconName) => {
+      const matchingOption = selectedOptions.find((button) => mediaTypeIconName(button.dataset.filter) === iconName);
+      const type = matchingOption?.dataset.filter;
+      const colorToken = {
+        Movie: '--color-media-film',
+        Show: '--color-media-show',
+        Game: '--color-media-game',
+        Book: '--color-media-book',
+      }[type];
+      let markup = appIconMarkup(iconName, 'icon workspace-type-icon');
+      if (colorToken) {
+        markup = markup.includes('style="')
+          ? markup.replace('style="', `style="--app-icon-state-color: var(${colorToken}); `)
+          : markup.replace(' aria-hidden="true"', ` style="--app-icon-state-color: var(${colorToken})" aria-hidden="true"`);
+      }
+      return markup;
+    }).join('');
+    trigger.setAttribute('aria-label', `Entry type: ${accessibleLabel}`);
+    trigger.classList.toggle('active', !allTypesSelected);
+  }
   document.querySelectorAll('.logged-collection-tool').forEach((control) => {
     control.hidden = isWatchlist;
   });
 
-  const yearSelect = $('#watched-year-filter');
-  const yearFilterLabel = isWatchlist ? 'Filter by release year' : 'Filter by watched year';
+  const yearSelect = $('#release-year-filter');
+  const yearFilterLabel = 'Filter by release year';
   yearSelect.setAttribute('aria-label', yearFilterLabel);
-  const availableYears = [...new Set(isWatchlist
-    ? watchlist.map((entry) => String(entry.year || '')).filter(Boolean)
-    : entries.flatMap((entry) => entry.watches.map(watchYear)).filter(Boolean))]
+  const activeCollectionItems = isWatchlist ? watchlist : activeCollectionId === 'all'
+    ? entries
+    : [...entries, ...watchlist.filter((entry) => entryCollectionIds(entry).includes(activeCollectionId))];
+  const availableYears = [...new Set(activeCollectionItems
+    .map((entry) => String(entry.year || '')).filter(Boolean))]
     .sort((a, b) => Number(b) - Number(a));
-  watchedYearFilter = watchedYearFilter.filter((year) => availableYears.includes(year));
-  yearSelect.replaceChildren(...availableYears.map((year) => new Option(year, year, false, watchedYearFilter.includes(year))));
-  yearSelect.classList.toggle('active', watchedYearFilter.length > 0);
-  const yearReset = $('.workspace-year-filter-wrapper .workspace-filter-reset-button');
-  if (yearReset) yearReset.disabled = watchedYearFilter.length === 0;
+  releaseYearFilter = releaseYearFilter.filter((year) => availableYears.includes(year));
+  yearSelect.replaceChildren(...availableYears.map((year) => new Option(year, year, false, releaseYearFilter.includes(year))));
+  yearSelect.classList.toggle('active', releaseYearFilter.length > 0);
+  const yearReset = $('.workspace-year-menu-wrapper .workspace-filter-reset-button');
+  if (yearReset) yearReset.disabled = releaseYearFilter.length === 0;
   syncWorkspaceFilterMenu(yearSelect);
   const valueSelect = $('#collection-value-filter');
   const activeValueFilter = isWatchlist ? priorityFilter : ratingFilter;
+  const hasActiveValueFilter = isWatchlist ? priorityFilter.length > 0 : !isDefaultRatingRange(ratingFilter);
   const valueOptions = isWatchlist
     ? [5, 4, 3, 2, 1].map((priority) => new Option(`P${priority}`, String(priority), false, priorityFilter.includes(priority)))
     : Array.from({ length: 21 }, (_, index) => 100 - index * 5)
-      .map((rating) => new Option(`${rating}%`, String(rating), false, ratingFilter.includes(rating)));
+      .map((rating) => new Option(formatRatingChipValue(rating), String(rating), false, ratingFilter.includes(rating)));
   const valueLabel = isWatchlist ? 'priority' : 'rating';
   valueSelect.setAttribute('aria-label', `Filter by ${valueLabel}`);
   valueSelect.replaceChildren(...valueOptions);
-  valueSelect.classList.toggle('active', activeValueFilter.length > 0);
-  const valueButton = $('#collection-value-filter-button');
-  valueButton.setAttribute('aria-label', `Filter by ${valueLabel}: ${isWatchlist ? 'Any priority' : 'Any rating'}`);
-  const valueReset = $('.workspace-value-filter-wrapper .workspace-filter-reset-button');
+  valueSelect.classList.toggle('active', hasActiveValueFilter);
+  const valueReset = $('.workspace-ratings-menu-wrapper .workspace-filter-reset-button');
   if (valueReset) {
-    valueReset.disabled = activeValueFilter.length === 0;
+    valueReset.disabled = !hasActiveValueFilter;
     valueReset.setAttribute('aria-label', `Clear ${valueLabel} filter`);
     valueReset.title = `Clear ${valueLabel} filter`;
   }
@@ -596,12 +745,12 @@ function updateCollectionTools(isWatchlist) {
   sortSelect.value = collectionSort;
   const defaultSort = isWatchlist ? 'priority-desc' : 'watched-desc';
   sortSelect.classList.toggle('active', collectionSort !== defaultSort);
-  const sortReset = $('.workspace-sort-wrapper .workspace-sort-reset-button');
+  const sortReset = $('.workspace-sort-menu-wrapper .workspace-sort-reset-button');
   if (sortReset) sortReset.disabled = collectionSort === defaultSort;
-  const resetAll = $('#reset-collection-filter-sort');
+  const resetAll = $('.workspace-reset-button');
   if (resetAll) {
     const hasActiveSettings = Boolean(
-      activeFilter !== 'all' || watchedYearFilter.length || activeValueFilter.length || collectionSort !== defaultSort
+      activeFilters.length < workspaceMediaTypes.length || releaseYearFilter.length || hasActiveValueFilter || collectionSort !== defaultSort
     );
     resetAll.disabled = !hasActiveSettings;
     resetAll.classList.toggle('is-active', hasActiveSettings);
@@ -609,16 +758,30 @@ function updateCollectionTools(isWatchlist) {
   syncWorkspaceFilterMenu(sortSelect);
 }
 
+/** Treat the full 100-to-0 rating span as the unfiltered default. */
+function isDefaultRatingRange(values) {
+  return values.length === 2 && Math.min(...values) === 0 && Math.max(...values) === 100;
+}
+
 /** Checks whether an entry passes the active collection filters. */
 function matchesCollectionFilters(entry, isWatchlist) {
   if (activeCollectionView === 'logged' && activeCollectionId !== 'all' && !entryCollectionIds(entry).includes(activeCollectionId)) return false;
+  if (releaseYearFilter.length) {
+    const year = Number(entry.year || 0);
+    const minYear = Math.min(...releaseYearFilter.map(Number));
+    const maxYear = Math.max(...releaseYearFilter.map(Number));
+    if (year < minYear || year > maxYear) return false;
+  }
   if (isWatchlist) {
-    if (watchedYearFilter.length && !watchedYearFilter.includes(String(entry.year || ''))) return false;
     if (priorityFilter.length && !priorityFilter.includes(Number(entry.priority || 3))) return false;
     return true;
   }
-  if (watchedYearFilter.length && !entry.watches.some((watch) => watchedYearFilter.includes(watchYear(watch)))) return false;
-  if (ratingFilter.length && !ratingFilter.includes(Math.round(Number(latest(entry).score) * 10))) return false;
+  if (ratingFilter.length && !isDefaultRatingRange(ratingFilter)) {
+    const score = Math.round(Number(latest(entry).score) * 10);
+    const minRating = Math.min(...ratingFilter);
+    const maxRating = Math.max(...ratingFilter);
+    if (score < minRating || score > maxRating) return false;
+  }
   return true;
 }
 
@@ -645,13 +808,33 @@ function sortCollectionItems(items, isWatchlist) {
   }).map(({ entry }) => entry);
 }
 
+/** Returns every item matching the active workspace view and filters. */
+function getFilteredCollectionItems() {
+  const isWatchlist = activeCollectionView === 'watchlist';
+  const showingFolder = !isWatchlist && activeCollectionId !== 'all';
+  const items = isWatchlist ? watchlist : showingFolder
+    ? [...entries, ...watchlist.filter((entry) => entryCollectionIds(entry).includes(activeCollectionId))]
+    : entries;
+  const query = $('.library-search-container > .search-input').value.trim().toLocaleLowerCase();
+
+  return sortCollectionItems(
+    items.filter((entry) => {
+      const entryIsWatchlist = watchlist.includes(entry);
+      return matchesCollectionSearch(entry, query) && matchesCollectionFilters(entry, entryIsWatchlist);
+    }),
+    isWatchlist,
+  );
+}
+
 /** Updates page controls and counts for the visible collection. */
 function updateCollectionPaginationControls() {
-  const pagination = $('#collection-pagination');
+  const pagination = $('.workspace-pagination-container > .pagination-container');
+  const status = pagination.querySelector('.pagination-text-container');
   pagination.hidden = false;
-  $('#collection-page-status').textContent = `${collectionPage + 1} / ${collectionPageCount}`;
-  $('#collection-page-previous').disabled = collectionPage === 0;
-  $('#collection-page-next').disabled = collectionPage >= collectionPageCount - 1;
+  status.firstElementChild.textContent = `${collectionPage + 1}`;
+  status.lastElementChild.textContent = `${collectionPageCount}`;
+  pagination.querySelector('.pagination-prev-button').disabled = collectionPage === 0;
+  pagination.querySelector('.pagination-next-button').disabled = collectionPage >= collectionPageCount - 1;
 }
 
 function updateCollectionPagination(totalItems, pageSize) {
@@ -727,15 +910,23 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
   const watch = isBacklogged ? null : latest(entry);
   const isReworkPreview = document.documentElement.dataset.cssReworkPreview === 'true';
   const card = document.createElement('article');
-  card.className = `${isReworkPreview ? 'workspace-banner-container banner-container' : 'workspace-content-entry'} level-2-styling entry ${isBacklogged ? 'is-backlogged' : 'is-logged'}`;
+  card.className = `${isReworkPreview ? 'entry-container banner-container' : 'workspace-content-entry'} level-2-styling entry ${isBacklogged ? 'is-backlogged' : 'is-logged'}`;
   if (isReworkPreview && entry.poster) {
     const posterSource = entry.poster;
     card.dataset.posterPaletteSource = posterSource;
-    getPosterPalette(posterSource).then((palette) => {
-      if (!palette || !card.isConnected || card.dataset.posterPaletteSource !== posterSource) return;
-      card.style.setProperty('--entry-poster-color-one', `rgb(${palette.pageOne.join(', ')})`);
-      card.style.setProperty('--entry-poster-color-two', `rgb(${palette.pageTwo.join(', ')})`);
-    });
+    let paletteRequested = false;
+    const requestCardPalette = () => {
+      if (document.documentElement.dataset.entryPosterBackdrop !== 'on') return;
+      if (paletteRequested) return;
+      paletteRequested = true;
+      getPosterPalette(posterSource).then((palette) => {
+        if (!palette || !card.isConnected || card.dataset.posterPaletteSource !== posterSource) return;
+        card.style.setProperty('--entry-poster-color-one', `rgb(${palette.pageOne.join(', ')})`);
+        card.style.setProperty('--entry-poster-color-two', `rgb(${palette.pageTwo.join(', ')})`);
+      });
+    };
+    card.addEventListener('pointerenter', requestCardPalette, { once: true });
+    card.addEventListener('focusin', requestCardPalette, { once: true });
   }
 
   const link = document.createElement('a');
@@ -790,7 +981,7 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
     mediaIcon.className = `type-chip-styling media-type-icon banner-type is-${mediaType}`;
     mediaIcon.setAttribute('role', 'img');
     mediaIcon.setAttribute('aria-label', entry.type);
-    mediaIcon.innerHTML = appIconMarkup(mediaTypeIconName(entry.type), 'icon app-icon');
+    mediaIcon.innerHTML = appIconMarkup(mediaTypeIconName(entry.type), 'icon');
     poster.append(mediaIcon);
     label.append(tag);
   } else {
@@ -802,7 +993,7 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
       ? 'text-chip-styling banner-release-date-chip'
       : 'workspace-content-entry-detail-year entry-year';
     if (isReworkPreview) {
-      year.innerHTML = appIconMarkup('release', 'icon app-icon banner-release-date-icon');
+      year.innerHTML = appIconMarkup('release', 'icon banner-release-date-icon');
       const yearLabel = document.createElement('span');
       yearLabel.className = 'banner-release-date-label';
       yearLabel.textContent = entry.year;
@@ -815,7 +1006,7 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
   if (isReworkPreview && watch) {
     const date = document.createElement('span');
     date.className = 'text-chip-styling banner-log-date-chip';
-    date.innerHTML = appIconMarkup('watched', 'icon app-icon banner-log-date-icon');
+    date.innerHTML = appIconMarkup('watched', 'icon banner-log-date-icon');
     const dateLabel = document.createElement('span');
     dateLabel.className = 'banner-log-date-label';
     dateLabel.textContent = formatDate(watch.date);
@@ -825,7 +1016,7 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
   if (isReworkPreview) {
     if (entry.director) {
       const director = document.createElement('span');
-      director.className = 'app-text banner-director';
+      director.className = 'banner-director';
       director.textContent = `By ${entry.director}`;
       heading.append(director);
     }
@@ -848,7 +1039,7 @@ function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView)
     scoreValue.className = isReworkPreview
       ? 'value-chip-styling rating-value-chip banner-ratings-chip'
       : 'workspace-content-entry-detail-ratingChip valueChip ratingValueChip rating-valueChip';
-    scoreValue.textContent = `${Number(watch.score) * 10}%`;
+    scoreValue.textContent = formatRatingChipValue(Number(watch.score) * 10);
     scoreValue.style.setProperty('--rating-color', scoreColor);
     const meterClass = isReworkPreview
       ? 'ratings-meter ratings-bar'
@@ -940,7 +1131,7 @@ function openEntryFromCard(card, destination) {
 }
 
 /** Opens the first visible result when Enter is pressed in the collection search. */
-$('#library-search').addEventListener('keydown', (event) => {
+$('.library-search-container > .search-input').addEventListener('keydown', (event) => {
   if (event.key !== 'Enter' || event.isComposing) return;
   const firstCard = collection.querySelector('.entry');
   if (!firstCard) return;
@@ -974,35 +1165,28 @@ collection.addEventListener('keydown', (event) => {
 
 /** Filters, sorts, pages, and renders the active collection. */
 function renderCollection() {
-  $('#library').hidden = false;
+  $('.library-section').hidden = false;
   collection.replaceChildren();
   const isWatchlist = activeCollectionView === 'watchlist';
-  const showingFolder = !isWatchlist && activeCollectionId !== 'all';
   renderCollectionPicker();
   updateCollectionTools(isWatchlist);
-  const items = isWatchlist ? watchlist : showingFolder
-    ? [...entries, ...watchlist.filter((entry) => entryCollectionIds(entry).includes(activeCollectionId))]
-    : entries;
-  const query = $('#library-search').value.trim().toLocaleLowerCase();
-  const shown = sortCollectionItems(
-    items.filter((entry) => {
-      const entryIsWatchlist = watchlist.includes(entry);
-      return matchesCollectionSearch(entry, query) && matchesCollectionFilters(entry, entryIsWatchlist);
-    }),
-    isWatchlist,
-  );
+  const query = $('.library-search-container > .search-input').value.trim().toLocaleLowerCase();
+  const sourceItems = isWatchlist ? watchlist : activeCollectionId === 'all'
+    ? entries
+    : [...entries, ...watchlist.filter((entry) => entryCollectionIds(entry).includes(activeCollectionId))];
+  const shown = getFilteredCollectionItems();
   const watchlistEmpty = $('#watchlist-empty');
   const empty = $('#empty');
-  const hasCollectionFilter = activeFilter !== 'all'
-    || watchedYearFilter.length > 0
-    || (isWatchlist ? priorityFilter.length > 0 : ratingFilter.length > 0);
+  const hasCollectionFilter = activeFilters.length < workspaceMediaTypes.length
+    || releaseYearFilter.length > 0
+    || (isWatchlist ? priorityFilter.length > 0 : !isDefaultRatingRange(ratingFilter));
 
-  $('#open-add').setAttribute('aria-label', isWatchlist ? 'Add to watchlist' : 'Log a watch');
-  watchlistEmpty.hidden = !isWatchlist || items.length > 0 || Boolean(query) || hasCollectionFilter;
+  $('.workspace-create-entry-button').setAttribute('aria-label', isWatchlist ? 'Add to watchlist' : 'Log a watch');
+  watchlistEmpty.hidden = !isWatchlist || sourceItems.length > 0 || Boolean(query) || hasCollectionFilter;
   empty.hidden = shown.length > 0 || !watchlistEmpty.hidden;
   if (query || hasCollectionFilter) {
     empty.textContent = 'No titles match your search or filters.';
-  } else if (items.length) {
+  } else if (sourceItems.length) {
     empty.textContent = 'No titles match this filter.';
   } else if (isWatchlist) {
     empty.textContent = 'Nothing on your watchlist yet.';
@@ -1049,13 +1233,13 @@ function renderCollection() {
     // A second pass accounts for fonts and images changing card dimensions.
     requestAnimationFrame(() => collectionColumnCount = getCollectionColumnCount());
   });
+  renderStatsbar();
   if (isReworkedCollection) renderBanner();
 }
 
 // Listen on the whole library card so trackpad swipes work over the toolbar and cards.
-$('#library').addEventListener('wheel', (event) => {
+$('.library-section').addEventListener('wheel', (event) => {
   if (isReworkedCollection) return;
-  if (event.target.closest('.folder-menu-wrapper [data-menu-options]')) return;
   if (collectionPageCount < 2) return;
 
   const now = performance.now();

@@ -1,0 +1,471 @@
+/* SECTION Horizontal navbar */
+/* ANCHOR Horizontal layout */
+/* Align toolbar buttons across the top of the app shell. */
+.navbar-horizontal-layout {
+  --nav-toggle-inset: 5px;
+  --nav-horizontal-inner-control-size: calc(var(--nav-horizontal-control-size) - 12px);
+  --nav-horizontal-icon-size: calc(var(--nav-horizontal-inner-control-size) * .55);
+  --nav-history-control-size: calc(var(--nav-horizontal-inner-control-size) * 0.48);
+  --nav-history-icon-size: calc(var(--nav-horizontal-icon-size) * 0.52);
+  position: relative;
+  display: flex;
+  align-items: center;
+  grid-column: 3;
+  grid-row: 1;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ANCHOR Horizontal brand */
+/* Keep the wordmark compact at the right end of the horizontal navbar. */
+.nav-brand-container {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: var(--nav-horizontal-control-size);
+  min-width: 0;
+  max-width: 100%;
+  margin-left: 0;
+  padding-inline: calc(var(--spacing-level-1) + 5px);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-dashboard-brand);
+  font-size: calc(var(--font-size-dashboard-brand) - 4px);
+  font-weight: 700;
+  letter-spacing: -.07em;
+  -webkit-text-stroke: 1.4px var(--color-title-outline);
+  paint-order: stroke fill;
+}
+
+/* Lighten the Rewatched wordmark weight without changing its punctuation. */
+.nav-brand-container > .brand-text {
+  font-size: 0;
+  font-weight: 650;
+}
+
+.nav-brand-container > .brand-text::before {
+  display: block;
+  content: "R";
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: normal;
+  -webkit-text-stroke: 0;
+}
+
+/* Align the wordmark punctuation with its text. */
+.nav-brand-container > .brand-dot {
+  margin-left: 0;
+  line-height: 1;
+  transform: translateY(-.17em);
+  text-shadow: 0 0 4px color-mix(in srgb, currentColor 48%, transparent);
+  transition: text-shadow 140ms ease;
+}
+
+.nav-brand-container:is(:hover, :focus-visible) > .brand-dot {
+  text-shadow: 0 0 6px color-mix(in srgb, currentColor 60%, transparent);
+}
+
+/* ANCHOR Toolbar groups */
+/* Keep the toggle pair together at the left, with the brand at the right. */
+/* Put both level-three controls inside their shared level-two panel. */
+.nav-toggle-container {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: var(--spacing-level-3);
+  height: var(--nav-horizontal-control-size);
+  padding: var(--nav-toggle-inset);
+}
+
+/* ANCHOR Page name and history */
+/* Place history arrows around the page-name and context panel. */
+.navbar-horizontal-layout > .nav-pagination-container {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  max-width: min(40vw, 440px);
+  min-width: 0;
+  height: var(--nav-horizontal-control-size);
+  padding-block: 0;
+  padding-inline: 0;
+  border-radius: var(--radius-surface-level-2);
+}
+
+/* Keep border geometry stable when the page panel has no level-two surface. */
+.navbar-horizontal-layout > .nav-pagination-container:not(.level-2-styling) {
+  border: 1px solid transparent;
+}
+
+.nav-prev-button,
+.nav-next-button {
+  --nav-control-color: var(--color-icon-default);
+  flex: 0 0 0;
+  width: 0;
+  margin-inline: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.nav-prev-button[hidden],
+.nav-next-button[hidden] {
+  display: none;
+}
+
+.nav-prev-button {
+  --nav-control-mask: url("../assets/icons/filled/left.png");
+}
+
+.nav-next-button {
+  --nav-control-mask: url("../assets/icons/filled/right.png");
+}
+
+.nav-prev-button > .masked-icon,
+.nav-next-button > .masked-icon {
+  width: var(--nav-history-icon-size);
+  height: var(--nav-history-icon-size);
+  flex-basis: var(--nav-history-icon-size);
+  background-color: var(--nav-control-color);
+  -webkit-mask-image: var(--nav-control-mask);
+  mask-image: var(--nav-control-mask);
+}
+
+.nav-prev-button:disabled,
+.nav-next-button:disabled {
+  --nav-control-color: var(--color-text-secondary);
+}
+
+/* Extend the shared inner row over the outer border and align its surfaces. */
+.navbar-horizontal-layout > .nav-pagination-container > .nav-page-container {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--spacing-level-1);
+  width: max-content;
+  max-width: 100%;
+  min-width: 0;
+  height: calc(100% + 2px);
+  margin-block: -1px;
+  margin-left: -1px;
+  padding-left: 0;
+  padding-right: calc(var(--spacing-level-1) - 1px);
+}
+
+/* Soften the raised shadows of the nested page and context surfaces. */
+.navbar-horizontal-layout :is(.nav-page-container, .nav-page-text-container).level-2-styling {
+  box-shadow: var(--shadow-border-highlight),
+    inset 0 1px 0 var(--shadow-color-inset),
+    0 6px 15px color-mix(in srgb, var(--shadow-color-black-31) 78%, transparent);
+}
+
+.navbar-horizontal-layout :is(.nav-page-container, .nav-page-text-container).level-3-styling {
+  box-shadow: var(--shadow-border-highlight),
+    inset 0 1px 0 var(--shadow-color-inset),
+    0 2px 7px color-mix(in srgb, var(--shadow-color-black-31) 78%, transparent);
+}
+
+:root[data-theme-glass="on"] .navbar-horizontal-layout :is(.nav-page-container, .nav-page-text-container).level-2-styling {
+  box-shadow: var(--shadow-border-highlight),
+    inset 0 1px 0 color-mix(in srgb, var(--color-glass-highlight) 86%, transparent),
+    inset 0 -1px 0 var(--shadow-color-glass-edge),
+    0 3px 5px color-mix(in srgb, var(--shadow-color-glass-contact) 78%, transparent),
+    0 4px 13px color-mix(in srgb, var(--shadow-color-glass) 78%, transparent),
+    0 2px 5px color-mix(in srgb, var(--shadow-color-glass-edge) 78%, transparent);
+}
+
+:root[data-theme-glass="on"] .navbar-horizontal-layout :is(.nav-page-container, .nav-page-text-container).level-3-styling {
+  box-shadow: var(--shadow-border-highlight),
+    inset 0 1px 0 var(--color-glass-highlight),
+    0 2px 7px color-mix(in srgb, var(--shadow-color-glass) 78%, transparent);
+}
+
+/* Remove the nested shadow while context is concealing or absent. */
+.navbar-horizontal-layout > .nav-pagination-container:is(.is-concealing, :not(.has-page-context)) > .nav-page-container:is(.level-2-styling, .level-3-styling) {
+  box-shadow: none;
+}
+
+.nav-pagination-container:not(.has-page-context) > .nav-page-container {
+  padding-right: 0;
+}
+
+/* Keep the page name aligned to the context panel's left edge. */
+.nav-page-text-container {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 100%;
+  padding-left: var(--spacing-level-1);
+  padding-right: var(--spacing-level-1);
+  color: var(--nav-page-text-container-color, var(--color-text-secondary));
+  font: var(--font-weight-app) 14px/1 var(--font-family-app);
+  text-shadow: 0 0 4px color-mix(in srgb, currentColor 48%, transparent);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Cover the context row's border without changing the page label's inset. */
+.nav-page-container:is(.level-2-styling, .level-3-styling) > .nav-page-text-container {
+  height: calc(100% + 2px);
+  margin-block: -1px;
+  margin-left: -1px;
+}
+
+/* Show the optional subpage label beside the page name. */
+.nav-context-text {
+  flex: 0 1 auto;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--nav-page-context-color, var(--color-text-secondary));
+  font: 550 12px / 1.25 var(--font-family-app);
+  text-shadow: 0 0 4px color-mix(in srgb, currentColor 48%, transparent);
+  white-space: nowrap;
+}
+
+.nav-context-text:not([hidden]) {
+  display: flex;
+  padding-right: 2px;
+  text-overflow: ellipsis;
+}
+
+/* ANCHOR Storage status */
+/* Show the current storage name on hover or keyboard focus. */
+.navbar-horizontal-layout > .nav-storage-button {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  max-width: min(40vw, 340px);
+  height: var(--nav-horizontal-control-size);
+  min-width: var(--nav-horizontal-control-size);
+  margin-left: auto;
+  padding-inline: 7px;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-storage-icon {
+  --glow-halo-color: var(--color-storage-saved);
+  --glow-halo-opacity: 0.3;
+  display: grid;
+  flex: 0 0 var(--nav-icon-container-size);
+  place-items: center;
+  width: var(--nav-icon-container-size);
+  height: var(--nav-icon-container-size);
+  padding: 0;
+}
+
+.nav-storage-icon > .masked-icon {
+  --app-icon-state-color: var(--color-storage-saved);
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+  -webkit-mask-image: url("../assets/icons/filled/save-status.png");
+  mask-image: url("../assets/icons/filled/save-status.png");
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--app-icon-state-color) 88%, transparent));
+}
+
+.nav-storage-icon[data-storage-state="unexported"],
+.nav-storage-icon[data-storage-state="pending"],
+.nav-storage-icon[data-storage-state="error"] {
+  --glow-halo-color: var(--color-storage-error);
+}
+
+.nav-storage-icon:is([data-storage-state="unexported"], [data-storage-state="pending"], [data-storage-state="error"]) > .masked-icon {
+  --app-icon-state-color: var(--color-storage-error);
+}
+
+/* Keep browser-backed storage distinguishable from file-backed storage. */
+.nav-storage-icon[data-storage-source="browser"] {
+  --glow-halo-color: var(--color-storage-error);
+}
+
+.nav-storage-icon[data-storage-source="browser"] > .masked-icon {
+  --app-icon-state-color: var(--color-storage-error);
+}
+
+.nav-storage-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 0;
+  overflow: hidden;
+  color: var(--palette-white);
+  opacity: 0;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  text-shadow: 0 0 4px color-mix(in srgb, var(--palette-white) 45%, transparent);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+.navbar-horizontal-layout > .nav-storage-button:is(:hover, :focus-visible) > .nav-storage-text {
+  max-width: var(--nav-storage-text-width, 0px);
+  margin-left: 7px;
+  opacity: 1;
+}
+
+.navbar-horizontal-layout > .nav-storage-button:is(:hover, :focus-visible) {
+  padding-right: 10px;
+}
+
+/* ANCHOR Toolbar buttons */
+/* Fit square toggle buttons inside their shared panel inset. */
+.nav-toggle-container > :is(.nav-toggle-sidebar, .nav-toggle-theme) {
+  flex: 0 0 var(--nav-horizontal-inner-control-size);
+  width: var(--nav-horizontal-inner-control-size);
+  height: var(--nav-horizontal-inner-control-size);
+  padding: 0;
+}
+
+/* Give the toolbar controls a white hover glow and their matching icon masks. */
+.nav-toggle-sidebar {
+  --nav-control-color: var(--palette-white);
+  --nav-control-mask: url("../assets/icons/filled/navbar-collapse.png");
+}
+.nav-toggle-theme {
+  --nav-control-color: var(--palette-white);
+}
+:root[data-theme="dark"] .nav-toggle-theme {
+  --nav-control-mask: url("../assets/icons/filled/dark-mode.png");
+}
+:root[data-theme="light"] .nav-toggle-theme {
+  --nav-control-mask: url("../assets/icons/filled/dark-mode.png");
+}
+.navbar-horizontal-layout .icon-button:is(:hover, :focus-visible) {
+  --glow-halo-color: var(--nav-control-color, var(--palette-white));
+  --glow-halo-opacity: 0.3;
+  color: var(--nav-control-color, var(--palette-white));
+}
+
+.navbar-horizontal-layout :is(.nav-prev-button, .nav-next-button):is(:hover, :focus-visible) {
+  --nav-control-color: var(--palette-white);
+  --glow-halo-color: var(--palette-white);
+  --glow-halo-opacity: 0.3;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.navbar-horizontal-layout :is(.nav-prev-button, .nav-next-button):disabled:is(:hover, :focus-visible) {
+  --nav-control-color: var(--color-icon-default);
+  --glow-halo-opacity: 0;
+}
+
+.navbar-horizontal-layout .icon-button:is(:hover, :focus-visible)::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--nav-horizontal-icon-size);
+  height: var(--nav-horizontal-icon-size);
+  transform: translate(-50%, -50%);
+  background-color: var(--nav-control-color);
+  content: "";
+  -webkit-mask: var(--nav-control-mask) center / contain no-repeat;
+  mask: var(--nav-control-mask) center / contain no-repeat;
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--nav-control-color) 88%, transparent));
+}
+
+.navbar-horizontal-layout .nav-pagination-container :is(.nav-prev-button, .nav-next-button):is(:hover, :focus-visible)::after {
+  width: var(--nav-history-icon-size);
+  height: var(--nav-history-icon-size);
+}
+
+.navbar-horizontal-layout .icon-button:is(:hover, :focus-visible) > :is(.icon, .masked-icon, .svg-icon) {
+  opacity: 0;
+}
+
+/* Keep the white theme toggle stable instead of swapping its artwork on hover. */
+.navbar-horizontal-layout .nav-toggle-theme:is(:hover, :focus-visible)::after {
+  content: none;
+}
+
+.navbar-horizontal-layout .nav-toggle-theme:is(:hover, :focus-visible) > .icon {
+  opacity: 1;
+  filter: brightness(0) invert(1) drop-shadow(0 0 2px color-mix(in srgb, var(--palette-white) 88%, transparent));
+}
+
+/* Tint the sidebar toggle grey at rest and white on hover without changing artwork. */
+.navbar-horizontal-layout .nav-toggle-sidebar::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--nav-horizontal-icon-size);
+  height: var(--nav-horizontal-icon-size);
+  transform: translate(-50%, -50%);
+  background-color: var(--color-icon-default);
+  content: "";
+  -webkit-mask: var(--nav-control-mask) center / contain no-repeat;
+  mask: var(--nav-control-mask) center / contain no-repeat;
+}
+
+.navbar-horizontal-layout .nav-toggle-sidebar:is(:hover, :focus-visible)::after {
+  background-color: var(--palette-white);
+}
+
+/* Keep every toolbar icon smaller and consistently proportioned. */
+.navbar-horizontal-layout .icon {
+  width: var(--nav-horizontal-icon-size);
+  height: var(--nav-horizontal-icon-size);
+}
+
+/* Use the stable masked toggle so its default tint matches secondary text. */
+.nav-toggle-sidebar > .icon {
+  opacity: 0;
+}
+.nav-expand-icon { display: none; }
+
+/* ANCHOR Collapsed sidebar toolbar */
+.app-container.is-sidebar-collapsed .nav-brand-container {
+  align-items: center;
+}
+
+.app-container.is-sidebar-collapsed .nav-collapse-icon { display: none; }
+.app-container.is-sidebar-collapsed .nav-expand-icon { display: block; }
+.app-container.is-sidebar-collapsed .nav-toggle-sidebar {
+  --nav-control-mask: url("../assets/icons/filled/navbar-expand.png");
+}
+
+/* !SECTION */
+
+/* SECTION Responsive horizontal navbar */
+/* Keep toolbar icons and labels proportional at narrow widths. */
+@media (max-width: 700px) {
+  .navbar-horizontal-layout .icon {
+    width: var(--nav-horizontal-icon-size);
+    height: var(--nav-horizontal-icon-size);
+  }
+
+  .navbar-horizontal-layout .nav-toggle-sidebar::after {
+    width: var(--nav-horizontal-icon-size);
+    height: var(--nav-horizontal-icon-size);
+  }
+
+  .navbar-horizontal-layout .icon-button:is(:hover, :focus-visible)::after {
+    width: var(--nav-horizontal-icon-size);
+    height: var(--nav-horizontal-icon-size);
+  }
+
+  .navbar-horizontal-layout .nav-brand-container {
+    font-size: calc(var(--font-size-dashboard-brand) - 7px);
+  }
+
+  .nav-page-text-container {
+    font-size: 12px;
+  }
+
+}
+
+/* !SECTION */

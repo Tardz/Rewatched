@@ -137,7 +137,7 @@ function createTimelineItem(entry, watch, index) {
   scoreValue.className = document.documentElement.dataset.cssReworkPreview === 'true'
     ? 'value-chip-styling rating-value-chip'
     : 'valueChip ratingValueChip rating-valueChip';
-  scoreValue.textContent = `${Number(watch.score) * 10}%`;
+  scoreValue.textContent = formatRatingChipValue(Number(watch.score) * 10);
   scoreValue.style.setProperty('--rating-color', scoreColor);
   score.append(scoreValue, createRatingMeter(scoreFill, scoreColor, 'ratingsMeter timeline-rating-meter'));
   score.setAttribute('aria-label', `Rating ${Number(watch.score).toFixed(1)} out of 10`);
@@ -339,11 +339,11 @@ function hideDetail() {
   detail.hidden = true;
   detail.classList.remove('is-fullscreen');
   delete detail.dataset.entryId;
-  $('#detail-back').hidden = true;
+  $('.dashboard-back-button').hidden = true;
   $('#statistics-panel').hidden = !$('.stats-page-button, .section-statistics').classList.contains('is-active');
-  $('#library').hidden = !$('.library-page-button, .section-library').classList.contains('is-active');
+  $('.library-section').hidden = !$('.library-page-button, .section-library').classList.contains('is-active');
   $('.statsbar-container, .statsbar').hidden = false;
-  $('#banner').hidden = document.documentElement.dataset.cssReworkPreview !== 'true' && bannerEntries().length === 0;
+  $('.overview-banner-container').hidden = document.documentElement.dataset.cssReworkPreview !== 'true' && bannerEntries().length === 0;
 }
 
 /** Applies poster-derived colors to the hover detail without changing the page palette. */
@@ -411,11 +411,11 @@ function renderDetail() {
   detail.classList.toggle('is-watchlist', isBacklogged); // Keep the current stylesheet working during migration.
   detail.classList.toggle('is-fullscreen', fullscreen);
   detail.hidden = false;
-  $('#detail-back').hidden = !fullscreen;
+  $('.dashboard-back-button').hidden = !fullscreen;
   $('#statistics-panel').hidden = fullscreen || !$('.stats-page-button, .section-statistics').classList.contains('is-active');
-  $('#library').hidden = fullscreen || !$('.library-page-button, .section-library').classList.contains('is-active');
+  $('.library-section').hidden = fullscreen || !$('.library-page-button, .section-library').classList.contains('is-active');
   $('.statsbar-container, .statsbar').hidden = fullscreen;
-  $('#banner').hidden = fullscreen || (document.documentElement.dataset.cssReworkPreview !== 'true' && bannerEntries().length === 0);
+  $('.overview-banner-container').hidden = fullscreen || (document.documentElement.dataset.cssReworkPreview !== 'true' && bannerEntries().length === 0);
 
   $('#detail-poster').replaceChildren(posterElement(entry, 'detail-poster-art'));
   updateDetailPosterPalette(entry);
@@ -452,7 +452,6 @@ function renderDetail() {
   const plot = entry.metadata?.plot?.trim() || '';
   const plotText = $('#detail-plot');
   plotText.textContent = plot || 'Plot has not been saved for this title yet.';
-  plotText.classList.toggle('detail-info-empty', !plot);
   $('#detail-actors-tab').hidden = false;
   $('#detail-plot-tab').hidden = false;
   $('#detail-actors-panel').hidden = false;
@@ -465,7 +464,7 @@ function renderDetail() {
   $('#detail-latest-date').textContent = '';
   if (latestWatch) {
     const ratingValue = $('#detail-rating-value');
-    ratingValue.textContent = `${Number(latestWatch.score) * 10}%`;
+    ratingValue.textContent = formatRatingChipValue(Number(latestWatch.score) * 10);
     if (document.documentElement.dataset.cssReworkPreview === 'true') {
       ratingValue.classList.add('value-chip-styling', 'rating-value-chip');
     } else {
@@ -478,7 +477,7 @@ function renderDetail() {
   const watchCount = entry.watches?.length || 0;
   $('#detail-watch-count').textContent = String(watchCount);
   $('#detail-watch-count').hidden = view !== 'logged';
-  $('#detail-meta').classList.toggle('has-rating', Boolean(latestWatch));
+  detailMeta.classList.toggle('has-rating', Boolean(latestWatch));
   const oldDetailMeter = detailMeta.querySelector('.detail-meta-meter');
   oldDetailMeter?.remove();
   if (latestWatch) {

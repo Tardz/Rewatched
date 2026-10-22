@@ -14,9 +14,11 @@ const POSTER_BACKGROUND_STRENGTH_KEY = 'rerun-poster-background-strength';
 const ENTRY_POSTER_BACKDROP_KEY = 'rerun-entry-poster-backdrop';
 const TACTILE_DASHBOARD_KEY = 'rerun-tactile-dashboard';
 const DASHBOARD_MODE_KEY = 'rerun-dashboard-mode';
+const SIDEBAR_COLLAPSED_KEY = 'rerun-sidebar-collapsed';
 const MACOS_BOX_BORDERS_KEY = 'rerun-macos-box-borders';
 const COLORED_VALUE_CHIPS_KEY = 'rerun-colored-value-chips';
 const HIDE_MAIN_VALUE_CHIPS_KEY = 'rerun-hide-main-value-chips';
+const HIDE_RATING_CHIP_PERCENTAGE_KEY = 'rerun-hide-rating-chip-percentage';
 const CORNER_RADIUS_SCALE_KEY = 'rerun-corner-radius-scale';
 const GLASS_SURFACE_OPACITY_KEY = 'rerun-glass-surface-opacity';
 const GLASS_TRANSPARENCY_KEY = 'rerun-glass-transparency';
@@ -37,6 +39,21 @@ let dashboardMode = localStorage.getItem(DASHBOARD_MODE_KEY) === 'dashboard' ? '
 let macosBoxBordersEnabled = localStorage.getItem(MACOS_BOX_BORDERS_KEY) === 'true';
 let coloredValueChipsEnabled = localStorage.getItem(COLORED_VALUE_CHIPS_KEY) === 'true';
 let hideMainValueChipsEnabled = localStorage.getItem(HIDE_MAIN_VALUE_CHIPS_KEY) === 'true';
+let hideRatingChipPercentage = localStorage.getItem(HIDE_RATING_CHIP_PERCENTAGE_KEY) === 'true';
+
+/** Formats a rating-chip value according to the user's percentage preference. */
+function formatRatingChipValue(value) {
+  const formattedValue = Number.isInteger(Number(value)) ? Number(value) : Number(Number(value).toFixed(1));
+  return `${formattedValue}${hideRatingChipPercentage ? '' : '%'}`;
+}
+
+/** Updates currently rendered rating chips when the percentage preference changes. */
+function syncRatingChipPercentages() {
+  document.querySelectorAll('.rating-value-chip, .ratingValueChip, .rating-valueChip').forEach((chip) => {
+    const match = /^(\d+(?:\.\d+)?)%?$/.exec(chip.textContent.trim());
+    if (match) chip.textContent = formatRatingChipValue(Number(match[1]));
+  });
+}
 const savedCornerRadiusScale = Number(localStorage.getItem(CORNER_RADIUS_SCALE_KEY));
 let cornerRadiusScale = Number.isFinite(savedCornerRadiusScale) && savedCornerRadiusScale > 0
   ? Math.max(50, Math.min(150, Math.round(savedCornerRadiusScale / 5) * 5))
@@ -78,6 +95,7 @@ const APP_ICON_FILES = {
   delete: { filled: 'delete.png' },
   fullscreen: { filled: 'fullscreen.png' },
   search: { color: 'search.png', black: 'search.png', filled: 'search.png' },
+  close: { filled: 'close.png' },
   filter: { filled: 'filter.png' },
   sort: { filled: 'sort.png' },
   watched: { filled: 'watched.png' },
@@ -87,8 +105,8 @@ const APP_ICON_FILES = {
   show: { color: 'tv.png', black: 'tv.png', filled: 'tv.png' },
   game: { color: 'game-controller.png', black: 'game-controller.png', filled: 'game-controller.png' },
   book: { color: 'book.png', black: 'books.png', filled: 'book.png' },
-  play: { black: 'play.png' },
-  pause: { black: 'pause.png' },
+  play: { filled: 'play.png' },
+  pause: { filled: 'pause.png' },
   'arrow-left': { black: 'arrow-left.png', filled: 'left.png' },
   'arrow-right': { black: 'arrow-right.png', filled: 'right.png' },
 };
@@ -117,13 +135,14 @@ const APP_ICON_ORIGINALS = {
 const ORIGINAL_ICON_TEXT = {
   'arrow-left': '←',
   'arrow-right': '→',
+  close: '×',
 };
 
 /** Returns the PNG path for an app icon in the selected palette. */
 function appIconPath(name) {
   const palettes = APP_ICON_FILES[name];
   if (!palettes) return '';
-  const palette = palettes[iconStylePreference] ? iconStylePreference : 'black';
+  const palette = palettes[iconStylePreference] ? iconStylePreference : Object.keys(palettes)[0];
   return `assets/icons/${palette}/${palettes[palette]}`;
 }
 
@@ -133,22 +152,22 @@ function appIconUrl(name) {
 }
 
 /** Creates the original inline icon or text arrow for compatibility mode. */
-function originalIconMarkup(name, className = 'icon app-icon', originalText = '') {
+function originalIconMarkup(name, className = 'icon', originalText = '') {
   if (originalText || ORIGINAL_ICON_TEXT[name]) {
     const text = originalText || ORIGINAL_ICON_TEXT[name];
-    return `<span class="${className}" data-app-icon="${name}" data-app-icon-original-text="${text}" aria-hidden="true">${text}</span>`;
+    return `<span class="${className}" data-icon="${name}" data-icon-original-text="${text}" aria-hidden="true">${text}</span>`;
   }
-  return `<svg class="${className}" data-app-icon="${name}" viewBox="0 0 24 24" aria-hidden="true">${APP_ICON_ORIGINALS[name] || ''}</svg>`;
+  return `<svg class="${className}" data-icon="${name}" viewBox="0 0 24 24" aria-hidden="true">${APP_ICON_ORIGINALS[name] || ''}</svg>`;
 }
 
 /** Creates markup for an icon image that follows the selected icon style. */
-function appIconMarkup(name, className = 'icon app-icon') {
+function appIconMarkup(name, className = 'icon') {
   if (iconStylePreference === 'original') return originalIconMarkup(name, className);
   if (iconStylePreference === 'filled') {
     const url = appIconUrl(name);
-    return `<span class="${className} masked-icon filled-icon" data-app-icon="${name}" style="-webkit-mask-image: url('${url}'); mask-image: url('${url}')" aria-hidden="true"></span>`;
+    return `<span class="${className} masked-icon" data-icon="${name}" style="-webkit-mask-image: url('${url}'); mask-image: url('${url}')" aria-hidden="true"></span>`;
   }
-  return `<img class="${className}" data-app-icon="${name}" src="${appIconPath(name)}" alt="" aria-hidden="true">`;
+  return `<img class="${className}" data-icon="${name}" src="${appIconPath(name)}" alt="" aria-hidden="true">`;
 }
 
 /** Maps stored media names to the matching shared type icon. */
@@ -170,9 +189,9 @@ function categoryHueForName(category) {
 /** Creates a tinted Filled icon element from the PNG's alpha mask. */
 function createFilledIconElement(name, className, originalText = '', hidden = false) {
   const replacement = document.createElement('span');
-  replacement.className = `${className} masked-icon filled-icon`;
-  replacement.dataset.appIcon = name;
-  if (originalText) replacement.dataset.appIconOriginalText = originalText;
+  replacement.className = `${className} masked-icon`;
+  replacement.dataset.icon = name;
+  if (originalText) replacement.dataset.iconOriginalText = originalText;
   const url = `url("${appIconUrl(name)}")`;
   replacement.style.webkitMaskImage = url;
   replacement.style.maskImage = url;
@@ -183,22 +202,22 @@ function createFilledIconElement(name, className, originalText = '', hidden = fa
 
 /** Switches existing icon nodes between PNG, mask, and original inline forms. */
 function refreshAppIcons() {
-  document.querySelectorAll('[data-app-icon]').forEach((icon) => {
-    const name = icon.dataset.appIcon;
+  document.querySelectorAll('[data-icon]').forEach((icon) => {
+    const name = icon.dataset.icon;
     const isOriginal = iconStylePreference === 'original';
     const isFilled = iconStylePreference === 'filled';
-    const isFilledNode = icon.classList.contains('masked-icon') || icon.classList.contains('filled-icon');
+    const isFilledNode = icon.classList.contains('masked-icon');
     const iconClassName = icon.className.baseVal || icon.className;
-    const nonFilledClassName = iconClassName.replace(/\b(?:masked-icon|filled-icon)\b/g, '').trim();
+    const nonFilledClassName = iconClassName.replace(/\bmasked-icon\b/g, '').trim();
     if (isOriginal && (icon.tagName === 'IMG' || isFilledNode)) {
-      const originalText = icon.dataset.appIconOriginalText || ORIGINAL_ICON_TEXT[name];
+      const originalText = icon.dataset.iconOriginalText || ORIGINAL_ICON_TEXT[name];
       const replacement = originalText
         ? document.createElement('span')
         : document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       replacement.className = nonFilledClassName;
-      replacement.dataset.appIcon = name;
+      replacement.dataset.icon = name;
       if (originalText) {
-        replacement.dataset.appIconOriginalText = originalText;
+        replacement.dataset.iconOriginalText = originalText;
         replacement.textContent = originalText;
       } else {
         replacement.setAttribute('viewBox', '0 0 24 24');
@@ -213,7 +232,7 @@ function refreshAppIcons() {
       const replacement = createFilledIconElement(
         name,
         nonFilledClassName,
-        icon.dataset.appIconOriginalText,
+        icon.dataset.iconOriginalText,
         icon.hidden,
       );
       icon.replaceWith(replacement);
@@ -222,8 +241,8 @@ function refreshAppIcons() {
     if (!isOriginal && !isFilled && icon.tagName !== 'IMG') {
       const replacement = document.createElement('img');
       replacement.className = nonFilledClassName;
-      replacement.dataset.appIcon = name;
-      if (icon.dataset.appIconOriginalText) replacement.dataset.appIconOriginalText = icon.dataset.appIconOriginalText;
+      replacement.dataset.icon = name;
+      if (icon.dataset.iconOriginalText) replacement.dataset.iconOriginalText = icon.dataset.iconOriginalText;
       replacement.src = appIconPath(name);
       replacement.alt = '';
       replacement.setAttribute('aria-hidden', 'true');
@@ -360,17 +379,18 @@ function createRatingMeter(fill, color, className = 'ratings-meter') {
 const form = $('#watch-form');
 const dialog = $('#watch-dialog');
 const posterDialog = $('#poster-dialog');
-const collection = $('#collection');
+const collection = $('.workspace-content-layout');
 let googleSearchReady = false;
 let loadedGoogleSearchId = null;
 let googleSearchLoading = false;
 
 let bannerIndex = 0;
 let editingId = null;
-let activeFilter = 'all';
+const workspaceMediaTypes = ['Movie', 'Show', 'Game', 'Book'];
+let activeFilters = [...workspaceMediaTypes];
 let activeCollectionView = 'logged';
-let watchedYearFilter = [];
-let ratingFilter = [];
+let releaseYearFilter = [];
+let ratingFilter = [100, 0];
 let priorityFilter = [];
 let collectionSort = 'watched-desc';
 let activeCollectionId = 'all';

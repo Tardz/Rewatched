@@ -46,7 +46,7 @@ function updateBackupSummary() {
   }
   const sourceName = document.createElement('span');
   sourceName.className = 'backup-summary-source-name';
-  sourceName.textContent = $('#nav-save-text')?.textContent || 'Browser';
+  sourceName.textContent = $('.nav-storage-text')?.textContent || 'Browser';
   const sourceComparison = document.createElement('span');
   sourceComparison.className = 'backup-summary-source backup-summary-source-comparison level-5-styling';
   sourceComparison.append(sourceName);
@@ -479,13 +479,13 @@ async function loadDemoVault() {
 
     activeCollectionView = 'logged';
     activeCollectionId = 'all';
-    activeFilter = 'all';
-    watchedYearFilter = [];
-    ratingFilter = [];
+    activeFilters = [...workspaceMediaTypes];
+    releaseYearFilter = [];
+    ratingFilter = [100, 0];
     collectionSort = 'watched-desc';
     collectionPage = 0;
     bannerIndex = 0;
-    $('#library-search').value = '';
+    $('.library-search-container > .search-input').value = '';
     render();
     updateBackupSummary();
     demoStatus('Demo file loaded', 'success', `Demo vault loaded: ${entries.length} titles, ${watchlist.length} watchlist items, and ${customCollections.length} folders.`);
@@ -497,9 +497,6 @@ async function loadDemoVault() {
 }
 
 $('#export-backup').addEventListener('click', downloadBackup);
-$('#preview-notification').addEventListener('click', () => {
-  setBackupStatus('File applied', 'success');
-});
 $('#choose-backup').addEventListener('click', () => {
   $('#backup-file').value = '';
   $('#backup-file').click();

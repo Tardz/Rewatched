@@ -25,55 +25,64 @@
 <body>
   <main class="app-container level-1-styling">
     <nav class="navbar-vertical-layout" aria-label="Main navigation">
-      <div class="nav-profile-container level-2-styling">
-        <span class="nav-profile-picture level-3-styling" aria-hidden="true"><span class="nav-profile-icon"></span></span>
-        <span class="nav-profile-name">Profile</span>
-      </div>
-      <div class="nav-page-container level-2-styling">
-        <button id="nav-home-button" class="text-button nav-button is-active" type="button" aria-label="Home" aria-current="page">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" src="assets/icons/filled/home.png" alt="" aria-hidden="true"></span>
+      <button class="nav-profile-button level-2-styling" type="button" aria-label="Account settings" title="Account settings">
+        <span class="nav-profile-picture level-3-styling" aria-hidden="true"><span class="masked-icon"></span></span>
+        <span class="nav-profile-text">Profile</span>
+      </button>
+      <div class="nav-group-container level-2-styling">
+        <button class="text-button icon-text-button nav-button nav-home-button is-active" type="button" aria-label="Home" aria-current="page">
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
           <span class="nav-button-text">Home</span>
         </button>
         <span class="nav-separator" aria-hidden="true"></span>
-        <button id="nav-library-button" class="text-button nav-button" type="button" aria-label="Library">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" data-app-icon="library" src="assets/icons/color/Library.png" alt="" aria-hidden="true"></span>
+        <button class="text-button icon-text-button nav-button nav-library-button" type="button" aria-label="Library">
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
           <span class="nav-button-text">Library</span>
         </button>
-        <button id="nav-folders-button" class="text-button nav-button" type="button" aria-label="Choose a folder">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" data-app-icon="folder" src="assets/icons/color/folder.png" alt="" aria-hidden="true"></span>
-          <span class="nav-button-text">Folders</span>
+        <button class="text-button icon-text-button nav-button nav-backlog-button" type="button" aria-label="Backlog">
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
+          <span class="nav-button-text">Backlog</span>
+        </button>
+        <button class="text-button icon-text-button nav-button nav-progress-button" type="button" aria-label="Progress, coming soon" disabled>
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
+          <span class="nav-button-text">Progress</span>
         </button>
         <span class="nav-separator" aria-hidden="true"></span>
-        <button id="nav-stats-button" class="text-button nav-button" type="button" aria-label="Stats">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" data-app-icon="statistics" src="assets/icons/color/piechart.png" alt="" aria-hidden="true"></span>
+        <div class="menu-wrapper folder-menu-wrapper">
+          <button class="text-button icon-text-button nav-button nav-folders-button" type="button" aria-label="Choose a folder" aria-expanded="false" aria-controls="folder-menu">
+            <span class="nav-button-icon glow-halo level-3-styling"></span>
+            <span class="nav-button-text">Folders</span>
+          </button>
+          <div class="menu-container level-1-styling" id="folder-menu" role="group" aria-label="Choose a folder" hidden>
+            <div class="menu-header-layout">
+              <div class="menu-title level-2-styling">Folders</div>
+              <button id="add-collection" class="icon-button create-folder-option level-3-styling" type="button" aria-label="Create folder" title="Create folder"><img class="icon" data-icon="add" src="assets/icons/filled/add.png" alt="" aria-hidden="true"></button>
+            </div>
+            <div class="menu-options-container level-2-styling" data-menu-options></div>
+          </div>
+        </div>
+      </div>
+      <div class="nav-group-container level-2-styling">
+        <button class="text-button icon-text-button nav-button nav-stats-button" type="button" aria-label="Stats">
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
           <span class="nav-button-text">Stats</span>
         </button>
-        <button id="nav-timeline-button" class="text-button nav-button" type="button" aria-label="Timeline">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" src="assets/icons/filled/timeline.png" alt="" aria-hidden="true"></span>
+        <button class="text-button icon-text-button nav-button nav-timeline-button" type="button" aria-label="Timeline">
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
           <span class="nav-button-text">Timeline</span>
         </button>
       </div>
-      <div class="nav-options-container level-2-styling">
-        <button id="nav-storage-button" class="text-button nav-button" type="button" aria-label="Storage">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" data-app-icon="save" src="assets/icons/color/save.png" alt="" aria-hidden="true"></span>
-          <span class="nav-button-text">Storage</span>
-        </button>
-        <button id="nav-activity-button" class="text-button nav-button" type="button" aria-label="Activity">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" data-app-icon="history" src="assets/icons/color/history.png" alt="" aria-hidden="true"></span>
-          <span class="nav-button-text">Activity</span>
-        </button>
-      </div>
-      <div class="nav-general-container level-2-styling">
-        <button id="nav-settings-button" class="text-button nav-button" type="button" aria-label="Settings">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" data-app-icon="settings" src="assets/icons/color/settings.png" alt="" aria-hidden="true"></span>
+      <div class="nav-group-container level-2-styling">
+        <button class="text-button icon-text-button nav-button nav-settings-button" type="button" aria-label="Settings">
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
           <span class="nav-button-text">Settings</span>
         </button>
-        <button id="nav-login-button" class="text-button nav-button" type="button" aria-label="Login">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" src="assets/icons/filled/login.png" alt="" aria-hidden="true"></span>
-          <span class="nav-button-text">Login</span>
+        <button class="text-button icon-text-button nav-button nav-activity-button" type="button" aria-label="Activity">
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
+          <span class="nav-button-text">Activity</span>
         </button>
-        <button id="nav-about-button" class="text-button nav-button" type="button" aria-label="About">
-          <span class="nav-button-icon glow-halo level-3-styling"><img class="icon" src="assets/icons/filled/about.png" alt="" aria-hidden="true"></span>
+        <button class="text-button icon-text-button nav-button nav-about-button" type="button" aria-label="About">
+          <span class="nav-button-icon glow-halo level-3-styling"></span>
           <span class="nav-button-text">About</span>
         </button>
       </div>
@@ -85,45 +94,47 @@
           <img class="icon nav-expand-icon" src="assets/icons/filled/navbar-expand.png" alt="" aria-hidden="true">
         </button>
         <button class="icon-button glow-halo level-3-styling nav-toggle-theme" type="button" aria-label="Switch to light mode" title="Switch to light mode" aria-pressed="false">
-          <img class="icon" data-app-icon="light_mode" src="assets/icons/color/light_mode.png" alt="" aria-hidden="true">
+          <img class="icon" data-icon="light_mode" src="assets/icons/filled/dark-mode.png" alt="" aria-hidden="true">
         </button>
       </div>
-      <div class="nav-page-container level-2-styling">
-        <button id="nav-page-name-container" class="nav-page-name-container" type="button" aria-label="Go back" title="Go back" disabled>
-          <span class="nav-page-name level-3-styling" aria-live="polite">Home</span>
+      <div class="nav-pagination-container">
+        <button class="icon-button glow-halo nav-prev-button" type="button" aria-label="Previous page" title="Previous page" disabled hidden>
+          <span class="masked-icon" aria-hidden="true"></span>
         </button>
-        <div class="nav-page-context-container" hidden aria-live="polite">
-          <span class="nav-page-context-name"></span>
+        <div class="nav-page-container" aria-live="polite">
+          <span class="nav-page-text-container">Home</span>
+          <span class="nav-context-text" hidden></span>
         </div>
+        <button class="icon-button glow-halo nav-next-button" type="button" aria-label="Next page" title="Next page" disabled hidden>
+          <span class="masked-icon" aria-hidden="true"></span>
+        </button>
       </div>
-      <button id="nav-save-button" class="nav-save-button level-2-styling" type="button" aria-label="Open storage settings">
-        <span id="nav-save-icon" class="nav-save-icon glow-halo level-3-styling" aria-hidden="true">
-          <span class="masked-icon nav-save-icon-glyph"></span>
+      <button class="nav-storage-button level-2-styling" type="button" aria-label="Open storage settings">
+        <span class="nav-storage-icon glow-halo level-3-styling" aria-hidden="true">
+          <span class="masked-icon"></span>
         </span>
-        <span id="nav-save-text" class="nav-save-text">Browser Vault</span>
+        <span class="nav-storage-text">Browser Vault</span>
       </button>
       <button class="text-button level-2-styling nav-brand-container" type="button" aria-label="Rewatched home">
-        <span class="brand-name">Rewatched</span>
+        <span class="brand-text">Rewatched</span>
         <span class="brand-dot" aria-hidden="true">.</span>
       </button>
     </header>
-    <div class="app-content-frame level-0-styling">
-    <div class="app-content-container">
+    <div class="app-content-container level-0-styling">
     <!-- Keep the dashboard rail for a future layout choice; navbar mode hides it. -->
-    <div class="overview-layout outer-layout default-layout">
-      <div class="dashboard-layout outer-layout">
+    <div class="overview-layout default-layout">
+      <div class="dashboard-layout">
         <div class="dashboard-info-container level-1-styling">
           <div class="row-layout">
             <button
-              id="detail-back"
               class="icon-button glow-halo level-2-styling dashboard-back-button"
               type="button"
               aria-label="Back to library"
               title="Back to library"
               hidden
-            ><img class="icon" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
+            ><img class="icon" data-icon="arrow-left" src="assets/icons/filled/left.png" alt="" aria-hidden="true"></button>
             <a class="level-2-styling dashboard-brand-button" href="#" aria-label="Rewatched home">
-              <span class="brand-name">Rewatched</span>
+              <span class="brand-text">Rewatched</span>
               <span class="dashboard-brand-mark" aria-hidden="true">R</span>
               <span class="brand-dot">.</span>
             </a>
@@ -137,7 +148,7 @@
               aria-label="Open Rewatched on GitHub"
               title="ReWatched on GitHub"
             >
-              <img class="icon" data-app-icon="github" src="assets/icons/color/github.png" alt="" aria-hidden="true">
+              <img class="icon" data-icon="github" src="assets/icons/filled/github.png" alt="" aria-hidden="true">
             </a>
             <div class="level-2-styling dashboard-version" aria-label="Version 1.0.0">v1.0.0</div>
           </div>
@@ -145,40 +156,39 @@
 
         <div class="dashboard-controls-container level-1-styling">
           <div class="row-layout">
-            <button id="open-settings" class="icon-button glow-halo level-2-styling dashboard-settings-button" type="button" aria-label="Settings" title="Settings">
-              <img class="icon" data-app-icon="settings" src="assets/icons/color/settings.png" alt="" aria-hidden="true">
+            <button class="icon-button glow-halo level-2-styling dashboard-settings-button" type="button" aria-label="Settings" title="Settings">
+              <img class="icon" data-icon="settings" src="assets/icons/filled/setting.png" alt="" aria-hidden="true">
             </button>
             <button
-              id="toggle-theme"
               class="icon-button glow-halo level-2-styling dashboard-theme-button"
               type="button"
               aria-label="Switch to light mode"
               title="Switch to light mode"
               aria-pressed="false"
             >
-              <img class="icon" data-app-icon="light_mode" src="assets/icons/color/light_mode.png" alt="" aria-hidden="true">
+              <img class="icon" data-icon="light_mode" src="assets/icons/filled/dark-mode.png" alt="" aria-hidden="true">
             </button>
           </div>
 
           <div class="row-layout">
             <button class="icon-button glow-halo level-2-styling dashboard-activity-button" type="button" aria-label="Activity" title="Activity">
-              <img class="icon" data-app-icon="history" src="assets/icons/color/history.png" alt="" aria-hidden="true">
+              <img class="icon" data-icon="history" src="assets/icons/filled/history.png" alt="" aria-hidden="true">
             </button>
             <div class="dashboard-storage-container level-2-styling">
-              <button id="open-storage-check" class="icon-button glow-halo level-3-styling dashboard-save-button is-saved" type="button" title="Storage Consistency Check — All changes saved" aria-label="Open Storage Consistency Check. All changes saved" aria-live="polite" aria-atomic="true">
-                <img class="icon" data-app-icon="save" src="assets/icons/color/save.png" alt="" aria-hidden="true">
+              <button class="icon-button glow-halo level-3-styling dashboard-save-button is-saved" type="button" title="Storage Consistency Check — All changes saved" aria-label="Open Storage Consistency Check. All changes saved" aria-live="polite" aria-atomic="true">
+                <img class="icon" data-icon="save" src="assets/icons/filled/save.png" alt="" aria-hidden="true">
               </button>
-              <button id="open-storage-settings" class="dashboard-storage-button" type="button" title="Open storage settings">Browser Vault</button>
+              <button class="dashboard-storage-button" type="button" title="Open storage settings">Browser Vault</button>
             </div>
           </div>
         </div>
         <nav class="dashboard-page-container level-1-styling" aria-label="Main sections">
           <div class="row-layout">
             <button class="icon-button glow-halo level-2-styling library-page-button is-active" type="button" aria-current="page" aria-label="Library" title="Library">
-              <img class="icon" data-app-icon="library" src="assets/icons/color/Library.png" alt="" aria-hidden="true">
+              <img class="icon" data-icon="library" src="assets/icons/filled/library.png" alt="" aria-hidden="true">
             </button>
             <button class="icon-button glow-halo level-2-styling stats-page-button" type="button" aria-label="Stats" title="Stats">
-              <img class="icon" data-app-icon="statistics" src="assets/icons/color/piechart.png" alt="" aria-hidden="true">
+              <img class="icon" data-icon="statistics" src="assets/icons/filled/piechart.png" alt="" aria-hidden="true">
             </button>
           </div>
         </nav>
@@ -207,39 +217,41 @@
       </div>
       <div class="statsbar-card level-2-styling">
         <span class="statsbar-title">Latest<br>log</span>
-        <time class="statsbar-data" id="stat-latest-log">—</time>
+        <time class="statsbar-data statsbar-latest-log">—</time>
       </div>
     </section>
 
     <!-- Featured title alongside the summary statistics. -->
-    <section class="banner-container overview-banner-container" id="banner" aria-label="Recently rated" tabindex="0">
-      <div class="banner-backdrop" id="banner-backdrop" aria-hidden="true"></div>
+    <section class="banner-container overview-banner-container" aria-label="Recently rated" tabindex="0">
+      <div class="banner-backdrop" aria-hidden="true"></div>
       <div class="overview-banner-content-layout">
         <div class="banner-info-layout">
-          <p id="banner-label" class="banner-labels-layout">
-            <span id="banner-date" class="text-chip-styling banner-log-date-chip" hidden></span>
+          <p class="banner-labels-layout">
+            <span class="text-chip-styling banner-log-date-chip" hidden></span>
           </p>
           <div class="banner-heading-layout">
-            <h2 class="banner-title" id="banner-title"></h2>
-            <span id="banner-director" class="app-text banner-director" hidden></span>
+            <h2 class="banner-title"></h2>
+            <span class="banner-director" hidden></span>
           </div>
           <div class="banner-meta-layout">
-            <div id="banner-score" class="banner-value-layout"></div>
+            <div class="banner-value-layout"></div>
           </div>
     </div>
         <div class="overview-banner-controls-layout">
-          <button type="button" id="previous" class="icon-button level-2-styling overview-banner-previous-button" aria-label="Previous title"><img class="icon" data-app-icon-original-text="‹" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
-          <span id="banner-count" class="overview-banner-count"></span>
-          <button type="button" id="next" class="icon-button level-2-styling overview-banner-next-button" aria-label="Next title"><img class="icon" data-app-icon-original-text="›" data-app-icon="arrow-right" src="assets/icons/black/arrow-right.png" alt="" aria-hidden="true"></button>
-          <button type="button" id="pause" class="icon-button level-2-styling overview-banner-media-button" aria-label="Pause rotation" title="Pause rotation">
-            <img class="pause-icon icon" data-app-icon="pause" src="assets/icons/black/pause.png" alt="" aria-hidden="true">
-            <img class="play-icon icon" data-app-icon="play" src="assets/icons/black/play.png" alt="" aria-hidden="true" hidden>
+          <div class="pagination-container level-2-styling" aria-label="Banner items">
+            <button type="button" class="pagination-prev-button" aria-label="Previous title"><img class="icon" data-icon-original-text="‹" data-icon="arrow-left" src="assets/icons/filled/left.png" alt="" aria-hidden="true"></button>
+            <span class="pagination-text-container level-2-styling"><span></span><span class="pagination-text-separator" aria-hidden="true">/</span><span></span></span>
+            <button type="button" class="pagination-next-button" aria-label="Next title"><img class="icon" data-icon-original-text="›" data-icon="arrow-right" src="assets/icons/filled/right.png" alt="" aria-hidden="true"></button>
+          </div>
+          <button type="button" class="icon-button level-2-styling overview-banner-media-button" aria-label="Pause rotation" title="Pause rotation">
+            <img class="pause-icon icon" data-icon="pause" src="assets/icons/filled/pause.png" alt="" aria-hidden="true">
+            <img class="play-icon icon" data-icon="play" src="assets/icons/filled/play.png" alt="" aria-hidden="true" hidden>
           </button>
         </div>
       </div>
       <div class="banner-poster">
-        <img id="banner-image" alt="" hidden>
-        <span id="banner-placeholder">Add a poster<br>to see it here</span>
+        <img alt="" hidden>
+        <span>Add a poster<br>to see it here</span>
       </div>
       <section id="statistics-entire-timeline" class="statistics-entire-timeline" aria-label="Watch history" hidden>
         <ol id="statistics-timeline" class="statistics-timeline" aria-label="Watch history, oldest to newest"></ol>
@@ -250,17 +262,17 @@
     </section>
 
     <!-- Show actor or plot information beside the featured banner in navbar mode. -->
-    <aside class="banner-details-container level-1-styling" id="banner-details" aria-label="Featured title details">
+    <aside class="details-container level-1-styling" aria-label="Featured title details">
       <div class="details-header-container level-2-styling" role="tablist" aria-label="Featured title information">
         <button id="banner-details-actors-tab" class="text-button detail-option level-3-styling active" type="button" role="tab" aria-selected="true" aria-controls="banner-details-actors-content">Actors</button>
         <button id="banner-details-plot-tab" class="text-button detail-option level-3-styling" type="button" role="tab" aria-selected="false" aria-controls="banner-details-plot-content">Plot</button>
       </div>
       <div class="details-content-container level-2-styling">
         <div id="banner-details-actors-content" role="tabpanel" aria-labelledby="banner-details-actors-tab">
-          <div id="banner-details-actors-list" class="details-actors-layout" role="list"></div>
+          <div class="details-actors-layout" role="list"></div>
         </div>
         <div id="banner-details-plot-content" role="tabpanel" aria-labelledby="banner-details-plot-tab" hidden>
-          <p id="banner-details-plot-text" class="app-text details-plot-text"></p>
+          <p class="details-plot-layout"></p>
         </div>
       </div>
     </aside>
@@ -268,99 +280,93 @@
         </div>
 
     <!-- Workspace controls and views; entry cards are rendered into the content area. -->
-    <section class="workspace-container level-1-styling library library-section" id="library" aria-label="Library">
-      <div class="workspace-controls-container level-2-styling collection-source-controls" id="collection-source-controls" aria-label="Library controls">
-        <div class="expandable-box level-3-styling workspace-view-expandable collection-view-switcher" role="tablist" aria-label="Log or backlog">
-          <button class="expandable-text-button level-4-styling active" type="button" data-view="logged" role="tab" aria-selected="true">Logged</button>
-          <button class="expandable-text-button level-4-styling" type="button" data-view="watchlist" role="tab" aria-selected="false">Backlog</button>
-        </div>
-        <div class="menu-wrapper folder-menu-wrapper">
-          <button class="icon-button glow-halo level-3-styling" id="library-folder-button" type="button" aria-label="Choose a folder" aria-expanded="false" aria-controls="folder-menu" title="Choose a folder">
-            <span class="icon" data-app-icon="folder" aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </button>
-          <div class="menu-container level-1-styling" id="folder-menu" role="group" aria-label="Choose a folder" hidden>
-            <div class="menu-header-layout">
-              <div class="menu-title level-2-styling">Folders</div>
-              <button id="add-collection" class="icon-button create-folder-option level-3-styling" type="button" aria-label="Create folder" title="Create folder"><img class="icon" data-app-icon="add" src="assets/icons/filled/add.png" alt="" aria-hidden="true"></button>
+    <section class="workspace-container level-1-styling library library-section" aria-label="Library">
+      <div class="workspace-controls-container" aria-label="Library controls">
+        <div class="workspace-search-type-container workspace-controls-group level-2-styling">
+          <div class="library-search-container">
+            <input class="search-input level-3-styling" type="search" aria-label="Search this view" placeholder="Search titles…" autocomplete="off">
+            <div class="search-button level-3-styling">
+              <button class="icon-button" type="button" aria-label="Search" title="Search">
+                <span class="icon masked-icon" data-icon="search" aria-hidden="true"></span>
+              </button>
             </div>
-            <div class="menu-options-container level-2-styling" data-menu-options></div>
+          </div>
+          <div class="menu-wrapper workspace-type-menu-wrapper">
+            <button class="workspace-type-menu-button level-3-styling" type="button" aria-label="Entry type: All" aria-expanded="false" aria-controls="entry-type-menu">
+              <span class="menu-button-text"><img class="icon" data-icon="all" src="assets/icons/filled/all.png" alt="" aria-hidden="true"></span>
+            </button>
+            <div id="entry-type-menu" class="menu-container level-1-styling" role="group" aria-label="Choose entry type" hidden>
+              <div class="menu-header-layout"><div class="menu-title level-2-styling">Entry type</div></div>
+              <div class="menu-options-container level-2-styling">
+                <button class="menu-option level-3-styling active" type="button" data-filter="Movie" aria-pressed="true"><img class="icon" data-icon="movie" src="assets/icons/filled/disc.png" alt="" aria-hidden="true"><span class="menu-option-label">Films</span></button>
+                <button class="menu-option level-3-styling active" type="button" data-filter="Show" aria-pressed="true"><img class="icon" data-icon="show" src="assets/icons/filled/tv.png" alt="" aria-hidden="true"><span class="menu-option-label">Shows</span></button>
+                <button class="menu-option level-3-styling active" type="button" data-filter="Game" aria-pressed="true"><img class="icon" data-icon="game" src="assets/icons/filled/game-controller.png" alt="" aria-hidden="true"><span class="menu-option-label">Games</span></button>
+                <button class="menu-option level-3-styling active" type="button" data-filter="Book" aria-pressed="true"><img class="icon" data-icon="book" src="assets/icons/filled/book.png" alt="" aria-hidden="true"><span class="menu-option-label">Books</span></button>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="search-container level-3-styling library-search" id="library-search-box">
-          <button id="library-search-toggle" class="search-button library-search-toggle" type="button" aria-label="Open search" aria-expanded="false" title="Search">
-            <img class="icon" data-app-icon="search" src="assets/icons/color/search.png" alt="" aria-hidden="true">
-          </button>
-          <input id="library-search" class="search-input level-4-styling" type="search" aria-label="Search this view" placeholder="Search titles…" autocomplete="off">
-          <button id="library-search-clear" class="search-close-button level-4-styling" type="button" aria-label="Close search" title="Close search" hidden>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
-          </button>
-        </div>
-        <div class="workspace-filter-layout collection-filter-sort" id="collection-filter-sort" aria-label="Filter and sort collection">
-          <div class="menu-wrapper workspace-value-filter-wrapper">
-            <button id="collection-value-filter-button" class="level-3-styling" type="button" aria-label="Filter by rating: Any rating" aria-expanded="false" aria-controls="collection-value-filter-menu">
-              <img class="icon app-icon" data-app-icon="filter" src="assets/icons/filled/filter.png" alt="" aria-hidden="true"><span class="menu-button-label">Any rating</span>
+        <div class="workspace-filter-container workspace-controls-group level-2-styling" aria-label="Filter and sort collection">
+          <div class="workspace-filter-layout">
+          <div class="menu-wrapper workspace-ratings-menu-wrapper">
+            <button class="workspace-ratings-menu-button level-3-styling" type="button" aria-label="Filter by rating: 100 - 0" aria-expanded="false" aria-controls="collection-value-filter-menu">
+              <span class="glow-halo"><span class="icon masked-icon" data-icon="filter" style="-webkit-mask-image: url('assets/icons/filled/filter.png'); mask-image: url('assets/icons/filled/filter.png')" aria-hidden="true"></span></span><span class="menu-button-text">100 - 0</span>
             </button>
             <div id="collection-value-filter-menu" class="menu-container level-1-styling" role="group" aria-label="Filter by rating" hidden>
               <div class="menu-header-layout">
                 <div class="menu-title level-2-styling">Filter</div>
-                <button class="icon-button glow-halo level-2-styling workspace-filter-reset-button" type="button" aria-label="Clear rating filter" title="Clear rating filter"><span class="masked-icon workspace-reset-icon" aria-hidden="true"></span></button>
+                <button class="icon-button glow-halo level-2-styling workspace-filter-reset-button" type="button" aria-label="Clear rating filter" title="Clear rating filter"><span class="masked-icon" aria-hidden="true"></span></button>
               </div>
               <div class="menu-options-container level-2-styling" data-menu-options></div>
             </div>
             <select id="collection-value-filter" aria-label="Filter by rating" aria-hidden="true" tabindex="-1" multiple hidden></select>
           </div>
-          <div class="menu-wrapper workspace-year-filter-wrapper">
-            <button id="watched-year-filter-button" class="level-3-styling" type="button" aria-label="Filter by watched year: All years" aria-expanded="false" aria-controls="watched-year-filter-menu">
-              <img class="icon app-icon" data-app-icon="filter" src="assets/icons/filled/filter.png" alt="" aria-hidden="true"><span class="menu-button-label">All years</span>
+          <div class="menu-wrapper workspace-year-menu-wrapper">
+            <button class="workspace-year-menu-button level-3-styling" type="button" aria-label="Filter by release year: All years" aria-expanded="false" aria-controls="release-year-filter-menu">
+              <span class="glow-halo"><span class="icon masked-icon" data-icon="filter" style="-webkit-mask-image: url('assets/icons/filled/filter.png'); mask-image: url('assets/icons/filled/filter.png')" aria-hidden="true"></span></span><span class="menu-button-text">All years</span>
             </button>
-            <div id="watched-year-filter-menu" class="menu-container level-1-styling" role="group" aria-label="Filter by watched year" hidden>
+            <div id="release-year-filter-menu" class="menu-container level-1-styling" role="group" aria-label="Filter by release year" hidden>
               <div class="menu-header-layout">
                 <div class="menu-title level-2-styling">Filter</div>
-                <button class="icon-button glow-halo level-2-styling workspace-filter-reset-button" type="button" aria-label="Clear year filter" title="Clear year filter"><span class="masked-icon workspace-reset-icon" aria-hidden="true"></span></button>
+                <button class="icon-button glow-halo level-2-styling workspace-filter-reset-button" type="button" aria-label="Clear year filter" title="Clear year filter"><span class="masked-icon" aria-hidden="true"></span></button>
               </div>
               <div class="menu-options-container level-2-styling" data-menu-options></div>
             </div>
-            <select id="watched-year-filter" aria-label="Filter by watched year" aria-hidden="true" tabindex="-1" multiple hidden></select>
+            <select id="release-year-filter" aria-label="Filter by release year" aria-hidden="true" tabindex="-1" multiple hidden></select>
           </div>
-          <div class="menu-wrapper workspace-sort-wrapper">
-            <div class="workspace-sort-control level-3-styling">
-              <button class="text-button workspace-direction-button" type="button" aria-label="Change sort to ascending" title="Change sort direction" hidden>↓</button>
-              <button id="collection-sort-button" class="text-button workspace-sort-trigger" type="button" aria-label="Sort collection: Watched" aria-expanded="false" aria-controls="collection-sort-menu">
-                <span class="menu-button-label">Watched</span>
-              </button>
-            </div>
+          <div class="menu-wrapper workspace-sort-menu-wrapper">
+            <button class="level-3-styling workspace-sort-menu-button" type="button" aria-label="Sort collection: Watched" aria-expanded="false" aria-controls="collection-sort-menu">
+              <span class="glow-halo"><span class="masked-icon" style="-webkit-mask-image: url('assets/icons/filled/sort.png'); mask-image: url('assets/icons/filled/sort.png')"></span></span>
+              <span class="menu-button-text">Watched</span>
+            </button>
             <div id="collection-sort-menu" class="menu-container level-1-styling" role="group" aria-label="Sort collection" hidden>
               <div class="menu-header-layout">
                 <div class="menu-title level-2-styling">Sort</div>
-                <button class="icon-button glow-halo level-2-styling workspace-sort-reset-button" type="button" aria-label="Reset sorting" title="Reset sorting"><span class="masked-icon workspace-reset-icon" aria-hidden="true"></span></button>
+                <button class="icon-button glow-halo level-2-styling workspace-sort-direction-button" type="button" aria-label="Change sort direction" title="Change sort direction"><span class="masked-icon" aria-hidden="true"></span></button>
+                <button class="icon-button glow-halo level-2-styling workspace-sort-reset-button" type="button" aria-label="Reset sorting" title="Reset sorting"><span class="masked-icon" aria-hidden="true"></span></button>
               </div>
               <div class="menu-options-container level-2-styling" data-menu-options></div>
             </div>
             <select id="collection-sort" aria-label="Sort collection" aria-hidden="true" tabindex="-1" hidden></select>
           </div>
-          <button id="reset-collection-filter-sort" class="icon-button glow-halo level-3-styling workspace-reset-button filter-sort-reset" type="button" aria-label="Reset filters and sorting" title="Reset filters and sorting"><span class="masked-icon workspace-reset-icon" aria-hidden="true"></span></button>
+            <button class="icon-button glow-halo level-3-styling workspace-reset-button" type="button" aria-label="Reset filters and sorting" title="Reset filters and sorting"><span class="masked-icon" aria-hidden="true"></span></button>
+          </div>
         </div>
-        <div class="expandable-box level-3-styling workspace-type-expandable collection-view-controls" id="media-type-filters" aria-label="Filter by media type">
-          <button class="icon-button glow-halo expandable-icon-button level-4-styling workspace-type-all-button type-switch-option active" type="button" data-filter="all" aria-label="All" title="All"><img class="icon" data-app-icon="all" src="assets/icons/color/all.png" alt="" aria-hidden="true"></button>
-          <button class="icon-button glow-halo expandable-icon-button level-4-styling workspace-type-film-button type-switch-option" type="button" data-filter="Movie" aria-label="Films" title="Films"><img class="icon" data-app-icon="movie" src="assets/icons/color/dvd.png" alt="" aria-hidden="true"></button>
-          <button class="icon-button glow-halo expandable-icon-button level-4-styling workspace-type-show-button type-switch-option" type="button" data-filter="Show" aria-label="Shows" title="Shows"><img class="icon" data-app-icon="show" src="assets/icons/color/tv.png" alt="" aria-hidden="true"></button>
-          <button class="icon-button glow-halo expandable-icon-button level-4-styling workspace-type-game-button type-switch-option" type="button" data-filter="Game" aria-label="Games" title="Games"><img class="icon" data-app-icon="game" src="assets/icons/color/game-controller.png" alt="" aria-hidden="true"></button>
-          <button class="icon-button glow-halo expandable-icon-button level-4-styling workspace-type-book-button type-switch-option" type="button" data-filter="Book" aria-label="Books" title="Books"><img class="icon" data-app-icon="book" src="assets/icons/color/book.png" alt="" aria-hidden="true"></button>
+        <div class="workspace-pagination-container workspace-controls-group level-2-styling">
+          <div class="pagination-container level-3-styling" aria-label="Collection pages" hidden>
+            <button class="pagination-prev-button" type="button" aria-label="Previous page" title="Previous page"><img class="icon" data-icon-original-text="‹" data-icon="arrow-left" src="assets/icons/filled/left.png" alt="" aria-hidden="true"></button>
+            <span class="pagination-text-container level-3-styling" aria-live="polite"><span>1</span><span class="pagination-text-separator" aria-hidden="true">/</span><span>1</span></span>
+            <button class="pagination-next-button" type="button" aria-label="Next page" title="Next page"><img class="icon" data-icon-original-text="›" data-icon="arrow-right" src="assets/icons/filled/right.png" alt="" aria-hidden="true"></button>
+          </div>
+          <button class="workspace-create-entry-button text-button level-3-styling section-add" type="button" aria-label="Log a watch" title="Add item"><img class="icon" data-icon="add" src="assets/icons/filled/add.png" alt="" aria-hidden="true"></button>
         </div>
-        <div class="workspace-pagination-container level-3-styling collection-pagination" id="collection-pagination" aria-label="Collection pages" hidden>
-          <button class="icon-button level-4-styling workspace-prev-button" id="collection-page-previous" type="button" aria-label="Previous page" title="Previous page"><img class="icon" data-app-icon-original-text="‹" data-app-icon="arrow-left" src="assets/icons/black/arrow-left.png" alt="" aria-hidden="true"></button>
-          <span class="workspace-counter" id="collection-page-status" aria-live="polite">1 / 1</span>
-          <button class="icon-button level-4-styling workspace-next-button" id="collection-page-next" type="button" aria-label="Next page" title="Next page"><img class="icon" data-app-icon-original-text="›" data-app-icon="arrow-right" src="assets/icons/black/arrow-right.png" alt="" aria-hidden="true"></button>
-        </div>
-        <button class="workspace-create-entry-button text-button level-3-styling section-add" id="open-add" type="button" aria-label="Log a watch" title="Add item"><img class="icon" data-app-icon="add" src="assets/icons/filled/add.png" alt="" aria-hidden="true"></button>
       </div>
       <p id="empty" class="workspace-empty-state empty">Nothing here yet. Log the first thing you watched.</p>
       <div id="watchlist-empty" class="workspace-empty-state workspace-backlog-empty-state empty watchlist-empty" hidden>
         <strong>Your watchlist is clear.</strong>
         <span>Add films and shows you want to remember for later.</span>
       </div>
-      <div id="collection" class="workspace-content-container collection"></div>
+      <div class="workspace-content-layout"></div>
     </section>
 
     <div id="statistics-panel" class="statistics-panel" aria-labelledby="statistics-title" hidden>
@@ -509,39 +515,39 @@
   </div>
 
   <!-- App preferences and data management -->
-  <dialog id="settings-dialog" class="settings-container level-1-styling" aria-label="Settings">
-    <nav class="settings-category-container level-2-styling" aria-label="Settings categories">
-      <button class="text-button settings-category-button active" id="settings-category-general" type="button" aria-pressed="true" aria-controls="settings-panel-general" data-settings-category="general"><span class="settings-category-icon level-4-styling"><span class="masked-icon" data-app-icon="general" aria-hidden="true"></span></span><span class="settings-category-text app-text">General</span></button>
+  <dialog class="settings-container level-1-styling" aria-label="Settings">
+    <nav class="settings-category-layout" aria-label="Settings categories">
+      <button class="text-button icon-text-button settings-category-button settings-general-button active" type="button" aria-pressed="true" aria-controls="settings-panel-general" data-settings-category="general"><span class="settings-category-icon level-3-styling"><span class="masked-icon" data-icon="general" aria-hidden="true"></span></span><span class="settings-category-text">General</span></button>
       <div class="settings-subcategory-list" data-settings-subcategories="general" aria-label="General sections" hidden>
-        <button class="settings-subcategory-button" type="button" data-settings-target="settings-miscellaneous-heading">Miscellaneous</button>
+        <button class="settings-subcategory-button" type="button" data-settings-target="settings-other-heading">Other</button>
       </div>
-      <button class="text-button settings-category-button" id="settings-category-appearance" type="button" aria-pressed="false" aria-controls="settings-panel-appearance" data-settings-category="appearance" tabindex="-1"><span class="settings-category-icon level-4-styling"><span class="masked-icon" data-app-icon="appearance" aria-hidden="true"></span></span><span class="settings-category-text app-text">Appearance</span></button>
+      <button class="text-button icon-text-button settings-category-button settings-appearance-button" type="button" aria-pressed="false" aria-controls="settings-panel-appearance" data-settings-category="appearance" tabindex="-1"><span class="settings-category-icon level-3-styling"><span class="masked-icon" data-icon="appearance" aria-hidden="true"></span></span><span class="settings-category-text">Appearance</span></button>
       <div class="settings-subcategory-list" data-settings-subcategories="appearance" aria-label="Appearance sections" hidden>
         <button class="settings-subcategory-button" type="button" data-settings-target="settings-color-heading">Color</button>
-        <button class="settings-subcategory-button" type="button" data-settings-target="settings-borders-heading">Borders &amp; corners</button>
-        <button class="settings-subcategory-button" type="button" data-settings-target="settings-transparency-heading">Transparency</button>
+        <button class="settings-subcategory-button" type="button" data-settings-target="settings-edges-heading">Edges</button>
+        <button class="settings-subcategory-button" type="button" data-settings-target="settings-opacity-heading">Opacity</button>
         <button class="settings-subcategory-button" type="button" data-settings-target="settings-chips-heading">Chips</button>
       </div>
-      <button class="text-button settings-category-button" id="settings-category-storage" type="button" aria-pressed="false" aria-controls="settings-panel-storage" data-settings-category="storage" tabindex="-1"><span class="settings-category-icon level-4-styling"><span class="masked-icon" data-app-icon="save" aria-hidden="true"></span></span><span class="settings-category-text app-text">Storage</span></button>
+      <button class="text-button icon-text-button settings-category-button settings-storage-button" type="button" aria-pressed="false" aria-controls="settings-panel-storage" data-settings-category="storage" tabindex="-1"><span class="settings-category-icon level-3-styling"><span class="masked-icon" data-icon="save" aria-hidden="true"></span></span><span class="settings-category-text">Storage</span></button>
       <div class="settings-subcategory-list" data-settings-subcategories="storage" aria-label="Storage sections" hidden>
         <button class="settings-subcategory-button" type="button" data-settings-target="file-storage-heading">Load</button>
         <button class="settings-subcategory-button" type="button" data-settings-target="backup-heading">Save</button>
       </div>
-      <button class="text-button settings-category-button" id="settings-category-integrations" type="button" aria-pressed="false" aria-controls="settings-panel-integrations" data-settings-category="integrations" tabindex="-1"><span class="settings-category-icon level-4-styling"><span class="masked-icon" data-app-icon="integrations" aria-hidden="true"></span></span><span class="settings-category-text app-text">Integrations</span></button>
+      <button class="text-button icon-text-button settings-category-button settings-integrations-button" type="button" aria-pressed="false" aria-controls="settings-panel-integrations" data-settings-category="integrations" tabindex="-1"><span class="settings-category-icon level-3-styling"><span class="masked-icon" data-icon="integrations" aria-hidden="true"></span></span><span class="settings-category-text">Integrations</span></button>
       <div class="settings-subcategory-list" data-settings-subcategories="integrations" aria-label="Integration sections" hidden>
-        <button class="settings-subcategory-button" type="button" data-settings-target="google-settings-heading">Google Image Search</button>
-        <button class="settings-subcategory-button" type="button" data-settings-target="imdb-settings-heading">IMDb ratings</button>
+        <button class="settings-subcategory-button" type="button" data-settings-target="google-settings-heading">Images</button>
+        <button class="settings-subcategory-button" type="button" data-settings-target="imdb-settings-heading">Movies</button>
       </div>
-      <button class="text-button settings-category-button" id="settings-category-account" type="button" aria-pressed="false" aria-controls="settings-panel-account" data-settings-category="account" tabindex="-1"><span class="settings-category-icon level-4-styling"><span class="masked-icon" data-app-icon="avatar" aria-hidden="true"></span></span><span class="settings-category-text app-text">Account</span></button>
+      <button class="text-button icon-text-button settings-category-button settings-account-button" type="button" aria-pressed="false" aria-controls="settings-panel-account" data-settings-category="account" tabindex="-1"><span class="settings-category-icon level-3-styling"><span class="masked-icon" data-icon="avatar" aria-hidden="true"></span></span><span class="settings-category-text">Account</span></button>
       <div class="settings-subcategory-list" data-settings-subcategories="account" aria-label="Account sections" hidden>
         <button class="settings-subcategory-button" type="button" data-settings-target="account-settings-heading">Account</button>
       </div>
-      <button class="text-button settings-category-button" id="settings-category-about" type="button" aria-pressed="false" aria-controls="settings-panel-about" data-settings-category="about" tabindex="-1"><span class="settings-category-icon level-4-styling"><span class="masked-icon" data-app-icon="about" aria-hidden="true"></span></span><span class="settings-category-text app-text">About</span></button>
+      <button class="text-button icon-text-button settings-category-button settings-about-button" type="button" aria-pressed="false" aria-controls="settings-panel-about" data-settings-category="about" tabindex="-1"><span class="settings-category-icon level-3-styling"><span class="masked-icon" data-icon="about" aria-hidden="true"></span></span><span class="settings-category-text">About</span></button>
     </nav>
     <div class="settings-content-container level-2-styling">
-      <section id="settings-panel-general" role="region" aria-labelledby="settings-category-general" data-settings-panel="general">
-        <section class="settings-option-group level-3-styling" aria-labelledby="settings-miscellaneous-heading">
-          <h3 id="settings-miscellaneous-heading" class="level-4-styling">Miscellaneous</h3>
+      <section id="settings-panel-general" role="region" aria-label="General" data-settings-panel="general">
+        <div class="option-group-header-layout"><h3 id="settings-other-heading" class="option-group-heading level-3-styling">Other</h3><button class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Other settings information" aria-controls="settings-other-help" aria-expanded="false"></button><p id="settings-other-help" class="settings-heading-help level-4-styling" hidden>Banner rotation, reduced motion, and app layout.</p></div>
+        <section class="settings-option-group level-3-styling" aria-labelledby="settings-other-heading">
           <div class="settings-option-row">
             <label class="settings-option level-4-styling" for="auto-rotate"><span><strong>Rotate the banner automatically</strong><small>Show the next title every six seconds.</small></span><input id="auto-rotate" type="checkbox"></label>
             <label class="settings-option level-4-styling" for="reduce-animations"><span><strong>Reduce animations</strong><small>Shorten motion and transitions throughout the app.</small></span><input id="reduce-animations" type="checkbox"></label>
@@ -549,9 +555,9 @@
           <label class="settings-option level-4-styling" for="dashboard-mode"><span><strong>Layout</strong><small>Choose the navbar or dashboard controls.</small></span><span class="settings-select"><select id="dashboard-mode" class="level-4-styling"><option value="navbar">Navbar</option><option value="dashboard">Dashboard</option></select></span></label>
         </section>
       </section>
-      <section id="settings-panel-appearance" role="region" aria-labelledby="settings-category-appearance" data-settings-panel="appearance" hidden>
+      <section id="settings-panel-appearance" role="region" aria-label="Appearance" data-settings-panel="appearance" hidden>
+        <div class="option-group-header-layout"><h3 id="settings-color-heading" class="option-group-heading level-3-styling">Color</h3><button class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Color settings information" aria-controls="settings-color-help" aria-expanded="false"></button><p id="settings-color-help" class="settings-heading-help level-4-styling" hidden>Choose the app theme and poster-based colors.</p></div>
         <section class="settings-option-group level-3-styling" aria-labelledby="settings-color-heading">
-          <h3 id="settings-color-heading" class="level-4-styling">Color</h3>
           <label class="settings-option level-4-styling" for="theme-mode"><span><strong>Theme</strong><small>Follow your system or choose light or dark.</small></span><span class="settings-select"><select id="theme-mode" class="level-4-styling"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></span></label>
           <div class="settings-option-row settings-toggle-row">
             <label class="settings-option level-4-styling" for="poster-background"><span><strong>Poster backdrop</strong><small>Tint the app with colors from the current poster.</small></span><input id="poster-background" type="checkbox" checked></label>
@@ -559,51 +565,66 @@
           </div>
           <div class="settings-option settings-option-range level-4-styling"><label for="poster-background-strength"><strong>Backdrop strength</strong><small>Adjust how strongly poster colors tint the app.</small></label><div class="settings-range-control"><output id="poster-background-strength-value" for="poster-background-strength">90%</output><input id="poster-background-strength" type="range" min="0" max="100" step="5" value="90"></div></div>
         </section>
-        <section class="settings-option-group level-3-styling" aria-labelledby="settings-borders-heading">
-          <h3 id="settings-borders-heading" class="level-4-styling">Borders &amp; corners</h3>
+        <div class="option-group-header-layout"><h3 id="settings-edges-heading" class="option-group-heading level-3-styling">Edges</h3><button class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Edges settings information" aria-controls="settings-edges-help" aria-expanded="false"></button><p id="settings-edges-help" class="settings-heading-help level-4-styling" hidden>Adjust inset borders and corner rounding.</p></div>
+        <section class="settings-option-group level-3-styling" aria-labelledby="settings-edges-heading">
           <label class="settings-option level-4-styling" for="macos-box-borders"><span><strong>Inset borders</strong><small>Add a subtle highlight inside box edges.</small></span><input id="macos-box-borders" type="checkbox"></label>
           <div class="settings-option settings-option-range level-4-styling"><label for="corner-radius-scale"><strong>Rounded corners</strong><small>Adjust how rounded boxes are.</small></label><div class="settings-range-control"><output id="corner-radius-scale-value" for="corner-radius-scale">120%</output><input id="corner-radius-scale" type="range" min="50" max="150" step="5" value="120"></div></div>
         </section>
-        <section class="settings-option-group level-3-styling" aria-labelledby="settings-transparency-heading">
-          <h3 id="settings-transparency-heading" class="level-4-styling">Transparency</h3>
+        <div class="option-group-header-layout"><h3 id="settings-opacity-heading" class="option-group-heading level-3-styling">Opacity</h3><button class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Opacity settings information" aria-controls="settings-opacity-help" aria-expanded="false"></button><p id="settings-opacity-help" class="settings-heading-help level-4-styling" hidden>Control glass effects and surface opacity.</p></div>
+        <section class="settings-option-group level-3-styling" aria-labelledby="settings-opacity-heading">
           <div class="settings-option-row settings-toggle-row">
             <label class="settings-option level-4-styling" for="tactile-dashboard"><span><strong>Dashboard glass</strong><small>Add a frosted finish to dashboard controls.</small></span><input id="tactile-dashboard" type="checkbox" checked></label>
             <label class="settings-option level-4-styling" for="disable-glass-transparency"><span><strong>Solid surfaces</strong><small>Make glass panels opaque.</small></span><input id="disable-glass-transparency" type="checkbox"></label>
           </div>
           <div class="settings-option settings-option-range level-4-styling"><label for="glass-surface-opacity"><strong>Glass opacity</strong><small>Higher values make panels less transparent.</small></label><div class="settings-range-control"><output id="glass-surface-opacity-value" for="glass-surface-opacity">70%</output><input id="glass-surface-opacity" type="range" min="60" max="100" step="5" value="70"></div></div>
         </section>
+        <div class="option-group-header-layout"><h3 id="settings-chips-heading" class="option-group-heading level-3-styling">Chips</h3><button class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Chips settings information" aria-controls="settings-chips-help" aria-expanded="false"></button><p id="settings-chips-help" class="settings-heading-help level-4-styling" hidden>Choose how rating and priority chips appear.</p></div>
         <section class="settings-option-group level-3-styling" aria-labelledby="settings-chips-heading">
-          <h3 id="settings-chips-heading" class="level-4-styling">Chips</h3>
           <div class="settings-option-row settings-toggle-row">
             <label class="settings-option level-4-styling" for="colored-value-chips"><span><strong>Colored chips</strong><small>Fill each chip with its rating or priority color.</small></span><input id="colored-value-chips" type="checkbox"></label>
             <label class="settings-option level-4-styling" for="hide-main-value-chips"><span><strong>Hide chips</strong><small>Hide them in the overview banner and entry cards; keep them in the stats bar and filters.</small></span><input id="hide-main-value-chips" type="checkbox"></label>
           </div>
+          <label class="settings-option level-4-styling" for="hide-rating-chip-percentage"><span><strong>Hide rating percentage</strong><small>Show rating chips without the percent sign.</small></span><input id="hide-rating-chip-percentage" type="checkbox"></label>
         </section>
       </section>
-      <section id="settings-panel-storage" role="region" aria-labelledby="settings-category-storage" data-settings-panel="storage" hidden>
+      <section id="settings-panel-storage" role="region" aria-label="Storage" data-settings-panel="storage" hidden>
         <div class="settings-option-row">
     <div class="settings-load-layout">
-      <section class="backup-settings settings-option-group level-3-styling" aria-labelledby="file-storage-heading"><div class="settings-heading-layout"><h3 id="file-storage-heading" class="level-4-styling">Load</h3><p id="load-status" class="backup-status settings-status-message level-3-styling" role="status" hidden></p><button id="storage-notice-info-button" class="settings-heading-important icon-button level-4-styling" type="button" aria-label="Important storage information" aria-controls="storage-notice-info-help" aria-expanded="false" hidden></button><button id="storage-info-button" class="settings-heading-info icon-button level-4-styling" type="button" aria-label="Load information" aria-controls="storage-info-help" aria-expanded="false"></button><p id="storage-notice-info-help" class="settings-heading-help level-4-styling" hidden></p><p id="storage-info-help" class="settings-heading-help level-4-styling" hidden>Choose a Rewatched JSON file to load each time you open the app. Changes will be saved automatically to the connected file. Create a new file or load demo data to explore the app.</p></div><div class="backup-actions"><button id="choose-storage-file" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/import.png" alt="" aria-hidden="true">Import file</button><input id="storage-file-input" type="file" accept=".json,application/json" hidden><button id="create-storage-file" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/create-file.png" alt="" aria-hidden="true">Create new file</button><button id="load-demo-vault" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/load.png" alt="" aria-hidden="true">Load demo file</button></div></section>
+      <div class="option-group-header-layout"><h3 id="file-storage-heading" class="option-group-heading level-3-styling">Load</h3><p id="load-status" class="backup-status settings-status-message level-3-styling" role="status" hidden></p><button id="storage-notice-info-button" class="settings-heading-important icon-button level-3-styling" type="button" aria-label="Important storage information" aria-controls="storage-notice-info-help" aria-expanded="false" hidden></button><button id="storage-info-button" class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Load information" aria-controls="storage-info-help" aria-expanded="false"></button><p id="storage-notice-info-help" class="settings-heading-help level-4-styling" hidden></p><p id="storage-info-help" class="settings-heading-help level-4-styling" hidden>Choose a Rewatched JSON file to load each time you open the app. Changes will be saved automatically to the connected file. Create a new file or load demo data to explore the app.</p></div>
+      <section class="settings-option-group level-3-styling" aria-labelledby="file-storage-heading"><div class="backup-actions"><button id="load-demo-vault" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/load.png" alt="" aria-hidden="true">Load demo file</button><button id="choose-storage-file" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/import.png" alt="" aria-hidden="true">Import file</button><input id="storage-file-input" type="file" accept=".json,application/json" hidden><button id="create-storage-file" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/create-file.png" alt="" aria-hidden="true">Create new file</button></div></section>
           </div>
-          <section class="backup-settings settings-option-group settings-save-group level-3-styling" aria-labelledby="backup-heading">
-            <div class="settings-heading-layout"><h3 id="backup-heading" class="level-4-styling">Save</h3><p id="backup-status" class="backup-status settings-status-message level-3-styling" role="status" hidden></p><button id="backup-info-button" class="settings-heading-info icon-button level-4-styling" type="button" aria-label="Save options information" aria-controls="backup-info-help" aria-expanded="false"></button><p id="backup-info-help" class="settings-heading-help level-4-styling" hidden>Export your current library as a file, or merge data from a file you exported earlier.</p></div>
+          <div class="option-group-header-layout"><h3 id="backup-heading" class="option-group-heading level-3-styling">Save</h3><p id="backup-status" class="backup-status settings-status-message level-3-styling" role="status" hidden></p><button id="backup-info-button" class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Save options information" aria-controls="backup-info-help" aria-expanded="false"></button><p id="backup-info-help" class="settings-heading-help level-4-styling" hidden>Export your current library as a file, or merge data from a file you exported earlier.</p></div>
+          <section class="settings-option-group level-3-styling" aria-label="Save options">
             <div class="backup-summary-actions-layout">
               <div id="backup-summary" class="backup-summary"></div>
-              <div class="backup-actions"><button id="export-backup" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/export.png" alt="" aria-hidden="true">Export file</button><button id="choose-backup" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/merge.png" alt="" aria-hidden="true">Merge file</button><button id="preview-notification" class="text-button level-4-styling" type="button">Preview import status</button><input id="backup-file" type="file" accept=".json,application/json" hidden></div>
+              <div class="backup-actions"><button id="export-backup" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/export.png" alt="" aria-hidden="true">Export file</button><button id="choose-backup" class="text-button level-4-styling" type="button"><img class="icon settings-action-icon" src="assets/icons/filled/merge.png" alt="" aria-hidden="true">Merge file</button><input id="backup-file" type="file" accept=".json,application/json" hidden></div>
             </div>
             <fieldset id="import-options" class="import-options level-4-styling" hidden><label class="level-5-styling"><input type="radio" name="import-mode" value="merge" checked><span>Merge</span></label><label class="level-5-styling"><input type="radio" name="import-mode" value="replace"><span>Replace</span></label><div class="import-actions"><button id="cancel-import" class="text-button level-4-styling" type="button">Cancel</button><button id="import-backup" class="text-button level-4-styling" type="button">Apply file</button></div></fieldset>
           </section>
         </div>
       </section>
-      <section id="settings-panel-integrations" role="region" aria-labelledby="settings-category-integrations" data-settings-panel="integrations" hidden>
-        <section class="backup-settings settings-option-group level-3-styling" aria-labelledby="google-settings-heading"><div class="settings-heading-layout"><h3 id="google-settings-heading" class="level-4-styling">Google Image Search</h3><button id="google-search-info-button" class="settings-heading-info icon-button level-4-styling" type="button" aria-label="Google Image Search information" aria-controls="google-search-info-help" aria-expanded="false"></button><p id="google-search-info-help" class="settings-heading-help level-4-styling" hidden>Enter your Programmable Search Engine ID (cx) to choose posters from Google Images.</p></div><div class="api-key-setting"><input id="google-search-id" class="level-4-styling" type="text" placeholder="Search engine ID (cx)" aria-label="Google Search Engine ID" autocomplete="off"><button id="save-google-key" class="text-button level-4-styling" type="button">Save ID</button></div><p id="google-key-status" class="backup-status" role="status"></p></section>
-        <section class="backup-settings settings-option-group level-3-styling" aria-labelledby="imdb-settings-heading"><div class="settings-heading-layout"><h3 id="imdb-settings-heading" class="level-4-styling">IMDb ratings</h3><button id="imdb-info-button" class="settings-heading-info icon-button level-4-styling" type="button" aria-label="IMDb ratings information" aria-controls="imdb-info-help" aria-expanded="false"></button><p id="imdb-info-help" class="settings-heading-help level-4-styling" hidden>Enter an OMDb API key to look up movie or show details. Results, including IMDb rating and fetch date, are saved with each entry and are not refreshed automatically.</p></div><div class="api-key-setting imdb-api-key-setting"><input id="omdb-api-key" class="level-4-styling" type="password" placeholder="OMDb API key" aria-label="OMDb API key" autocomplete="off"><button id="omdb-key-visibility" class="api-key-visibility-button icon-button level-4-styling" type="button" aria-label="Hold to show API key" aria-pressed="false"><img src="assets/icons/filled/show-text.png" alt="" aria-hidden="true"></button><button id="save-omdb-key" class="text-button level-4-styling" type="button">Save key</button><span class="text-button api-usage-counter level-4-styling" role="note" title="Number of OMDb calls today"><strong id="omdb-calls-today">0</strong> calls</span></div><p id="omdb-key-status" class="backup-status" role="status"></p></section>
+      <section id="settings-panel-integrations" role="region" aria-label="Integrations" data-settings-panel="integrations" hidden>
+        <div class="option-group-header-layout"><h3 id="google-settings-heading" class="option-group-heading level-3-styling">Images</h3><button id="google-search-info-button" class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Images search information" aria-controls="google-search-info-help" aria-expanded="false"></button><p id="google-search-info-help" class="settings-heading-help level-4-styling" hidden>Enter your Programmable Search Engine ID (cx) to choose posters from Google Images.</p></div>
+        <section class="settings-option-group level-3-styling" aria-labelledby="google-settings-heading"><div class="api-key-setting"><input id="google-search-id" class="level-4-styling" type="text" placeholder="Search engine ID (cx)" aria-label="Google Search Engine ID" autocomplete="off"><button id="save-google-key" class="text-button level-4-styling" type="button">Save ID</button></div><p id="google-key-status" class="backup-status" role="status"></p></section>
+        <div class="option-group-header-layout"><h3 id="imdb-settings-heading" class="option-group-heading level-3-styling">Movies</h3><button id="imdb-info-button" class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Movies integration information" aria-controls="imdb-info-help" aria-expanded="false"></button><p id="imdb-info-help" class="settings-heading-help level-4-styling" hidden>Enter an OMDb API key to look up movie or show details. Results, including IMDb rating and fetch date, are saved with each entry and are not refreshed automatically.</p></div>
+        <section class="settings-option-group level-3-styling" aria-labelledby="imdb-settings-heading"><div class="api-key-setting imdb-api-key-setting"><input class="omdb-api-key-input level-4-styling" type="password" placeholder="OMDb API key" aria-label="OMDb API key" autocomplete="off"><button id="omdb-key-visibility" class="api-key-visibility-button icon-button level-4-styling" type="button" aria-label="Hold to show API key" aria-pressed="false"><img src="assets/icons/filled/show-text.png" alt="" aria-hidden="true"></button><button class="omdb-save-key-button text-button level-4-styling" type="button">Save key</button><span class="text-button api-usage-counter level-4-styling" role="note" title="Number of OMDb calls today"><strong id="omdb-calls-today">0</strong><span class="api-usage-label">calls</span></span></div><p id="omdb-key-status" class="backup-status" role="status"></p></section>
       </section>
-      <section id="settings-panel-account" role="region" aria-labelledby="settings-category-account" data-settings-panel="account" hidden>
-        <section class="backup-settings settings-option-group level-3-styling" aria-labelledby="account-settings-heading"><h3 id="account-settings-heading" class="level-4-styling">Account</h3><p>Account options will appear here when sign-in is available.</p></section>
+      <section id="settings-panel-account" role="region" aria-label="Account" data-settings-panel="account" hidden>
+        <div class="option-group-header-layout"><h3 id="account-settings-heading" class="option-group-heading level-3-styling">Account</h3><button class="settings-heading-info icon-button level-3-styling" type="button" aria-label="Account settings information" aria-controls="account-settings-help" aria-expanded="false"></button><p id="account-settings-help" class="settings-heading-help level-4-styling" hidden>Account and sign-in options.</p></div>
+        <section class="settings-option-group level-3-styling" aria-labelledby="account-settings-heading"><p>Account options will appear here when sign-in is available.</p></section>
       </section>
-      <section id="settings-panel-about" role="region" aria-labelledby="settings-category-about" data-settings-panel="about" hidden>
-        <section class="backup-settings level-3-styling" aria-labelledby="about-settings-heading"><h3 id="about-settings-heading">About Rewatched</h3><p>App information and credits will be collected here.</p></section>
+      <section id="settings-panel-about" role="region" aria-label="About" data-settings-panel="about" hidden>
+        <div class="about-brand-container level-3-styling">
+          <div class="about-brand-layout" aria-label="ReWatched">
+            <span class="brand-text">ReWatched</span>
+            <span class="brand-dot" aria-hidden="true">.</span>
+          </div>
+        </div>
+        <div class="about-details">
+          <p>© 2026 Jonathan Almstedt</p>
+          <p>Version 1.0.0</p>
+        </div>
+        <a class="about-credits-link" href="https://github.com/Tardz/Rewatched/blob/main/CREDITS.md" target="_blank" rel="noopener noreferrer">Icon credits</a>
       </section>
     </div>
   </dialog>
@@ -623,15 +644,15 @@
             </div>
             <div class="entry-media-switcher" role="tablist" aria-label="Media type">
               <button type="button" class="collection-tab entry-media-option active" data-media-type-option="Movie" role="tab" aria-selected="true" aria-label="Movie" title="Movie">
-                <img class="icon" data-app-icon="movie" src="assets/icons/color/dvd.png" alt="" aria-hidden="true">
+                <img class="icon" data-icon="movie" src="assets/icons/filled/disc.png" alt="" aria-hidden="true">
               </button>
               <button type="button" class="collection-tab entry-media-option" data-media-type-option="Show" role="tab" aria-selected="false" aria-label="Show" title="Show">
-                <img class="icon" data-app-icon="show" src="assets/icons/color/tv.png" alt="" aria-hidden="true">
+                <img class="icon" data-icon="show" src="assets/icons/filled/tv.png" alt="" aria-hidden="true">
               </button>
             </div>
             <div class="entry-folder-dropdown" id="entry-folder-picker">
               <button class="entry-folder-trigger" id="entry-folder-button" type="button" aria-label="Choose folders" aria-expanded="false" aria-controls="entry-folder-options" title="Choose folders">
-                <img class="icon folder-icon" data-app-icon="folder" src="assets/icons/color/folder.png" alt="" aria-hidden="true">
+                <img class="icon folder-icon" data-icon="folder" src="assets/icons/filled/folder.png" alt="" aria-hidden="true">
               </button>
               <div class="entry-folder-menu" id="entry-folder-options" role="group" aria-label="Folders to add this entry to" hidden></div>
             </div>
@@ -665,7 +686,7 @@
             <span id="poster-preview-empty">No poster selected</span>
             <div class="poster-buttons">
               <button id="poster-search" class="text-button icon-button level-2-styling" type="button" aria-label="Search images" title="Search images">
-                <img class="icon" data-app-icon="search" src="assets/icons/color/search.png" alt="" aria-hidden="true">
+                <img class="icon" data-icon="search" src="assets/icons/filled/search.png" alt="" aria-hidden="true">
               </button>
               <button id="poster-upload-button" class="text-button icon-button level-2-styling" type="button" aria-label="Choose image file" title="Choose image file">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3.75h7l4 4v12.5H7z"></path><path d="M14 3.75v4h4M10 12h5M10 15h5"></path></svg>
@@ -745,7 +766,6 @@
       <div id="google-results"></div>
     </div>
   </dialog>
-    </div>
     </div>
   </main>
 </body>

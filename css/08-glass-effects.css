@@ -3,7 +3,7 @@
 /* Apply theme glass by box level so the shared surface classes stay reusable. */
 :root[data-theme-glass="on"] .level-0-styling {
   border-color: var(--color-border-glass-level-1);
-  background: color-mix(in srgb, var(--color-surface-level-0) var(--opacity-glass-level-0), transparent);
+  background-color: color-mix(in srgb, var(--color-surface-level-0) var(--opacity-glass-level-0), transparent);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   box-shadow: var(--shadow-glass-level-1);
@@ -59,6 +59,33 @@
   box-shadow: var(--shadow-glass-level-3);
 }
 
+/* Keep shared pagination surfaces transparent until their hover/focus surface appears. */
+:root[data-theme-glass="on"] .pagination-container {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+:root[data-theme-glass="on"] .pagination-container.level-2-styling:is(:hover, :has(> button:focus-visible)) {
+  border-color: var(--color-border-glass-level-2);
+  background: color-mix(in srgb, var(--color-surface-level-2) var(--opacity-glass-level-2), transparent);
+  box-shadow: var(--shadow-glass-level-2);
+}
+
+:root[data-theme-glass="on"] .pagination-container.level-3-styling:is(:hover, :has(> button:focus-visible)) {
+  border-color: var(--color-border-glass-level-3);
+  background: color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-level-3), transparent);
+  box-shadow: var(--shadow-glass-level-3);
+}
+
+:root[data-theme-glass="on"]:is([data-glass-transparency="off"], [data-glass-opaque="on"]) .pagination-container.level-2-styling:is(:hover, :has(> button:focus-visible)) {
+  background: var(--color-surface-level-2);
+}
+
+:root[data-theme-glass="on"]:is([data-glass-transparency="off"], [data-glass-opaque="on"]) .pagination-container.level-3-styling:is(:hover, :has(> button:focus-visible)) {
+  background: var(--color-surface-level-3);
+}
+
 /* Keep the create-entry action red while giving it the shared level-three glass depth. */
 :root[data-theme-glass="on"] .workspace-create-entry-button.level-3-styling {
   border-color: var(--color-border-glass-level-3);
@@ -101,7 +128,7 @@
 /* Avoid repainting large app surfaces with backdrop blur during scrolling. */
 :root[data-theme-glass="on"] :is(
   .app-container,
-  .app-content-frame,
+  .app-content-container,
   .dashboard-info-container,
   .dashboard-controls-container,
   .dashboard-page-container,
@@ -110,6 +137,11 @@
 ) {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+}
+
+/* Keep the app content recessed when the glass surface styles are active. */
+:root[data-theme-glass="on"] .app-content-container.level-0-styling {
+  box-shadow: var(--app-content-inset-shadow);
 }
 
 /* Give inner controls their shared glass appearance. */
@@ -121,10 +153,9 @@
 :root[data-theme-glass="on"] .dashboard-settings-button,
 :root[data-theme-glass="on"] .dashboard-activity-button,
 :root[data-theme-glass="on"] .dashboard-storage-container,
-:root[data-theme-glass="on"] .overview-banner-controls-layout > button,
+:root[data-theme-glass="on"] .overview-banner-controls-layout > .overview-banner-media-button,
 :root[data-theme-glass="on"] .statsbar-card,
-:root[data-theme-glass="on"] .workspace-controls-container,
-:root[data-theme-glass="on"] .workspace-banner-container {
+:root[data-theme-glass="on"] .entry-container {
   border-color: var(--color-border-glass-level-2);  /* Match the former inner-box glass border. */ 
   background:                                      
     color-mix(in srgb, var(--color-surface-level-2)
@@ -143,15 +174,11 @@
   .dashboard-brand-button,
   .dashboard-git-button,
   .dashboard-back-button,
-  .dashboard-theme-button,
-  .dashboard-settings-button,
-  .dashboard-activity-button,
-  .dashboard-storage-container,
   .library-page-button,
   .stats-page-button,
-  .overview-banner-controls-layout > button,
+  .overview-banner-controls-layout > .overview-banner-media-button,
   .overview-banner-container,
-  .workspace-banner-container
+  .entry-container
 ):hover {
   border-color: var(--color-border-glass-level-2-hover); /* Match the former brighter inner-box border. */ 
   background: var(--color-surface-glass-level-2-hover);  /* Match the former subtly brightened fill. */    
@@ -161,7 +188,7 @@
 }
 
 /* Keep each entry card translucent while its hover tint is drawn above the surface. */
-:root[data-theme-glass="on"] .workspace-banner-container {
+:root[data-theme-glass="on"] .entry-container {
   background-color: color-mix(in srgb, var(--color-surface-level-2) var(--opacity-glass-level-2), transparent);
 }
 
@@ -193,24 +220,23 @@
 
 /* !SECTION */
 
-/* SECTION Popup menus */
-/* Let the level classes supply the matching menu, options-container, and option surfaces. */
-:root[data-theme-glass="on"] .menu-container.level-1-styling {
-  background: color-mix(in srgb, var(--color-surface-level-1) min(100%, calc(var(--opacity-glass-level-1) + 30%)), transparent);
+/* SECTION Floating level-one surfaces */
+/* Match popup menus and the settings dialog while their level class supplies the border and shadow. */
+:root[data-theme-glass="on"] :is(.menu-container, .settings-container).level-1-styling {
+  background: color-mix(in srgb, var(--color-surface-level-1) var(--opacity-glass-floating), transparent);
 }
 
-:root[data-theme-glass="on"] .menu-container .menu-option:not(.menu-option-value):is(:hover, .active) {
+/* SECTION Popup menu contents */
+/* Let the level classes supply the matching options-container and option surfaces. */
+
+:root[data-theme-glass="on"] .menu-container .menu-option:not(.menu-option-value):not([data-filter]):not([data-filter-value]).active {
   border-color: var(--color-border-accent-muted);
   background: var(--color-surface-hover);
   color: var(--color-text-accent);
 }
 
-:root[data-theme-glass="on"] .workspace-value-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
-:root[data-theme-glass="on"] .workspace-year-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
-:root[data-theme-glass="on"] .workspace-sort-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]) {
-  border-color: var(--color-border-accent-muted);
-  background: var(--color-surface-hover);
-  color: var(--color-text-accent);
+:root[data-theme-glass="on"] .menu-container .menu-option:not([data-filter]):is(:hover, :focus-visible) {
+  color: white;
 }
 
 :root[data-theme-glass="on"] .menu-container .create-folder-option {
@@ -245,14 +271,7 @@
   background: var(--color-surface-level-3);
 }
 
-:root[data-theme-glass="on"] .app-container.is-sidebar-collapsed .nav-profile-picture {
-  border-color: transparent;
-  background: transparent;
-  box-shadow: none;
-}
-
-:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container,
-:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container {
+:root[data-theme-glass="on"]:is([data-glass-transparency="off"], [data-glass-opaque="on"]) :is(.menu-container, .settings-container).level-1-styling {
   background: var(--color-surface-level-1);
 }
 
@@ -261,24 +280,13 @@
   background: var(--color-surface-level-2);
 }
 
-:root[data-theme-glass="on"][data-glass-transparency="off"] .workspace-value-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
-:root[data-theme-glass="on"][data-glass-transparency="off"] .workspace-year-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
-:root[data-theme-glass="on"][data-glass-transparency="off"] .workspace-sort-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
-:root[data-theme-glass="on"][data-glass-opaque="on"] .workspace-value-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
-:root[data-theme-glass="on"][data-glass-opaque="on"] .workspace-year-filter-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]),
-:root[data-theme-glass="on"][data-glass-opaque="on"] .workspace-sort-wrapper > button:is(:hover, :focus-visible, .active, [aria-expanded="true"]) {
-  border-color: var(--color-border-accent-muted);
-  background: var(--color-surface-hover);
-  color: var(--color-text-accent);
-}
-
 :root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .menu-option:not(.menu-option-value),
 :root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .menu-option:not(.menu-option-value) {
   background: var(--color-surface-level-3);
 }
 
-:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .menu-option:not(.menu-option-value):is(:hover, .active),
-:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .menu-option:not(.menu-option-value):is(:hover, .active) {
+:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .menu-option:not(.menu-option-value):not([data-filter]).active,
+:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .menu-option:not(.menu-option-value):not([data-filter]).active {
   background: var(--color-surface-hover);
 }
 

@@ -1,0 +1,281 @@
+/* Styles unique to the vertical navigation rail. */
+
+/* SECTION Vertical navbar */
+
+/* ANCHOR Vertical layout */
+.navbar-vertical-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  grid-column: 1;
+  grid-row: 1 / -1;
+  padding-block: var(--navbar-topbar-control-inset) var(--spacing-app-shell-inset);
+  padding-inline: var(--navbar-app-gap) 0;
+}
+
+/* ANCHOR Navigation groups */
+/* Apply the shared sidebar spacing rhythm to each group of destinations. */
+.navbar-vertical-layout > .nav-group-container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--gap-nav-group);
+  width: 100%;
+  min-width: 0;
+  padding-block: var(--padding-block-nav-group);
+  padding-inline: var(--padding-inline-nav-group);
+}
+
+/* Pin the final navigation group to the bottom of the sidebar. */
+.navbar-vertical-layout > .nav-group-container:last-child {
+  margin-top: auto;
+}
+
+/* ANCHOR Sidebar profile */
+/* Keep the account button aligned with the sidebar groups. */
+.navbar-vertical-layout > .nav-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+  height: var(--nav-horizontal-control-size);
+  padding-inline: var(--padding-inline-nav-group);
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.navbar-vertical-layout > .nav-profile-button:is(:hover, :focus-visible) {
+  color: var(--color-text-primary);
+}
+
+.nav-profile-picture {
+  --size-icon-filled: 18px;
+  --app-icon-state-color: var(--color-icon-default);
+  --nav-profile-mask: url("../assets/icons/filled/avatar.png");
+  display: grid;
+  flex: 0 0 calc(var(--nav-horizontal-control-size) - 12px);
+  place-items: center;
+  width: calc(var(--nav-horizontal-control-size) - 12px);
+  height: calc(var(--nav-horizontal-control-size) - 12px);
+  padding: 0;
+}
+
+.nav-profile-picture > .masked-icon {
+  -webkit-mask-image: var(--nav-profile-mask);
+  mask-image: var(--nav-profile-mask);
+}
+
+.nav-profile-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+/* ANCHOR Destination buttons */
+/* Assign each destination its active color and monochrome icon artwork. */
+.nav-home-button {
+  --nav-item-color: var(--color-icon-home);
+  --nav-icon-mask: url("../assets/icons/filled/home.png");
+}
+.nav-library-button {
+  --nav-item-color: var(--color-icon-library);
+  --nav-icon-mask: url("../assets/icons/filled/library.png");
+}
+.nav-backlog-button {
+  --nav-item-color: var(--color-backlog);
+  --nav-icon-mask: url("../assets/icons/filled/backlog.png");
+}
+.nav-progress-button {
+  --nav-item-color: var(--color-icon-default);
+  --nav-icon-mask: url("../assets/icons/filled/live.png");
+}
+.nav-folders-button {
+  --nav-item-color: var(--color-icon-folder);
+  --nav-icon-mask: url("../assets/icons/filled/folder.png");
+}
+.nav-stats-button {
+  --nav-item-color: var(--color-icon-stats);
+  --nav-icon-mask: url("../assets/icons/filled/piechart.png");
+}
+.nav-timeline-button {
+  --nav-item-color: var(--color-icon-timeline);
+  --nav-icon-mask: url("../assets/icons/filled/timeline.png");
+}
+.nav-activity-button {
+  --nav-item-color: var(--color-icon-activity);
+  --nav-icon-mask: url("../assets/icons/filled/history.png");
+}
+.nav-settings-button {
+  --nav-item-color: var(--color-icon-settings);
+  --nav-icon-mask: url("../assets/icons/filled/setting.png");
+}
+.nav-about-button {
+  --nav-item-color: var(--palette-white);
+  --nav-icon-mask: url("../assets/icons/filled/about.png");
+}
+
+/* ANCHOR Sidebar folder menu */
+/* Keep the folder trigger in the rail and place its popup over app content. */
+.navbar-vertical-layout .folder-menu-wrapper {
+  width: 100%;
+}
+
+.navbar-vertical-layout .folder-menu-wrapper > .menu-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-options-container {
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-options-container > .menu-option {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-options-container > div:not(.menu-option) {
+  padding: 7px 8px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--palette-yellow) 70%, var(--color-border-subtle));
+  border-radius: var(--radius-control-small);
+  background: var(--palette-yellow);
+  color: var(--color-background-app);
+}
+
+.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option > .icon {
+  flex: 0 0 14px;
+  width: 14px;
+  height: 14px;
+  --app-icon-state-color: var(--color-background-app);
+}
+
+.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option:hover {
+  background: color-mix(in srgb, var(--palette-yellow) 88%, white);
+}
+
+/* ANCHOR Group separators */
+/* Separate Home and Folders from the library destinations. */
+.nav-separator {
+  flex: 0 0 1px;
+  align-self: center;
+  width: 40%;
+  height: 2px;
+  margin-block: calc(var(--spacing-level-1) - 11px);
+  background: color-mix(in srgb, var(--color-surface-level-base) 78%, var(--color-border-subtle));
+  border-radius: 999px;
+  box-shadow:
+    0 -1px 0 color-mix(in srgb, var(--color-background-app) 48%, transparent),
+    0 1px 0 color-mix(in srgb, var(--color-text-primary) 12%, transparent);
+  opacity: 0.72;
+}
+
+/* ANCHOR Sidebar buttons */
+/* Base class: .icon-text-button. Set sizing and state colors for navigation destinations. */
+.nav-button {
+  --nav-icon-color: var(--color-icon-default);
+  --nav-icon-glow-color: transparent;
+  width: 100%;
+}
+
+/* Show unfinished destinations without suggesting they can be opened. */
+.nav-button:disabled {
+  cursor: default;
+}
+
+/* Keep the level-two icon boxes compact while preserving their square shape. */
+.nav-button > .nav-button-icon {
+  display: grid;
+  flex: 0 0 var(--nav-inner-box-size);
+  place-items: center;
+  width: var(--nav-inner-box-size);
+  height: var(--nav-inner-box-size);
+  padding: var(--spacing-level-1);
+}
+
+.nav-button-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Highlight active navigation text and icon without changing the icon-box border. */
+.nav-button:not(:disabled):is(.is-active, :hover, :focus-visible, [aria-expanded="true"]) {
+  --nav-icon-color: var(--nav-item-color, var(--color-accent-primary));
+  --nav-icon-glow-color: color-mix(in srgb, var(--nav-icon-color) 88%, transparent);
+  color: var(--nav-item-color, var(--color-accent-primary));
+}
+
+.nav-button:not(:disabled):is(.is-active, :hover, :focus-visible, [aria-expanded="true"]) > .nav-button-icon {
+  --glow-halo-color: var(--nav-item-color, var(--color-accent-primary));
+  --glow-halo-opacity: 0.3;
+}
+
+.nav-button > .nav-button-icon::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 15px;
+  height: 15px;
+  transform: translate(-50%, -50%);
+  background-color: var(--nav-icon-color);
+  content: "";
+  -webkit-mask: var(--nav-icon-mask) center / contain no-repeat;
+  mask: var(--nav-icon-mask) center / contain no-repeat;
+  filter: drop-shadow(0 0 2px var(--nav-icon-glow-color));
+}
+
+/* ANCHOR Collapsed sidebar */
+.app-container.is-sidebar-collapsed {
+  --navbar-sidebar-width: 77px;
+}
+
+.app-container.is-sidebar-collapsed .nav-button-text,
+.app-container.is-sidebar-collapsed .nav-profile-text {
+  display: none;
+}
+
+.app-container.is-sidebar-collapsed .navbar-vertical-layout .nav-button {
+  justify-content: center;
+}
+
+.app-container.is-sidebar-collapsed .nav-profile-button {
+  justify-content: center;
+}
+
+/* Remove the profile surface when only its enlarged icon is shown. */
+.app-container.is-sidebar-collapsed .nav-profile-picture {
+  --size-icon-filled: 19px;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.app-container.is-sidebar-collapsed .nav-separator {
+  width: 48%;
+}
+
+/* !SECTION */

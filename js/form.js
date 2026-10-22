@@ -200,7 +200,7 @@ function updateScoreDisplay() {
   const percentage = `${numericScore * 10}%`;
   const ratingColor = ratingColorForScore(numericScore);
 
-  $('#score-value').textContent = percentage;
+  $('#score-value').textContent = formatRatingChipValue(numericScore * 10);
   $('#score-value').style.setProperty('--rating-color', ratingColor);
   $('#score').style.setProperty('--rating-color', ratingColor);
   const scoreFill = $('#score-meter-fill');
@@ -581,7 +581,7 @@ function openDialog(id = null, rewatch = false, watchIndex = null, detailsOnly =
   $('#title').focus();
 }
 
-$('#open-add').addEventListener('click', () => openDialog());
+$('.workspace-create-entry-button').addEventListener('click', () => openDialog());
 $('#entry-mode-switcher').addEventListener('click', (event) => {
   const option = event.target.closest('[data-view]');
   if (!option) return;

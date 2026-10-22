@@ -1,5 +1,26 @@
 /* Shared interaction feedback used by controls in multiple components. */
 
+/* SECTION Open workspace menu */
+/* Keep hover and pointer interaction inside an open workspace menu only. */
+body.workspace-filter-menu-open * {
+  pointer-events: none !important;
+}
+body.workspace-filter-menu-open :is(
+  .workspace-type-menu-wrapper,
+  .workspace-ratings-menu-wrapper,
+  .workspace-year-menu-wrapper,
+  .workspace-sort-menu-wrapper
+) > .menu-container,
+body.workspace-filter-menu-open :is(
+  .workspace-type-menu-wrapper,
+  .workspace-ratings-menu-wrapper,
+  .workspace-year-menu-wrapper,
+  .workspace-sort-menu-wrapper
+) > .menu-container * {
+  pointer-events: auto !important;
+}
+/* !SECTION */
+
 /* SECTION Pressed controls */
 /* Give dashboard, banner, and workspace-container controls the same pressed feedback. */
 :is(
@@ -14,24 +35,34 @@
   .library-page-button,
   .stats-page-button,
   .overview-banner-controls-layout > button,
-  .workspace-controls-container .expandable-box > button,
-  .folder-menu-wrapper > button,
-  .search-button,
-  .search-close-button,
   .workspace-reset-button,
-  .workspace-pagination-container > button,
   .workspace-create-entry-button,
   .workspace-tools-layout button
 ):active {
   box-shadow: var(--shadow-control-pressed) !important; /* Override component elevation while pressed. */
 }
+
+/* Press the navigation icon box rather than the full-width navigation button. */
+.nav-button:active > .nav-button-icon {
+  box-shadow: var(--shadow-control-pressed) !important;
+}
+
+/* Press workspace menu triggers without changing their surface or border. */
+:is(
+  .workspace-ratings-menu-button,
+  .workspace-year-menu-button,
+  .workspace-type-menu-button,
+  .workspace-sort-menu-button,
+  .workspace-sort-direction-button
+):active {
+  box-shadow: var(--shadow-control-pressed) !important;
+}
 /* !SECTION */
 
 /* SECTION Text glow */
-/* Keep the profile label and Logged/Backlog controls on the same text-glow treatment. */
+/* Keep the sidebar profile label's text glow consistent with other navigation text. */
 :is(
-  .workspace-view-expandable > .expandable-text-button:is(:hover, :focus-visible, .active),
-.nav-profile-container:hover > .nav-profile-name
+  .nav-profile-button:is(:hover, :focus-visible) > .nav-profile-text
 ) {
   text-shadow: 0 0 4px color-mix(in srgb, white 45%, transparent);
 }

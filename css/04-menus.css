@@ -1,166 +1,4 @@
-/* Shared search controls, popup menus, and expandable choice groups. */
-
-/* SECTION Expandable container */
-/* Base class: .level-1-styling */
-/* Hold a compact current choice and expand to reveal its sibling buttons. */
-.expandable-box {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: 0;
-  height: 40px;
-  padding: 3px;
-}
-
-/* Base class: .icon-button on the icon variant; .level-4-styling supplies its surface. */
-/* Keep the collapsed group 40px tall, matching the search control. */
-.expandable-text-button,
-.expandable-icon-button {
-  display: grid;
-  flex: none;
-  place-items: center;
-  min-width: 38px;
-  height: 32px;
-  padding: 7px;
-  color: var(--color-text-secondary);
-  font: 600 12px/1 var(--font-family-app);
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background-color 160ms ease, border-color 160ms ease,
-    color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
-}
-
-/* Use primary text for expandable buttons on level-four surfaces. */
-.expandable-text-button.level-4-styling,
-.expandable-icon-button.level-4-styling { color: var(--color-text-primary); }
-
-/* Keep expandable icon buttons compact with centered artwork. */
-.expandable-icon-button {
-  min-width: 32px;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-}
-
-/* Give text-only expandable choices the same surface feedback as icon buttons. */
-.expandable-box > .expandable-text-button:is(:hover, :focus-visible) {
-  border-color: var(--color-border-accent-muted);
-  background: var(--color-surface-hover);
-}
-
-/* Open a choice group for pointer, keyboard, or pressed interaction. */
-.expandable-box:is(:hover, :focus-within, .is-pointer-active) {
-  gap: var(--spacing-level-3);
-}
-
-/* Collapse inactive choices on devices with precise hover. */
-@media (hover: hover) and (pointer: fine) {
-  /* Keep the visible current choice visually light until its group opens. */
-  .expandable-box:not(:hover):not(:focus-within):not(.is-pointer-active) > button:is(.active, .is-collapsed-current) {
-    border-color: transparent;
-    background: transparent;
-    box-shadow: none;
-  }
-
-  /* Hide inactive choices while the group is collapsed. */
-  .expandable-box:not(:hover):not(:focus-within):not(.is-pointer-active) > button:not(.active):not(.is-collapsed-current) {
-    min-width: 0;
-    width: 0;
-    padding-inline: 0;
-    border-width: 0;
-    opacity: 0;
-    overflow: hidden;
-    pointer-events: none;
-  }
-}
-/* !SECTION */
-
-/* SECTION search-container */
-/* Base class: .level-3-styling */
-/* Expand the shared search control while preserving its leading trigger. */
-.search-container {
-  display: flex;
-  flex: 0 0 40px;
-  align-items: center;
-  gap: var(--spacing-level-1);
-  min-width: 0;
-  height: 40px;
-  padding-inline: 5px;
-  overflow: hidden;
-  color: var(--color-text-accent);
-  transition: flex-basis 180ms ease, border-color 160ms ease;
-}
-
-/* Keep the search icon compact and centered in its trigger. */
-.search-container .icon {
-  width: calc(var(--size-icon-filled) - 6px);
-  height: calc(var(--size-icon-filled) - 6px);
-}
-
-.search-container:is(:focus-within, .is-keyboard-expanded, .has-query) {
-  flex-basis: min(260px, calc(100vw - 100px));
-  border-color: var(--color-border-accent-muted);
-}
-
-/* Keep both end buttons equal-sized and equally inset from the container edges. */
-.search-container .search-button,
-.search-container .search-close-button {
-  flex: 0 0 28px;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  padding: 0;
-}
-
-/* SECTION search-input */
-/* Base class: .level-2-styling */
-/* Reveal the search field while the control is focused or has a query. */
-.search-container .search-input {
-  display: none;
-  flex: 1 1 auto;
-  min-width: 0;
-  height: 28px;
-  margin: 0;
-  padding: 4px 8px;
-  outline: 0;
-  color: var(--color-text-primary);
-  font-family: var(--font-family-app);
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.search-container:is(:focus-within, .is-keyboard-expanded, .has-query) .search-input { display: block; }
-.search-input::-webkit-search-cancel-button { display: none; }
-.search-input::placeholder { color: var(--color-text-on-surface); opacity: 1; }
-/* !SECTION */
-
-/* Keep the search icon at the left of the field in both states. */
-.search-button {
-  display: grid;
-  color: inherit;
-}
-
-/* Keep the compact search trigger transparent until it receives level-four styling. */
-.search-button:not(.level-4-styling) { border: 0; background: transparent; }
-
-/* ANCHOR search-close-button */
-/* Base class: .level-2-styling */
-/* Show a close action whenever the search field is expanded. */
-.search-close-button { display: none; }
-.search-container:is(:focus-within, .is-keyboard-expanded, .has-query) .search-close-button {
-  display: grid;
-  color: var(--color-text-primary);
-}
-
-/* Match the search icon to the close icon while the field is open. */
-.search-close-button svg,
-.search-container:is(:focus-within, .is-keyboard-expanded, .has-query) .search-button .icon {
-  width: 14px;
-  height: 14px;
-}
-/* !SECTION */
+/* Shared popup menus. */
 
 /* SECTION menu-wrapper */
 /* Position a popup menu relative to its trigger. */
@@ -169,6 +7,43 @@
   z-index: 5;
 }
 .menu-wrapper.is-open { z-index: 6; }
+
+/* Match the navigation halo and icon glow while keeping menu surfaces unchanged. */
+.menu-wrapper > button > .glow-halo:not([hidden]) {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo {
+  --glow-halo-color: white;
+  --glow-halo-opacity: 0.3;
+  color: white;
+}
+
+.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo.masked-icon {
+  --app-icon-state-color: white;
+  filter: drop-shadow(0 0 2px color-mix(in srgb, white 88%, transparent));
+}
+
+.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo > .masked-icon {
+  --app-icon-state-color: white;
+  filter: drop-shadow(0 0 2px color-mix(in srgb, white 88%, transparent));
+}
+
+.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo.icon:not(.masked-icon) {
+  filter: brightness(0) invert(1)
+    drop-shadow(0 0 2px color-mix(in srgb, white 88%, transparent));
+}
+
+.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo > .icon {
+  filter: brightness(0) invert(1)
+    drop-shadow(0 0 2px color-mix(in srgb, white 88%, transparent));
+}
+
+.menu-wrapper > button:is(:hover, :focus-visible) > .menu-button-text {
+  color: white;
+}
 
 /* SECTION menu-container */
 /* Base class: .level-1-styling */
@@ -186,6 +61,7 @@
   max-width: min(280px, calc(100vw - 32px));
   max-height: none;
   padding: 8px;
+  border-radius: calc(var(--radius-surface-level-2) + 4px);
   overflow: hidden;
   color: var(--color-text-primary);
 }
@@ -224,7 +100,7 @@
 /* SECTION menu-options-container */
 /* Base class: .level-2-styling */
 /* Scroll the choices without moving any separate menu actions. */
-.menu-wrapper > .menu-container > .menu-options-container {
+.menu-wrapper > .menu-container > .menu-options-container.level-2-styling {
   display: grid;
   gap: calc(var(--spacing-level-3) + 1px);
   width: 100%;
@@ -232,6 +108,8 @@
   min-height: 0;
   max-height: 116px;
   padding: 8px;
+  border-radius: calc(var(--radius-surface-level-2) - 2px);
+  box-shadow: var(--shadow-surface-inset);
   overflow-y: auto;
   scroll-padding: 8px;
   scroll-snap-type: y proximity;
@@ -260,10 +138,13 @@
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
-.menu-container .menu-option:is(:hover, .active) {
+.menu-container .menu-option.active:not(.menu-option-value):not([data-filter]):not([data-filter-value]) {
   border-color: var(--color-border-accent-muted);
   background: var(--color-surface-hover);
   color: var(--color-text-accent);
+}
+.menu-container .menu-option:not([data-filter]):is(:hover, :focus-visible) {
+  color: white;
 }
 
 /* !SECTION */

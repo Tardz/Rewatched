@@ -87,7 +87,7 @@
 
 /* Hide banner and entry-card value badges without affecting stats or filter choices. */
 :root[data-main-value-chips="hidden"] .overview-banner-container .value-chip-styling,
-:root[data-main-value-chips="hidden"] .workspace-container .workspace-banner-container .value-chip-styling {
+:root[data-main-value-chips="hidden"] .workspace-container .entry-container .value-chip-styling {
   display: none;
 }
 

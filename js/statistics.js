@@ -54,7 +54,7 @@ function updateStatisticsBackgroundFromTimeline(timeline) {
 
   statisticsRequestedPaletteSource = source;
   const root = document.documentElement;
-  const banner = $('#banner');
+  const banner = $('.overview-banner-container');
   getPosterPalette(source).then((palette) => {
     if (source !== statisticsRequestedPaletteSource
       || root.dataset.dashboardSection !== 'statistics') return;
@@ -79,18 +79,27 @@ function updateStatisticsBackgroundFromTimeline(timeline) {
 
 /** Renders the summary metrics beside the featured banner. */
 function renderStatsbar() {
-  const watches = entries.flatMap((entry) => entry.watches);
-  const average = watches.length
-    ? (watches.reduce((sum, watch) => sum + Number(watch.score), 0) / watches.length).toFixed(1)
+  const visibleItems = typeof getFilteredCollectionItems === 'function'
+    ? getFilteredCollectionItems()
+    : entries;
+  const isWatchlist = activeCollectionView === 'watchlist';
+  const watches = visibleItems.flatMap((entry) => entry.watches || []);
+  const scoredWatches = watches.filter((watch) => Number.isFinite(Number(watch.score)));
+  const average = scoredWatches.length
+    ? (scoredWatches.reduce((sum, watch) => sum + Number(watch.score), 0) / scoredWatches.length).toFixed(1)
     : '—';
   const latestWatch = watches
     .filter((watch) => watch.date)
     .sort((first, second) => second.date.localeCompare(first.date))[0];
 
-  $('#stat-titles').textContent = entries.length;
+  const titleCount = $('#stat-titles');
+  titleCount.textContent = visibleItems.length;
+  titleCount.closest('.statsbar-card').querySelector('.statsbar-title').textContent = isWatchlist
+    ? 'Backlogged items'
+    : activeCollectionId === 'all' ? 'Titles logged' : 'Folder items';
   $('#stat-watches').textContent = watches.length;
-  $('#stat-rewatches').textContent = Math.max(0, watches.length - entries.length);
-  const latestLogElement = $('#stat-latest-log');
+  $('#stat-rewatches').textContent = Math.max(0, watches.length - visibleItems.length);
+  const latestLogElement = $('.statsbar-latest-log');
   if (latestLogElement) {
     latestLogElement.textContent = latestWatch
       ? `${['approximate', 'approximate-month', 'approximate-date'].includes(latestWatch.precision) ? '~' : ''}${formatDate(latestWatch.date)}`
@@ -103,8 +112,8 @@ function renderStatsbar() {
   const ratingChipClasses = document.documentElement.dataset.cssReworkPreview === 'true'
     ? ['value-chip-styling', 'rating-value-chip']
     : ['valueChip', 'ratingValueChip', 'rating-valueChip'];
-  averageElement.textContent = watches.length ? `${Math.round(Number(average) * 10)}%` : '—';
-  if (watches.length) {
+  averageElement.textContent = scoredWatches.length ? formatRatingChipValue(Math.round(Number(average) * 10)) : '—';
+  if (scoredWatches.length) {
     averageElement.classList.add(...ratingChipClasses);
     averageElement.style.setProperty('--rating-color', ratingColorForScore(average));
     averageElement.setAttribute('aria-label', `Average rating ${average} out of 10`);
@@ -114,6 +123,16 @@ function renderStatsbar() {
     averageElement.removeAttribute('aria-label');
     averageElement.style.removeProperty('color');
   }
+  const totalRuntime = visibleItems.reduce((total, entry) => {
+    const minutes = Number.parseInt(entry.metadata?.runtime, 10);
+    return Number.isFinite(minutes) && minutes > 0
+      ? total + (minutes * (entry.watches || []).length)
+      : total;
+  }, 0);
+  const watchTimeElement = $('#stat-watch-time');
+  watchTimeElement.textContent = totalRuntime
+    ? `${Math.floor(totalRuntime / 60)}h ${totalRuntime % 60}m`
+    : '—';
   if (typeof syncSidebarStatistics === 'function') syncSidebarStatistics();
 }
 
@@ -185,7 +204,7 @@ function createAverageRatingCard(average, watchCount) {
   const percentage = watchCount ? Math.round(Number(average) * 10) : 0;
   const value = document.createElement('strong');
   value.className = 'stat-rating-value';
-  value.textContent = watchCount ? `${percentage}%` : '—';
+  value.textContent = watchCount ? formatRatingChipValue(percentage) : '—';
   if (watchCount) {
     if (document.documentElement.dataset.cssReworkPreview === 'true') {
       value.classList.add('value-chip-styling', 'rating-value-chip');
@@ -402,7 +421,7 @@ function renderRecentWatchesTimeline() {
   const recentWatches = getWatchHistory();
 
   section.hidden = recentWatches.length === 0;
-  $('#banner').classList.toggle('has-statistics-timeline', recentWatches.length > 0);
+  $('.overview-banner-container').classList.toggle('has-statistics-timeline', recentWatches.length > 0);
   const nodes = recentWatches.map((event, index) => (
     createStatisticsWatch(event, index, false, recentWatches[index + 1])
   ));

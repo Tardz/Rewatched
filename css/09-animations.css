@@ -36,15 +36,98 @@
 }
 /* !SECTION */
 
+/* SECTION Navbar context reveal */
+/* Expand or contract the page-name panel as its context appears or leaves. */
+.nav-pagination-container:is(.is-revealing, .is-concealing) {
+  animation: nav-context-reveal 320ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@keyframes nav-context-reveal {
+  from { width: var(--nav-context-start-width); }
+  to { width: var(--nav-context-end-width); }
+}
+
+/* Unfold available history arrows around the page label on hover or keyboard focus. */
+.nav-pagination-container {
+  transition: padding-inline 320ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.nav-pagination-container > .nav-page-container {
+  transition: box-shadow 320ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.nav-prev-button,
+.nav-next-button {
+  transition: flex-basis 320ms cubic-bezier(.22, 1, .36, 1),
+    width 320ms cubic-bezier(.22, 1, .36, 1),
+    margin-inline 320ms cubic-bezier(.22, 1, .36, 1),
+    opacity 160ms ease;
+}
+
+.navbar-horizontal-layout > .nav-pagination-container:is(:hover, :focus-within) {
+  padding-inline: var(--spacing-level-2);
+}
+
+.nav-pagination-container:is(:hover, :focus-within) > :is(.nav-prev-button, .nav-next-button) {
+  flex-basis: var(--nav-history-control-size);
+  width: var(--nav-history-control-size);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-pagination-container:is(:hover, :focus-within) > :is(.nav-prev-button, .nav-next-button):disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.nav-pagination-container:is(:hover, :focus-within) > .nav-prev-button {
+  margin-right: var(--spacing-level-2);
+}
+
+.nav-pagination-container:is(:hover, :focus-within) > .nav-next-button {
+  margin-left: var(--spacing-level-2);
+}
+
+/* Reveal the storage name at the same speed as the page-name panel. */
+.nav-storage-text {
+  transition: max-width 320ms cubic-bezier(.22, 1, .36, 1),
+    margin-left 320ms cubic-bezier(.22, 1, .36, 1),
+    opacity 160ms ease;
+}
+
+/* Animate the shared pagination surface and reveal its arrows on hover or focus. */
+.pagination-container {
+  transition:
+    background-color 320ms cubic-bezier(.22, 1, .36, 1),
+    border-color 320ms cubic-bezier(.22, 1, .36, 1),
+    box-shadow 320ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.pagination-container > :is(.pagination-prev-button, .pagination-next-button) {
+  transition:
+    flex-basis 320ms cubic-bezier(.22, 1, .36, 1),
+    width 320ms cubic-bezier(.22, 1, .36, 1),
+    margin-inline 320ms cubic-bezier(.22, 1, .36, 1),
+    opacity 160ms ease;
+}
+
+.pagination-container:is(:hover, :has(> button:focus-visible)) > :is(.pagination-prev-button, .pagination-next-button) {
+  --pagination-arrow-width: var(--pagination-arrow-expanded-width);
+  margin-inline: 2px;
+  opacity: 1;
+  pointer-events: auto;
+}
+/* !SECTION */
+
 /* SECTION Workspace entry opening */
 /* Lift a selected card as its detail view opens. */
-.workspace-banner-container.is-opening { animation: workspace-entry-open 90ms ease-out; }
+.entry-container.is-opening { animation: workspace-entry-open 90ms ease-out; }
 @keyframes workspace-entry-open { to { transform: translateY(-6px) scale(1.012); } }
 /* !SECTION */
 
 /* SECTION Reduced motion */
 /* Preserve the existing no-animation behavior for workspace-container navigation. */
 @media (prefers-reduced-motion: reduce) {
-  .workspace-banner-container.is-opening { animation: none; }
+  .entry-container.is-opening { animation: none; }
 }
 /* !SECTION */

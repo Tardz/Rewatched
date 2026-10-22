@@ -2,10 +2,10 @@
 
 /* SECTION dashboard-layout */
 /* Arrange the dashboard's three boxed groups as a vertical rail. */
-/* Base class: .outer-layout */
 .dashboard-layout {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-level-0);
   min-width: 0;
   justify-content: space-between;
 }
@@ -24,7 +24,7 @@
 :where(.dashboard-layout) .icon-button {
   height: var(--size-dashboard-control);
   /* Resolve each glow using this button's own accent color. */
-  --filter-icon-glow: drop-shadow(0 0 4px color-mix(in srgb, var(--dashboard-control-color, currentColor) 72%, transparent));
+  --filter-icon-glow: drop-shadow(0 0 4px color-mix(in srgb, var(--dashboard-control-color, currentColor) 88%, transparent));
   --filter-icon-glow-active: drop-shadow(0 0 6px color-mix(in srgb, var(--dashboard-control-color, currentColor) 88%, transparent));
 }
 
@@ -86,7 +86,7 @@
 
 /* Reserve the short wordmark for the optional fullscreen detail state. */
 .dashboard-brand-mark { display: none; }
-.default-layout.is-details-page .brand-name { display: none; }
+.default-layout.is-details-page .brand-text { display: none; }
 .default-layout.is-details-page .dashboard-brand-mark { display: block; }
 
 /* Tint and brighten the wordmark when hovered. */
@@ -305,20 +305,9 @@
   white-space: normal;
 }
 
-/* Give both storage buttons a subtle border on hover. */
-.dashboard-storage-button:hover,
-.dashboard-save-button:hover {
-  border-color: var(--color-border-accent-muted);
-}
-
 .dashboard-storage-button:focus-visible {
   outline: 2px solid var(--color-accent-primary);
   outline-offset: -2px;
-}
-
-/* Show a success accent when the consistency check is hovered. */
-.dashboard-save-button:hover {
-  border-color: var(--color-storage-saved-border);
 }
 
 /* Color the saved icon when its consistency-check button is hovered. */
@@ -328,9 +317,7 @@
   color: var(--color-storage-saved);
 }
 
-/* Tint the storage group's outline when either child button is hovered or focused. */
-.dashboard-storage-container:has(.dashboard-save-button:hover),
-.dashboard-storage-container:has(.dashboard-storage-button:hover),
+/* Keep a visible group outline for keyboard focus without adding hover highlighting. */
 .dashboard-storage-container:has(.dashboard-storage-button:focus-visible),
 .dashboard-storage-container:has(.dashboard-save-button:focus-visible) {
   border-color: color-mix(
@@ -339,11 +326,17 @@
   );
 }
 
-/* Color and glow the storage name when its button is hovered or focused. */
+/* Keep dashboard-control surfaces still while their icons receive the hover glow. */
+.dashboard-controls-container .icon-button:hover {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Color the storage name when its button is hovered or focused. */
 .dashboard-storage-button:hover,
 .dashboard-storage-button:focus-visible {
   color: var(--color-storage-saved);
-  text-shadow: 0 0 8px color-mix(in srgb, var(--color-storage-saved) 48%, transparent);
 }
 /* !SECTION */
 

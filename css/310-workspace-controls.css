@@ -1,0 +1,547 @@
+/* Workspace control layout, collection filters, paging, and responsive behavior. */
+
+/* SECTION workspace-controls-container */
+/* Lay out the three grouped control surfaces without styling this outer frame. */
+.workspace-controls-container {
+  --workspace-control-size: 32px;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) max-content;
+  align-items: center;
+  gap: var(--gap-nav-group);
+  min-width: 0;
+}
+/* Base class: .level-2-styling */
+/* Group related workspace controls inside matching level-two surfaces. */
+.workspace-controls-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-level-1);
+  min-width: 0;
+  min-height: 52px;
+  padding-block: var(--padding-block-nav-group);
+  padding-inline: var(--padding-inline-nav-group);
+}
+
+/* Keep workspace toolbar surfaces slightly sharper while following the shared radius scale. */
+.workspace-controls-group > .library-search-container > .search-button,
+.workspace-controls-group > .library-search-container > .search-input,
+.workspace-controls-group > .workspace-type-menu-wrapper > .workspace-type-menu-button,
+.workspace-filter-layout > .menu-wrapper > button,
+.workspace-filter-layout > .workspace-reset-button,
+.workspace-pagination-container > .pagination-container,
+.workspace-pagination-container > .pagination-container > .pagination-text-container,
+.workspace-pagination-container > .workspace-create-entry-button {
+  border-radius: var(--radius-control-small);
+}
+
+/* SECTION library-search-container */
+/* Keep the search layout unstyled, with a separate surfaced icon beside its input. */
+.library-search-container {
+  display: flex;
+  justify-content: flex-start;
+  flex: 0 1 var(--workspace-control-size);
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+  width: var(--workspace-control-size);
+  padding-inline: 0;
+  color: var(--color-text-accent);
+  transition: width 180ms ease, flex-basis 180ms ease;
+}
+
+.library-search-container:is(:hover, :focus-within) {
+  flex-basis: 180px;
+  width: 180px;
+  gap: var(--spacing-level-1);
+}
+
+.library-search-container > .search-button,
+.library-search-container > .search-button > .icon-button {
+  flex: 0 0 var(--workspace-control-size);
+  width: var(--workspace-control-size);
+  height: var(--workspace-control-size);
+}
+
+.library-search-container > .search-input {
+  order: 2;
+  display: block;
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  height: var(--workspace-control-size);
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  font-weight: 750;
+  text-align: left;
+  transition: flex-grow 180ms ease, flex-basis 180ms ease, opacity 120ms ease, padding 180ms ease;
+}
+.library-search-container > .search-input::placeholder { font-weight: 750; }
+
+.library-search-container:is(:hover, :focus-within) > .search-input {
+  flex: 1 1 auto;
+  width: auto;
+  padding-left: 8px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.library-search-container > .search-button {
+  order: 1;
+}
+
+.library-search-container > .search-button > .icon-button > .icon {
+  flex-basis: 14px;
+  width: 14px;
+  height: 14px;
+}
+.library-search-container > .search-button > .icon-button > [data-icon="search"] {
+  background-color: var(--color-text-secondary);
+  -webkit-mask: url("../assets/icons/filled/search.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/search.png") center / contain no-repeat;
+  transition: background-color 180ms ease;
+}
+.library-search-container:is(:hover, :focus-within) > .search-button > .icon-button > [data-icon="search"] {
+  background-color: var(--color-accent-primary);
+}
+.library-search-container > .search-button > .icon-button > [data-icon="close"] {
+  display: none;
+}
+.library-search-container > .search-button > .icon-button:has([data-icon="close"])::before {
+  width: 12px;
+  height: 12px;
+  background: color-mix(in srgb, var(--color-button-primary) max(70%, var(--opacity-glass-level-3)), transparent);
+  content: "";
+  -webkit-mask: url("../assets/icons/filled/close.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/close.png") center / contain no-repeat;
+}
+.library-search-container > .search-button > .icon-button:has([data-icon="close"]):is(:hover, :focus-visible)::before {
+  background: color-mix(in srgb, var(--color-button-primary-hover) max(70%, var(--opacity-glass-level-3)), transparent);
+}
+
+/* !SECTION */
+
+/* SECTION workspace-filter-layout */
+/* Arrange the filter controls inside the centered filter surface. */
+.workspace-filter-layout {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-level-1);
+  min-width: 0;
+  width: 100%;
+}
+.workspace-filter-container {
+  grid-column: 2;
+  justify-content: stretch;
+}
+.workspace-search-type-container { grid-column: 1; }
+.workspace-pagination-container {
+  grid-column: 3;
+  justify-content: flex-end;
+}
+/* ANCHOR Filter and sort menu wrappers */
+/* Give the rating, year, and sort menus equal room in the filter group. */
+.workspace-ratings-menu-wrapper,
+.workspace-year-menu-wrapper,
+.workspace-sort-menu-wrapper {
+  display: flex;
+  flex: 1 1 70px;
+  min-width: 0;
+  container-type: inline-size;
+}
+/* Base class: .level-3-styling */
+/* Keep the ratings and year triggers consistent while their wrappers anchor the popups. */
+.workspace-ratings-menu-button,
+.workspace-year-menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-level-1);
+  width: 100%;
+  min-width: 0;
+  height: var(--workspace-control-size);
+  padding: 4px 4px 4px 8px;
+  appearance: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-app);
+  font-size: clamp(10px, calc(2cqi + 9px), 12px);
+  font-weight: var(--font-weight-app);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+.workspace-filter-layout .icon {
+  flex-basis: 14px;
+  width: 14px;
+  height: 14px;
+}
+:is(.workspace-ratings-menu-button, .workspace-year-menu-button) > .menu-button-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Keep the sort trigger icon and label aligned with the other controls. */
+.workspace-sort-menu-wrapper > .workspace-sort-menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--spacing-level-1);
+  min-width: 0;
+  height: var(--workspace-control-size);
+  padding: 4px 4px 4px 8px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  flex: 1 1 auto;
+  font: var(--font-weight-app) clamp(10px, calc(2cqi + 9px), 12px)/1 var(--font-family-app);
+  text-align: left;
+}
+.workspace-filter-layout .masked-icon {
+  color: inherit;
+  background-color: currentColor;
+}
+:is(
+  .workspace-ratings-menu-button,
+  .workspace-year-menu-button,
+  .workspace-sort-menu-button
+).active {
+  color: white;
+}
+.workspace-filter-layout :is(
+  .workspace-ratings-menu-button,
+  .workspace-year-menu-button,
+  .workspace-sort-menu-button
+):not(.active):is(:hover, :focus-visible) > :is(.glow-halo, .menu-button-text) {
+  color: var(--color-text-secondary);
+}
+.workspace-filter-layout :is(
+  .workspace-ratings-menu-button,
+  .workspace-year-menu-button,
+  .workspace-sort-menu-button
+):not(.active):is(:hover, :focus-visible) > .glow-halo > .masked-icon {
+  filter: none;
+}
+.workspace-sort-menu-button > .glow-halo > .masked-icon {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  background-color: currentColor;
+  justify-self: center;
+  transition: transform 140ms ease;
+}
+.workspace-sort-menu-button > .menu-button-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workspace-sort-menu-wrapper > .workspace-sort-menu-button:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 1px;
+}
+
+.workspace-ratings-menu-wrapper > .menu-container > .menu-options-container > .menu-option,
+.workspace-year-menu-wrapper > .menu-container > .menu-options-container > .menu-option,
+.workspace-sort-menu-wrapper > .menu-container > .menu-options-container > .menu-option,
+.workspace-type-menu-wrapper > .menu-container > .menu-options-container > .menu-option {
+  padding-inline: 8px;
+}
+.workspace-type-menu-wrapper > .menu-container > .menu-options-container > .menu-option {
+  padding-left: 8px;
+  padding-right: 15px;
+  justify-content: flex-start;
+  gap: 4px;
+  text-align: left;
+}
+.workspace-ratings-menu-wrapper > .menu-container > .menu-options-container > .menu-option,
+.workspace-year-menu-wrapper > .menu-container > .menu-options-container > .menu-option,
+.workspace-sort-menu-wrapper > .menu-container > .menu-options-container > .menu-option {
+  font-size: clamp(9px, calc(3cqi + 8px), 12px);
+}
+/* Mark selected year and sort choices with white text only. */
+.workspace-year-menu-wrapper .menu-option.active,
+.workspace-sort-menu-wrapper .menu-option.active {
+  color: white;
+}
+.workspace-ratings-menu-wrapper > .menu-container > .menu-options-container > .menu-option-value:not(.active) {
+  font-family: var(--font-family-value-chip);
+  font-size: var(--font-size-value-chip);
+  font-weight: 700;
+}
+.workspace-ratings-menu-wrapper > .menu-container,
+.workspace-year-menu-wrapper > .menu-container,
+.workspace-sort-menu-wrapper > .menu-container {
+  left: 0;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  transform: none;
+}
+.workspace-ratings-menu-wrapper > .menu-container > .menu-options-container,
+.workspace-year-menu-wrapper > .menu-container > .menu-options-container {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.workspace-ratings-menu-wrapper > .menu-container > .menu-options-container > .menu-option-value.active {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+}
+.workspace-ratings-menu-wrapper > .menu-container > .menu-options-container > .menu-option-value.active > .value-chip-styling {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-height: inherit;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border-radius: var(--radius-control-small);
+  line-height: 16px;
+}
+.workspace-sort-menu-wrapper > .menu-container > .menu-options-container {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+/* Let the rating range show its full grid when it fits; constrain years to the same height. */
+.workspace-ratings-menu-wrapper > .menu-container > .menu-options-container.level-2-styling,
+.workspace-year-menu-wrapper > .menu-container > .menu-options-container.level-2-styling {
+  max-height: min(280px, calc(100dvh - 240px));
+}
+.workspace-sort-menu-wrapper > .menu-container > .menu-options-container.level-2-styling {
+  max-height: min(220px, calc(100dvh - 240px));
+}
+/* Size reset actions to match the shared menu-title height. */
+.workspace-ratings-menu-wrapper > .menu-container > .menu-header-layout > .workspace-filter-reset-button,
+.workspace-year-menu-wrapper > .menu-container > .menu-header-layout > .workspace-filter-reset-button,
+.workspace-sort-menu-wrapper > .menu-container > .menu-header-layout > .workspace-sort-direction-button,
+.workspace-sort-menu-wrapper > .menu-container > .menu-header-layout > .workspace-sort-reset-button {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  font-size: 16px;
+  color: var(--color-text-secondary);
+}
+/* Render the reset artwork through each reset control's shared icon child. */
+.workspace-filter-reset-button > .masked-icon,
+.workspace-sort-reset-button > .masked-icon,
+.workspace-reset-button > .masked-icon {
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  --app-icon-state-color: var(--color-text-secondary);
+  -webkit-mask: url("../assets/icons/filled/reset.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/reset.png") center / contain no-repeat;
+}
+.workspace-sort-direction-button > .masked-icon {
+  display: block;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  --app-icon-state-color: var(--color-text-secondary);
+  -webkit-mask: url("../assets/icons/filled/down.png") center / contain no-repeat;
+  mask: url("../assets/icons/filled/down.png") center / contain no-repeat;
+  transition: transform 140ms ease;
+}
+.workspace-sort-direction-button > .masked-icon[data-direction="asc"] { transform: rotate(180deg); }
+/* Give enabled reset actions an orange surface and a contrasting icon. */
+.workspace-ratings-menu-wrapper .workspace-filter-reset-button:not(:disabled),
+.workspace-year-menu-wrapper .workspace-filter-reset-button:not(:disabled),
+.workspace-sort-menu-wrapper .workspace-sort-reset-button:not(:disabled) {
+  border-color: var(--palette-orange-strong);
+  background: var(--palette-orange-strong);
+  color: #000;
+  --glow-halo-opacity: 0;
+}
+.workspace-reset-button.level-3-styling.is-active {
+  border-color: var(--palette-orange-strong);
+  background: var(--palette-orange-strong);
+  color: var(--color-text-on-primary);
+  --glow-halo-opacity: 0;
+}
+:root[data-theme-glass="on"] .workspace-reset-button.level-3-styling.is-active {
+  border-color: var(--palette-orange-strong);
+  background: var(--palette-orange-strong);
+}
+.workspace-ratings-menu-wrapper .workspace-filter-reset-button:not(:disabled) > .masked-icon,
+.workspace-year-menu-wrapper .workspace-filter-reset-button:not(:disabled) > .masked-icon,
+.workspace-sort-menu-wrapper .workspace-sort-reset-button:not(:disabled) > .masked-icon {
+  --app-icon-state-color: #000 !important;
+  color: #000 !important;
+  background-color: #000 !important;
+  filter: none !important;
+  position: relative;
+  z-index: 1;
+}
+.workspace-reset-button.level-3-styling.is-active > .masked-icon {
+  --app-icon-state-color: var(--color-text-on-primary);
+  filter: none;
+  position: relative;
+  z-index: 1;
+}
+/* ANCHOR workspace-reset-button */
+/* Base classes: .icon-button, .level-3-styling */
+/* Reset the three filter menus and the active media filter. */
+.workspace-reset-button {
+  flex: none;
+  width: var(--workspace-control-size);
+  height: var(--workspace-control-size);
+  padding: 0;
+  color: var(--color-text-secondary);
+  font: 600 12px/1 var(--font-family-app);
+}
+/* !SECTION */
+
+/* SECTION workspace-type-menu-wrapper */
+/* Base class: .menu-wrapper; the trigger uses .level-3-styling. */
+/* Keep the entry-type menu immediately beside Search. */
+.workspace-type-menu-wrapper {
+  flex: none;
+}
+.workspace-type-menu-button {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+  width: max-content;
+  min-width: max-content;
+  max-width: none;
+  box-sizing: border-box;
+  height: var(--workspace-control-size);
+  padding: 4px 7px;
+  color: white;
+  font: var(--font-weight-app) 12px/1 var(--font-family-app);
+  cursor: pointer;
+}
+.workspace-type-menu-button > .menu-button-text {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: max-content;
+}
+.workspace-type-menu-button.is-movie { --workspace-type-highlight: var(--color-media-film); }
+.workspace-type-menu-button.is-show { --workspace-type-highlight: var(--color-media-show); }
+.workspace-type-menu-button.is-game { --workspace-type-highlight: var(--color-media-game); }
+.workspace-type-menu-button.is-book { --workspace-type-highlight: var(--color-media-book); }
+.workspace-type-menu-button.active {
+  color: var(--workspace-type-highlight);
+}
+.workspace-type-menu-button:not(.active) {
+  color: var(--color-text-secondary);
+}
+.workspace-type-menu-button > .menu-button-text > .workspace-type-icon {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+}
+.workspace-type-menu-button > .menu-button-text > .workspace-type-icon[data-icon="show"] {
+  transform: translateY(-1px);
+}
+.workspace-type-menu-wrapper > .menu-container {
+  left: 0;
+  width: max-content;
+  min-width: 0;
+}
+.workspace-type-menu-wrapper > .menu-container > .menu-options-container.level-2-styling {
+  grid-template-columns: minmax(0, 1fr);
+  gap: calc(var(--spacing-level-3) + 2px);
+  max-height: none;
+  overflow-y: visible;
+}
+.workspace-type-menu-wrapper .menu-option {
+  color: var(--color-text-secondary);
+}
+.workspace-type-menu-wrapper .menu-option-label {
+  padding-right: 0;
+}
+.workspace-type-menu-wrapper > .menu-container > .menu-options-container > .menu-option > .icon {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+}
+.workspace-type-menu-wrapper .menu-option[data-filter="Show"] > .menu-option-label,
+.workspace-type-menu-wrapper .menu-option[data-filter="Book"] > .menu-option-label {
+  transform: translateY(1px);
+}
+.workspace-type-menu-wrapper .menu-option.active {
+  color: var(--workspace-type-highlight, var(--color-text-secondary));
+}
+.workspace-type-menu-wrapper .menu-option[data-filter="Movie"] { --workspace-type-highlight: var(--color-media-film); }
+.workspace-type-menu-wrapper .menu-option[data-filter="Show"] { --workspace-type-highlight: var(--color-media-show); }
+.workspace-type-menu-wrapper .menu-option[data-filter="Game"] { --workspace-type-highlight: var(--color-media-game); }
+.workspace-type-menu-wrapper .menu-option[data-filter="Book"] { --workspace-type-highlight: var(--color-media-book); }
+/* !SECTION */
+
+/* SECTION Workspace pagination */
+/* Base classes: .pagination-container, .pagination-prev-button, .pagination-next-button, .pagination-text-container, .level-3-styling */
+/* Keep shared pagination compact and aligned within workspace controls. */
+.workspace-pagination-container > .pagination-container {
+  --pagination-arrow-height: var(--workspace-control-size);
+  flex: none;
+  align-items: center;
+  height: var(--workspace-control-size);
+  min-height: var(--workspace-control-size);
+}
+.workspace-pagination-container > .pagination-container > :is(.pagination-prev-button, .pagination-next-button) {
+  --pagination-arrow-expanded-width: 18px;
+}
+.workspace-pagination-container > .pagination-container:is(:hover, :has(> button:focus-visible)) > :is(.pagination-prev-button, .pagination-next-button) {
+  margin-inline: 1px;
+}
+.workspace-pagination-container > .pagination-container .icon {
+  width: calc(var(--size-icon-filled) - 14px);
+  height: calc(var(--size-icon-filled) - 14px);
+}
+.workspace-pagination-container > .pagination-container > .pagination-text-container {
+  min-width: 34px;
+  padding-inline: 12px;
+  font: var(--font-weight-app) 14px/1 var(--font-family-app);
+}
+.workspace-pagination-container > .pagination-container:is(:hover, :has(> button:focus-visible)) > button:disabled {
+  opacity: .35;
+  pointer-events: none;
+}
+.workspace-pagination-container > .pagination-container > button:disabled { cursor: default; }
+
+/* !SECTION */
+
+/* ANCHOR workspace-create-entry-button */
+/* Keep the add-entry action aligned with the control row. */
+/* Base classes: .text-button, .level-3-styling */
+.workspace-create-entry-button {
+  display: grid;
+  flex: none;
+  width: var(--workspace-control-size);
+  height: var(--workspace-control-size);
+  place-items: center;
+  padding: 0;
+  text-align: center;
+}
+.workspace-create-entry-button > .icon {
+  flex: 0 0 12px;
+  width: 12px;
+  height: 12px;
+  --app-icon-state-color: var(--color-background-app);
+}
+
+/* SECTION Responsive workspace controls */
+/* Wrap control groups as the available workspace width shrinks. */
+@container app-content (width < 900px) {
+  .workspace-controls-container {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  .workspace-search-type-container { order: 1; }
+  .workspace-filter-container { order: 5; flex: 1 1 100%; }
+  .workspace-filter-layout { flex: 1 1 100%; }
+  .workspace-pagination-container { order: 7; margin-left: auto; }
+}
+/* !SECTION */
+/* !SECTION */

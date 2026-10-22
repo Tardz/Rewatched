@@ -42,7 +42,6 @@
   );
 }
 /* !SECTION */
-
 /* SECTION overview-banner-content-layout */
 /* Stack the information and controls inside the content column. */
 .overview-banner-content-layout {
@@ -113,7 +112,7 @@
 .overview-banner-controls-layout {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
   margin-top: auto;
   color: var(--color-text-secondary);
   font-family: var(--font-family-value-chip);
@@ -122,8 +121,8 @@
 }
 
 /* Base classes: .icon-button, .level-2-styling */
-/* Give navigation and playback buttons a consistent control frame. */
-.overview-banner-controls-layout > button {
+/* Frame the playback button beside the shared pagination group. */
+.overview-banner-controls-layout > .overview-banner-media-button {
   flex: 0 0 28px;
   height: 28px;
   border-radius: var(--radius-control-small);
@@ -131,21 +130,36 @@
   background: transparent;
   color: var(--color-text-on-surface);
 }
-.overview-banner-controls-layout > button:focus-visible {
+/* Base classes: .pagination-container, .level-2-styling */
+/* Keep banner pagination compact inside the control row. */
+.overview-banner-controls-layout > .pagination-container {
+  height: 28px;
+  border-radius: var(--radius-control-small);
+}
+/* Base classes: .pagination-prev-button / .pagination-next-button */
+/* Keep banner arrows unboxed while retaining a consistent hit area. */
+.overview-banner-controls-layout > .pagination-container > :is(.pagination-prev-button, .pagination-next-button) {
+  --pagination-arrow-expanded-width: 18px;
+  --pagination-arrow-height: 26px;
+}
+.overview-banner-controls-layout > .pagination-container:is(:hover, :has(> button:focus-visible)) > :is(.pagination-prev-button, .pagination-next-button) {
+  margin-inline: 1px;
+}
+.overview-banner-controls-layout > .overview-banner-media-button:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
   outline-offset: 2px;
 }
-.overview-banner-previous-button,
-.overview-banner-next-button { overflow: hidden; }
 .overview-banner-controls-layout .icon {
-  width: calc(var(--size-icon-filled) - 14px);
-  height: calc(var(--size-icon-filled) - 14px);
+  width: calc(var(--size-icon-filled) - 15px);
+  height: calc(var(--size-icon-filled) - 15px);
 }
-.overview-banner-count {
-  min-width: 48px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+.overview-banner-controls-layout > .pagination-container > .pagination-text-container {
+  flex: 0 0 auto;
+  min-width: 30px;
+  font-weight: 600;
 }
 .overview-banner-media-button {
+  --app-icon-state-color: var(--color-text-secondary);
   margin-left: 8px;
   color: var(--color-text-secondary);
 }
@@ -189,104 +203,4 @@
     padding: 20px;
   }
 }
-/* !SECTION */
-
-/* SECTION banner-details-container */
-/* Pair the featured banner with its actor and plot information panel. */
-/* Base class: .level-1-styling */
-.banner-details-container {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  align-self: stretch;
-  min-height: 0;
-  overflow: hidden;
-  block-size: auto;
-  min-width: 0;
-}
-
-/* SECTION details-header-container */
-/* Keep the two detail views side-by-side above their shared content panel. */
-.details-header-container {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--spacing-level-1);
-  min-width: 0;
-  padding: var(--spacing-level-1);
-}
-
-/* SECTION detail-option */
-/* Base classes: .text-button, .level-3-styling */
-/* Make each detail view a compact, equal-width tab button. */
-.detail-option {
-  min-width: 0;
-  padding: 8px 4px;
-  color: var(--color-text-secondary);
-  font-size: 12px;
-}
-
-.detail-option.active {
-  color: var(--color-text-primary);
-  text-shadow: 0 0 8px var(--color-glow-default);
-}
-/* !SECTION */
-/* !SECTION */
-
-/* SECTION details-content-container */
-/* Fill the remaining panel height with scrollable entry information. */
-.details-content-container {
-  flex: 1 1 0;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  padding: var(--spacing-level-1);
-}
-
-.details-content-container > [role="tabpanel"] {
-  height: 100%;
-  max-height: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-/* SECTION details-actors-layout */
-/* Stack each actor name in its own level-three surface. */
-.details-actors-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--spacing-level-1);
-  min-width: 0;
-}
-
-/* Base classes: .app-text, .level-3-styling */
-/* Keep actor names readable and padded inside their individual boxes. */
-.details-actors-layout > .app-text.level-3-styling {
-  width: fit-content;
-  max-width: 100%;
-  min-width: 0;
-  margin: 0;
-  padding: var(--spacing-level-1);
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-}
-/* !SECTION */
-
-.details-content-container .app-text {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-}
-
-/* Keep the plot narrative at regular weight rather than the app's bold default. */
-.details-content-container .details-plot-text {
-  font-weight: 400;
-}
-/* !SECTION */
 /* !SECTION */

@@ -41,7 +41,7 @@
   --palette-purple: #7855a6;
   --palette-red: #d95560;
   --palette-orange: #df6b12;
-  --palette-orange-strong: #e66e00;
+  --palette-orange-strong: #d67e2d;
   --palette-blue: #2376a8;
   --palette-green: #286247;
   --palette-yellow: #967100;
@@ -90,12 +90,12 @@
 }
 
 /* Keep navbar status labels readable on light surfaces without losing page color. */
-:root[data-theme="light"] .navbar-horizontal-layout .nav-save-text {
+:root[data-theme="light"] .nav-storage-text {
   color: var(--color-text-secondary);
   text-shadow: 0 0 4px color-mix(in srgb, var(--color-text-secondary) 36%, transparent);
 }
 
-:root[data-theme="light"] .navbar-horizontal-layout .nav-page-context-container {
+:root[data-theme="light"] .navbar-horizontal-layout .nav-page-container {
   color: color-mix(in srgb, var(--nav-page-context-color) 78%, var(--color-text-primary));
   text-shadow: none;
 }

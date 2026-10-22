@@ -4,40 +4,46 @@
 const LIBRARY_SCROLL_KEY = 'rerun-library-scroll-position';
 let libraryScrollPosition = Number(sessionStorage.getItem(LIBRARY_SCROLL_KEY)) || 0;
 
-const themeToggle = $('#toggle-theme');
+const themeToggle = $('.dashboard-theme-button');
 const navThemeToggle = $('.nav-toggle-theme');
-$('#open-settings')?.addEventListener('click', openSettings);
-$('#open-storage-settings')?.addEventListener('click', openSettings);
-const collectionFiltersReturnAnchor = $('.collection-filter-sort').nextElementSibling;
+$('.dashboard-settings-button')?.addEventListener('click', openSettings);
+$('.dashboard-storage-button')?.addEventListener('click', openSettings);
+const collectionFiltersReturnAnchor = $('.workspace-filter-container, .collection-filter-sort').nextElementSibling;
 
 /** Updates the sidebar's expanded or icon-only state. */
-function setSidebarCollapsed(collapsed) {
+function setSidebarCollapsed(collapsed, persist = false) {
   const appContainer = $('.app-container');
   const sidebarToggle = $('.nav-toggle-sidebar');
   appContainer.classList.toggle('is-sidebar-collapsed', collapsed);
+  if (persist) localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(collapsed));
   sidebarToggle.setAttribute('aria-pressed', String(collapsed));
   sidebarToggle.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
   sidebarToggle.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+  const settingsDialog = $('.settings-container');
+  if (settingsDialog?.open) centerSettingsDialog(settingsDialog);
 }
 
 if ($('.navbar-vertical-layout')) {
   const compactSidebarQuery = window.matchMedia('(max-width: 700px)');
-  setSidebarCollapsed(compactSidebarQuery.matches);
+  const savedSidebarState = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
+  setSidebarCollapsed(savedSidebarState === null ? compactSidebarQuery.matches : savedSidebarState === 'true');
   $('.nav-toggle-sidebar').addEventListener('click', () => {
-    setSidebarCollapsed(!$('.app-container').classList.contains('is-sidebar-collapsed'));
+    setSidebarCollapsed(!$('.app-container').classList.contains('is-sidebar-collapsed'), true);
   });
-  compactSidebarQuery.addEventListener('change', (event) => setSidebarCollapsed(event.matches));
+  compactSidebarQuery.addEventListener('change', (event) => {
+    if (localStorage.getItem(SIDEBAR_COLLAPSED_KEY) === null) setSidebarCollapsed(event.matches);
+  });
 }
 
 /** Switches between the library and its statistics panel. */
 function setDashboardSection(section) {
   const showStatistics = section === 'statistics';
   const dashboard = document.querySelector('.default-layout, .dashboard-layout');
-  const collectionFilters = $('.collection-filter-sort');
+  const collectionFilters = $('.workspace-filter-container, .collection-filter-sort');
   const libraryButton = $('.library-page-button, .section-library');
   const statisticsButton = $('.stats-page-button, .section-statistics');
 
-  $('#library').hidden = showStatistics;
+  $('.library-section').hidden = showStatistics;
   $('#statistics-panel').hidden = !showStatistics;
   if (showStatistics) {
     $('#statistics-panel').prepend(collectionFilters);
@@ -68,25 +74,25 @@ function setDashboardSection(section) {
 
 $('.library-page-button, .section-library').addEventListener('click', () => {
   setDashboardSection('library');
-  setNavbarPage($('#nav-library-button'));
+  setNavbarPage($('.nav-library-button'));
 });
 $('.stats-page-button, .section-statistics').addEventListener('click', () => {
   setDashboardSection('statistics');
-  setNavbarPage($('#nav-stats-button'));
+  setNavbarPage($('.nav-stats-button'));
 });
 
 let navbarPageBeforeSettings = null;
 let navbarPageContextBeforeSettings = '';
 let navbarPageContextOverride = '';
 // Keep the non-modal settings dialog outside the clipped app shell so it can overlay the blur.
-document.body.append($('#settings-dialog'));
+document.body.append($('.settings-container'));
 function closeSettingsHeadingHelp() {
-  document.querySelectorAll('#settings-dialog .settings-heading-info[aria-controls], #settings-dialog .settings-heading-important[aria-controls]').forEach((button) => {
+  document.querySelectorAll('.settings-container .settings-heading-info[aria-controls], .settings-container .settings-heading-important[aria-controls]').forEach((button) => {
     document.getElementById(button.getAttribute('aria-controls')).hidden = true;
     button.setAttribute('aria-expanded', 'false');
   });
 }
-$('#settings-dialog')?.addEventListener('click', (event) => {
+$('.settings-container')?.addEventListener('click', (event) => {
   const button = event.target.closest('.settings-heading-info[aria-controls], .settings-heading-important[aria-controls]');
   if (button) {
     const help = document.getElementById(button.getAttribute('aria-controls'));
@@ -99,12 +105,12 @@ $('#settings-dialog')?.addEventListener('click', (event) => {
   }
 });
 // A click dismisses an option's hover help until the pointer leaves that row.
-document.querySelectorAll('#settings-dialog .settings-option').forEach((option) => {
+document.querySelectorAll('.settings-container .settings-option').forEach((option) => {
   option.addEventListener('pointerdown', () => option.classList.add('tooltip-dismissed'));
   option.addEventListener('pointerleave', () => option.classList.remove('tooltip-dismissed'));
 });
 
-const omdbKeyInput = $('#omdb-api-key');
+const omdbKeyInput = $('.omdb-api-key-input');
 const omdbKeyVisibilityButton = $('#omdb-key-visibility');
 const omdbKeyVisibilityIcon = omdbKeyVisibilityButton?.querySelector('img');
 function setOmdbKeyVisible(visible) {
@@ -136,10 +142,36 @@ const navbarUrlHistory = [location.hash];
 let navbarUrlHistoryIndex = 0;
 let navbarHistoryTraversalDirection = 0;
 
-/** Enable the page-name back button only when app URL history is available. */
-function updateNavbarBackButton() {
-  const backButton = $('#nav-page-name-container');
-  backButton.disabled = navbarUrlHistoryIndex <= 0;
+/** Apply the context surface level based on available history and page context. */
+function updateNavbarContextStyling() {
+  const pageContainer = $('.nav-pagination-container');
+  const hasPageContext = pageContainer?.classList.contains('has-page-context');
+  const isExpanded = pageContainer?.matches(':hover, :focus-within');
+  const hasHistory = navbarUrlHistoryIndex > 0 || navbarUrlHistoryIndex < navbarUrlHistory.length - 1;
+  const context = $('.nav-page-container');
+  const pageName = $('.nav-page-text-container');
+  pageContainer?.classList.toggle('level-2-styling', Boolean(isExpanded));
+  context?.classList.toggle('level-3-styling', hasHistory);
+  context?.classList.toggle('level-2-styling', !hasHistory);
+  pageName?.classList.toggle('level-3-styling', hasPageContext && hasHistory);
+  pageName?.classList.toggle('level-2-styling', (hasPageContext && !hasHistory) || !hasPageContext);
+}
+
+['pointerenter', 'pointerleave', 'focusin', 'focusout'].forEach((eventName) => {
+  $('.nav-pagination-container')?.addEventListener(eventName, updateNavbarContextStyling);
+});
+
+/** Keep both history arrows visible on hover and disable unavailable directions. */
+function updateNavbarHistoryButtons() {
+  const previousButton = $('.nav-prev-button');
+  const nextButton = $('.nav-next-button');
+  const canGoBack = navbarUrlHistoryIndex > 0;
+  const canGoForward = navbarUrlHistoryIndex < navbarUrlHistory.length - 1;
+  previousButton.disabled = !canGoBack;
+  previousButton.hidden = false;
+  nextButton.disabled = !canGoForward;
+  nextButton.hidden = false;
+  updateNavbarContextStyling();
 }
 
 /** Track actual URL/hash navigation, not navbar tab selection, for arrow history. */
@@ -163,11 +195,22 @@ function recordNavbarUrlHistory(event) {
     navbarUrlHistoryIndex = navbarUrlHistory.length - 1;
   }
 
-  updateNavbarBackButton();
+  updateNavbarHistoryButtons();
 }
 
 window.addEventListener('hashchange', recordNavbarUrlHistory);
-updateNavbarBackButton();
+updateNavbarHistoryButtons();
+$('.nav-pagination-container')?.addEventListener('animationend', (event) => {
+  if (event.animationName !== 'nav-context-reveal') return;
+  const pageContainer = event.currentTarget;
+  if (pageContainer.classList.contains('is-concealing')) {
+    $('.nav-context-text').hidden = true;
+    pageContainer.classList.remove('has-page-context', 'is-concealing');
+    updateNavbarContextStyling();
+  } else {
+    pageContainer.classList.remove('is-revealing');
+  }
+});
 
 /** Keeps the top-level navbar selection in sync with the current page. */
 function setNavbarPage(activeButton) {
@@ -179,37 +222,59 @@ function setNavbarPage(activeButton) {
     button.toggleAttribute('aria-current', active);
   });
 
-  const pageName = $('.nav-page-name');
+  const pageContainer = $('.nav-pagination-container');
+  const pageName = $('.nav-page-text-container');
   const activeLabel = activeButton.querySelector('.nav-button-text');
   if (pageName && activeLabel) {
     pageName.textContent = activeLabel.textContent.trim();
     const colorTokens = {
       'nav-home-button': '--color-icon-home',
       'nav-library-button': '--color-icon-library',
+      'nav-backlog-button': '--color-backlog',
       'nav-folders-button': '--color-icon-folder',
       'nav-stats-button': '--color-icon-stats',
       'nav-timeline-button': '--color-icon-timeline',
-      'nav-storage-button': '--color-icon-storage',
       'nav-activity-button': '--color-icon-activity',
       'nav-settings-button': '--color-icon-settings',
-      'nav-login-button': '--palette-white',
       'nav-about-button': '--palette-white',
     };
-    const colorToken = colorTokens[activeButton.id];
-    if (colorToken) pageName.style.setProperty('--nav-page-name-color', `var(${colorToken})`);
+    const colorToken = Object.entries(colorTokens).find(([name]) => activeButton.classList.contains(name))?.[1];
+    if (colorToken) pageContainer.style.setProperty('--nav-page-text-container-color', `var(${colorToken})`);
   }
   updateNavbarPageContext();
 }
 
-setNavbarPage($('#nav-home-button'));
-$('#nav-page-name-container')?.addEventListener('click', () => {
+setNavbarPage($('.nav-home-button'));
+$('.nav-prev-button')?.addEventListener('click', () => {
   if (navbarUrlHistoryIndex <= 0) return;
   navbarHistoryTraversalDirection = -1;
   window.history.back();
 });
+$('.nav-next-button')?.addEventListener('click', () => {
+  if (navbarUrlHistoryIndex >= navbarUrlHistory.length - 1) return;
+  navbarHistoryTraversalDirection = 1;
+  window.history.forward();
+});
 
-$('#nav-settings-button')?.addEventListener('click', () => {
-  const dialog = $('#settings-dialog');
+/** Match the storage reveal to its current label, including newly loaded file names. */
+const navStorageButton = $('.nav-storage-button');
+const navStorageText = $('.nav-storage-text');
+if (navStorageButton && navStorageText) {
+  const updateNavStorageTextWidth = () => {
+    const textRange = document.createRange();
+    textRange.selectNodeContents(navStorageText);
+    navStorageButton.style.setProperty('--nav-storage-text-width', `${Math.ceil(textRange.getBoundingClientRect().width)}px`);
+  };
+  new MutationObserver(updateNavStorageTextWidth).observe(navStorageText, {
+    childList: true,
+    characterData: true,
+    subtree: true,
+  });
+  updateNavStorageTextWidth();
+}
+
+$('.nav-settings-button')?.addEventListener('click', () => {
+  const dialog = $('.settings-container');
   if (dialog.open) {
     dialog.close();
     return;
@@ -217,15 +282,30 @@ $('#nav-settings-button')?.addEventListener('click', () => {
   openSettings();
 });
 
-function openStorageSettingsFromNavigation() {
-  setSettingsCategory('storage');
+$('.navbar-vertical-layout')?.addEventListener('click', (event) => {
+  const pageButton = event.target.closest(
+    '.nav-home-button, .nav-library-button, .nav-backlog-button, .nav-folders-button, .nav-progress-button, .nav-stats-button, .nav-timeline-button',
+  );
+  if (!pageButton) return;
+  const dialog = $('.settings-container');
+  if (dialog?.open) dialog.close();
+}, true);
+
+function toggleSettingsCategoryFromNavigation(category) {
+  const dialog = $('.settings-container');
+  if (dialog?.open) {
+    dialog.close();
+    return;
+  }
+  setSettingsCategory(category);
   openSettings();
 }
 
-$('#nav-storage-button')?.addEventListener('click', openStorageSettingsFromNavigation);
-$('#nav-save-button')?.addEventListener('click', openStorageSettingsFromNavigation);
+$('.nav-about-button')?.addEventListener('click', () => toggleSettingsCategoryFromNavigation('about'));
+$('.nav-storage-button')?.addEventListener('click', () => toggleSettingsCategoryFromNavigation('storage'));
+$('.nav-profile-button')?.addEventListener('click', () => toggleSettingsCategoryFromNavigation('account'));
 
-$('#settings-dialog').addEventListener('close', () => {
+$('.settings-container').addEventListener('close', () => {
   closeSettingsHeadingHelp();
   pauseLoadStatusTimer();
   if (navbarPageBeforeSettings) setNavbarPage(navbarPageBeforeSettings);
@@ -235,8 +315,8 @@ $('#settings-dialog').addEventListener('close', () => {
   updateNavbarPageContext();
 });
 
-$('.app-content-frame')?.addEventListener('click', () => {
-  const dialog = $('#settings-dialog');
+$('.app-content-container')?.addEventListener('click', () => {
+  const dialog = $('.settings-container');
   if (dialog?.open) dialog.close();
 });
 
@@ -264,38 +344,70 @@ function setSettingsCategory(category) {
 
 /** Show the selected settings category beside the navbar page indicator. */
 function updateNavbarPageContext() {
-  const dialog = $('#settings-dialog');
-  const pageLocation = $('.navbar-horizontal-layout > .nav-page-container');
-  const pageNameButton = $('#nav-page-name-container');
-  const pageName = $('.nav-page-name');
-  const context = $('.nav-page-context-container');
-  const contextName = $('.nav-page-context-name');
+  const dialog = $('.settings-container');
+  const pageContainer = $('.nav-pagination-container');
+  const pageName = $('.nav-page-text-container');
+  const context = $('.nav-page-container');
+  const contextName = $('.nav-context-text');
   const activeCategory = $('.settings-category-button.active');
-  if (!context || !contextName) return;
-  const setPageContextSurface = (hasContext) => {
-    pageLocation?.classList.toggle('has-page-context', hasContext);
-    pageNameButton?.classList.toggle('level-2-styling', hasContext);
-    pageName?.classList.toggle('level-3-styling', !hasContext);
+  if (!pageContainer || !context || !contextName) return;
+  const setPageContext = (label = '') => {
+    const hasContext = Boolean(label);
+    if (!hasContext) {
+      if (contextName.hidden || pageContainer.classList.contains('is-concealing')) return;
+      const expandedWidth = pageContainer.getBoundingClientRect().width;
+      pageContainer.classList.remove('is-revealing');
+      contextName.hidden = true;
+      pageContainer.classList.remove('has-page-context');
+      updateNavbarContextStyling();
+      const collapsedWidth = pageContainer.getBoundingClientRect().width;
+      pageContainer.classList.add('has-page-context');
+      updateNavbarContextStyling();
+      pageContainer.style.setProperty('--nav-context-start-width', `${expandedWidth}px`);
+      pageContainer.style.setProperty('--nav-context-end-width', `${collapsedWidth}px`);
+      void pageContainer.offsetWidth;
+      pageContainer.classList.add('is-concealing');
+      return;
+    }
+
+    pageContainer.classList.remove('is-concealing');
+    const contextWasHidden = contextName.hidden;
+    const collapsedWidth = contextWasHidden ? pageContainer.getBoundingClientRect().width : 0;
+    contextName.textContent = label;
+    contextName.hidden = false;
+    pageContainer.classList.add('has-page-context');
+    updateNavbarContextStyling();
+    if (contextWasHidden) {
+      const expandedWidth = pageContainer.getBoundingClientRect().width;
+      pageContainer.style.setProperty('--nav-context-start-width', `${collapsedWidth}px`);
+      pageContainer.style.setProperty('--nav-context-end-width', `${expandedWidth}px`);
+      pageContainer.classList.remove('is-revealing');
+      void pageContainer.offsetWidth;
+      pageContainer.classList.add('is-revealing');
+    }
+    context.style.setProperty(
+      '--nav-page-context-color',
+      'var(--nav-page-text-container-color, var(--color-text-secondary))',
+    );
   };
   if (navbarPageContextOverride) {
-    contextName.textContent = navbarPageContextOverride;
-    const pageColor = pageName ? getComputedStyle(pageName).color : 'var(--color-text-secondary)';
-    context.style.setProperty('--nav-page-context-color', pageColor);
-    context.removeAttribute('hidden');
-    setPageContextSurface(true);
+    setPageContext(navbarPageContextOverride);
+    return;
+  }
+  const selectedFolder = !dialog?.open && $('.nav-folders-button[aria-current]')
+    && activeCollectionView === 'logged'
+    ? customCollections.find((folder) => folder.id === activeCollectionId)
+    : null;
+  if (selectedFolder) {
+    setPageContext(selectedFolder.name);
     return;
   }
   if (!dialog?.open || !activeCategory) {
-    context?.setAttribute('hidden', '');
-    setPageContextSurface(false);
+    setPageContext();
     return;
   }
 
-  contextName.textContent = activeCategory.querySelector('.settings-category-text')?.textContent.trim() || '';
-  const pageColor = pageName ? getComputedStyle(pageName).color : 'var(--color-text-secondary)';
-  context.style.setProperty('--nav-page-context-color', pageColor);
-  context.removeAttribute('hidden');
-  setPageContextSurface(true);
+  setPageContext(activeCategory.querySelector('.settings-category-text')?.textContent.trim() || '');
 }
 
 /** Temporarily show a page-specific label in the navbar context slot. */
@@ -382,35 +494,66 @@ document.querySelectorAll('.settings-subcategory-button').forEach((button) => {
 
 /** Keep the tab-list orientation in sync with its responsive layout. */
 function updateSettingsCategoryOrientation() {
-  const categoryNavigation = $('.settings-category-container');
+  const categoryNavigation = $('.settings-category-layout');
   if (!categoryNavigation) return;
   categoryNavigation.setAttribute('aria-orientation', window.matchMedia('(max-width: 700px)').matches ? 'horizontal' : 'vertical');
 }
 updateSettingsCategoryOrientation();
 
-$('#nav-home-button')?.addEventListener('click', () => {
+$('.nav-home-button')?.addEventListener('click', () => {
   if (document.documentElement.dataset.dashboardSection === 'statistics') {
     setDashboardSection('library');
   }
-  setNavbarPage($('#nav-home-button'));
+  setNavbarPage($('.nav-home-button'));
   $('.app-content-container').scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-$('#nav-library-button')?.addEventListener('click', () => {
-  setDashboardSection('library');
-  setNavbarPage($('#nav-library-button'));
-  $('#library').scrollIntoView({ block: 'start', behavior: 'smooth' });
+$('.nav-library-button')?.addEventListener('click', () => {
+  showNavbarCollectionView('logged', $('.nav-library-button'));
 });
 
-$('#nav-folders-button')?.addEventListener('click', () => {
-  setDashboardSection('library');
-  setNavbarPage($('#nav-library-button'));
-  $('#library-folder-button')?.click();
+$('.nav-backlog-button')?.addEventListener('click', () => {
+  showNavbarCollectionView('watchlist', $('.nav-backlog-button'));
 });
 
-$('#nav-stats-button')?.addEventListener('click', () => {
+$('.nav-folders-button')?.addEventListener('click', () => {
+  setDashboardSection('library');
+  setNavbarPage($('.nav-folders-button'));
+});
+
+/** Change the sidebar collection view without relying on removed workspace controls. */
+function selectNavbarCollectionView(view) {
+  if (activeCollectionView === view && activeCollectionId === 'all') return;
+  activeCollectionView = view;
+  activeCollectionId = 'all';
+  collectionPage = 0;
+  updateViewTabs();
+  resetBannerTimer();
+  render();
+}
+
+/** Switch the sidebar collection view while preserving the app's vertical scroll position. */
+function showNavbarCollectionView(view, button) {
+  const scroller = $('.app-content-container');
+  const scrollTop = scroller?.scrollTop;
+  const snapType = scroller?.style.scrollSnapType ?? '';
+  if (scroller) scroller.style.scrollSnapType = 'none';
+
+  setDashboardSection('library');
+  selectNavbarCollectionView(view);
+  setNavbarPage(button);
+  if (scroller && scrollTop !== undefined) scroller.scrollTop = scrollTop;
+
+  requestAnimationFrame(() => {
+    if (!scroller || scrollTop === undefined) return;
+    scroller.scrollTop = scrollTop;
+    scroller.style.scrollSnapType = snapType;
+  });
+}
+
+$('.nav-stats-button')?.addEventListener('click', () => {
   setDashboardSection('statistics');
-  setNavbarPage($('#nav-stats-button'));
+  setNavbarPage($('.nav-stats-button'));
   $('#statistics-panel').scrollIntoView({ block: 'start', behavior: 'smooth' });
 });
 
@@ -430,17 +573,13 @@ function syncThemeToggle() {
   const isLight = document.documentElement.dataset.theme === 'light';
   const switchTo = isLight ? 'dark' : 'light';
   const label = `Switch to ${switchTo} mode`;
-  themeToggle.setAttribute('aria-pressed', String(isLight));
-  themeToggle.setAttribute('aria-label', label);
-  themeToggle.title = label;
-  themeToggle.innerHTML = appIconMarkup(switchTo === 'dark' ? 'dark_mode' : 'light_mode');
-  if (navThemeToggle) {
-    navThemeToggle.setAttribute('aria-pressed', String(isLight));
-    navThemeToggle.setAttribute('aria-label', label);
-    navThemeToggle.title = label;
-    navThemeToggle.innerHTML = appIconMarkup(switchTo === 'dark' ? 'dark_mode' : 'light_mode');
-  }
-  refreshAppIcons();
+  [themeToggle, navThemeToggle].forEach((button) => {
+    if (!button) return;
+    button.setAttribute('aria-pressed', String(isLight));
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    button.innerHTML = appIconMarkup(switchTo === 'dark' ? 'dark_mode' : 'light_mode');
+  });
 }
 
 syncThemeToggle();
@@ -451,7 +590,7 @@ function toggleAppTheme() {
   syncThemeToggle();
   syncAppearanceControls();
 }
-themeToggle.addEventListener('click', toggleAppTheme);
+themeToggle?.addEventListener('click', toggleAppTheme);
 navThemeToggle?.addEventListener('click', toggleAppTheme);
 systemTheme.addEventListener?.('change', syncThemeToggle);
 if (!systemTheme.addEventListener) systemTheme.addListener(syncThemeToggle);
@@ -483,12 +622,12 @@ function restoreLibraryScrollPosition() {
 
 // Banner controls
 
-$('#previous').addEventListener('click', (event) => {
+$('.overview-banner-controls-layout > .pagination-container > .pagination-prev-button').addEventListener('click', (event) => {
   event.stopPropagation();
   slideBanner(-1);
 });
 
-$('#next').addEventListener('click', (event) => {
+$('.overview-banner-controls-layout > .pagination-container > .pagination-next-button').addEventListener('click', (event) => {
   event.stopPropagation();
   slideBanner(1);
 });
@@ -500,19 +639,19 @@ function openBannerEntry() {
   if (entry) location.hash = `#entry/${activeCollectionView}/${encodeURIComponent(entry.id)}`;
 }
 
-$('#banner').addEventListener('click', (event) => {
+$('.overview-banner-container').addEventListener('click', (event) => {
   if (event.target.closest('button')) return;
   openBannerEntry();
 });
 
-$('#banner').addEventListener('keydown', (event) => {
+$('.overview-banner-container').addEventListener('keydown', (event) => {
   if (event.key !== 'Enter' && event.key !== ' ') return;
   if (event.target.closest('button')) return;
   event.preventDefault();
   openBannerEntry();
 });
 
-$('#banner').addEventListener('wheel', (event) => {
+$('.overview-banner-container').addEventListener('wheel', (event) => {
   if ($('.stats-page-button, .section-statistics').classList.contains('is-active')
     || event.target.closest('#statistics-timeline')) return;
   if (Math.abs(event.deltaX) <= Math.abs(event.deltaY) || bannerEntries().length < 2) return;
@@ -530,7 +669,7 @@ $('#banner').addEventListener('wheel', (event) => {
 
 /** Synchronizes banner rotation controls with the current setting. */
 function syncRotationControls() {
-  const button = $('#pause');
+  const button = $('.overview-banner-media-button');
   if (button) {
     button.dataset.rotationState = paused ? 'paused' : 'playing';
     const pauseIcon = button.querySelector('.pause-icon');
@@ -557,17 +696,17 @@ function setRotation(enabled) {
   syncRotationControls();
 }
 
-$('#pause').addEventListener('click', () => setRotation(paused));
+$('.overview-banner-media-button').addEventListener('click', () => setRotation(paused));
 
 /** Opens the settings dialog. */
 function openSettings() {
-  const dialog = $('#settings-dialog');
+  const dialog = $('.settings-container');
   if (!dialog) return;
   if (!dialog.open) {
-    navbarPageBeforeSettings = $('.navbar-vertical-layout .nav-button.is-active') || $('#nav-home-button');
+    navbarPageBeforeSettings = $('.navbar-vertical-layout .nav-button.is-active') || $('.nav-home-button');
     navbarPageContextBeforeSettings = navbarPageContextOverride;
     navbarPageContextOverride = '';
-    setNavbarPage($('#nav-settings-button'));
+    setNavbarPage($('.nav-settings-button'));
   }
   const activeCategory = document.querySelector('.settings-category-button.active')?.dataset.settingsCategory || 'general';
   setSettingsCategory(activeCategory);
@@ -581,24 +720,24 @@ function openSettings() {
     syncAppearanceControls();
     updateBackupSummary();
     updateOmdbCallCount();
-    $('#omdb-api-key').value = localStorage.getItem(OMDB_API_KEY) || '';
+    $('.omdb-api-key-input').value = localStorage.getItem(OMDB_API_KEY) || '';
   } catch (error) {
     console.error('Settings opened, but some values could not be refreshed.', error);
   }
 }
 
-/** Centers the settings dialog over the visible app-content frame. */
+/** Centers the settings dialog over the visible app content. */
 function centerSettingsDialog(dialog) {
-  const frame = $('.app-content-frame');
-  if (!frame) return;
-  const bounds = frame.getBoundingClientRect();
+  const content = $('.app-content-container');
+  if (!content) return;
+  const bounds = content.getBoundingClientRect();
   dialog.style.setProperty('--settings-anchor-x', `${bounds.left + bounds.width / 2}px`);
   dialog.style.setProperty('--settings-anchor-y', `${bounds.top + bounds.height / 2}px`);
 }
 
 window.addEventListener('resize', () => {
   updateSettingsCategoryOrientation();
-  const dialog = $('#settings-dialog');
+  const dialog = $('.settings-container');
   if (dialog?.open) centerSettingsDialog(dialog);
 });
 
@@ -630,6 +769,7 @@ function syncAppearanceControls() {
   $('#macos-box-borders').checked = macosBoxBordersEnabled;
   $('#colored-value-chips').checked = coloredValueChipsEnabled;
   $('#hide-main-value-chips').checked = hideMainValueChipsEnabled;
+  $('#hide-rating-chip-percentage').checked = hideRatingChipPercentage;
   $('#corner-radius-scale').value = cornerRadiusScale;
   $('#corner-radius-scale-value').value = `${cornerRadiusScale}%`;
   $('#glass-surface-opacity').value = glassSurfaceOpacity;
@@ -713,6 +853,14 @@ function changeHideMainValueChips(enabled) {
   document.documentElement.dataset.mainValueChips = enabled ? 'hidden' : 'visible';
 }
 $('#hide-main-value-chips').addEventListener('change', (event) => changeHideMainValueChips(event.currentTarget.checked));
+function changeHideRatingChipPercentage(hidden) {
+  hideRatingChipPercentage = hidden;
+  localStorage.setItem(HIDE_RATING_CHIP_PERCENTAGE_KEY, String(hidden));
+  render();
+  syncRatingChipPercentages();
+  syncAppearanceControls();
+}
+$('#hide-rating-chip-percentage').addEventListener('change', (event) => changeHideRatingChipPercentage(event.currentTarget.checked));
 function changeCornerRadiusScale(value) {
   cornerRadiusScale = Math.max(50, Math.min(150, Math.round(Number(value) / 5) * 5));
   document.documentElement.style.setProperty('--radius-scale', String(cornerRadiusScale / 100));
@@ -738,8 +886,8 @@ function changeGlassTransparency(enabled) {
   syncAppearanceControls();
 }
 $('#disable-glass-transparency').addEventListener('change', (event) => changeGlassTransparency(!event.currentTarget.checked));
-$('#save-omdb-key').addEventListener('click', () => {
-  const key = $('#omdb-api-key').value.trim();
+$('.omdb-save-key-button').addEventListener('click', () => {
+  const key = $('.omdb-api-key-input').value.trim();
   if (!key) {
     localStorage.removeItem(OMDB_API_KEY);
     $('#omdb-key-status').textContent = 'OMDb lookups are disabled. Previously saved details remain with their entries.';
@@ -749,7 +897,7 @@ $('#save-omdb-key').addEventListener('click', () => {
   localStorage.setItem(OMDB_API_KEY, key);
   $('#omdb-key-status').textContent = 'Key saved. OMDb is contacted only when you look up details for an entry.';
 });
-$('#detail-back').addEventListener('click', () => { location.hash = '#library'; });
+$('.dashboard-back-button').addEventListener('click', () => { location.hash = '#library'; });
 $('#detail-close').addEventListener('click', () => { location.hash = '#library'; });
 $('#detail-expand').addEventListener('click', () => {
   if (location.hash.startsWith('#entry/') && !location.hash.endsWith('/full')) {
@@ -780,7 +928,7 @@ document.addEventListener('wheel', (event) => {
   fullscreenBackSwipeTimer = setTimeout(() => { fullscreenBackSwipe = 0; }, 220);
   if (fullscreenBackSwipe <= -90) {
     fullscreenBackSwipe = 0;
-    $('#detail-back').click();
+    $('.dashboard-back-button').click();
   }
 }, { passive: true });
 $('#detail').addEventListener('click', (event) => {
@@ -812,30 +960,51 @@ document.addEventListener('keydown', (event) => {
 });
 // Filters and view tabs
 
-document.querySelectorAll('.type-switch-option, .media-type-filter').forEach((button) => {
+document.querySelectorAll('.workspace-type-menu-wrapper .menu-option, .media-type-filter').forEach((button) => {
   button.addEventListener('click', () => {
-    activeFilter = button.dataset.filter;
+    const selectedType = button.dataset.filter;
+    if (selectedType === 'all') activeFilters = [...workspaceMediaTypes];
+    else if (activeFilters.includes(selectedType)) {
+      if (activeFilters.length === 1) return;
+      activeFilters = activeFilters.filter((type) => type !== selectedType);
+    } else {
+      activeFilters = [...activeFilters, selectedType];
+    }
     collectionPage = 0;
-
-    document.querySelectorAll('.type-switch-option, .media-type-filter').forEach((item) => {
-      item.classList.toggle('active', item === button);
-    });
-
-    render();
+    const typeWrapper = button.closest('.workspace-type-menu-wrapper');
+    if (typeWrapper) {
+      hasPendingWorkspaceMenuChanges = true;
+      updateCollectionTools(activeCollectionView === 'watchlist');
+    } else {
+      render();
+    }
+    const typeMenu = typeWrapper?.querySelector('.menu-container');
+    if (typeMenu) {
+      typeMenu.hidden = false;
+      typeWrapper.classList.add('is-open');
+      typeWrapper.querySelector(':scope > .workspace-type-menu-button')
+        ?.setAttribute('aria-expanded', 'true');
+    }
   });
 });
 
-document.querySelectorAll('.library-view-switcher, .collection-view-switcher, .workspace-type-expandable').forEach((group) => {
-  group.addEventListener('pointerleave', () => {
-    if (group.contains(document.activeElement)) document.activeElement.blur();
-  });
-});
+const librarySearch = $('.library-search-container > .search-input');
+const librarySearchToggle = $('.library-search-container > .search-button > .icon-button');
 
-const librarySearch = $('#library-search');
-const librarySearchBox = $('.library-search');
-const librarySearchToggle = $('#library-search-toggle');
-const librarySearchClear = $('#library-search-clear');
-const isReworkedSearch = document.documentElement.dataset.cssReworkPreview === 'true';
+/** Switches the search action between focusing the field and clearing its query. */
+function updateLibrarySearchAction() {
+  const hasQuery = librarySearch.value.length > 0;
+  const icon = librarySearchToggle.querySelector('[data-icon]');
+  const iconName = hasQuery ? 'close' : 'search';
+  if (icon.dataset.icon !== iconName) {
+    icon.dataset.icon = iconName;
+    refreshAppIcons();
+  }
+  librarySearchToggle.setAttribute('aria-label', hasQuery ? 'Clear search' : 'Search');
+  librarySearchToggle.title = hasQuery ? 'Clear search' : 'Search';
+}
+
+updateLibrarySearchAction();
 
 document.addEventListener('keydown', (event) => {
   if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'l'
@@ -844,73 +1013,30 @@ document.addEventListener('keydown', (event) => {
 
   event.preventDefault();
   event.stopPropagation();
-  librarySearchBox.classList.remove('is-escape-collapsed');
-  librarySearchBox.classList.add('is-keyboard-expanded');
   librarySearch.focus();
-  updateLibrarySearchExpandedState();
 }, true);
 
-/** Keeps the search control expanded while it contains a query or focus. */
-function updateLibrarySearchExpandedState() {
-  const hasQuery = librarySearch.value.length > 0;
-  librarySearchBox.classList.toggle('has-query', hasQuery);
-  const expanded = hasQuery || librarySearchBox.classList.contains('is-keyboard-expanded')
-    || (!librarySearchBox.classList.contains('is-escape-collapsed') && librarySearchBox.matches(':focus-within'));
-  if (isReworkedSearch) librarySearchToggle.classList.toggle('level-4-styling', expanded);
-  librarySearchClear.hidden = isReworkedSearch ? !expanded : !hasQuery;
-  librarySearchToggle.setAttribute('aria-expanded', String(expanded));
-  librarySearchToggle.setAttribute('aria-label', 'Focus search field');
-  librarySearchToggle.title = 'Search titles';
-}
-
-/** Clears the reworked search and returns its control to the compact state. */
-function closeReworkedSearch() {
-  librarySearch.value = '';
-  librarySearchBox.classList.remove('is-keyboard-expanded');
-  librarySearchBox.classList.add('is-escape-collapsed');
-  librarySearch.blur();
-  librarySearchClear.blur();
-  librarySearch.dispatchEvent(new Event('input', { bubbles: true }));
-  updateLibrarySearchExpandedState();
-}
-
 librarySearchToggle.addEventListener('click', () => {
-  librarySearchBox.classList.remove('is-escape-collapsed');
-  librarySearchBox.classList.add('is-keyboard-expanded');
+  if (librarySearch.value) {
+    librarySearch.value = '';
+    librarySearch.dispatchEvent(new Event('input', { bubbles: true }));
+  }
   librarySearch.focus();
-  updateLibrarySearchExpandedState();
-});
-librarySearchBox.addEventListener('focusin', updateLibrarySearchExpandedState);
-librarySearchBox.addEventListener('focusout', () => {
-  librarySearchBox.classList.remove('is-keyboard-expanded');
-  window.setTimeout(updateLibrarySearchExpandedState);
 });
 librarySearch.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape') return;
   event.preventDefault();
-  if (isReworkedSearch) {
-    closeReworkedSearch();
-    return;
+  if (librarySearch.value) {
+    librarySearch.value = '';
+    librarySearch.dispatchEvent(new Event('input', { bubbles: true }));
   }
-  librarySearchBox.classList.add('is-escape-collapsed');
   librarySearch.blur();
-  updateLibrarySearchExpandedState();
 });
 
 librarySearch.addEventListener('input', () => {
-  updateLibrarySearchExpandedState();
+  updateLibrarySearchAction();
   collectionPage = 0;
   render();
-});
-
-librarySearchClear.addEventListener('click', () => {
-  if (isReworkedSearch) {
-    closeReworkedSearch();
-    return;
-  }
-  librarySearch.value = '';
-  librarySearch.dispatchEvent(new Event('input', { bubbles: true }));
-  librarySearch.focus();
 });
 
 $('#add-collection').addEventListener('click', createCollection);
@@ -922,12 +1048,13 @@ const scheduleCollectionResize = () => {
 window.addEventListener('resize', scheduleCollectionResize);
 if ('ResizeObserver' in window) {
   const collectionResizeObserver = new ResizeObserver(scheduleCollectionResize);
-  collectionResizeObserver.observe($('#collection'));
+  collectionResizeObserver.observe($('.workspace-content-layout'));
 }
-$('#collection-page-previous').addEventListener('click', () => changeCollectionPage(-1));
-$('#collection-page-next').addEventListener('click', () => changeCollectionPage(1));
-$('#watched-year-filter').addEventListener('change', (event) => {
-  watchedYearFilter = [...event.currentTarget.selectedOptions].map((option) => option.value);
+$('.workspace-pagination-container > .pagination-container > .pagination-prev-button').addEventListener('click', () => changeCollectionPage(-1));
+$('.workspace-pagination-container > .pagination-container > .pagination-next-button').addEventListener('click', () => changeCollectionPage(1));
+$('#release-year-filter').addEventListener('change', (event) => {
+  if (event.currentTarget.closest('.workspace-year-menu-wrapper')) return;
+  releaseYearFilter = [...event.currentTarget.selectedOptions].map((option) => option.value);
   collectionPage = 0;
   renderCollection();
 });
@@ -937,19 +1064,19 @@ $('#rating-filter')?.addEventListener('change', (event) => {
   renderCollection();
 });
 $('#collection-sort').addEventListener('change', (event) => {
+  if (event.currentTarget.closest('.workspace-sort-menu-wrapper')) return;
   collectionSort = event.currentTarget.value;
   collectionPage = 0;
   renderCollection();
 });
-$('#reset-collection-filter-sort').addEventListener('click', () => {
-  watchedYearFilter = [];
-  ratingFilter = [];
+$('.workspace-reset-button').addEventListener('click', () => {
+  releaseYearFilter = [];
+  ratingFilter = [100, 0];
   priorityFilter = [];
   collectionSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
-  activeFilter = 'all';
+  activeFilters = [...workspaceMediaTypes];
   collectionPage = 0;
-  $('#library-search').value = '';
-  document.querySelectorAll('.type-switch-option, .media-type-filter').forEach((button) => button.classList.toggle('active', button.dataset.filter === 'all'));
+  librarySearch.value = '';
   render();
 });
 window.addEventListener('hashchange', (event) => {
@@ -968,7 +1095,7 @@ window.addEventListener('hashchange', (event) => {
   else if (wasViewingEntry && (!isViewingEntry || wasFullscreen)) restoreLibraryScrollPosition();
 });
 
-document.querySelectorAll('#collection-source-controls .library-view-switcher > [data-view], #collection-source-controls .collection-view-switcher > [data-view]').forEach((button) => {
+document.querySelectorAll('.workspace-controls-container :is(.library-view-switcher, .collection-view-switcher) > [data-view]').forEach((button) => {
   button.addEventListener('click', () => {
     const appScroller = $('.app-content-container');
     const preservedScrollTop = appScroller?.scrollTop;
@@ -984,8 +1111,11 @@ document.querySelectorAll('#collection-source-controls .library-view-switcher > 
     if (activeCollectionView === 'logged') activeCollectionId = 'all';
     collectionPage = 0;
     updateViewTabs();
+    if (document.documentElement.dataset.dashboardSection !== 'statistics') {
+      setNavbarPage(activeCollectionView === 'watchlist' ? $('.nav-backlog-button') : $('.nav-library-button'));
+    }
     resetBannerTimer();
-    $('#banner').classList.remove('is-sliding');
+    $('.overview-banner-container').classList.remove('is-sliding');
     render();
     if (appScroller && preservedScrollTop !== undefined) appScroller.scrollTop = preservedScrollTop;
     requestAnimationFrame(() => {
@@ -993,8 +1123,8 @@ document.querySelectorAll('#collection-source-controls .library-view-switcher > 
         appScroller.scrollTop = preservedScrollTop;
         appScroller.style.scrollSnapType = previousSnapType;
       }
-      $('#banner').classList.add('is-sliding');
-      setTimeout(() => $('#banner').classList.remove('is-sliding'), 600);
+      $('.overview-banner-container').classList.add('is-sliding');
+      setTimeout(() => $('.overview-banner-container').classList.remove('is-sliding'), 600);
     });
   });
 });
@@ -1007,7 +1137,7 @@ let bannerTimer;
 function resetBannerTimer() {
   clearTimeout(bannerTimer);
   bannerTimer = setTimeout(() => {
-    if (!paused && !document.hidden && !$('#banner').hidden && bannerEntries().length > 1) {
+    if (!paused && !document.hidden && !$('.overview-banner-container').hidden && bannerEntries().length > 1) {
       slideBanner(1);
     }
     resetBannerTimer();

@@ -6,7 +6,6 @@
 function render() {
   const isReworkedView = document.documentElement.dataset.cssReworkPreview === 'true';
   if (!isReworkedView) renderBanner();
-  renderStatsbar();
   renderCollection();
   if (!$('#statistics-panel').hidden) renderStatisticsPanel();
   renderDetail();

@@ -47,7 +47,7 @@
 }
 
 /* Fit the full formatted date without shrinking the other stat values. */
-#stat-latest-log {
+.statsbar-latest-log {
   font-size: 14px;
   letter-spacing: 0;
 }

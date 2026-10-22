@@ -652,15 +652,15 @@ img.app-icon {
 }
 
 :root[data-icon-style="black"][data-theme="dark"] img.app-icon,
-:root[data-theme="dark"] img.app-icon[data-app-icon="play"],
-:root[data-theme="dark"] img.app-icon[data-app-icon="pause"],
-:root[data-theme="dark"] img.app-icon[data-app-icon="arrow-left"],
-:root[data-theme="dark"] img.app-icon[data-app-icon="arrow-right"] {
+:root[data-theme="dark"] img.app-icon[data-icon="play"],
+:root[data-theme="dark"] img.app-icon[data-icon="pause"],
+:root[data-theme="dark"] img.app-icon[data-icon="arrow-left"],
+:root[data-theme="dark"] img.app-icon[data-icon="arrow-right"] {
   filter: invert(1);
 }
 
 .app-icon[hidden] { display: none; }
-span.app-icon[data-app-icon] { display: grid; place-items: center; font-size: 18px; line-height: 1; }
+span.app-icon[data-icon] { display: grid; place-items: center; font-size: 18px; line-height: 1; }
 
 /* The save glyph sits in a smaller inset control, so reduce only its artwork. */
 :root[data-icon-style="original"] .storage-save-indicator svg.app-icon {

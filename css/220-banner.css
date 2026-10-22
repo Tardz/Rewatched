@@ -136,7 +136,6 @@
   text-shadow: 0 0 14px var(--color-title-glow);
 }
 
-/* Base class: .app-text */
 /* Show the director credit as secondary text without chip styling. */
 .banner-director {
   max-width: 100%;

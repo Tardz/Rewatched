@@ -3,16 +3,90 @@
 /* SECTION Text buttons */
 /* Set the common shape and typography for app action buttons. */
 .text-button {
-  border: 0;                               /* Remove browser-default button borders. */
-  padding: 11px 17px;                      /* Set comfortable click-target spacing. */
-  font-size: 13px;                         /* Keep action labels compact. */
-  font-weight: var(--font-weight-app); /* Make action labels easy to scan. */
+  padding: 11px 17px;
+  font-size: 13px;
+  font-weight: var(--font-weight-app);
+}
+
+/* Base class: .text-button; align a button's icon and label as one control. */
+.icon-text-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: calc(var(--spacing-level-2) + 4px);
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-secondary);
+  text-align: left;
+  transition: color 140ms ease;
+  cursor: pointer;
 }
 
 /* Supply a default button radius without overriding an assigned surface level. */
 :where(.text-button) {
   border-radius: var(--radius-button);
 }
+
+/* !SECTION */
+
+/* SECTION Shared search control */
+/* Base class: .icon-button; size the reusable search parts independently. */
+/* Keep the wrapper and nested icon button at the same compact size. */
+.search-button {
+  display: flex;
+  flex: 0 0 28px;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.search-button > .icon-button {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  min-height: 0;
+  padding: 0;
+  place-items: center;
+}
+
+.search-button > .icon-button:not(.level-3-styling):not(.level-4-styling) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.search-button > .icon-button > .icon {
+  width: calc(var(--size-icon-filled) - 6px);
+  height: calc(var(--size-icon-filled) - 6px);
+}
+
+/* Provide the shared search-field typography and dimensions. */
+.search-input {
+  display: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 28px;
+  margin: 0;
+  padding: 2px 1px;
+  appearance: none;
+  outline: 0;
+  color: var(--color-text-secondary);
+  font: var(--font-weight-app) 12px/1 var(--font-family-app);
+}
+
+.search-input:not(.level-1-styling):not(.level-2-styling):not(.level-3-styling):not(.level-4-styling):not(.level-5-styling) {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.search-input::placeholder { color: var(--color-text-secondary); opacity: 1; }
 
 /* !SECTION */
 
@@ -44,5 +118,97 @@
 
 /* Keep icon buttons legible when they use the deepest inset surface. */
 .icon-button.level-4-styling { color: var(--color-text-primary); }
+
+/* Shared pagination layout; let each context choose its own surface level and spacing. */
+.pagination-container {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-secondary);
+}
+
+.pagination-container.level-2-styling:is(:hover, :has(> button:focus-visible)) {
+  border-color: var(--color-border-subtle);
+  background: var(--color-surface-level-2);
+  box-shadow: var(--shadow-surface-level-2);
+}
+
+.pagination-container.level-3-styling:is(:hover, :has(> button:focus-visible)) {
+  border-color: var(--color-border-subtle);
+  background: var(--color-surface-level-3);
+  box-shadow: var(--shadow-surface-level-3);
+}
+
+/* Share unboxed, reveal-on-hover arrows across pagination contexts. */
+.pagination-prev-button,
+.pagination-next-button {
+  --pagination-arrow-width: 0px;
+  --pagination-arrow-expanded-width: 20px;
+  --pagination-arrow-height: 30px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: 0 0 var(--pagination-arrow-width);
+  width: var(--pagination-arrow-width);
+  height: var(--pagination-arrow-height);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  appearance: none;
+  color: var(--color-text-secondary);
+  --app-icon-state-color: var(--color-text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pagination-container > :is(.pagination-prev-button, .pagination-next-button):focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* Base class: .pagination-container; fill its height and center the pagination label. */
+.pagination-text-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  margin-block: -1px;
+  gap: 2px;
+  padding-inline: 8px;
+  border-radius: var(--radius-control-small);
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Let a surfaced pagination label cover the parent border at rest, like the navbar page panel. */
+.pagination-text-container.level-2-styling {
+  margin-inline: -1px;
+}
+
+.pagination-text-container.level-3-styling {
+  border-radius: var(--radius-surface-level-3);
+}
+
+/* Keep a compact separator legible between pagination values. */
+.pagination-text-separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  flex: 0 0 0.8em;
+  width: 0.8em;
+  font-size: 0.8em;
+  font-weight: 1000;
+  line-height: 1;
+  transform: translateY(-0.5px);
+}
 
 /* !SECTION */

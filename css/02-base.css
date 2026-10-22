@@ -35,30 +35,13 @@ body {
     radial-gradient(ellipse at 16% 0%, var(--app-poster-color-one, var(--color-poster-fallback-one)) 0%, transparent 48%),
     radial-gradient(ellipse at 88% 12%, var(--app-poster-color-two, var(--color-poster-fallback-two)) 0%, transparent 40%);
   content: "";
-  filter: blur(var(--blur-poster-wash)) saturate(var(--saturation-app-poster-wash));
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 900ms ease;
-}
-
-/* Keep the stronger poster wash contained by the rounded app surface. */
-.app-content-frame::before {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  clip-path: inset(0 round var(--radius-surface-level-2));
-  background:
-    radial-gradient(ellipse at 16% 0%, var(--app-poster-color-one, var(--color-poster-fallback-one)) 0%, transparent 48%),
-    radial-gradient(ellipse at 88% 12%, var(--app-poster-color-two, var(--color-poster-fallback-two)) 0%, transparent 40%);
-  content: "";
-  filter: blur(var(--blur-poster-wash)) saturate(var(--saturation-app-poster-wash));
   opacity: 0;
   pointer-events: none;
   transition: opacity 900ms ease;
 }
 
 .app-container,
-.app-content-frame {
+.app-content-container {
   position: relative;
   isolation: isolate;
 }
@@ -67,27 +50,25 @@ body {
   opacity: calc(var(--strength-effective-poster-background) * 0.25);
 }
 
-:root[data-poster-background="on"] .app-content-frame::before {
-  opacity: var(--strength-effective-poster-background);
+:root[data-poster-background="on"] .app-content-container {
+  background-image:
+    radial-gradient(
+      ellipse at 16% 0%,
+      color-mix(in srgb, var(--app-poster-color-one, var(--color-poster-fallback-one)) var(--strength-effective-poster-background), transparent) 0%,
+      transparent 48%
+    ),
+    radial-gradient(
+      ellipse at 88% 12%,
+      color-mix(in srgb, var(--app-poster-color-two, var(--color-poster-fallback-two)) var(--strength-effective-poster-background), transparent) 0%,
+      transparent 40%
+    );
 }
 
 /* !SECTION */
 
 /* SECTION Shared app elements */
-/* Share the outer-component gap while each layout owns its own grid or flex rules. */
-.outer-layout {
-  gap: var(--spacing-level-0);
-}
-
-/* Reusable app text; component classes may override size, color, and weight. */
-.app-text {
-  font-family: var(--font-family-app);
-  font-weight: var(--font-weight-app);
-  color: var(--color-text-primary);
-}
-
 /* Shared brand wordmark text that can shrink cleanly within its parent. */
-.brand-name {
+.brand-text {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
