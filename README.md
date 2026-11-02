@@ -4,9 +4,9 @@ A watch journal for films and shows. Log ratings and rewatches, organize your li
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/previews/app-preview-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="assets/previews/app-preview-light.png">
-    <img src="assets/previews/app-preview-dark.png" alt="ReWatched home screen" width="100%">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/previews/app-preview-dark.jpg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/previews/app-preview-light.jpg">
+    <img src="assets/previews/app-preview-dark.jpg" alt="ReWatched home screen" width="100%">
   </picture>
 </p>
 
