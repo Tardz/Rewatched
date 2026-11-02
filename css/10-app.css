@@ -3,38 +3,47 @@
 /* ANCHOR App container */
 /* Define the app-wide grid that contains navigation and the scrollable page. */
 .app-container {
-  --navbar-sidebar-width: 149px;
-  --navbar-topbar-height: 70px;
+  --navbar-group-width: 61px; /* Keep navigation groups a fixed width as the outer inset changes. */
+  --navbar-sidebar-width: calc(var(--navbar-group-width) + var(--app-shell-outer-inset-inline));
+  --app-content-viewport-height: calc(100dvh - var(--navbar-topbar-height) - var(--app-layout-gap) - var(--app-shell-outer-inset-block));
+  --app-shell-overscan: 48px; /* Push the shell edge beyond the viewport and its outer shadow. */
   --nav-horizontal-control-size: 48px;
+  --navbar-topbar-height: calc(var(--nav-horizontal-control-size) + var(--app-shell-outer-inset-block));
   --nav-icon-container-size: 32px;
   --nav-inner-box-size: 40px;
+  --nav-menu-content-inset: max(
+    0px,
+    calc((var(--nav-horizontal-control-size) - 2px - var(--nav-icon-container-size)) / 2)
+  );
+  --nav-menu-inline-inset: 7.5px;
   display: grid;
   grid-template-columns:
     var(--navbar-sidebar-width)
-    var(--navbar-app-gap)
+    var(--app-layout-gap)
     minmax(0, 1fr)
-    var(--padding-inline-layout-content);
+    var(--app-shell-outer-inset-inline);
   grid-template-rows:
     var(--navbar-topbar-height)
-    2px
+    var(--app-layout-gap)
     minmax(0, 1fr)
-    var(--spacing-app-shell-inset);
+    var(--app-shell-outer-inset-block);
   align-items: stretch;
   gap: 0;
-  width: 100%;
+  box-sizing: border-box;
+  width: calc(100% + 2 * var(--app-shell-overscan));
   max-width: none;
-  height: calc(100vh + 1px);
-  height: calc(100dvh + 1px);
+  height: calc(100vh + 2 * var(--app-shell-overscan));
+  height: calc(100dvh + 2 * var(--app-shell-overscan));
   min-height: 0;
-  margin: -1px 0 0;
-  padding: 0;
+  margin: calc(-1 * var(--app-shell-overscan));
+  padding: var(--app-shell-overscan);
   overflow: hidden;
 }
 
 /* Keep the app shell square while its level-one class supplies the surface. */
 .app-container.level-1-styling {
   border-radius: 0;
-  border-top-color: transparent;
+  border-color: transparent;
   box-shadow:
     0 12px 28px var(--shadow-color-black-31),
     0 3px 8px var(--shadow-color-black-medium);
@@ -42,10 +51,12 @@
 
 /* Place and scroll the rounded app content below the toolbar and beside the sidebar. */
 .app-content-container {
+  --app-content-inset-block: calc(var(--app-shell-outer-inset-block) + 6px);
+  --app-content-inset-inline: calc(var(--app-shell-outer-inset-inline) + 6px);
   --app-content-inset-shadow:
-    inset 0 12px 18px -8px var(--shadow-color-black-strong),
-    inset 9px 0 16px -10px var(--shadow-color-black-31),
-    inset 0 -8px 14px -10px var(--color-border-highlight);
+    inset 0 8px 14px -7px color-mix(in srgb, var(--shadow-color-black-strong) 62%, transparent),
+    inset 6px 0 12px -8px color-mix(in srgb, var(--shadow-color-black-31) 58%, transparent),
+    inset 0 -6px 10px -8px color-mix(in srgb, var(--color-border-highlight) 62%, transparent);
   grid-column: 3;
   grid-row: 3;
   width: 100%;
@@ -57,11 +68,56 @@
   overscroll-behavior: contain;
   scroll-snap-type: y proximity;
   scroll-padding-block-start: 0;
-  padding: var(--padding-block-layout-content) var(--padding-inline-layout-content) calc(var(--spacing-level-1) + var(--spacing-level-1) + 4px);
-  border-radius: var(--radius-surface-level-2);
+  padding: 0;
+  border-radius: var(--radius-app-content);
   box-shadow: var(--app-content-inset-shadow);
   scrollbar-color: var(--color-border-strong) transparent;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+}
+
+/* Keep page insets in the content layout, not on its rounded scrolling surface. */
+.app-content-layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  min-height: 100%;
+}
+
+/* Draw the recessed edge above the backdrop and content without intercepting input. */
+.app-content-edge-overlay {
+  position: sticky;
+  z-index: 2;
+  top: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.app-content-edge-overlay::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--app-content-viewport-height);
+  border-radius: var(--radius-app-content);
+  box-shadow: var(--app-content-inset-shadow);
+  pointer-events: none;
+  content: "";
+}
+
+/* Keep workspace-only views viewport-filling while reserving room for elevated card shadows. */
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"]) .app-content-layout {
+  height: 100%;
+  min-height: 0;
+}
+
+/* Keep standalone content components inset while the app scroll frame stays flush. */
+.app-content-layout > :is(#statistics-panel, #detail) {
+  margin: var(--app-layout-gap);
 }
 
 /* Inset the native WebKit scrollbar track so its ends stay inside the rounded surface. */
@@ -78,6 +134,102 @@
   border-radius: 999px;
   background-color: var(--color-border-strong);
   background-clip: padding-box;
+}
+
+/* ANCHOR Collection page surfaces */
+:root {
+  --app-page-backdrop-color: transparent;
+}
+
+/* Scale workspace-page accent washes with the Appearance backdrop-strength setting. */
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"]) {
+  --app-page-shell-backdrop-strength: calc(var(--strength-effective-poster-background) * 0.2);
+  --app-page-content-backdrop-strength: calc(var(--strength-effective-poster-background) * 0.27);
+}
+
+/* Tint non-home page backdrops with the matching navigation accent. */
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"], [data-app-page="statistics"]) .app-container::after,
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"], [data-app-page="statistics"]) .app-content-container::after {
+  opacity: 1;
+}
+
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"], [data-app-page="statistics"]) .app-container::before {
+  opacity: 0;
+}
+
+/* Keep both shell gradient layers mounted so page changes crossfade. */
+.app-container::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 480ms ease;
+  background: radial-gradient(
+    ellipse at 16% 0%,
+    color-mix(in srgb, var(--app-page-backdrop-render-color, var(--app-page-backdrop-color)) var(--app-page-shell-backdrop-strength, 16%), transparent),
+    transparent 72%
+  );
+}
+
+:root[data-app-page="logged"] { --app-page-backdrop-color: var(--color-icon-logged); }
+:root[data-app-page="backlogged"] { --app-page-backdrop-color: var(--color-backlog); }
+:root[data-app-page="folders"] { --app-page-backdrop-color: var(--color-icon-folder); }
+:root[data-app-page="statistics"] { --app-page-backdrop-color: var(--color-icon-stats); }
+
+/* Keep the page accent visible on the content surface, not only behind the shell. */
+.app-content-container::after {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+  border-radius: inherit;
+  box-shadow: var(--app-content-inset-shadow);
+  transition: opacity 480ms ease;
+  background: radial-gradient(
+    ellipse at 16% 0%,
+    color-mix(in srgb, var(--app-page-backdrop-render-color, var(--app-page-backdrop-color)) var(--app-page-content-backdrop-strength, 22%), transparent),
+    transparent 72%
+  );
+}
+
+:root[data-reduce-animations="on"] :is(.app-container::before, .app-container::after, .app-content-container::before, .app-content-container::after) {
+  transition: none;
+}
+
+/* Keep workspace-only views free of the workspace panel surface. */
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"]) .workspace-container {
+  --workspace-content-inline-inset: var(--app-content-inset-inline);
+  flex: 1 1 0;
+  height: 0;
+  min-height: 0;
+  margin-block: var(--app-content-inset-block);
+  margin-inline: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"]) .workspace-content-layout {
+  --workspace-content-shadow-clearance: calc(var(--app-layout-gap) + var(--spacing-level-2));
+  flex: 1 1 0;
+  height: 0;
+  min-height: 0;
+  --workspace-entry-rows: 5;
+}
+
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"]) .workspace-content-page {
+  grid-template-rows: repeat(var(--workspace-entry-rows), minmax(var(--workspace-entry-row-min-height), auto));
+  align-content: start;
+}
+
+:root:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"]) .workspace-container > .workspace-empty-state {
+  margin-inline: 0;
 }
 
 /* !SECTION */

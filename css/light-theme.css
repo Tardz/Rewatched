@@ -25,7 +25,6 @@
   --color-surface-level-4: #f7f9fb;
   --color-surface-level-5: #ffffff;
   --color-surface-detail: #f7f9fb;
-  --color-surface-accent: #dcecf6;
   --color-surface-hover: #e8edf2;
   --color-surface-deep: #f1f4f8;
 
@@ -50,7 +49,6 @@
   --color-button-primary: #df504d;
   --color-button-primary-hover: #c94142;
   --color-text-on-primary: #ffffff;
-  --color-storage-saved-border: #6ca58e;
   --color-rating-neutral: #8a96a6;
   --color-title-outline: #202733cc;
   --color-title-glow: #6485a54d;
@@ -60,7 +58,6 @@
   /* Lighten the poster wash while retaining the shared strength control. */
   --color-poster-fallback-one: #dce5e9;
   --color-poster-fallback-two: #e2e1e7;
-  --tint-white-poster-gradient: 14%;
   --factor-theme-poster-background: 1;
   --strength-overview-banner-poster-one: 32%;
   --strength-overview-banner-poster-two: 24%;

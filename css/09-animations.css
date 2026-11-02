@@ -1,4 +1,8 @@
-/* State-driven motion shared by the reworked banner and workspace-container. */
+/*
+  Animation CSS conventions:
+  - Keep named keyframes and the state selectors that trigger or suppress them here.
+  - Keep transitions beside the component rules they animate, not in this file.
+*/
 
 /* SECTION Overview banner slide */
 /* Position the outgoing banner copy over the incoming banner during a slide. */
@@ -36,10 +40,146 @@
 }
 /* !SECTION */
 
+/* SECTION Expanding menu reveal */
+/* The expanding surface itself clips/reveals its options, so children stay in sync with its size transition. */
+
+/* Both expanding menus use their surface size transition to reveal the option list. */
+.nav-type-menu.is-open > .menu-content-layout:not([hidden]) {
+  animation: none;
+}
+
+/* All expanding menus reveal rows with the type-menu cadence; the folder trigger stays anchored. */
+.menu-expanding-container.is-open > .menu-content-layout > .menu-option:not([hidden], .nav-folders-button) {
+  animation: type-option-enter calc(75ms * var(--nav-menu-animation-scale)) ease-out var(--menu-option-open-delay, 0ms) both;
+}
+
+/* Workspace filter options use the same diagonal scale-in wave as workspace entries. */
+.workspace-filter-layout > .menu-expanding-container.is-open > .menu-content-layout > .menu-option:not([hidden]) {
+  animation: workspace-card-enter calc(800ms * var(--nav-menu-animation-scale)) cubic-bezier(.34, 1.12, .64, 1)
+    calc(var(--menu-option-open-delay, 0ms) * var(--nav-menu-animation-scale)) both;
+}
+
+.menu-expanding-container.is-closing > .menu-content-layout > .menu-option:not([hidden]),
+.nav-folder-menu.is-closing .menu-option.is-closing-visible {
+  animation: type-option-exit calc(85ms * var(--nav-menu-animation-scale)) ease-in var(--menu-option-close-delay, 0ms) both;
+}
+
+.nav-type-menu.is-selecting-option > button > :is(.icon-button, .menu-option-label) {
+  animation: type-option-exit calc(100ms * var(--nav-menu-animation-scale)) ease-in
+    var(--nav-type-trigger-close-delay, 0ms) both;
+}
+
+.nav-type-menu.is-selecting-option .menu-option.is-selection-source {
+  visibility: hidden;
+  animation: none;
+}
+
+@keyframes type-option-enter {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Share the type-menu stretch-and-settle motion across expanding menu surfaces. */
+.menu-expanding-container.is-open {
+  transform-origin: top left;
+  animation: menu-expanding-open-stretch calc(var(--nav-menu-bounce-duration) * var(--nav-menu-animation-scale))
+    cubic-bezier(.2, .9, .3, 1)
+    var(--menu-expanding-duration) both;
+}
+
+@keyframes menu-expanding-open-stretch {
+  0%, 100% { transform: scale(1); }
+  62% {
+    transform: scale(
+      var(--menu-bounce-scale-x, 1.02),
+      var(--menu-bounce-scale-y, 1.025)
+    );
+  }
+}
+
+@keyframes type-option-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-5px); }
+}
+
+/* Shared close squeeze for expanding menus; folders squeeze their trigger separately. */
+.menu-expanding-container.is-squeezing:not(.nav-folder-menu) {
+  transform-origin: top left;
+  animation: menu-expanding-close-squeeze calc(450ms * var(--nav-menu-animation-scale))
+    cubic-bezier(.2, .9, .3, 1)
+    var(--menu-expanding-close-duration) both;
+}
+
+/* Squeeze the folder trigger only after its expanding menu has fully collapsed. */
+.nav-folder-menu.is-squeezing > .menu-content-layout > .nav-folders-button > .icon-button {
+  transform-origin: center;
+  animation: folder-trigger-close-squeeze calc(450ms * var(--nav-menu-animation-scale))
+    cubic-bezier(.2, .9, .3, 1) both;
+}
+
+@keyframes menu-expanding-close-squeeze {
+  0%, 100% { transform: scale(1); }
+  62% {
+    transform: scale(
+      var(--menu-close-squeeze-x, .98),
+      var(--menu-close-squeeze-y, .976)
+    );
+  }
+}
+
+@keyframes folder-trigger-close-squeeze {
+  0%, 100% { transform: scale(1); }
+  62% { transform: scale(.95, .94); }
+}
+
+:root[data-reduce-animations="on"] .menu-expanding-container.is-open > .menu-content-layout:not([hidden]) {
+  animation: none;
+}
+
+:root[data-reduce-animations="on"] .menu-expanding-container .menu-option:not([hidden]) {
+  animation: none;
+}
+
+:root[data-reduce-animations="on"] .workspace-filter-layout > .menu-expanding-container.is-open > .menu-content-layout > .menu-option:not([hidden]) {
+  animation: none;
+}
+
+:root[data-reduce-animations="on"] .menu-expanding-container.is-open {
+  animation: none;
+}
+
+:root[data-reduce-animations="on"] .menu-expanding-container.is-squeezing:not(.nav-folder-menu) {
+  animation: none;
+}
+
+:root[data-reduce-animations="on"] .nav-folder-menu.is-squeezing > .menu-content-layout > .nav-folders-button > .icon-button {
+  animation: none;
+}
+/* !SECTION */
+
 /* SECTION Navbar context reveal */
 /* Expand or contract the page-name panel as its context appears or leaves. */
 .nav-pagination-container:is(.is-revealing, .is-concealing) {
-  animation: nav-context-reveal 320ms cubic-bezier(.22, 1, .36, 1) both;
+  animation: nav-context-reveal var(--nav-context-duration, var(--ui-expand-duration)) cubic-bezier(.22, 1, .36, 1) var(--nav-context-delay, 0ms) both;
+}
+
+/* Reveal only the portion of the context label beyond the page-name surface. */
+.nav-pagination-container.is-revealing .nav-context-text-container {
+  animation: nav-context-text-container-reveal var(--ui-expand-duration) cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.nav-pagination-container.is-concealing .nav-context-text-container {
+  animation: nav-context-text-container-conceal var(--nav-context-duration, var(--ui-expand-duration)) cubic-bezier(.22, 1, .36, 1) var(--nav-context-delay, 0ms) both;
+}
+
+@keyframes nav-context-text-container-reveal {
+  from { max-width: 0; }
+  to { max-width: var(--nav-context-text-container-width); }
+}
+
+@keyframes nav-context-text-container-conceal {
+  from { max-width: var(--nav-context-text-container-width); }
+  to { max-width: 0; }
 }
 
 @keyframes nav-context-reveal {
@@ -47,87 +187,163 @@
   to { width: var(--nav-context-end-width); }
 }
 
-/* Unfold available history arrows around the page label on hover or keyboard focus. */
-.nav-pagination-container {
-  transition: padding-inline 320ms cubic-bezier(.22, 1, .36, 1);
+/* !SECTION */
+
+/* SECTION Navbar page-name roll */
+/* Roll changed letters independently, like individual counter wheels. */
+.nav-page-text-container.is-rolling,
+.nav-context-text-container.is-rolling {
+  position: relative;
+  --page-name-roll-duration: 180ms;
+  overflow: hidden;
+  white-space: pre;
 }
 
-.nav-pagination-container > .nav-page-container {
-  transition: box-shadow 320ms cubic-bezier(.22, 1, .36, 1);
+.nav-context-text-container.is-rolling {
+  display: flex;
+  height: 1.25em;
 }
 
-.nav-prev-button,
-.nav-next-button {
-  transition: flex-basis 320ms cubic-bezier(.22, 1, .36, 1),
-    width 320ms cubic-bezier(.22, 1, .36, 1),
-    margin-inline 320ms cubic-bezier(.22, 1, .36, 1),
-    opacity 160ms ease;
+.nav-page-character-accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
-.navbar-horizontal-layout > .nav-pagination-container:is(:hover, :focus-within) {
-  padding-inline: var(--spacing-level-2);
+.nav-page-character-static,
+.nav-page-character-old,
+.nav-page-character-new {
+  position: absolute;
+  top: 50%;
+  display: block;
+  white-space: pre;
 }
 
-.nav-pagination-container:is(:hover, :focus-within) > :is(.nav-prev-button, .nav-next-button) {
-  flex-basis: var(--nav-history-control-size);
-  width: var(--nav-history-control-size);
-  opacity: 1;
-  pointer-events: auto;
+.nav-page-character-static {
+  transform: translateY(-50%);
 }
 
-.nav-pagination-container:is(:hover, :focus-within) > :is(.nav-prev-button, .nav-next-button):disabled {
-  opacity: 0.4;
-  pointer-events: none;
+.nav-page-character-old {
+  animation: nav-page-character-out var(--page-name-roll-duration) cubic-bezier(.22, 1, .36, 1) var(--page-name-letter-delay) both;
 }
 
-.nav-pagination-container:is(:hover, :focus-within) > .nav-prev-button {
-  margin-right: var(--spacing-level-2);
+.nav-page-character-new {
+  animation: nav-page-character-in var(--page-name-roll-duration) cubic-bezier(.22, 1, .36, 1) var(--page-name-letter-delay) both;
 }
 
-.nav-pagination-container:is(:hover, :focus-within) > .nav-next-button {
-  margin-left: var(--spacing-level-2);
+@keyframes nav-page-character-out {
+  0% { opacity: 1; transform: translateY(-50%); }
+  44% { opacity: 0; transform: translateY(-85%); }
+  100% { opacity: 0; transform: translateY(-85%); }
 }
 
-/* Reveal the storage name at the same speed as the page-name panel. */
-.nav-storage-text {
-  transition: max-width 320ms cubic-bezier(.22, 1, .36, 1),
-    margin-left 320ms cubic-bezier(.22, 1, .36, 1),
-    opacity 160ms ease;
-}
-
-/* Animate the shared pagination surface and reveal its arrows on hover or focus. */
-.pagination-container {
-  transition:
-    background-color 320ms cubic-bezier(.22, 1, .36, 1),
-    border-color 320ms cubic-bezier(.22, 1, .36, 1),
-    box-shadow 320ms cubic-bezier(.22, 1, .36, 1);
-}
-
-.pagination-container > :is(.pagination-prev-button, .pagination-next-button) {
-  transition:
-    flex-basis 320ms cubic-bezier(.22, 1, .36, 1),
-    width 320ms cubic-bezier(.22, 1, .36, 1),
-    margin-inline 320ms cubic-bezier(.22, 1, .36, 1),
-    opacity 160ms ease;
-}
-
-.pagination-container:is(:hover, :has(> button:focus-visible)) > :is(.pagination-prev-button, .pagination-next-button) {
-  --pagination-arrow-width: var(--pagination-arrow-expanded-width);
-  margin-inline: 2px;
-  opacity: 1;
-  pointer-events: auto;
+@keyframes nav-page-character-in {
+  0%, 48% { opacity: 0; transform: translateY(-15%); }
+  84% { opacity: 1; transform: translateY(-53%); }
+  100% { opacity: 1; transform: translateY(-50%); }
 }
 /* !SECTION */
 
 /* SECTION Workspace entry opening */
 /* Lift a selected card as its detail view opens. */
-.entry-container.is-opening { animation: workspace-entry-open 90ms ease-out; }
+.entry-container.is-opening {
+  animation: workspace-entry-open calc(90ms * var(--nav-menu-animation-scale)) ease-out;
+}
 @keyframes workspace-entry-open { to { transform: translateY(-6px) scale(1.012); } }
+/* !SECTION */
+
+/* SECTION Workspace entry hover */
+/* Give a hovered card a small lift before it settles at its resting hover height. */
+.entry-container:hover:not(.is-opening),
+.entry-card-layout:hover > .entry-container:not(.is-opening),
+.entry-card-layout:hover > .entry-card-tools {
+  animation: workspace-entry-hover calc(240ms * var(--nav-menu-animation-scale)) cubic-bezier(.2, .8, .3, 1) both;
+}
+
+.entry-card-layout.is-hover-leaving > .entry-container,
+.entry-card-layout.is-hover-leaving > .entry-card-tools {
+  animation: workspace-entry-hover-out calc(240ms * var(--nav-menu-animation-scale)) cubic-bezier(.2, .8, .3, 1) both;
+}
+
+@keyframes workspace-entry-hover {
+  0% { transform: translateY(0); }
+  62% { transform: translateY(-6px); }
+  100% { transform: translateY(-4px); }
+}
+
+@keyframes workspace-entry-hover-out {
+  0% { transform: translateY(-4px); }
+  62% { transform: translateY(2px); }
+  100% { transform: translateY(0); }
+}
+
+/* Keep compact list rows close together while retaining a subtle hover lift. */
+.workspace-content-layout.is-list-view .entry-container:hover:not(.is-opening),
+.workspace-content-layout.is-list-view .entry-card-layout:hover > .entry-container:not(.is-opening),
+.workspace-content-layout.is-list-view .entry-card-layout:hover > .entry-card-tools {
+  animation-name: workspace-list-entry-hover;
+}
+
+.workspace-content-layout.is-list-view .entry-card-layout.is-hover-leaving > .entry-container,
+.workspace-content-layout.is-list-view .entry-card-layout.is-hover-leaving > .entry-card-tools {
+  animation-name: workspace-list-entry-hover-out;
+}
+
+@keyframes workspace-list-entry-hover {
+  0% { transform: translateY(0); }
+  62% { transform: translateY(-3px); }
+  100% { transform: translateY(-2px); }
+}
+
+@keyframes workspace-list-entry-hover-out {
+  0% { transform: translateY(-2px); }
+  62% { transform: translateY(1px); }
+  100% { transform: translateY(0); }
+}
+/* !SECTION */
+
+/* SECTION Workspace card entrance */
+/* Expand each card from its left edge, following the workspace's diagonal stagger. */
+.entry-card-layout.is-entering {
+  animation: workspace-card-enter calc(800ms * var(--nav-menu-animation-scale)) cubic-bezier(.34, 1.12, .64, 1)
+    calc(var(--entry-reveal-delay, 0ms) * var(--nav-menu-animation-scale)) both;
+}
+
+.entry-card-layout.is-enter-pending {
+  opacity: 0;
+}
+
+@keyframes workspace-card-enter {
+  0% { opacity: 0; transform: scale(.12, .12); transform-origin: left top; }
+  80% { opacity: 1; transform: scale(1.012, 1.012); transform-origin: left top; }
+  100% { opacity: 1; transform: scale(1, 1); transform-origin: left top; }
+}
+
+:root[data-reduce-animations="on"] .entry-card-layout.is-entering { animation: none; }
+:root[data-reduce-animations="on"] .entry-card-layout.is-enter-pending { opacity: 1; }
 /* !SECTION */
 
 /* SECTION Reduced motion */
 /* Preserve the existing no-animation behavior for workspace-container navigation. */
 @media (prefers-reduced-motion: reduce) {
   .entry-container.is-opening { animation: none; }
+  .entry-container:hover,
+  .entry-card-layout.is-hover-leaving > .entry-container,
+  .entry-card-layout.is-hover-leaving > .entry-card-tools,
+  .entry-card-layout:hover > .entry-container,
+  .entry-card-layout:hover > .entry-card-tools { animation: none; }
 }
+
+:root[data-reduce-animations="on"] .entry-container:hover,
+:root[data-reduce-animations="on"] .entry-card-layout.is-hover-leaving > .entry-container,
+:root[data-reduce-animations="on"] .entry-card-layout.is-hover-leaving > .entry-card-tools,
+:root[data-reduce-animations="on"] .entry-card-layout:hover > .entry-container,
+:root[data-reduce-animations="on"] .entry-card-layout:hover > .entry-card-tools { animation: none; }
+
 /* !SECTION */

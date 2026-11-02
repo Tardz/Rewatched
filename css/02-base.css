@@ -17,12 +17,14 @@
 
 /* Keep in-page navigation smooth unless reduced motion is enabled. */
 html {
+  overflow: hidden; /* Keep the document fixed; app content owns scrolling. */
   scroll-behavior: smooth; /* Animate in-page jumps for easier navigation. */
 }
 
 /* Keep the plain canvas behind the rounded app surface and navbar shell. */
 body {
   margin: 0; /* Remove the browser's default body gap. */
+  overflow: hidden; /* Prevent the overscanned app shell from scrolling the page. */
   background: var(--color-surface-level-base);
 }
 
@@ -37,7 +39,7 @@ body {
   content: "";
   opacity: 0;
   pointer-events: none;
-  transition: opacity 900ms ease;
+  transition: opacity 480ms ease;
 }
 
 .app-container,
@@ -50,8 +52,16 @@ body {
   opacity: calc(var(--strength-effective-poster-background) * 0.25);
 }
 
-:root[data-poster-background="on"] .app-content-container {
-  background-image:
+.app-content-container::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  opacity: 0;
+  border-radius: inherit;
+  box-shadow: var(--app-content-inset-shadow);
+  background:
     radial-gradient(
       ellipse at 16% 0%,
       color-mix(in srgb, var(--app-poster-color-one, var(--color-poster-fallback-one)) var(--strength-effective-poster-background), transparent) 0%,
@@ -62,6 +72,11 @@ body {
       color-mix(in srgb, var(--app-poster-color-two, var(--color-poster-fallback-two)) var(--strength-effective-poster-background), transparent) 0%,
       transparent 40%
     );
+  transition: opacity 480ms ease;
+}
+
+:root[data-poster-background="on"]:not(:is([data-app-page="logged"], [data-app-page="backlogged"], [data-app-page="folders"], [data-app-page="statistics"])) .app-content-container::before {
+  opacity: 1;
 }
 
 /* !SECTION */

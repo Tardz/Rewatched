@@ -485,7 +485,7 @@ async function loadDemoVault() {
     collectionSort = 'watched-desc';
     collectionPage = 0;
     bannerIndex = 0;
-    $('.library-search-container > .search-input').value = '';
+    $('.collection-search-container > .search-input').value = '';
     render();
     updateBackupSummary();
     demoStatus('Demo file loaded', 'success', `Demo vault loaded: ${entries.length} titles, ${watchlist.length} watchlist items, and ${customCollections.length} folders.`);

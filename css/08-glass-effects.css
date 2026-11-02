@@ -17,11 +17,10 @@
   box-shadow: var(--shadow-glass-level-1);
 }
 
-/* Remove the app shell's top rim while retaining its glass depth and other edges. */
+/* Keep the app shell borderless in glass mode while retaining its soft outer shadow. */
 :root[data-theme-glass="on"] .app-container.level-1-styling {
-  border-top-color: transparent;
+  border-color: transparent;
   box-shadow:
-    inset 0 -1px 0 var(--shadow-color-glass-edge),
     0 16px 36px var(--shadow-color-glass),
     0 4px 12px var(--shadow-color-glass-edge);
 }
@@ -32,6 +31,25 @@
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
   box-shadow: var(--shadow-glass-level-2);
+}
+
+/* Give every expanded level-two menu the same readable glass opacity. */
+:root[data-theme-glass="on"] .menu-expanding-container.is-open.level-2-styling {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-level-2) min(100%, calc(var(--opacity-glass-level-2) + 50%)),
+    transparent
+  );
+}
+
+/* Keep workspace filters at level three, but strengthen the open glass fill for readability. */
+:root[data-theme-glass="on"]:not([data-glass-transparency="off"]):not([data-glass-opaque="on"])
+  .workspace-filter-layout > .menu-expanding-container.is-open.level-3-styling {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-level-3) min(100%, calc(var(--opacity-glass-level-3) + 50%)),
+    transparent
+  );
 }
 
 :root[data-theme-glass="on"] .level-3-styling {
@@ -182,7 +200,7 @@
   .dashboard-brand-button,
   .dashboard-git-button,
   .dashboard-back-button,
-  .library-page-button,
+  .logged-page-button,
   .stats-page-button,
   .overview-banner-controls-layout > .overview-banner-media-button,
   .overview-banner-container,
@@ -213,7 +231,7 @@
 
 /* SECTION Dashboard navigation */
 /* Give navigation buttons a glass surface when the glass theme is enabled. */
-:root[data-theme-glass="on"] :is(.library-page-button, .stats-page-button) {
+:root[data-theme-glass="on"] :is(.logged-page-button, .stats-page-button) {
   border-color: var(--color-border-glass-level-2);     /* Match the former inner-box glass border. */
   background: color-mix(                              
     in srgb,                                          
@@ -229,40 +247,9 @@
 /* !SECTION */
 
 /* SECTION Floating level-one surfaces */
-/* Match popup menus and the settings dialog while their level class supplies the border and shadow. */
-:root[data-theme-glass="on"] :is(.menu-container, .settings-container).level-1-styling {
+/* Match the settings dialog while its level class supplies the border and shadow. */
+:root[data-theme-glass="on"] .settings-container.level-1-styling {
   background: color-mix(in srgb, var(--color-surface-level-1) var(--opacity-glass-floating), transparent);
-}
-
-/* SECTION Popup menu contents */
-/* Let the level classes supply the matching options-container and option surfaces. */
-
-:root[data-theme-glass="on"] .menu-container .menu-option:not(.menu-option-value):not([data-filter]):not([data-filter-value]).active {
-  border-color: var(--color-border-accent-muted);
-  background: var(--color-surface-hover);
-  color: var(--color-text-accent);
-}
-
-:root[data-theme-glass="on"] .menu-container .menu-option:not([data-filter]):is(:hover, :focus-visible) {
-  color: white;
-}
-
-:root[data-theme-glass="on"] .menu-container .create-folder-option {
-  border-color: color-mix(in srgb, var(--palette-yellow) 70%, var(--color-border-glass-level-3));
-  background: color-mix(
-    in srgb,
-    var(--palette-yellow) var(--opacity-glass-level-3),
-    transparent
-  );
-  color: var(--color-background-app);
-}
-
-:root[data-theme-glass="on"] .menu-container .create-folder-option:hover {
-  background: color-mix(
-    in srgb,
-    color-mix(in srgb, var(--palette-yellow) 92%, white) var(--opacity-glass-level-3),
-    transparent
-  );
 }
 
 /* Use solid menu surfaces when glass transparency is disabled or set to fully opaque. */
@@ -279,35 +266,9 @@
   background: var(--color-surface-level-3);
 }
 
-:root[data-theme-glass="on"]:is([data-glass-transparency="off"], [data-glass-opaque="on"]) :is(.menu-container, .settings-container).level-1-styling {
+:root[data-theme-glass="on"]:is([data-glass-transparency="off"], [data-glass-opaque="on"]) .settings-container.level-1-styling {
   background: var(--color-surface-level-1);
 }
-
-:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-options-container,
-:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-options-container {
-  background: var(--color-surface-level-2);
-}
-
-:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .menu-option:not(.menu-option-value),
-:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .menu-option:not(.menu-option-value) {
-  background: var(--color-surface-level-3);
-}
-
-:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .menu-option:not(.menu-option-value):not([data-filter]).active,
-:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .menu-option:not(.menu-option-value):not([data-filter]).active {
-  background: var(--color-surface-hover);
-}
-
-:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .create-folder-option,
-:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .create-folder-option {
-  background: var(--palette-yellow);
-}
-
-:root[data-theme-glass="on"][data-glass-transparency="off"] .menu-container .create-folder-option:hover,
-:root[data-theme-glass="on"][data-glass-opaque="on"] .menu-container .create-folder-option:hover {
-  background: color-mix(in srgb, var(--palette-yellow) 92%, white);
-}
-/* !SECTION */
 
 /* SECTION Label chips */
 /* Keep small text and media-type chips translucent without per-chip backdrop blur. */

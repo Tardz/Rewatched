@@ -3,11 +3,11 @@
 
 let formEntryMode = 'logged';
 
-/** Updates the create dialog's Library/Watchlist switcher appearance. */
+/** Updates the create dialog's Logged/Backlogged switcher appearance. */
 function updateEntryModeSwitcher() {
-  const destination = formEntryMode === 'watchlist' ? 'watchlist' : 'library';
-  $('.watch-panel-heading h3').textContent = `Log to ${destination}`;
-  $('.watch-rating-panel').setAttribute('aria-label', `Log to ${destination}`);
+  const destination = formEntryMode === 'watchlist' ? 'Backlogged' : 'Logged';
+  $('.watch-panel-heading h3').textContent = destination;
+  $('.watch-rating-panel').setAttribute('aria-label', `${destination} details`);
   document.querySelectorAll('#entry-mode-switcher > [data-view]').forEach((button) => {
     const selected = button.dataset.view === formEntryMode;
     button.classList.toggle('active', selected);

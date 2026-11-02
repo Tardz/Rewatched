@@ -9,8 +9,8 @@
   align-items: stretch;
   grid-column: 1;
   grid-row: 1 / -1;
-  padding-block: var(--navbar-topbar-control-inset) var(--spacing-app-shell-inset);
-  padding-inline: var(--navbar-app-gap) 0;
+  padding-block: var(--app-shell-outer-inset-block);
+  padding-inline: var(--app-shell-outer-inset-inline) 0;
 }
 
 /* ANCHOR Navigation groups */
@@ -31,155 +31,343 @@
   margin-top: auto;
 }
 
-/* ANCHOR Sidebar profile */
-/* Keep the account button aligned with the sidebar groups. */
-.navbar-vertical-layout > .nav-profile-button {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  width: 100%;
-  min-width: 0;
-  height: var(--nav-horizontal-control-size);
-  padding-inline: var(--padding-inline-nav-group);
-  overflow: hidden;
-  color: var(--color-text-secondary);
-  font: inherit;
-  cursor: pointer;
-}
-
-.navbar-vertical-layout > .nav-profile-button:is(:hover, :focus-visible) {
-  color: var(--color-text-primary);
-}
-
-.nav-profile-picture {
-  --size-icon-filled: 18px;
-  --app-icon-state-color: var(--color-icon-default);
-  --nav-profile-mask: url("../assets/icons/filled/avatar.png");
-  display: grid;
-  flex: 0 0 calc(var(--nav-horizontal-control-size) - 12px);
-  place-items: center;
-  width: calc(var(--nav-horizontal-control-size) - 12px);
-  height: calc(var(--nav-horizontal-control-size) - 12px);
-  padding: 0;
-}
-
-.nav-profile-picture > .masked-icon {
-  -webkit-mask-image: var(--nav-profile-mask);
-  mask-image: var(--nav-profile-mask);
-}
-
-.nav-profile-text {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 14px;
-}
-
-/* ANCHOR Destination buttons */
-/* Assign each destination its active color and monochrome icon artwork. */
-.nav-home-button {
-  --nav-item-color: var(--color-icon-home);
-  --nav-icon-mask: url("../assets/icons/filled/home.png");
-}
-.nav-library-button {
-  --nav-item-color: var(--color-icon-library);
-  --nav-icon-mask: url("../assets/icons/filled/library.png");
-}
-.nav-backlog-button {
-  --nav-item-color: var(--color-backlog);
-  --nav-icon-mask: url("../assets/icons/filled/backlog.png");
-}
-.nav-progress-button {
+/* ANCHOR Profile */
+/* The profile is the first button at the top of the vertical rail. */
+#nav-profile-button {
   --nav-item-color: var(--color-icon-default);
-  --nav-icon-mask: url("../assets/icons/filled/live.png");
+  --nav-icon-color: var(--color-icon-default);
+  --nav-icon-glow-color: transparent;
+  --nav-icon-size: 19px;
+}
+
+/* Keep the profile avatar neutral on hover instead of applying the destination glow. */
+.navbar-vertical-layout #nav-profile-button:is(:hover, :focus-visible) {
+  --nav-icon-color: var(--color-icon-default);
+  --nav-icon-glow-color: transparent;
+  --glow-halo-opacity: 0;
+}
+
+/* ANCHOR Main destinations */
+/* Assign active colors to the first navigation group's buttons. */
+#nav-home-button {
+  --nav-item-color: var(--color-icon-home);
+}
+#nav-logged-button {
+  --nav-item-color: var(--color-icon-logged);
+}
+#nav-backlogged-button {
+  --nav-item-color: var(--color-backlog);
+}
+#nav-progress-button {
+  --nav-item-color: var(--color-icon-default);
 }
 .nav-folders-button {
   --nav-item-color: var(--color-icon-folder);
-  --nav-icon-mask: url("../assets/icons/filled/folder.png");
-}
-.nav-stats-button {
-  --nav-item-color: var(--color-icon-stats);
-  --nav-icon-mask: url("../assets/icons/filled/piechart.png");
-}
-.nav-timeline-button {
-  --nav-item-color: var(--color-icon-timeline);
-  --nav-icon-mask: url("../assets/icons/filled/timeline.png");
-}
-.nav-activity-button {
-  --nav-item-color: var(--color-icon-activity);
-  --nav-icon-mask: url("../assets/icons/filled/history.png");
-}
-.nav-settings-button {
-  --nav-item-color: var(--color-icon-settings);
-  --nav-icon-mask: url("../assets/icons/filled/setting.png");
-}
-.nav-about-button {
-  --nav-item-color: var(--palette-white);
-  --nav-icon-mask: url("../assets/icons/filled/about.png");
 }
 
 /* ANCHOR Sidebar folder menu */
-/* Keep the folder trigger in the rail and place its popup over app content. */
-.navbar-vertical-layout .folder-menu-wrapper {
+/* Keep the folder surface anchored to its nav slot in both closed and open states. */
+.nav-folder-menu {
+  --menu-expanding-closed-width: var(--nav-inner-box-size);
+  --menu-expanding-closed-height: var(--nav-inner-box-size);
+  --menu-expanding-duration: calc(410ms * var(--nav-menu-animation-scale));
+  --folder-menu-trigger-shrink-duration: calc(320ms * var(--nav-menu-animation-scale));
+  --folder-menu-visible-rows: 5;
+  --folder-menu-shadow-clearance: var(--spacing-level-3);
+  --folder-menu-bottom-inset: max(1px, calc(var(--spacing-level-2) + var(--folder-menu-shadow-clearance) - 13px));
+  --folder-menu-icon-text-gap: calc(var(--nav-menu-inline-inset) - 1px);
+  z-index: 1;
+  flex: 0 0 var(--menu-expanding-closed-height);
+  align-self: center;
+  margin: 0;
+}
+
+.navbar-vertical-layout > .nav-group-container:has(> .nav-folder-menu) {
+  position: relative;
+}
+
+/* Once its in-flow slot is measured, keep the surface anchored and reserve that slot here. */
+.nav-folder-menu[data-anchor-ready] {
+  position: absolute;
+  top: var(--folder-menu-anchor-top);
+  left: var(--folder-menu-anchor-left);
+}
+
+.navbar-vertical-layout > .nav-group-container:has(> .nav-folder-menu[data-anchor-ready])::after {
+  content: "";
+  flex: 0 0 var(--nav-inner-box-size);
+  align-self: center;
+  width: var(--nav-inner-box-size);
+  height: var(--nav-inner-box-size);
+}
+
+/* Keep the closed menu shell invisible so only its folder icon is shown. */
+/* The shared level-two surface is only visible while the folder menu is expanded. */
+.nav-folder-menu.level-2-styling:not(.is-open, .is-closing) {
+  width: var(--menu-expanding-closed-width);
+  height: var(--menu-expanding-closed-height);
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  filter: none;
+  overflow: visible;
+}
+
+.nav-folder-menu:is(.is-open, .is-closing) {
+  z-index: 31;
+  /* Let the scrollable options own the inset so five rows determine the visible menu height. */
+  margin-top: calc(-1 * var(--nav-menu-content-inset));
+  margin-left: calc(((var(--nav-inner-box-size) - var(--nav-icon-container-size)) / 2) - var(--nav-menu-inline-inset));
+  padding-block: 0;
+  padding-inline: 0;
+  overflow: hidden;
+}
+
+.nav-folder-menu.is-closing {
+  /* Return the anchored trigger's offset as the surface contracts, not after it. */
+  margin-top: 0;
+  margin-left: 0;
+  overflow: hidden;
+}
+
+.navbar-vertical-layout > .nav-group-container:has(> .nav-folder-menu:is(.is-open, .is-closing)) {
+  z-index: 32;
+}
+
+.nav-folder-menu > .menu-content-layout {
+  padding: 0;
+  /* The folder picker is its own scroll viewport, so opt it into menu-row snapping explicitly. */
+  scroll-padding-block: var(--nav-menu-content-inset) var(--spacing-level-2);
+  scroll-snap-type: y proximity;
+  transition: padding var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9);
+}
+
+.nav-folder-menu.is-open > .menu-content-layout {
+  padding:
+    var(--nav-menu-content-inset)
+    calc(var(--spacing-level-2) + var(--folder-menu-shadow-clearance))
+    var(--folder-menu-bottom-inset)
+    var(--nav-menu-inline-inset);
+}
+
+.nav-folder-menu:not(.is-open, .is-closing) > .menu-content-layout {
+  gap: 0;
+  /* Extend through the transparent surface border so the folder icon box aligns with nav buttons. */
+  width: calc(var(--menu-expanding-closed-width) + 2px);
+  height: calc(var(--menu-expanding-closed-height) + 2px);
+  margin: -1px;
+  overflow: visible;
+}
+
+.nav-folder-menu:not(.is-open, .is-closing) > .menu-content-layout > .menu-option:not(.nav-folders-button) {
+  display: none;
+}
+
+.nav-folder-menu:is(.is-open, .is-closing) > .menu-content-layout > .menu-option {
+  justify-content: flex-start;
+  gap: var(--folder-menu-icon-text-gap);
+  min-height: var(--nav-icon-container-size);
+  padding-block: 0;
+  padding-inline: var(--nav-menu-inline-inset);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-secondary);
+  scroll-snap-align: center;
+  text-align: left;
+}
+
+.nav-folder-menu.is-open > .menu-content-layout > .nav-folders-button {
+  position: relative;
+  display: flex;
+  flex: 0 0 var(--nav-icon-container-size);
+  justify-content: flex-start;
   width: 100%;
+  height: var(--nav-icon-container-size);
+  min-width: 0;
+  min-height: var(--nav-icon-container-size);
+  gap: var(--folder-menu-icon-text-gap);
+  padding-left: 0;
+  padding-right: var(--nav-menu-inline-inset);
 }
 
-.navbar-vertical-layout .folder-menu-wrapper > .menu-container {
-  position: fixed;
-  top: 0;
-  left: 0;
+.nav-folder-menu.is-closing > .menu-content-layout > .nav-folders-button {
+  display: flex;
+  flex: 0 0 100%;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: var(--nav-inner-box-size);
+  min-width: 0;
+  min-height: var(--nav-inner-box-size);
+  gap: var(--folder-menu-icon-text-gap);
+  padding: 0;
 }
 
-.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-options-container {
-  grid-column: 1 / -1;
-  grid-template-columns: minmax(0, 1fr);
+.nav-folder-menu:is(.is-open, .is-closing) > .menu-content-layout > .menu-option:not(.nav-folders-button) {
+  transition:
+    padding-left var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
 }
 
-.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-options-container > .menu-option {
-  display: block;
+.nav-folder-menu.is-open > .menu-content-layout > .menu-option:not(.nav-folders-button) {
+  padding-left: 0;
+}
+
+.nav-folder-menu.is-closing > .menu-content-layout > .menu-option:not(.nav-folders-button) {
+  padding-left: calc((var(--nav-inner-box-size) - var(--nav-icon-container-size)) / 2);
+}
+
+.nav-folder-menu.is-open > .menu-content-layout > .nav-folders-button > .icon-button {
+  --nav-icon-size: 14px;
+}
+
+.nav-folder-menu .menu-option-label {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: left;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
-.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-options-container > div:not(.menu-option) {
-  padding: 7px 8px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-}
-
-.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option {
+.nav-folders-button {
+  position: relative;
+  z-index: 1;
   display: grid;
+  flex: 0 0 var(--nav-inner-box-size);
   place-items: center;
-  width: 30px;
-  height: 30px;
-  min-height: 30px;
+  width: var(--nav-inner-box-size);
+  height: var(--nav-inner-box-size);
+  min-width: var(--nav-inner-box-size);
+  min-height: var(--nav-inner-box-size);
+  margin: 0;
   padding: 0;
-  border: 1px solid color-mix(in srgb, var(--palette-yellow) 70%, var(--color-border-subtle));
-  border-radius: var(--radius-control-small);
-  background: var(--palette-yellow);
-  color: var(--color-background-app);
+  border: 0;
+  border-radius: 0;
+  appearance: none;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+  color: inherit;
+  transition:
+    flex-basis var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    width var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    height var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    min-width var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    min-height var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    padding-left var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    padding-right var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9);
 }
 
-.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option > .icon {
-  flex: 0 0 14px;
-  width: 14px;
-  height: 14px;
-  --app-icon-state-color: var(--color-background-app);
+.nav-folder-menu:not(.is-open, .is-closing) > .menu-content-layout > .nav-folders-button .menu-option-label {
+  display: none;
 }
 
-.navbar-vertical-layout .folder-menu-wrapper > .menu-container > .menu-header-layout > .create-folder-option:hover {
-  background: color-mix(in srgb, var(--palette-yellow) 88%, white);
+.nav-folder-menu > .menu-content-layout > .nav-folders-button > .icon-button {
+  --nav-icon-size: 15px;
+  transition:
+    flex-basis var(--folder-menu-trigger-shrink-duration) cubic-bezier(.35, .1, .65, .9),
+    width var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    height var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    min-width var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9),
+    min-height var(--menu-expanding-duration) cubic-bezier(.35, .1, .65, .9);
+}
+
+.nav-folder-menu:not(.is-open, .is-closing, .is-trigger-shrinking) > .menu-content-layout > .nav-folders-button > .icon-button {
+  --menu-icon-box-size: var(--nav-inner-box-size);
+}
+
+.nav-folder-menu.is-trigger-shrinking > .menu-content-layout > .nav-folders-button > .icon-button {
+  --menu-icon-box-size: var(--nav-icon-container-size);
+  --nav-icon-size: 14px;
+  transition-duration: var(--folder-menu-trigger-shrink-duration);
+}
+
+.nav-folder-menu.is-closing > .menu-content-layout > .nav-folders-button > .icon-button {
+  --menu-icon-box-size: var(--nav-inner-box-size);
+  --nav-icon-size: 15px;
+  transition-duration: var(--folder-menu-trigger-shrink-duration);
+}
+
+.nav-folder-menu .menu-option:not(.nav-folders-button) > .icon-button {
+  pointer-events: none;
+  --nav-icon-color: var(--color-text-secondary);
+  --nav-icon-glow-color: transparent;
+  --nav-icon-size: 14px;
+}
+
+.nav-folder-menu .menu-option.is-selected > .icon-button,
+.nav-folder-menu .menu-option:not(.nav-folders-button):is(:hover, :focus-visible) > .icon-button,
+.nav-folder-menu:is(.is-open, .is-closing) .nav-folders-button:not(.is-selected):is(:hover, :focus-visible) > .icon-button,
+.nav-folder-menu:not(.is-open, .is-closing) .nav-folders-button:is(:hover, :focus-visible) > .icon-button {
+  --nav-icon-color: var(--color-icon-folder);
+  --nav-icon-glow-color: color-mix(in srgb, var(--color-icon-folder) 88%, transparent);
+  --glow-halo-color: var(--color-icon-folder);
+  --glow-halo-opacity: 0.3;
+}
+
+.nav-folder-menu .menu-option.is-selected,
+.nav-folder-menu .menu-option:not([aria-disabled="true"]):is(:hover, :focus-visible) {
+  color: var(--color-icon-folder);
+  text-shadow: 0 0 4px color-mix(in srgb, var(--color-icon-folder) 48%, transparent);
+}
+
+/* Keep the collapsed folder trigger and expanded folder choices in sync. */
+.nav-folder-menu .nav-folders-button > .icon-button {
+  --nav-icon-color: var(--color-icon-default);
+  --nav-icon-glow-color: transparent;
+  --nav-icon-size: 15px;
+}
+
+.nav-folder-menu:not(.is-open, .is-closing) .nav-folders-button.is-active > .icon-button {
+  --nav-icon-color: var(--color-icon-folder);
+  --nav-icon-glow-color: color-mix(in srgb, var(--color-icon-folder) 88%, transparent);
+  --glow-halo-color: var(--color-icon-folder);
+  --glow-halo-opacity: 0.3;
+}
+
+.nav-folder-menu:is(.is-open, .is-closing) .nav-folders-button:not(.is-selected) {
+  color: var(--color-text-secondary);
+  text-shadow: none;
+}
+
+.nav-folder-menu:is(.is-open, .is-closing) .nav-folders-button:not(.is-selected) > .icon-button {
+  --nav-icon-color: var(--color-text-secondary);
+  --nav-icon-glow-color: transparent;
+  --glow-halo-opacity: 0;
+}
+
+.nav-folder-menu:is(.is-open, .is-closing) .nav-folders-button:not(.is-selected):is(:hover, :focus-visible) {
+  color: var(--color-icon-folder);
+  text-shadow: 0 0 4px color-mix(in srgb, var(--color-icon-folder) 48%, transparent);
+}
+
+.nav-folder-menu:is(.is-open, .is-closing) .nav-folders-button:not(.is-selected):is(:hover, :focus-visible) > .icon-button {
+  --nav-icon-color: var(--color-icon-folder);
+  --nav-icon-glow-color: color-mix(in srgb, var(--color-icon-folder) 88%, transparent);
+  --glow-halo-color: var(--color-icon-folder);
+  --glow-halo-opacity: 0.3;
+}
+
+.nav-folder-menu:is(.is-open, .is-closing) > .menu-content-layout > .menu-option.is-selected,
+.nav-folder-menu:is(.is-open, .is-closing) > .menu-content-layout > .menu-option:not([aria-disabled="true"]):is(:hover, :focus-visible) {
+  color: var(--color-icon-folder);
+  text-shadow: 0 0 4px color-mix(in srgb, var(--color-icon-folder) 48%, transparent);
 }
 
 /* ANCHOR Group separators */
-/* Separate Home and Folders from the library destinations. */
+/* Separate Home and Folders from Logged and Backlogged destinations. */
 .nav-separator {
   flex: 0 0 1px;
   align-self: center;
-  width: 40%;
+  width: 48%;
   height: 2px;
   margin-block: calc(var(--spacing-level-1) - 11px);
   background: color-mix(in srgb, var(--color-surface-level-base) 78%, var(--color-border-subtle));
@@ -190,92 +378,109 @@
   opacity: 0.72;
 }
 
-/* ANCHOR Sidebar buttons */
-/* Base class: .icon-text-button. Set sizing and state colors for navigation destinations. */
-.nav-button {
-  --nav-icon-color: var(--color-icon-default);
-  --nav-icon-glow-color: transparent;
-  width: 100%;
+/* ANCHOR Stats and timeline */
+/* Assign active colors to the third navigation group's buttons. */
+#nav-stats-button {
+  --nav-item-color: var(--color-icon-stats);
 }
 
-/* Show unfinished destinations without suggesting they can be opened. */
-.nav-button:disabled {
-  cursor: default;
+#nav-timeline-button {
+  --nav-item-color: var(--color-icon-timeline);
 }
 
-/* Keep the level-two icon boxes compact while preserving their square shape. */
-.nav-button > .nav-button-icon {
-  display: grid;
-  flex: 0 0 var(--nav-inner-box-size);
-  place-items: center;
-  width: var(--nav-inner-box-size);
-  height: var(--nav-inner-box-size);
-  padding: var(--spacing-level-1);
+/* ANCHOR Bottom navigation actions */
+/* Theme, activity, and settings appear in the bottom-pinned group. */
+#nav-theme-button {
+  --nav-item-color: var(--color-icon-default);
+  --nav-icon-size: 15px;
 }
 
-.nav-button-text {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Highlight active navigation text and icon without changing the icon-box border. */
-.nav-button:not(:disabled):is(.is-active, :hover, :focus-visible, [aria-expanded="true"]) {
-  --nav-icon-color: var(--nav-item-color, var(--color-accent-primary));
-  --nav-icon-glow-color: color-mix(in srgb, var(--nav-icon-color) 88%, transparent);
-  color: var(--nav-item-color, var(--color-accent-primary));
-}
-
-.nav-button:not(:disabled):is(.is-active, :hover, :focus-visible, [aria-expanded="true"]) > .nav-button-icon {
-  --glow-halo-color: var(--nav-item-color, var(--color-accent-primary));
+.navbar-vertical-layout #nav-theme-button:is(:hover, :focus-visible) {
+  --app-icon-state-color: var(--palette-white);
+  --nav-icon-color: var(--palette-white);
+  --nav-icon-glow-color: color-mix(in srgb, var(--palette-white) 88%, transparent);
+  --glow-halo-color: var(--palette-white);
   --glow-halo-opacity: 0.3;
+  color: var(--palette-white);
 }
 
-.nav-button > .nav-button-icon::after {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 15px;
-  height: 15px;
-  transform: translate(-50%, -50%);
-  background-color: var(--nav-icon-color);
-  content: "";
-  -webkit-mask: var(--nav-icon-mask) center / contain no-repeat;
-  mask: var(--nav-icon-mask) center / contain no-repeat;
+.navbar-vertical-layout #nav-theme-button:is(:hover, :focus-visible) > .masked-icon {
   filter: drop-shadow(0 0 2px var(--nav-icon-glow-color));
 }
 
-/* ANCHOR Collapsed sidebar */
-.app-container.is-sidebar-collapsed {
-  --navbar-sidebar-width: 77px;
+#nav-activity-button {
+  --nav-item-color: var(--color-icon-activity);
 }
 
-.app-container.is-sidebar-collapsed .nav-button-text,
-.app-container.is-sidebar-collapsed .nav-profile-text {
-  display: none;
+#nav-settings-button {
+  --nav-item-color: var(--color-icon-settings);
 }
 
-.app-container.is-sidebar-collapsed .navbar-vertical-layout .nav-button {
-  justify-content: center;
+/* ANCHOR Navigation button base */
+/* The group parent scopes the shared sizing and icon rendering to sidebar buttons. */
+.navbar-vertical-layout > .nav-group-container > .icon-button {
+  --nav-icon-color: var(--color-icon-default);
+  --nav-icon-glow-color: transparent;
+  --app-icon-state-color: var(--nav-icon-color);
+  border-radius: var(--radius-icon-button-nav);
+  display: grid;
+  place-items: center;
+  flex: 0 0 var(--nav-inner-box-size);
+  width: var(--nav-inner-box-size);
+  height: var(--nav-inner-box-size);
+  min-width: var(--nav-inner-box-size);
+  min-height: var(--nav-inner-box-size);
+  margin-inline: auto;
+  padding: 0;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font: inherit;
 }
 
-.app-container.is-sidebar-collapsed .nav-profile-button {
-  justify-content: center;
+.navbar-vertical-layout .nav-group-container > .icon-button > .masked-icon {
+  display: block;
+  --size-icon-filled: var(--nav-icon-size, 15px);
+  --app-icon-state-color: var(--nav-icon-color, var(--color-icon-default));
+  filter: drop-shadow(0 0 2px var(--nav-icon-glow-color, transparent));
 }
 
-/* Remove the profile surface when only its enlarged icon is shown. */
-.app-container.is-sidebar-collapsed .nav-profile-picture {
-  --size-icon-filled: 19px;
-  border-color: transparent;
-  background: transparent;
-  box-shadow: none;
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+.nav-folder-menu .menu-option > .icon-button > .masked-icon {
+  display: block;
+  --size-icon-filled: var(--nav-icon-size, 14px);
+  --app-icon-state-color: var(--nav-icon-color, var(--color-text-secondary));
+  filter: drop-shadow(0 0 2px var(--nav-icon-glow-color, transparent));
 }
 
-.app-container.is-sidebar-collapsed .nav-separator {
-  width: 48%;
+/* Keep hover focused on the icon glow; preserve the level-three surface. */
+.navbar-vertical-layout > .nav-group-container > .icon-button:hover,
+.nav-folder-menu .nav-folders-button:hover > .icon-button {
+  border-color: var(--color-border-subtle);
+  background: var(--color-surface-level-3);
+}
+
+:root[data-theme-glass="on"] .navbar-vertical-layout > .nav-group-container > .icon-button:hover,
+:root[data-theme-glass="on"] .nav-folder-menu .nav-folders-button:hover > .icon-button {
+  border-color: var(--color-border-glass-level-3);
+  background: color-mix(in srgb, var(--color-surface-level-3) var(--opacity-glass-level-3), transparent);
+}
+
+:root[data-theme-glass="on"]:is([data-glass-transparency="off"], [data-glass-opaque="on"]) .navbar-vertical-layout > .nav-group-container > .icon-button:hover,
+:root[data-theme-glass="on"]:is([data-glass-transparency="off"], [data-glass-opaque="on"]) .nav-folder-menu .nav-folders-button:hover > .icon-button {
+  background: var(--color-surface-level-3);
+}
+
+/* Show unfinished destinations without suggesting they can be opened. */
+.navbar-vertical-layout > .nav-group-container > .icon-button:disabled,
+.nav-folder-menu .nav-folders-button:disabled {
+  cursor: default;
+}
+
+/* Highlight the active navigation icon without changing its box border. */
+.navbar-vertical-layout > .nav-group-container > .icon-button:not(:disabled):is(.is-active, :hover, :focus-visible, [aria-expanded="true"]) {
+  --nav-icon-color: var(--nav-item-color, var(--color-accent-primary));
+  --nav-icon-glow-color: color-mix(in srgb, var(--nav-icon-color) 88%, transparent);
+  --glow-halo-color: var(--nav-item-color, var(--color-accent-primary));
+  --glow-halo-opacity: 0.3;
 }
 
 /* !SECTION */

@@ -46,10 +46,10 @@
 ):is(:hover, :focus-visible) .masked-icon,
 .dashboard-save-button:hover .masked-icon,
 .dashboard-storage-container:focus-within .masked-icon,
-:is(.library-page-button, .stats-page-button):hover .masked-icon {
+:is(.logged-page-button, .stats-page-button):hover .masked-icon {
   filter: var(--filter-icon-glow);
 }
-:is(.library-page-button, .stats-page-button):hover .icon {
+:is(.logged-page-button, .stats-page-button):hover .icon {
   filter: var(--filter-icon-glow);
 }
 
@@ -78,7 +78,7 @@
     calc(var(--spacing-level-1) - 2px);
   font-family: var(--font-family-dashboard-brand);
   font-size: var(--font-size-dashboard-brand);
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: -.07em;
   -webkit-text-stroke: 1.4px var(--color-title-outline);
   paint-order: stroke fill;
@@ -110,18 +110,18 @@
 /* !SECTION */
 
 /* ANCHOR dashboard-back-button */
-/* Size the back-to-library control shown in entry detail view. */
+/* Size the back-to-Logged control shown in entry detail view. */
 /* Base classes: .icon-button, .level-2-styling */
 .dashboard-back-button {
-  --dashboard-control-color: var(--color-icon-library);
+  --dashboard-control-color: var(--color-icon-logged);
   width: var(--size-dashboard-control);
   flex: 0 0 var(--size-dashboard-control);
   color: var(--color-accent-primary);
 }
 
-/* Tint the back icon with the Library color on hover or focus. */
+/* Tint the back icon with the Logged color on hover or focus. */
 .dashboard-back-button:hover .masked-icon,
-.dashboard-back-button:focus-visible .masked-icon { --app-icon-state-color: var(--color-icon-library); }
+.dashboard-back-button:focus-visible .masked-icon { --app-icon-state-color: var(--color-icon-logged); }
 
 /* ANCHOR dashboard-git-button */
 /* Link to the project's GitHub repository. */
@@ -345,7 +345,7 @@
 /* !SECTION */
 
 /* SECTION dashboard-page-container */
-/* Frame the Library and Stats navigation buttons. */
+/* Frame the Logged and Stats navigation buttons. */
 /* Base class: .level-1-styling */
 .dashboard-page-container {
   min-width: 0;
@@ -360,23 +360,23 @@
 }
 
 /* Highlight either page button on hover. */
-:is(.library-page-button, .stats-page-button):hover {
+:is(.logged-page-button, .stats-page-button):hover {
   color: var(--color-text-primary);
   border-color: var(--color-border-accent-muted);
   background: var(--color-surface-hover);
 }
 
-/* Mark the Library button with the blue accent. */
+/* Mark the Logged button with the red accent. */
 /* Base classes: .icon-button, .level-2-styling */
-.library-page-button:hover {
+.logged-page-button:hover {
   color: var(--color-accent-primary);
   border-color: color-mix(in srgb, var(--color-accent-primary) 48%, var(--color-border-subtle));
   background: color-mix(in srgb, var(--color-accent-primary) 12%, var(--color-surface-level-2));
 }
-.library-page-button {
-  --dashboard-control-color: var(--color-icon-library);
+.logged-page-button {
+  --dashboard-control-color: var(--color-icon-logged);
 }
-.library-page-button.is-active {
+.logged-page-button.is-active {
   color: var(--color-accent-primary);
 }
 
@@ -395,9 +395,9 @@
 }
 
 /* Give navigation icons a role color on hover or while selected. */
-.library-page-button:hover .masked-icon,
-.library-page-button.is-active .masked-icon {
-  --app-icon-state-color: var(--color-icon-library);
+.logged-page-button:hover .masked-icon,
+.logged-page-button.is-active .masked-icon {
+  --app-icon-state-color: var(--color-icon-logged);
 }
 
 .stats-page-button:hover .masked-icon,
@@ -406,13 +406,13 @@
 }
 
 /* Set the shared halo color only while a page is selected. */
-.library-page-button.is-active,
+  .logged-page-button.is-active,
 .stats-page-button.is-active {
   --glow-halo-opacity: 0.3;
 }
-.library-page-button.is-active { --glow-halo-color: var(--color-icon-library); }
+.logged-page-button.is-active { --glow-halo-color: var(--color-icon-logged); }
 .stats-page-button.is-active { --glow-halo-color: var(--color-icon-stats); }
-.library-page-button.is-active .icon,
+.logged-page-button.is-active .icon,
 .stats-page-button.is-active .icon {
   filter: drop-shadow(0 0 2px currentColor);
 }
@@ -425,7 +425,7 @@
   .dashboard-theme-button,
   .dashboard-activity-button,
   .dashboard-save-button,
-  .library-page-button,
+  .logged-page-button,
   .stats-page-button
 ):is(:hover, :focus-visible) {
   --glow-halo-color: var(--dashboard-control-color, currentColor);

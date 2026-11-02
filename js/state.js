@@ -14,7 +14,6 @@ const POSTER_BACKGROUND_STRENGTH_KEY = 'rerun-poster-background-strength';
 const ENTRY_POSTER_BACKDROP_KEY = 'rerun-entry-poster-backdrop';
 const TACTILE_DASHBOARD_KEY = 'rerun-tactile-dashboard';
 const DASHBOARD_MODE_KEY = 'rerun-dashboard-mode';
-const SIDEBAR_COLLAPSED_KEY = 'rerun-sidebar-collapsed';
 const MACOS_BOX_BORDERS_KEY = 'rerun-macos-box-borders';
 const COLORED_VALUE_CHIPS_KEY = 'rerun-colored-value-chips';
 const HIDE_MAIN_VALUE_CHIPS_KEY = 'rerun-hide-main-value-chips';
@@ -79,6 +78,10 @@ const APP_ICON_FILES = {
   dark_mode: { color: 'dark_mode.png', black: 'dark_mode.png', filled: 'dark-mode.png' },
   save: { color: 'save.png', black: 'save.png', filled: 'save.png' },
   history: { color: 'history.png', black: 'history.png', filled: 'history.png' },
+  home: { filled: 'home.png' },
+  backlog: { filled: 'backlog.png' },
+  live: { filled: 'live.png' },
+  timeline: { filled: 'timeline.png' },
   github: { color: 'github.png', black: 'github.png', filled: 'github.png' },
   library: { color: 'Library.png', black: 'library.png', filled: 'library.png' },
   statistics: { color: 'piechart.png', black: 'piechart.png', filled: 'piechart.png' },
@@ -101,6 +104,8 @@ const APP_ICON_FILES = {
   watched: { filled: 'watched.png' },
   release: { filled: 'release.png' },
   all: { color: 'all.png', black: 'all.png', filled: 'all.png' },
+  list: { filled: 'list.png' },
+  gallery: { filled: 'gallery.png' },
   movie: { color: 'dvd.png', black: 'dvd.png', filled: 'disc.png' },
   show: { color: 'tv.png', black: 'tv.png', filled: 'tv.png' },
   game: { color: 'game-controller.png', black: 'game-controller.png', filled: 'game-controller.png' },
@@ -124,6 +129,8 @@ const APP_ICON_ORIGINALS = {
   'folder-action': '<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v7A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5z"/>',
   search: '<circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.2 4.2"/>',
   all: '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
+  list: '<path d="M8 5h13M8 12h13M8 19h13"/><circle cx="4" cy="5" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="19" r="1"/>',
+  gallery: '<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>',
   movie: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M7.4 7.4a6.5 6.5 0 0 1 3-1.7M16.6 16.6a6.5 6.5 0 0 1-3 1.7"/>',
   show: '<path d="M7 3.5 12 7l5-3.5"/><rect x="3" y="7" width="18" height="13" rx="2"/><rect x="5.5" y="9.5" width="10" height="8" rx="1"/><circle cx="18.2" cy="12" r=".8"/><circle cx="18.2" cy="15.5" r=".8"/>',
   game: '<path d="M7 8h10a4 4 0 0 1 3.9 3.1l1 4.3a2.6 2.6 0 0 1-4.3 2.5l-2.2-2H8.6l-2.2 2a2.6 2.6 0 0 1-4.3-2.5l1-4.3A4 4 0 0 1 7 8Z"/><path d="M7 10.5v4m-2-2h4m7-1h.01M18 14h.01"/>',

@@ -5,18 +5,23 @@
 body.workspace-filter-menu-open * {
   pointer-events: none !important;
 }
+body.workspace-filter-menu-open .nav-type-menu,
+body.workspace-filter-menu-open .nav-type-menu *,
+body.workspace-filter-menu-open .nav-folder-menu .nav-folders-button,
+body.workspace-filter-menu-open .nav-folder-menu.is-open,
+body.workspace-filter-menu-open .nav-folder-menu.is-open *,
+body.workspace-filter-menu-open .workspace-filter-layout > .menu-expanding-container.is-open,
+body.workspace-filter-menu-open .workspace-filter-layout > .menu-expanding-container.is-open *,
 body.workspace-filter-menu-open :is(
-  .workspace-type-menu-wrapper,
-  .workspace-ratings-menu-wrapper,
-  .workspace-year-menu-wrapper,
-  .workspace-sort-menu-wrapper
-) > .menu-container,
+  .workspace-ratings-menu,
+  .workspace-year-menu,
+  .workspace-sort-menu
+) > .menu-content-layout:not([hidden]),
 body.workspace-filter-menu-open :is(
-  .workspace-type-menu-wrapper,
-  .workspace-ratings-menu-wrapper,
-  .workspace-year-menu-wrapper,
-  .workspace-sort-menu-wrapper
-) > .menu-container * {
+  .workspace-ratings-menu,
+  .workspace-year-menu,
+  .workspace-sort-menu
+) > .menu-content-layout:not([hidden]) * {
   pointer-events: auto !important;
 }
 /* !SECTION */
@@ -32,41 +37,45 @@ body.workspace-filter-menu-open :is(
   .dashboard-activity-button,
   .dashboard-save-button,
   .dashboard-storage-button,
-  .library-page-button,
+  .logged-page-button,
   .stats-page-button,
   .overview-banner-controls-layout > button,
   .settings-option,
-  .workspace-reset-button,
+  #workspace-reset-button,
+  .workspace-view-toggle,
   .workspace-create-entry-button,
   .workspace-tools-layout button
 ):active {
   box-shadow: var(--shadow-control-pressed) !important; /* Override component elevation while pressed. */
 }
 
-/* Press the navigation icon box rather than the full-width navigation button. */
-.nav-button:active > .nav-button-icon {
+/* Press the navigation icon button itself. */
+.navbar-vertical-layout > .nav-group-container > .icon-button:active,
+.navbar-vertical-layout > .nav-group-container > .nav-folder-menu .nav-folders-button:active > .icon-button {
   box-shadow: var(--shadow-control-pressed) !important;
 }
 
-/* Press workspace menu triggers without changing their surface or border. */
+/* Press workspace menu options without changing their surface or border. */
 :is(
-  .workspace-ratings-menu-button,
-  .workspace-year-menu-button,
-  .workspace-type-menu-button,
-  .workspace-sort-menu-button,
-  .workspace-sort-direction-button
-):active {
+  .workspace-ratings-menu,
+  .workspace-year-menu,
+  .workspace-sort-menu
+) > button.menu-option:active,
+:is(
+  .workspace-ratings-menu,
+  .workspace-year-menu,
+  .workspace-sort-menu
+) > .menu-content-layout > .menu-option:active {
   box-shadow: var(--shadow-control-pressed) !important;
 }
-/* !SECTION */
 
-/* SECTION Text glow */
-/* Keep the sidebar profile label's text glow consistent with other navigation text. */
-:is(
-  .nav-profile-button:is(:hover, :focus-visible) > .nav-profile-text
-) {
-  text-shadow: 0 0 4px color-mix(in srgb, white 45%, transparent);
+/* Press the type icon boxes, including when the menu is collapsed. */
+.nav-type-menu > button:active .icon-button,
+.nav-type-menu .menu-option:active > .icon-button,
+.nav-folder-menu .menu-option:active > .icon-button {
+  box-shadow: var(--shadow-control-pressed) !important;
 }
+
 /* !SECTION */
 
 /* SECTION Glow halo utility */

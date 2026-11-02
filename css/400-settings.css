@@ -162,16 +162,12 @@
 }
 
 /* Match each category icon to the UML's nested level-four icon box. */
-.settings-category-icon {
-  display: grid;
-  flex: 0 0 var(--settings-category-icon-size);
-  place-items: center;
-  width: var(--settings-category-icon-size);
-  height: var(--settings-category-icon-size);
+.settings-category-button {
+  --icon-container-size: var(--settings-category-icon-size);
 }
 
 /* Size the shared masked icon inside its level-four icon box. */
-.settings-category-icon > .masked-icon {
+.settings-category-button > .icon-container > .masked-icon {
   width: 20px;
   height: 20px;
   flex-basis: 20px;
@@ -277,7 +273,7 @@
   color: var(--color-text-primary);
   font-family: var(--font-family-dashboard-brand);
   font-size: clamp(42px, 8cqi, 64px);
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: -.07em;
   -webkit-text-stroke: 1.4px var(--color-title-outline);
   paint-order: stroke fill;

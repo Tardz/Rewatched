@@ -251,7 +251,7 @@ function updateStorageIndicator() {
   if (navStorageName) {
     navStorageName.textContent = activeStorageName.replace(/\.json$/i, '');
     const navSaveButton = $('.nav-storage-button');
-    const navSaveIcon = $('.nav-storage-icon');
+    const navSaveIcon = $('.nav-storage-button > .icon-container');
     let hasUnexportedData = false;
     if (isBrowserStorage) {
       const hasData = entries.length > 0 || watchlist.length > 0 || customCollections.length > 0;

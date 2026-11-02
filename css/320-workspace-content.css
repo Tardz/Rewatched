@@ -4,19 +4,29 @@
 /* Arrange horizontally scrollable pages of entry banners below the workspace controls. */
 .workspace-content-layout {
   --workspace-entry-columns: 5;
-  --workspace-entry-poster-height: 108px;
+  --workspace-entry-rows: 4;
+  --workspace-content-shadow-clearance: var(--spacing-level-1);
+  --workspace-entry-row-gap: calc(var(--spacing-level-1) + 4px);
+  --workspace-entry-poster-height: 101px;
   --workspace-entry-row-min-height: calc(var(--workspace-entry-poster-height) + var(--spacing-level-1) + var(--spacing-level-1) + 2px);
   display: flex;
   column-gap: 0;
   min-width: 0;
-  margin-block: calc(-1 * var(--spacing-level-1));
-  padding-block: var(--spacing-level-1);
+  margin-block: calc(-1 * var(--workspace-content-shadow-clearance));
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   scrollbar-width: none;
+}
+
+.workspace-content-layout.is-list-view {
+  --workspace-list-section-gap: calc(var(--spacing-level-2) + 6px);
+  --workspace-entry-row-gap: calc(var(--spacing-level-1) + 1px);
+  --workspace-entry-columns: 1;
+  --workspace-entry-rows: 8;
+  --workspace-entry-row-min-height: 52px;
 }
 
 .workspace-content-layout::-webkit-scrollbar {
@@ -28,11 +38,12 @@
   display: grid;
   flex: 0 0 100%;
   grid-template-columns: repeat(var(--workspace-entry-columns), minmax(0, 1fr));
-  grid-template-rows: repeat(4, minmax(var(--workspace-entry-row-min-height), auto));
+  grid-template-rows: repeat(var(--workspace-entry-rows), minmax(var(--workspace-entry-row-min-height), auto));
   align-content: start;
-  gap: calc(var(--spacing-level-1) + 4px);
+  gap: var(--workspace-entry-row-gap);
   min-width: 0;
-  padding-inline: calc(var(--spacing-level-0) / 2);
+  padding-inline: var(--workspace-content-inline-inset);
+  padding-block: var(--workspace-content-shadow-clearance);
   scroll-snap-align: start;
   scroll-snap-stop: normal;
 }
@@ -102,13 +113,9 @@
 .entry-container .banner-type.is-game { --entry-type-color: var(--color-media-game); }
 .entry-container .banner-type.is-book { --entry-type-color: var(--color-media-book); }
 .entry-container .banner-type > :is(.icon, .masked-icon, .svg-icon) {
-  color: var(--color-text-secondary);
-  --app-icon-state-color: currentColor;
-  transition: color 140ms ease;
-}
-.entry-container:hover .banner-type > :is(.icon, .masked-icon, .svg-icon) {
   color: var(--entry-type-color, var(--color-text-secondary));
   --app-icon-state-color: currentColor;
+  transition: color 140ms ease;
 }
 /* !SECTION */
 
@@ -205,7 +212,7 @@
 /* !SECTION */
 
 /* SECTION banner-meta-layout */
-/* Stack the rating or priority row above the log date. */
+/* Align the rating or priority row beside the logged-date chip. */
 .entry-container .banner-meta-layout {
   --banner-meta-gap: calc(var(--spacing-level-1) - 2px);
   display: flex;
@@ -297,6 +304,133 @@
   font-size: calc(var(--font-size-label-chip) - 1px);
 }
 /* !SECTION */
+/* !SECTION */
+
+/* SECTION list-view entry layout */
+/* Use compact horizontal rows in list mode while leaving gallery cards unchanged. */
+.workspace-content-layout.is-list-view .entry-container {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 52px;
+  padding-inline: calc(var(--spacing-level-1) + 4px);
+}
+
+/* Keep the compact row layout, but give its badges and score details a little more presence. */
+.workspace-content-layout.is-list-view .entry-container .banner-labels-layout {
+  font-size: 13px;
+  gap: calc(var(--spacing-level-2) + 1px);
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-type > :is(.icon, .masked-icon, .svg-icon) {
+  width: 14px;
+  height: 14px;
+}
+
+.workspace-content-layout.is-list-view .entry-container :is(.banner-category-chip, .banner-release-date-chip, .banner-log-date-chip) {
+  height: 23px;
+  font-size: calc(var(--font-size-label-chip) + 1px);
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-category-chip {
+  padding-inline: 6px;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-value-layout .value-chip-styling {
+  padding: 3px 7px;
+  font-size: calc(var(--font-size-value-chip) - 1px);
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-value-layout .priority-dots > span {
+  width: 11px;
+  height: 11px;
+}
+
+.workspace-content-layout.is-list-view .entry-container .ratings-bar {
+  flex: 0 1 140px;
+  width: 140px;
+  height: 9px;
+}
+
+.workspace-content-layout.is-list-view .entry-poster {
+  display: none;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-info-layout {
+  align-items: center;
+  align-self: stretch;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: var(--spacing-level-2);
+  height: auto;
+  width: 100%;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-labels-layout {
+  display: contents;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-labels-layout > .banner-type {
+  order: 1;
+  align-self: center;
+  flex: 0 0 20px;
+  margin-inline-start: 0;
+  margin-inline-end: calc(var(--workspace-list-section-gap) - var(--spacing-level-2));
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-labels-layout > :not(.banner-type) {
+  order: 3;
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-category-chip {
+  margin-left: auto;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-heading-layout {
+  order: 2;
+  align-items: center;
+  flex: 1 1 220px;
+  flex-direction: row;
+  gap: var(--spacing-level-2);
+  width: auto;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-title {
+  flex: 0 1 auto;
+  max-width: 100%;
+  width: auto;
+  padding-inline-end: .12em;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-director {
+  flex: 0 1 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-meta-layout {
+  order: 4;
+  position: relative;
+  align-items: center;
+  flex: 0 1 auto;
+  width: auto;
+  margin-top: 0;
+  margin-inline-start: var(--workspace-list-section-gap);
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-meta-layout > .banner-value-layout {
+  flex: 0 1 auto;
+}
+
+.workspace-content-layout.is-list-view .entry-container .banner-meta-layout > .action-fullscreen {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 50%;
+  z-index: 4;
+  flex: none;
+  transform: translateY(-50%);
+}
 /* !SECTION */
 
 /* ANCHOR workspace-banner-link */
@@ -425,14 +559,14 @@
 .entry-container.is-opening { pointer-events: none; }
 
 /* ANCHOR workspace-content-layout responsive grid */
-/* Show five cards on very wide screens, then step down as content narrows. */
-@container app-content (width < 1550px) {
+/* Step down from five to four, three, and two columns as the workspace narrows. */
+@container app-content (width < 1940px) {
   .workspace-content-layout { --workspace-entry-columns: 4; }
 }
-@container app-content (width < 1940px) {
+@container app-content (width < 1550px) {
   .workspace-content-layout { --workspace-entry-columns: 3; }
 }
-@container app-content (width <= 1240px) {
+@container app-content (width <= 1150px) {
   .workspace-content-layout { --workspace-entry-columns: 2; }
 }
 @container app-content (width < 560px) {

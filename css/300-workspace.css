@@ -2,16 +2,25 @@
 /* Base class: .level-1-styling */
 /* Frame the controls, empty states, and entry banners. */
 .workspace-container {
+  --workspace-content-inline-inset: var(--app-content-inset-inline);
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  width: auto;
   gap: calc(var(--spacing-level-1) + 8px);
   min-width: 0;
-  padding: calc(var(--spacing-level-1) + 4px);
+  margin-inline: var(--app-content-inset-inline);
+  margin-block-end: var(--app-content-inset-block);
+  padding-block: calc(var(--spacing-level-1) + 4px);
+  padding-inline: 0;
   border: 1px solid var(--color-border-subtle);
   background: var(--color-surface-level-1);
   box-shadow: var(--shadow-surface-level-1);
   scroll-margin-block-start: var(--padding-block-layout-content);
   scroll-snap-align: start;
+}
+
+.workspace-container > .workspace-empty-state {
+  margin-inline: var(--workspace-content-inline-inset);
 }
 /* !SECTION */

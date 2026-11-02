@@ -4,14 +4,13 @@
 /* Place the stats above the banner beside the dashboard rail. */
 .overview-layout {
   display: grid;
-  grid-template-columns:
-    /* minmax(max-content, auto) */
-    minmax(180px, 200px)
-    minmax(0, 1fr);
+  grid-template-columns: minmax(180px, 200px) minmax(0, 1fr);
   grid-template-rows: auto auto;
   align-items: stretch;
-  gap: calc(var(--spacing-level-0) + 4px);
-  margin-bottom: calc(var(--spacing-level-0) + 4px);
+  gap: var(--app-layout-gap);
+  margin-block-start: var(--app-content-inset-block);
+  margin-inline: var(--app-content-inset-inline);
+  margin-bottom: var(--app-layout-gap);
   scroll-margin-block-start: var(--padding-block-layout-content);
   scroll-snap-align: start;
 }

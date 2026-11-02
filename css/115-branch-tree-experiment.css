@@ -1,0 +1,61 @@
+/* TEMPORARY: reusable branch-tree styling experiments for the Settings menu.
+   This file is intentionally not imported by css/main.css. */
+
+/* Apply .branch-tree-experiment to a future tree list and set --branch-count. */
+.branch-tree-experiment {
+  --branch-color: var(--color-text-secondary);
+  --branch-active-color: var(--color-accent-primary);
+  --branch-width: 2px;
+  --branch-radius: 8px;
+  --branch-draw-duration: 240ms;
+  --branch-progress: 1;
+  position: relative;
+  isolation: isolate;
+}
+
+.branch-tree-experiment::before {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: var(--branch-end-inset, 0);
+  left: var(--branch-trunk-inset, 10px);
+  width: var(--branch-width);
+  background: var(--branch-color);
+  transform: scaleY(var(--branch-progress));
+  transform-origin: top;
+  filter: drop-shadow(-1px 0 0 color-mix(in srgb, black 35%, transparent));
+  transition: transform var(--branch-draw-duration) linear var(--branch-draw-delay, 0ms);
+  content: "";
+  pointer-events: none;
+}
+
+.branch-tree-experiment > * {
+  --branch-elbow-progress: 1;
+  position: relative;
+}
+
+.branch-tree-experiment > *::before {
+  position: absolute;
+  top: 50%;
+  left: var(--branch-elbow-inset, 10px);
+  width: var(--branch-elbow-length, 18px);
+  height: var(--branch-radius);
+  border-bottom: var(--branch-width) solid var(--branch-color);
+  border-left: var(--branch-width) solid var(--branch-color);
+  border-bottom-left-radius: var(--branch-radius);
+  clip-path: inset(0 calc(100% - var(--branch-elbow-progress, 100%)) 0 0);
+  transform: translateY(-100%);
+  filter: drop-shadow(-1px 0 0 color-mix(in srgb, black 35%, transparent));
+  transition: clip-path var(--branch-draw-duration) linear var(--branch-draw-delay, 0ms);
+  content: "";
+  pointer-events: none;
+}
+
+.branch-tree-experiment > .is-branch-active {
+  --branch-color: var(--branch-active-color);
+}
+
+:root[data-theme="light"] .branch-tree-experiment::before,
+:root[data-theme="light"] .branch-tree-experiment > *::before {
+  filter: none;
+}

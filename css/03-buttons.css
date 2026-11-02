@@ -91,6 +91,16 @@
 /* !SECTION */
 
 /* SECTION Icon buttons and symbols */
+/* Center icons inside reusable boxed icon slots; parents provide their own scale. */
+.icon-container {
+  display: grid;
+  flex: 0 0 var(--icon-container-size, auto);
+  place-items: center;
+  width: var(--icon-container-size, auto);
+  height: var(--icon-container-size, auto);
+  padding: var(--icon-container-padding, 0);
+}
+
 /* Align the contents of compact icon-only controls. */
 .icon-button {
   display: grid;                                /* Use grid to center the icon. */
@@ -129,6 +139,10 @@
   background: transparent;
   box-shadow: none;
   color: var(--color-text-secondary);
+  transition:
+    background-color var(--ui-expand-duration) cubic-bezier(.22, 1, .36, 1),
+    border-color var(--ui-expand-duration) cubic-bezier(.22, 1, .36, 1),
+    box-shadow var(--ui-expand-duration) cubic-bezier(.22, 1, .36, 1);
 }
 
 .pagination-container.level-2-styling:is(:hover, :has(> button:focus-visible)) {
@@ -166,6 +180,21 @@
   cursor: pointer;
   opacity: 0;
   pointer-events: none;
+}
+
+.pagination-container > :is(.pagination-prev-button, .pagination-next-button) {
+  transition:
+    flex-basis 320ms cubic-bezier(.22, 1, .36, 1),
+    width 320ms cubic-bezier(.22, 1, .36, 1),
+    margin-inline 320ms cubic-bezier(.22, 1, .36, 1),
+    opacity 160ms ease;
+}
+
+.pagination-container:is(:hover, :has(> button:focus-visible)) > :is(.pagination-prev-button, .pagination-next-button) {
+  --pagination-arrow-width: var(--pagination-arrow-expanded-width);
+  margin-inline: 2px;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .pagination-container > :is(.pagination-prev-button, .pagination-next-button):focus-visible {

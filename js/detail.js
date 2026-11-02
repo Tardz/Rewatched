@@ -112,7 +112,7 @@ function removeWatch(entry, index) {
   entry.watches.splice(index, 1);
   if (!entry.watches.length) {
     entries = entries.filter((item) => item.id !== entry.id);
-    location.hash = '#library';
+    location.hash = '#logged';
   }
   bannerIndex = 0;
   save();
@@ -340,8 +340,8 @@ function hideDetail() {
   detail.classList.remove('is-fullscreen');
   delete detail.dataset.entryId;
   $('.dashboard-back-button').hidden = true;
-  $('#statistics-panel').hidden = !$('.stats-page-button, .section-statistics').classList.contains('is-active');
-  $('.library-section').hidden = !$('.library-page-button, .section-library').classList.contains('is-active');
+  $('#statistics-panel').hidden = document.documentElement.dataset.appPage !== 'statistics';
+  $('.workspace-section').hidden = document.documentElement.dataset.appPage === 'statistics';
   $('.statsbar-container, .statsbar').hidden = false;
   $('.overview-banner-container').hidden = document.documentElement.dataset.cssReworkPreview !== 'true' && bannerEntries().length === 0;
 }
@@ -383,7 +383,7 @@ function renderDetail() {
   const fullscreen = match[3] === 'full';
   const entry = (view === 'watchlist' ? watchlist : entries).find((item) => item.id === id);
   if (!entry) {
-    location.hash = '#library';
+    location.hash = '#logged';
     return;
   }
   setNavbarPageContextOverride(fullscreen ? entry.title : '');
@@ -412,8 +412,8 @@ function renderDetail() {
   detail.classList.toggle('is-fullscreen', fullscreen);
   detail.hidden = false;
   $('.dashboard-back-button').hidden = !fullscreen;
-  $('#statistics-panel').hidden = fullscreen || !$('.stats-page-button, .section-statistics').classList.contains('is-active');
-  $('.library-section').hidden = fullscreen || !$('.library-page-button, .section-library').classList.contains('is-active');
+  $('#statistics-panel').hidden = fullscreen || document.documentElement.dataset.appPage !== 'statistics';
+  $('.workspace-section').hidden = fullscreen || document.documentElement.dataset.appPage === 'statistics';
   $('.statsbar-container, .statsbar').hidden = fullscreen;
   $('.overview-banner-container').hidden = fullscreen || (document.documentElement.dataset.cssReworkPreview !== 'true' && bannerEntries().length === 0);
 
@@ -428,7 +428,7 @@ function renderDetail() {
     $('#detail-backdrop-image').removeAttribute('src');
     if (fullscreen) resetPagePalette();
   }
-  $('#detail-kicker').textContent = `${view === 'watchlist' ? 'Watchlist' : 'Library'} · ${entry.type}${entry.year ? ` · ${entry.year}` : ''}`;
+  $('#detail-kicker').textContent = `${view === 'watchlist' ? 'Backlogged' : 'Logged'} · ${entry.type}${entry.year ? ` · ${entry.year}` : ''}`;
   $('#detail-director').textContent = entry.director ? `by ${entry.director}` : '';
   $('#detail-director').hidden = !entry.director;
   const runtime = entry.metadata?.runtime?.trim() || '';

@@ -477,12 +477,12 @@ function updateBannerPalette(source, { updatePage = true } = {}) {
 function bannerEntries() {
   const isBacklogged = activeCollectionView === 'watchlist';
   const source = (isBacklogged ? watchlist : entries).filter((entry) =>
-    matchesCollectionSearch(entry, $('.library-search-container > .search-input')?.value.trim().toLocaleLowerCase() || '')
+    matchesCollectionSearch(entry, $('.collection-search-container > .search-input')?.value.trim().toLocaleLowerCase() || '')
     && matchesCollectionFilters(entry, isBacklogged));
   const sorted = sortCollectionItems(source, isBacklogged);
   if (document.documentElement.dataset.cssReworkPreview !== 'true') return sorted.slice(0, BANNER_ROTATION_LIMIT);
 
-  const pageSize = getCollectionColumnCount() * collectionRowsPerPage;
+  const pageSize = getCollectionColumnCount() * getCollectionRowCount();
   return sorted.slice(collectionPage * pageSize, (collectionPage + 1) * pageSize);
 }
 

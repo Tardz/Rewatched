@@ -60,3 +60,6 @@ The interface icons below are from Flaticon. Each credit links to the correspond
 - [Close icons designed by Fathema Khanom from Flaticon](https://www.flaticon.com/free-icons/close)
 - [Revert icons designed by KP Arts from Flaticon](https://www.flaticon.com/free-icons/revert)
 - [Edit text icons designed by Arkinasi from Flaticon](https://www.flaticon.com/free-icons/edit-text)
+- [Surface icons designed by meaicon from Flaticon](https://www.flaticon.com/free-icons/surface)
+- [Row icons designed by Azland Studio from Flaticon](https://www.flaticon.com/free-icons/row)
+- [Yellow card icons designed by Mihimihi from Flaticon](https://www.flaticon.com/free-icons/yellow-card)

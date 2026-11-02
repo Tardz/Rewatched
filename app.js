@@ -1,45 +1,27 @@
 /** App module. */
 // Top-level navigation, filters, banner controls, and startup.
 
-const LIBRARY_SCROLL_KEY = 'rerun-library-scroll-position';
-let libraryScrollPosition = Number(sessionStorage.getItem(LIBRARY_SCROLL_KEY)) || 0;
+const COLLECTION_SCROLL_KEY = 'rerun-collection-scroll-position';
+let collectionScrollPosition = Number(sessionStorage.getItem(COLLECTION_SCROLL_KEY)) || 0;
 
 const themeToggle = $('.dashboard-theme-button');
-const navThemeToggle = $('.nav-toggle-theme');
+const navButtonFor = (iconId) => document.getElementById(iconId);
+const navThemeToggle = navButtonFor('nav-theme-button');
+const navbarPageButtonSelector = '.navbar-vertical-layout > .nav-group-container > button, .navbar-vertical-layout > .nav-group-container > .nav-folder-menu .folder-menu-trigger-option';
 $('.dashboard-settings-button')?.addEventListener('click', openSettings);
 $('.dashboard-storage-button')?.addEventListener('click', openSettings);
-const collectionFiltersReturnAnchor = $('.workspace-filter-container, .collection-filter-sort').nextElementSibling;
+const collectionFiltersSelector = '.workspace-control-group:has(> .workspace-filter-layout)';
+const collectionFiltersReturnAnchor = $(collectionFiltersSelector).nextElementSibling;
 
-/** Updates the sidebar's expanded or icon-only state. */
-function setSidebarCollapsed(collapsed, persist = false) {
-  const appContainer = $('.app-container');
-  const sidebarToggle = $('.nav-toggle-sidebar');
-  appContainer.classList.toggle('is-sidebar-collapsed', collapsed);
-  if (persist) localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(collapsed));
-  sidebarToggle.setAttribute('aria-pressed', String(collapsed));
-  sidebarToggle.setAttribute('aria-label', collapsed ? 'Expand sidebar' : 'Collapse sidebar');
-  sidebarToggle.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
-  const settingsDialog = $('.settings-container');
-  if (settingsDialog?.open) centerSettingsDialog(settingsDialog);
-}
-
-if ($('.navbar-vertical-layout')) {
-  const savedSidebarState = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
-  setSidebarCollapsed(savedSidebarState === 'true');
-  $('.nav-toggle-sidebar').addEventListener('click', () => {
-    setSidebarCollapsed(!$('.app-container').classList.contains('is-sidebar-collapsed'), true);
-  });
-}
-
-/** Switches between the library and its statistics panel. */
+/** Switches between the Logged page and its statistics panel. */
 function setDashboardSection(section) {
   const showStatistics = section === 'statistics';
   const dashboard = document.querySelector('.default-layout, .dashboard-layout');
-  const collectionFilters = $('.workspace-filter-container, .collection-filter-sort');
-  const libraryButton = $('.library-page-button, .section-library');
+  const collectionFilters = $(collectionFiltersSelector);
+  const loggedButton = $('.logged-page-button');
   const statisticsButton = $('.stats-page-button, .section-statistics');
 
-  $('.library-section').hidden = showStatistics;
+  $('.workspace-section').hidden = showStatistics;
   $('#statistics-panel').hidden = !showStatistics;
   if (showStatistics) {
     $('#statistics-panel').prepend(collectionFilters);
@@ -50,11 +32,11 @@ function setDashboardSection(section) {
     updateCollectionTools(activeCollectionView === 'watchlist');
   }
   dashboard.classList.toggle('is-statistics-view', showStatistics);
-  document.documentElement.dataset.dashboardSection = showStatistics ? 'statistics' : 'library';
+  document.documentElement.dataset.dashboardSection = showStatistics ? 'statistics' : 'logged';
 
-  libraryButton.classList.toggle('is-active', !showStatistics);
+  loggedButton.classList.toggle('is-active', !showStatistics);
   statisticsButton.classList.toggle('is-active', showStatistics);
-  libraryButton.toggleAttribute('aria-current', !showStatistics);
+  loggedButton.toggleAttribute('aria-current', !showStatistics);
   statisticsButton.toggleAttribute('aria-current', showStatistics);
 
   if (showStatistics) {
@@ -68,13 +50,71 @@ function setDashboardSection(section) {
   }
 }
 
-$('.library-page-button, .section-library').addEventListener('click', () => {
-  setDashboardSection('library');
-  setNavbarPage($('.nav-library-button'));
+/** Switches the visible app page while keeping the collection workspace shared. */
+let appPageBackdropFrame = 0;
+function transitionAppPageBackdrop(appPage) {
+  const root = document.documentElement;
+  const previousPage = root.dataset.appPage;
+  const currentColor = getComputedStyle(root).getPropertyValue('--app-page-backdrop-render-color').trim()
+    || getComputedStyle(root).getPropertyValue('--app-page-backdrop-color').trim()
+    || 'transparent';
+  if (previousPage === appPage) return;
+
+  cancelAnimationFrame(appPageBackdropFrame);
+  root.style.removeProperty('--app-page-backdrop-render-color');
+  root.dataset.appPage = appPage;
+  const nextColor = getComputedStyle(root).getPropertyValue('--app-page-backdrop-color').trim() || 'transparent';
+  if (root.dataset.reduceAnimations === 'on' || currentColor === nextColor) return;
+
+  const startTime = performance.now();
+  const duration = 480;
+  const updateColor = (time) => {
+    const linearProgress = Math.min(1, (time - startTime) / duration);
+    const progress = linearProgress * linearProgress * (3 - 2 * linearProgress);
+    root.style.setProperty(
+      '--app-page-backdrop-render-color',
+      `color-mix(in srgb, ${currentColor} ${100 - progress * 100}%, ${nextColor} ${progress * 100}%)`,
+    );
+    if (linearProgress < 1) {
+      appPageBackdropFrame = requestAnimationFrame(updateColor);
+    } else {
+      root.style.removeProperty('--app-page-backdrop-render-color');
+      appPageBackdropFrame = 0;
+    }
+  };
+  appPageBackdropFrame = requestAnimationFrame(updateColor);
+}
+
+function setAppPage(page) {
+  const previousPage = document.documentElement.dataset.appPage || 'home';
+  const appPage = ['home', 'logged', 'backlogged', 'folders', 'statistics'].includes(page)
+    ? page
+    : 'home';
+  const isCollectionPage = ['logged', 'backlogged', 'folders'].includes(appPage);
+
+  transitionAppPageBackdrop(appPage);
+  $('.overview-layout').hidden = isCollectionPage;
+  setDashboardSection(appPage === 'statistics' ? 'statistics' : 'logged');
+
+  if (previousPage !== appPage) {
+    cancelAnimationFrame(appPageLayoutRefreshFrame);
+    appPageLayoutRefreshFrame = requestAnimationFrame(() => {
+      appPageLayoutRefreshFrame = requestAnimationFrame(() => {
+        appPageLayoutRefreshFrame = 0;
+        handleCollectionResize();
+      });
+    });
+  }
+}
+
+let appPageLayoutRefreshFrame = 0;
+
+$('.logged-page-button').addEventListener('click', () => {
+  showNavbarCollectionView('logged', navButtonFor('nav-logged-button'));
 });
 $('.stats-page-button, .section-statistics').addEventListener('click', () => {
-  setDashboardSection('statistics');
-  setNavbarPage($('.nav-stats-button'));
+  setAppPage('statistics');
+  setNavbarPage(navButtonFor('nav-stats-button'));
 });
 
 let navbarPageBeforeSettings = null;
@@ -200,19 +240,24 @@ $('.nav-pagination-container')?.addEventListener('animationend', (event) => {
   if (event.animationName !== 'nav-context-reveal') return;
   const pageContainer = event.currentTarget;
   if (pageContainer.classList.contains('is-concealing')) {
-    $('.nav-context-text').hidden = true;
+    $('.nav-context-text-container').hidden = true;
     pageContainer.classList.remove('has-page-context', 'is-concealing');
+    pageContainer.style.removeProperty('--nav-context-duration');
+    pageContainer.style.removeProperty('--nav-context-delay');
     updateNavbarContextStyling();
   } else {
     pageContainer.classList.remove('is-revealing');
   }
 });
 
+let navbarPageNameAnimationTimeout;
+let navbarContextNameAnimationTimeout;
+
 /** Keeps the top-level navbar selection in sync with the current page. */
 function setNavbarPage(activeButton) {
   if (!activeButton) return;
 
-  document.querySelectorAll('.navbar-vertical-layout .nav-button').forEach((button) => {
+  document.querySelectorAll(navbarPageButtonSelector).forEach((button) => {
     const active = button === activeButton;
     button.classList.toggle('is-active', active);
     button.toggleAttribute('aria-current', active);
@@ -220,27 +265,142 @@ function setNavbarPage(activeButton) {
 
   const pageContainer = $('.nav-pagination-container');
   const pageName = $('.nav-page-text-container');
-  const activeLabel = activeButton.querySelector('.nav-button-text');
+  const activeLabel = activeButton.dataset.pageName;
   if (pageName && activeLabel) {
-    pageName.textContent = activeLabel.textContent.trim();
+    const nextPageName = activeLabel.trim();
+    const previousPageName = pageName.dataset.pageName || pageName.textContent.trim();
+    if (nextPageName !== previousPageName) {
+      const currentContainerWidth = pageName.getBoundingClientRect().width;
+      pageName.dataset.pageName = nextPageName;
+      clearTimeout(navbarPageNameAnimationTimeout);
+      pageName.classList.remove('is-rolling');
+      delete pageName.dataset.widthShrinking;
+      pageName.style.removeProperty('width');
+      pageName.style.removeProperty('--page-name-roll-total-duration');
+      pageName.style.removeProperty('--page-name-roll-width-delay');
+
+      if (reduceAnimationsEnabled) {
+        pageName.textContent = nextPageName;
+      } else {
+        const measureNameWidth = (text) => {
+          const measuredName = document.createElement('span');
+          measuredName.style.position = 'absolute';
+          measuredName.style.visibility = 'hidden';
+          measuredName.style.whiteSpace = 'pre';
+          measuredName.textContent = text;
+          pageName.append(measuredName);
+          const width = measuredName.getBoundingClientRect().width;
+          measuredName.remove();
+          return width;
+        };
+        const pageNameStyles = getComputedStyle(pageName);
+        const numberOf = (property) => Number.parseFloat(pageNameStyles[property]) || 0;
+        const contentLeft = numberOf('paddingLeft');
+        const horizontalEdges = numberOf('borderLeftWidth') + numberOf('paddingLeft') + numberOf('paddingRight') + numberOf('borderRightWidth');
+        const previousWidth = measureNameWidth(previousPageName);
+        const nextWidth = measureNameWidth(nextPageName);
+        const targetContainerWidth = nextWidth + horizontalEdges;
+        pageName.style.width = `${currentContainerWidth || previousWidth + horizontalEdges}px`;
+        const previousLetters = Array.from(previousPageName);
+        const nextLetters = Array.from(nextPageName);
+        const letterCount = Math.max(previousLetters.length, nextLetters.length);
+        const letterDelayStep = 45;
+        const changingIndices = Array.from({ length: letterCount }, (_, index) => index)
+          .filter((index) => previousLetters[index] !== nextLetters[index])
+          .map((index) => ({
+            index,
+            width: Math.max(
+              previousLetters[index] ? measureNameWidth(previousLetters[index]) : 0,
+              nextLetters[index] ? measureNameWidth(nextLetters[index]) : 0,
+            ),
+            tieBreaker: Math.random(),
+          }))
+          .sort((first, second) => second.width - first.width || first.tieBreaker - second.tieBreaker)
+          .map(({ index }) => index);
+        const staggerOrder = new Map(changingIndices.map((index, order) => [index, order]));
+        const accessibleName = document.createElement('span');
+        accessibleName.className = 'nav-page-character-accessible';
+        accessibleName.textContent = nextPageName;
+        const animatedLetters = document.createDocumentFragment();
+        const positionLetter = (letter, sourceLetters, index) => {
+          letter.style.left = `${contentLeft + measureNameWidth(sourceLetters.slice(0, index).join(''))}px`;
+        };
+        for (let index = 0; index < letterCount; index += 1) {
+          const previousLetter = previousLetters[index];
+          const nextLetter = nextLetters[index];
+
+          if (previousLetter === nextLetter) {
+            const stableLetter = document.createElement('span');
+            stableLetter.className = 'nav-page-character-static';
+            stableLetter.textContent = nextLetter;
+            positionLetter(stableLetter, nextLetters, index);
+            animatedLetters.append(stableLetter);
+          } else {
+            if (previousLetter !== undefined) {
+              const oldLetter = document.createElement('span');
+              oldLetter.className = 'nav-page-character-old';
+              oldLetter.textContent = previousLetter;
+              positionLetter(oldLetter, previousLetters, index);
+              oldLetter.style.setProperty('--page-name-letter-delay', `${staggerOrder.get(index) * letterDelayStep}ms`);
+              animatedLetters.append(oldLetter);
+            }
+            if (nextLetter !== undefined) {
+              const newLetter = document.createElement('span');
+              newLetter.className = 'nav-page-character-new';
+              newLetter.textContent = nextLetter;
+              positionLetter(newLetter, nextLetters, index);
+              newLetter.style.setProperty('--page-name-letter-delay', `${staggerOrder.get(index) * letterDelayStep}ms`);
+              animatedLetters.append(newLetter);
+            }
+          }
+        }
+        pageName.replaceChildren(accessibleName, animatedLetters);
+        void pageName.offsetWidth;
+        pageName.classList.add('is-rolling');
+        const animationDuration = Number.parseFloat(
+          getComputedStyle(pageName).getPropertyValue('--page-name-roll-duration'),
+        ) || 240;
+        const totalAnimationDuration = animationDuration + Math.max(0, changingIndices.length - 1) * letterDelayStep;
+        const isShrinking = targetContainerWidth < currentContainerWidth;
+        pageName.dataset.widthShrinking = String(isShrinking);
+        const widthAnimationDuration = isShrinking ? 240 : totalAnimationDuration;
+        const widthAnimationDelay = isShrinking ? 100 : 0;
+        pageName.style.setProperty('--page-name-roll-total-duration', `${totalAnimationDuration}ms`);
+        pageName.style.setProperty('--page-name-roll-width-duration', `${widthAnimationDuration}ms`);
+        pageName.style.setProperty('--page-name-roll-width-delay', `${widthAnimationDelay}ms`);
+        void pageName.offsetWidth;
+        pageName.style.width = `${targetContainerWidth}px`;
+        navbarPageNameAnimationTimeout = window.setTimeout(() => {
+          if (pageName.dataset.pageName !== nextPageName) return;
+          pageName.textContent = nextPageName;
+          pageName.classList.remove('is-rolling');
+          delete pageName.dataset.widthShrinking;
+          pageName.style.removeProperty('width');
+          pageName.style.removeProperty('--page-name-roll-total-duration');
+          pageName.style.removeProperty('--page-name-roll-width-duration');
+          pageName.style.removeProperty('--page-name-roll-width-delay');
+        }, Math.max(totalAnimationDuration, widthAnimationDelay + widthAnimationDuration) + 30);
+      }
+    } else {
+      pageName.dataset.pageName = nextPageName;
+    }
     const colorTokens = {
-      'nav-home-button': '--color-icon-home',
-      'nav-library-button': '--color-icon-library',
-      'nav-backlog-button': '--color-backlog',
-      'nav-folders-button': '--color-icon-folder',
-      'nav-stats-button': '--color-icon-stats',
-      'nav-timeline-button': '--color-icon-timeline',
-      'nav-activity-button': '--color-icon-activity',
-      'nav-settings-button': '--color-icon-settings',
-      'nav-about-button': '--palette-white',
+      Home: '--color-icon-home',
+      Logged: '--color-icon-logged',
+      Backlogged: '--color-backlog',
+      Folders: '--color-icon-folder',
+      Stats: '--color-icon-stats',
+      Timeline: '--color-icon-timeline',
+      Activity: '--color-icon-activity',
+      Settings: '--color-icon-settings',
     };
-    const colorToken = Object.entries(colorTokens).find(([name]) => activeButton.classList.contains(name))?.[1];
+    const colorToken = colorTokens[nextPageName];
     if (colorToken) pageContainer.style.setProperty('--nav-page-text-container-color', `var(${colorToken})`);
   }
   updateNavbarPageContext();
 }
 
-setNavbarPage($('.nav-home-button'));
+setNavbarPage(navButtonFor('nav-home-button'));
 $('.nav-prev-button')?.addEventListener('click', () => {
   if (navbarUrlHistoryIndex <= 0) return;
   navbarHistoryTraversalDirection = -1;
@@ -269,7 +429,7 @@ if (navStorageButton && navStorageText) {
   updateNavStorageTextWidth();
 }
 
-$('.nav-settings-button')?.addEventListener('click', () => {
+navButtonFor('nav-settings-button')?.addEventListener('click', () => {
   const dialog = $('.settings-container');
   if (dialog.open) {
     dialog.close();
@@ -280,11 +440,15 @@ $('.nav-settings-button')?.addEventListener('click', () => {
 
 $('.navbar-vertical-layout')?.addEventListener('click', (event) => {
   const pageButton = event.target.closest(
-    '.nav-home-button, .nav-library-button, .nav-backlog-button, .nav-folders-button, .nav-progress-button, .nav-stats-button, .nav-timeline-button',
+    '.navbar-vertical-layout button[data-page-name="Home"], .navbar-vertical-layout button[data-page-name="Logged"], .navbar-vertical-layout button[data-page-name="Backlogged"], .navbar-vertical-layout button[data-page-name="Folders"], .navbar-vertical-layout button[data-page-name="Progress"], .navbar-vertical-layout button[data-page-name="Stats"], .navbar-vertical-layout button[data-page-name="Timeline"]',
   );
   if (!pageButton) return;
   const dialog = $('.settings-container');
-  if (dialog?.open) dialog.close();
+  if (dialog?.open) {
+    navbarPageBeforeSettings = null;
+    navbarPageContextBeforeSettings = '';
+    dialog.close();
+  }
 }, true);
 
 function toggleSettingsCategoryFromNavigation(category) {
@@ -297,9 +461,8 @@ function toggleSettingsCategoryFromNavigation(category) {
   openSettings();
 }
 
-$('.nav-about-button')?.addEventListener('click', () => toggleSettingsCategoryFromNavigation('about'));
 $('.nav-storage-button')?.addEventListener('click', () => toggleSettingsCategoryFromNavigation('storage'));
-$('.nav-profile-button')?.addEventListener('click', () => toggleSettingsCategoryFromNavigation('account'));
+navButtonFor('nav-profile-button')?.addEventListener('click', () => toggleSettingsCategoryFromNavigation('account'));
 
 $('.settings-container').addEventListener('close', () => {
   closeSettingsHeadingHelp();
@@ -344,23 +507,162 @@ function updateNavbarPageContext() {
   const pageContainer = $('.nav-pagination-container');
   const pageName = $('.nav-page-text-container');
   const context = $('.nav-page-container');
-  const contextName = $('.nav-context-text');
+  const contextName = $('.nav-context-text-container');
   const activeCategory = $('.settings-category-button.active');
   if (!pageContainer || !context || !contextName) return;
+  const animateContextName = (label) => {
+    const previousLabel = contextName.dataset.contextLabel ?? contextName.textContent;
+    if (previousLabel === label) return;
+    clearTimeout(navbarContextNameAnimationTimeout);
+    const currentWidth = contextName.getBoundingClientRect().width;
+    contextName.classList.remove('is-rolling');
+    contextName.style.removeProperty('--page-name-roll-total-duration');
+    contextName.style.width = `${currentWidth}px`;
+    contextName.dataset.contextLabel = label;
+
+    if (reduceAnimationsEnabled || contextName.hidden) {
+      contextName.textContent = label;
+      contextName.classList.remove('is-rolling');
+      contextName.style.removeProperty('width');
+      return;
+    }
+
+    const measureTextWidth = (text) => {
+      const measuredText = document.createElement('span');
+      measuredText.style.position = 'absolute';
+      measuredText.style.visibility = 'hidden';
+      measuredText.style.whiteSpace = 'pre';
+      measuredText.textContent = text;
+      contextName.append(measuredText);
+      const width = measuredText.getBoundingClientRect().width;
+      measuredText.remove();
+      return width;
+    };
+    const contextStyles = getComputedStyle(contextName);
+    const numberOf = (property) => Number.parseFloat(contextStyles[property]) || 0;
+    const contentLeft = numberOf('paddingLeft');
+    const horizontalEdges = numberOf('borderLeftWidth') + numberOf('paddingLeft')
+      + numberOf('paddingRight') + numberOf('borderRightWidth');
+    const previousLetters = Array.from(previousLabel);
+    const nextLetters = Array.from(label);
+    const letterCount = Math.max(previousLetters.length, nextLetters.length);
+    const letterDelayStep = 45;
+    const changingIndices = Array.from({ length: letterCount }, (_, index) => index)
+      .filter((index) => previousLetters[index] !== nextLetters[index])
+      .map((index) => ({
+        index,
+        width: Math.max(
+          previousLetters[index] ? measureTextWidth(previousLetters[index]) : 0,
+          nextLetters[index] ? measureTextWidth(nextLetters[index]) : 0,
+        ),
+        tieBreaker: Math.random(),
+      }))
+      .sort((first, second) => second.width - first.width || first.tieBreaker - second.tieBreaker)
+      .map(({ index }) => index);
+    const staggerOrder = new Map(changingIndices.map((index, order) => [index, order]));
+    const accessibleName = document.createElement('span');
+    accessibleName.className = 'nav-page-character-accessible';
+    accessibleName.textContent = label;
+    const animatedLetters = document.createDocumentFragment();
+    const positionLetter = (letter, sourceLetters, index) => {
+      letter.style.left = `${contentLeft + measureTextWidth(sourceLetters.slice(0, index).join(''))}px`;
+    };
+
+    for (let index = 0; index < letterCount; index += 1) {
+      const previousLetter = previousLetters[index];
+      const nextLetter = nextLetters[index];
+      if (previousLetter === nextLetter) {
+        const stableLetter = document.createElement('span');
+        stableLetter.className = 'nav-page-character-static';
+        stableLetter.textContent = nextLetter;
+        positionLetter(stableLetter, nextLetters, index);
+        animatedLetters.append(stableLetter);
+        continue;
+      }
+
+      if (previousLetter !== undefined) {
+        const oldLetter = document.createElement('span');
+        oldLetter.className = 'nav-page-character-old';
+        oldLetter.textContent = previousLetter;
+        positionLetter(oldLetter, previousLetters, index);
+        oldLetter.style.setProperty('--page-name-letter-delay', `${staggerOrder.get(index) * letterDelayStep}ms`);
+        animatedLetters.append(oldLetter);
+      }
+      if (nextLetter !== undefined) {
+        const newLetter = document.createElement('span');
+        newLetter.className = 'nav-page-character-new';
+        newLetter.textContent = nextLetter;
+        positionLetter(newLetter, nextLetters, index);
+        newLetter.style.setProperty('--page-name-letter-delay', `${staggerOrder.get(index) * letterDelayStep}ms`);
+        animatedLetters.append(newLetter);
+      }
+    }
+
+    const targetWidth = measureTextWidth(label) + horizontalEdges;
+    contextName.style.width = `${currentWidth}px`;
+    contextName.replaceChildren(accessibleName, animatedLetters);
+    void contextName.offsetWidth;
+    contextName.classList.add('is-rolling');
+    const animationDuration = Number.parseFloat(
+      getComputedStyle(contextName).getPropertyValue('--page-name-roll-duration'),
+    ) || 140;
+    const totalAnimationDuration = animationDuration + Math.max(0, changingIndices.length - 1) * letterDelayStep;
+    const isShrinking = targetWidth < currentWidth;
+    const widthAnimationDuration = isShrinking ? 240 : totalAnimationDuration;
+    const widthAnimationDelay = isShrinking ? Math.max(0, totalAnimationDuration - 180) : 0;
+    contextName.style.setProperty('--page-name-roll-total-duration', `${totalAnimationDuration}ms`);
+    contextName.style.setProperty('--page-name-roll-width-duration', `${widthAnimationDuration}ms`);
+    contextName.style.setProperty('--page-name-roll-width-delay', `${widthAnimationDelay}ms`);
+    void contextName.offsetWidth;
+    contextName.style.width = `${targetWidth}px`;
+    navbarContextNameAnimationTimeout = window.setTimeout(() => {
+      if (contextName.dataset.contextLabel === label) {
+        contextName.textContent = label;
+        contextName.classList.remove('is-rolling');
+        contextName.style.removeProperty('width');
+        contextName.style.removeProperty('--page-name-roll-total-duration');
+        contextName.style.removeProperty('--page-name-roll-width-duration');
+        contextName.style.removeProperty('--page-name-roll-width-delay');
+      }
+    }, Math.max(totalAnimationDuration, widthAnimationDelay + widthAnimationDuration) + 30);
+  };
   const setPageContext = (label = '') => {
     const hasContext = Boolean(label);
     if (!hasContext) {
       if (contextName.hidden || pageContainer.classList.contains('is-concealing')) return;
       const expandedWidth = pageContainer.getBoundingClientRect().width;
+      pageContainer.style.setProperty('--nav-context-text-container-width', `${contextName.getBoundingClientRect().width}px`);
       pageContainer.classList.remove('is-revealing');
       contextName.hidden = true;
       pageContainer.classList.remove('has-page-context');
       updateNavbarContextStyling();
-      const collapsedWidth = pageContainer.getBoundingClientRect().width;
+      let collapsedWidth = pageContainer.getBoundingClientRect().width;
+      contextName.hidden = false;
       pageContainer.classList.add('has-page-context');
       updateNavbarContextStyling();
+      if (pageName?.classList.contains('is-rolling')) {
+        const targetPageWidth = Number.parseFloat(pageName.style.width);
+        if (Number.isFinite(targetPageWidth)) {
+          collapsedWidth += targetPageWidth - pageName.getBoundingClientRect().width;
+        }
+      }
       pageContainer.style.setProperty('--nav-context-start-width', `${expandedWidth}px`);
       pageContainer.style.setProperty('--nav-context-end-width', `${collapsedWidth}px`);
+      const pageNameStyles = pageName && getComputedStyle(pageName);
+      const isPageNameShrinking = pageName?.classList.contains('is-rolling')
+        && pageName.dataset.widthShrinking === 'true';
+      pageContainer.style.setProperty(
+        '--nav-context-duration',
+        isPageNameShrinking
+          ? pageNameStyles.getPropertyValue('--page-name-roll-width-duration').trim() || '240ms'
+          : 'var(--ui-expand-duration)',
+      );
+      pageContainer.style.setProperty(
+        '--nav-context-delay',
+        isPageNameShrinking
+          ? pageNameStyles.getPropertyValue('--page-name-roll-width-delay').trim() || '0ms'
+          : '0ms',
+      );
       void pageContainer.offsetWidth;
       pageContainer.classList.add('is-concealing');
       return;
@@ -369,12 +671,22 @@ function updateNavbarPageContext() {
     pageContainer.classList.remove('is-concealing');
     const contextWasHidden = contextName.hidden;
     const collapsedWidth = contextWasHidden ? pageContainer.getBoundingClientRect().width : 0;
-    contextName.textContent = label;
+    animateContextName(label);
     contextName.hidden = false;
     pageContainer.classList.add('has-page-context');
     updateNavbarContextStyling();
     if (contextWasHidden) {
-      const expandedWidth = pageContainer.getBoundingClientRect().width;
+      let expandedWidth = pageContainer.getBoundingClientRect().width;
+      pageContainer.style.setProperty(
+        '--nav-context-text-container-width',
+        contextName.style.width || `${contextName.getBoundingClientRect().width}px`,
+      );
+      if (pageName?.classList.contains('is-rolling')) {
+        const targetPageWidth = Number.parseFloat(pageName.style.width);
+        if (Number.isFinite(targetPageWidth)) {
+          expandedWidth += targetPageWidth - pageName.getBoundingClientRect().width;
+        }
+      }
       pageContainer.style.setProperty('--nav-context-start-width', `${collapsedWidth}px`);
       pageContainer.style.setProperty('--nav-context-end-width', `${expandedWidth}px`);
       pageContainer.classList.remove('is-revealing');
@@ -390,7 +702,7 @@ function updateNavbarPageContext() {
     setPageContext(navbarPageContextOverride);
     return;
   }
-  const selectedFolder = !dialog?.open && $('.nav-folders-button[aria-current]')
+  const selectedFolder = !dialog?.open && $('.nav-folders-button')?.hasAttribute('aria-current')
     && activeCollectionView === 'logged'
     ? customCollections.find((folder) => folder.id === activeCollectionId)
     : null;
@@ -496,25 +808,19 @@ function updateSettingsCategoryOrientation() {
 }
 updateSettingsCategoryOrientation();
 
-$('.nav-home-button')?.addEventListener('click', () => {
-  if (document.documentElement.dataset.dashboardSection === 'statistics') {
-    setDashboardSection('library');
-  }
-  setNavbarPage($('.nav-home-button'));
+navButtonFor('nav-home-button')?.addEventListener('click', () => {
+  setAppPage('home');
+  renderCollection();
+  setNavbarPage(navButtonFor('nav-home-button'));
   $('.app-content-container').scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-$('.nav-library-button')?.addEventListener('click', () => {
-  showNavbarCollectionView('logged', $('.nav-library-button'));
+navButtonFor('nav-logged-button')?.addEventListener('click', (event) => {
+  showNavbarCollectionView('logged', event.currentTarget);
 });
 
-$('.nav-backlog-button')?.addEventListener('click', () => {
-  showNavbarCollectionView('watchlist', $('.nav-backlog-button'));
-});
-
-$('.nav-folders-button')?.addEventListener('click', () => {
-  setDashboardSection('library');
-  setNavbarPage($('.nav-folders-button'));
+navButtonFor('nav-backlogged-button')?.addEventListener('click', (event) => {
+  showNavbarCollectionView('watchlist', event.currentTarget);
 });
 
 /** Change the sidebar collection view without relying on removed workspace controls. */
@@ -535,8 +841,14 @@ function showNavbarCollectionView(view, button) {
   const snapType = scroller?.style.scrollSnapType ?? '';
   if (scroller) scroller.style.scrollSnapType = 'none';
 
-  setDashboardSection('library');
-  selectNavbarCollectionView(view);
+  const targetPage = view === 'watchlist' ? 'backlogged' : 'logged';
+  const pageChanged = document.documentElement.dataset.appPage !== targetPage;
+  setAppPage(targetPage);
+  if (activeCollectionView === view && activeCollectionId === 'all') {
+    if (pageChanged) renderCollection();
+  } else {
+    selectNavbarCollectionView(view);
+  }
   setNavbarPage(button);
   if (scroller && scrollTop !== undefined) scroller.scrollTop = scrollTop;
 
@@ -547,9 +859,9 @@ function showNavbarCollectionView(view, button) {
   });
 }
 
-$('.nav-stats-button')?.addEventListener('click', () => {
-  setDashboardSection('statistics');
-  setNavbarPage($('.nav-stats-button'));
+navButtonFor('nav-stats-button')?.addEventListener('click', () => {
+  setAppPage('statistics');
+  setNavbarPage(navButtonFor('nav-stats-button'));
   $('#statistics-panel').scrollIntoView({ block: 'start', behavior: 'smooth' });
 });
 
@@ -574,7 +886,9 @@ function syncThemeToggle() {
     button.setAttribute('aria-pressed', String(isLight));
     button.setAttribute('aria-label', label);
     button.title = label;
-    button.innerHTML = appIconMarkup(switchTo === 'dark' ? 'dark_mode' : 'light_mode');
+    const iconMarkup = appIconMarkup(switchTo === 'dark' ? 'dark_mode' : 'light_mode');
+    if (button === navThemeToggle) $('#nav-theme-button').innerHTML = iconMarkup;
+    else button.innerHTML = iconMarkup;
   });
 }
 
@@ -604,15 +918,15 @@ function isFullscreenEntryHash(hash) {
 }
 
 /** Stores the current collection scroll position for navigation. */
-function rememberLibraryScrollPosition() {
-  libraryScrollPosition = window.scrollY;
-  sessionStorage.setItem(LIBRARY_SCROLL_KEY, String(libraryScrollPosition));
+function rememberCollectionScrollPosition() {
+  collectionScrollPosition = window.scrollY;
+  sessionStorage.setItem(COLLECTION_SCROLL_KEY, String(collectionScrollPosition));
 }
 
 /** Restores the saved collection scroll position. */
-function restoreLibraryScrollPosition() {
+function restoreCollectionScrollPosition() {
   requestAnimationFrame(() => {
-    window.scrollTo(0, libraryScrollPosition);
+    window.scrollTo(0, collectionScrollPosition);
   });
 }
 
@@ -699,10 +1013,10 @@ function openSettings() {
   const dialog = $('.settings-container');
   if (!dialog) return;
   if (!dialog.open) {
-    navbarPageBeforeSettings = $('.navbar-vertical-layout .nav-button.is-active') || $('.nav-home-button');
+    navbarPageBeforeSettings = [...document.querySelectorAll(navbarPageButtonSelector)].find((button) => button.classList.contains('is-active')) || navButtonFor('nav-home-button');
     navbarPageContextBeforeSettings = navbarPageContextOverride;
     navbarPageContextOverride = '';
-    setNavbarPage($('.nav-settings-button'));
+    setNavbarPage(navButtonFor('nav-settings-button'));
   }
   const activeCategory = document.querySelector('.settings-category-button.active')?.dataset.settingsCategory || 'general';
   setSettingsCategory(activeCategory);
@@ -893,8 +1207,8 @@ $('.omdb-save-key-button').addEventListener('click', () => {
   localStorage.setItem(OMDB_API_KEY, key);
   $('#omdb-key-status').textContent = 'Key saved. OMDb is contacted only when you look up details for an entry.';
 });
-$('.dashboard-back-button').addEventListener('click', () => { location.hash = '#library'; });
-$('#detail-close').addEventListener('click', () => { location.hash = '#library'; });
+$('.dashboard-back-button').addEventListener('click', () => { location.hash = '#logged'; });
+$('#detail-close').addEventListener('click', () => { location.hash = '#logged'; });
 $('#detail-expand').addEventListener('click', () => {
   if (location.hash.startsWith('#entry/') && !location.hash.endsWith('/full')) {
     const detail = $('#detail');
@@ -929,7 +1243,7 @@ document.addEventListener('wheel', (event) => {
 }, { passive: true });
 $('#detail').addEventListener('click', (event) => {
   if (event.target === event.currentTarget && !event.currentTarget.classList.contains('is-fullscreen')) {
-    location.hash = '#library';
+    location.hash = '#logged';
   }
 });
 
@@ -951,56 +1265,26 @@ document.addEventListener('keydown', (event) => {
 
   if (location.hash.startsWith('#entry/')) {
     event.preventDefault();
-    location.hash = '#library';
+    location.hash = '#logged';
   }
 });
-// Filters and view tabs
-
-document.querySelectorAll('.workspace-type-menu-wrapper .menu-option, .media-type-filter').forEach((button) => {
-  button.addEventListener('click', () => {
-    const selectedType = button.dataset.filter;
-    if (selectedType === 'all') activeFilters = [...workspaceMediaTypes];
-    else if (activeFilters.includes(selectedType)) {
-      if (activeFilters.length === 1) return;
-      activeFilters = activeFilters.filter((type) => type !== selectedType);
-    } else {
-      activeFilters = [...activeFilters, selectedType];
-    }
-    collectionPage = 0;
-    const typeWrapper = button.closest('.workspace-type-menu-wrapper');
-    if (typeWrapper) {
-      hasPendingWorkspaceMenuChanges = true;
-      updateCollectionTools(activeCollectionView === 'watchlist');
-    } else {
-      render();
-    }
-    const typeMenu = typeWrapper?.querySelector('.menu-container');
-    if (typeMenu) {
-      typeMenu.hidden = false;
-      typeWrapper.classList.add('is-open');
-      typeWrapper.querySelector(':scope > .workspace-type-menu-button')
-        ?.setAttribute('aria-expanded', 'true');
-    }
-  });
-});
-
-const librarySearch = $('.library-search-container > .search-input');
-const librarySearchToggle = $('.library-search-container > .search-button > .icon-button');
+const collectionSearch = $('.collection-search-container > .search-input');
+const collectionSearchToggle = $('.collection-search-container > .search-button > .icon-button');
 
 /** Switches the search action between focusing the field and clearing its query. */
-function updateLibrarySearchAction() {
-  const hasQuery = librarySearch.value.length > 0;
-  const icon = librarySearchToggle.querySelector('[data-icon]');
+function updateCollectionSearchAction() {
+  const hasQuery = collectionSearch.value.length > 0;
+  const icon = collectionSearchToggle.querySelector('[data-icon]');
   const iconName = hasQuery ? 'close' : 'search';
   if (icon.dataset.icon !== iconName) {
     icon.dataset.icon = iconName;
     refreshAppIcons();
   }
-  librarySearchToggle.setAttribute('aria-label', hasQuery ? 'Clear search' : 'Search');
-  librarySearchToggle.title = hasQuery ? 'Clear search' : 'Search';
+  collectionSearchToggle.setAttribute('aria-label', hasQuery ? 'Clear search' : 'Search');
+  collectionSearchToggle.title = hasQuery ? 'Clear search' : 'Search';
 }
 
-updateLibrarySearchAction();
+updateCollectionSearchAction();
 
 document.addEventListener('keydown', (event) => {
   if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'l'
@@ -1009,33 +1293,36 @@ document.addEventListener('keydown', (event) => {
 
   event.preventDefault();
   event.stopPropagation();
-  librarySearch.focus();
+  collectionSearch.focus();
 }, true);
 
-librarySearchToggle.addEventListener('click', () => {
-  if (librarySearch.value) {
-    librarySearch.value = '';
-    librarySearch.dispatchEvent(new Event('input', { bubbles: true }));
+collectionSearchToggle.addEventListener('click', () => {
+  if (collectionSearch.value) {
+    collectionSearch.value = '';
+    collectionSearch.dispatchEvent(new Event('input', { bubbles: true }));
   }
-  librarySearch.focus();
+  collectionSearch.focus();
 });
-librarySearch.addEventListener('keydown', (event) => {
+collectionSearch.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape') return;
   event.preventDefault();
-  if (librarySearch.value) {
-    librarySearch.value = '';
-    librarySearch.dispatchEvent(new Event('input', { bubbles: true }));
+  if (collectionSearch.value) {
+    collectionSearch.value = '';
+    collectionSearch.dispatchEvent(new Event('input', { bubbles: true }));
   }
-  librarySearch.blur();
+  collectionSearch.blur();
 });
 
-librarySearch.addEventListener('input', () => {
-  updateLibrarySearchAction();
+collectionSearch.addEventListener('input', () => {
+  updateCollectionSearchAction();
   collectionPage = 0;
   render();
 });
 
-$('#add-collection').addEventListener('click', createCollection);
+$('.create-folder-option, #add-collection')?.addEventListener('click', () => {
+  setFolderMenuOpen(false);
+  createCollection();
+});
 let collectionResizeFrame = 0;
 const scheduleCollectionResize = () => {
   cancelAnimationFrame(collectionResizeFrame);
@@ -1046,33 +1333,16 @@ if ('ResizeObserver' in window) {
   const collectionResizeObserver = new ResizeObserver(scheduleCollectionResize);
   collectionResizeObserver.observe($('.workspace-content-layout'));
 }
-$('.workspace-pagination-container > .pagination-container > .pagination-prev-button').addEventListener('click', () => changeCollectionPage(-1));
-$('.workspace-pagination-container > .pagination-container > .pagination-next-button').addEventListener('click', () => changeCollectionPage(1));
-$('#release-year-filter').addEventListener('change', (event) => {
-  if (event.currentTarget.closest('.workspace-year-menu-wrapper')) return;
-  releaseYearFilter = [...event.currentTarget.selectedOptions].map((option) => option.value);
-  collectionPage = 0;
-  renderCollection();
-});
-$('#rating-filter')?.addEventListener('change', (event) => {
-  ratingFilter = [...event.currentTarget.selectedOptions].map((option) => Number(option.value));
-  collectionPage = 0;
-  renderCollection();
-});
-$('#collection-sort').addEventListener('change', (event) => {
-  if (event.currentTarget.closest('.workspace-sort-menu-wrapper')) return;
-  collectionSort = event.currentTarget.value;
-  collectionPage = 0;
-  renderCollection();
-});
-$('.workspace-reset-button').addEventListener('click', () => {
+$('.workspace-controls-container > .workspace-control-group > .pagination-container > .pagination-prev-button').addEventListener('click', () => changeCollectionPage(-1));
+$('.workspace-controls-container > .workspace-control-group > .pagination-container > .pagination-next-button').addEventListener('click', () => changeCollectionPage(1));
+$('#workspace-reset-button').addEventListener('click', () => {
   releaseYearFilter = [];
   ratingFilter = [100, 0];
   priorityFilter = [];
   collectionSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
   activeFilters = [...workspaceMediaTypes];
   collectionPage = 0;
-  librarySearch.value = '';
+  collectionSearch.value = '';
   render();
 });
 window.addEventListener('hashchange', (event) => {
@@ -1082,16 +1352,16 @@ window.addEventListener('hashchange', (event) => {
   const wasFullscreen = isFullscreenEntryHash(previousHash);
   const isFullscreen = isFullscreenEntryHash(location.hash);
 
-  if (isViewingEntry && !wasViewingEntry) rememberLibraryScrollPosition();
+  if (isViewingEntry && !wasViewingEntry) rememberCollectionScrollPosition();
   // Do not rebuild the collection when opening or closing a hover entry.
   // Replacing its cards is what resets the collection's own scrollTop.
   if (isViewingEntry || wasViewingEntry) renderDetail();
   else render();
   if (isFullscreen) window.scrollTo(0, 0);
-  else if (wasViewingEntry && (!isViewingEntry || wasFullscreen)) restoreLibraryScrollPosition();
+  else if (wasViewingEntry && (!isViewingEntry || wasFullscreen)) restoreCollectionScrollPosition();
 });
 
-document.querySelectorAll('.workspace-controls-container :is(.library-view-switcher, .collection-view-switcher) > [data-view]').forEach((button) => {
+document.querySelectorAll('.workspace-controls-container .collection-view-switcher > [data-view]').forEach((button) => {
   button.addEventListener('click', () => {
     const appScroller = $('.app-content-container');
     const preservedScrollTop = appScroller?.scrollTop;
@@ -1107,8 +1377,10 @@ document.querySelectorAll('.workspace-controls-container :is(.library-view-switc
     if (activeCollectionView === 'logged') activeCollectionId = 'all';
     collectionPage = 0;
     updateViewTabs();
-    if (document.documentElement.dataset.dashboardSection !== 'statistics') {
-      setNavbarPage(activeCollectionView === 'watchlist' ? $('.nav-backlog-button') : $('.nav-library-button'));
+    if (document.documentElement.dataset.appPage !== 'statistics') {
+      const targetPage = activeCollectionView === 'watchlist' ? 'backlogged' : 'logged';
+      setAppPage(targetPage);
+      setNavbarPage(navButtonFor(activeCollectionView === 'watchlist' ? 'nav-backlogged-button' : 'nav-logged-button'));
     }
     resetBannerTimer();
     $('.overview-banner-container').classList.remove('is-sliding');

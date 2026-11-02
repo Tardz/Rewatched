@@ -4,8 +4,8 @@
 let collectionPage = 0;
 let collectionPageCount = 1;
 let collectionColumnCount = 0;
+let collectionRowCount = 0;
 let collectionViewportWidth = 0;
-const collectionRowsPerPage = 4;
 let folderReturnView = 'logged';
 let collectionSwipeDistance = 0;
 let collectionSwipeLastEventAt = 0;
@@ -17,6 +17,9 @@ let collectionSwipePeakDelta = 0;
 let collectionSwipeReversePeakDelta = 0;
 let collectionSwipeSettled = false;
 let collectionPageDirection = 0;
+let lastRenderedAppPage = document.documentElement.dataset.appPage || 'home';
+let lastRenderedWorkspaceEntryCount = 0;
+let animateWorkspaceEntryRefresh = false;
 const isReworkedCollection = document.documentElement.dataset.cssReworkPreview === 'true';
 
 /** Returns the number of entry-card columns at the current width. */
@@ -28,35 +31,396 @@ function getCollectionColumnCount() {
   return columns === 'none' ? 1 : Math.max(1, columns.split(/\s+/).filter(Boolean).length);
 }
 
-// The current page uses the shared sidebar menu; index-old.html retains legacy markup.
-const folderDropdown = $('.folder-menu-wrapper, #library-folder-dropdown');
-const folderPicker = folderDropdown?.querySelector('.menu-container, #library-folder-picker');
-const folderList = folderPicker?.querySelector('[data-menu-options], #library-folder-list');
-const folderButton = $('.nav-folders-button, #library-folder-button');
+/** Reads the responsive card-row count from the active workspace layout. */
+function getCollectionRowCount() {
+  const workspaceOnlyPage = ['logged', 'backlogged', 'folders'].includes(document.documentElement.dataset.appPage);
+  if (!workspaceOnlyPage) {
+    collection.style.removeProperty('--workspace-entry-rows');
+    return Number.parseInt(getComputedStyle(collection).getPropertyValue('--workspace-entry-rows'), 10) || 4;
+  }
 
-/** Keep the sidebar popup over the app content and aligned with its trigger. */
-function positionFolderMenu() {
-  if (!isReworkedCollection || !folderPicker || !folderButton) return;
-  const content = $('.app-content-container')?.getBoundingClientRect();
-  const trigger = folderButton.getBoundingClientRect();
-  if (!content) return;
-  folderPicker.style.left = `${content.left + 8}px`;
-  folderPicker.style.top = `${Math.max(content.top + 8, Math.min(trigger.top, content.bottom - folderPicker.offsetHeight - 8))}px`;
+  const layoutStyles = getComputedStyle(collection);
+  const pageStyles = collection.firstElementChild
+    ? getComputedStyle(collection.firstElementChild)
+    : null;
+  const card = collection.querySelector('.entry-container');
+  const cardStyles = card ? getComputedStyle(card) : null;
+  const spacing = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing-level-1')) || 9;
+  const posterHeight = Number.parseFloat(layoutStyles.getPropertyValue('--workspace-entry-poster-height')) || 104;
+  const configuredRowHeight = Number.parseFloat(layoutStyles.getPropertyValue('--workspace-entry-row-min-height'));
+  // offsetHeight reports the card's layout size without entry hover/entrance transforms.
+  // Measuring its transformed bounding box during the staggered reveal can make
+  // the calculated capacity jump and render too many rows per page.
+  const rowHeight = card?.offsetHeight
+    || Number.parseFloat(cardStyles?.minHeight)
+    || configuredRowHeight
+    || posterHeight + spacing * 2 + 2;
+  const rowGap = Number.parseFloat(pageStyles?.rowGap)
+    || spacing + 4;
+  const availableHeight = Math.max(
+    0,
+    collection.clientHeight
+      - (Number.parseFloat(pageStyles?.paddingTop) || 0)
+      - (Number.parseFloat(pageStyles?.paddingBottom) || 0),
+  );
+  const rows = Math.max(1, Math.floor((availableHeight + rowGap) / (rowHeight + rowGap)));
+  collection.style.setProperty('--workspace-entry-rows', String(rows));
+  return rows;
 }
 
-/** Opens or closes the library folder menu. */
+// The sidebar folder picker shares the expanding-menu structure used by the type picker.
+const folderDropdown = $('.nav-folder-menu');
+const folderMenuOptions = folderDropdown?.querySelector(':scope > .menu-content-layout');
+const folderList = folderMenuOptions;
+const folderButton = $('.nav-folders-button');
+let folderMenuCloseHandler = null;
+let folderMenuCloseTimer = 0;
+let folderMenuOpenHandler = null;
+let folderMenuOpenTimer = 0;
+
+/** Resolve the longest computed transition on the shared expanding-menu surface. */
+function getFolderMenuTransitionDuration(element = folderDropdown) {
+  const styles = getComputedStyle(element);
+  const durations = styles.transitionDuration.split(',').map((value) => value.trim());
+  const delays = styles.transitionDelay.split(',').map((value) => value.trim());
+  const toMilliseconds = (value) => {
+    const amount = Number.parseFloat(value) || 0;
+    return value.endsWith('ms') ? amount : amount * 1000;
+  };
+  return Math.max(0, ...durations.map((duration, index) =>
+    toMilliseconds(duration) + toMilliseconds(delays[index % Math.max(delays.length, 1)] || '0s')));
+}
+
+/** Size the folder picker with the same expanding surface used by the type menu. */
+function updateFolderMenuOpenSize() {
+  if (!folderDropdown || !folderMenuOptions) return;
+  const options = [...folderMenuOptions.querySelectorAll(':scope > .menu-option:not([hidden])')];
+  const rootStyles = getComputedStyle(document.documentElement);
+  const menuStyles = getComputedStyle(folderDropdown);
+  const optionsStyles = getComputedStyle(folderMenuOptions);
+  const visibleRows = Number.parseFloat(menuStyles.getPropertyValue('--folder-menu-visible-rows')) || 5;
+  const shadowClearance = Number.parseFloat(menuStyles.getPropertyValue('--folder-menu-shadow-clearance')) || 0;
+  const topInset = Number.parseFloat(optionsStyles.paddingTop) || 0;
+  const inlineInset = Number.parseFloat(menuStyles.getPropertyValue('--nav-menu-inline-inset')) || 0;
+  const menuPadding = Number.parseFloat(rootStyles.getPropertyValue('--spacing-level-2')) || 5;
+  const resolvedBottomInset = Number.parseFloat(optionsStyles.paddingBottom);
+  const bottomInset = Number.isFinite(resolvedBottomInset)
+    ? resolvedBottomInset
+    : menuPadding + shadowClearance;
+  const closedWidth = Number.parseFloat(menuStyles.getPropertyValue('--nav-inner-box-size')) || 40;
+  const borderWidth = (Number.parseFloat(menuStyles.borderLeftWidth) || 0)
+    + (Number.parseFloat(menuStyles.borderRightWidth) || 0);
+  const borderHeight = (Number.parseFloat(menuStyles.borderTopWidth) || 0)
+    + (Number.parseFloat(menuStyles.borderBottomWidth) || 0);
+  const textWidth = Math.max(0, ...options.map((option) => {
+    const label = option.querySelector('.menu-option-label');
+    if (!label) return option.scrollWidth;
+    const styles = getComputedStyle(label);
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) return label.scrollWidth;
+    context.font = styles.font;
+    const rowStyles = getComputedStyle(option);
+    const iconWidth = option.querySelector('.icon-button')?.getBoundingClientRect().width || 0;
+    const labelOffset = Number.parseFloat(getComputedStyle(label).marginLeft) || 0;
+    return context.measureText(label.textContent.trim()).width
+      + iconWidth
+      + labelOffset
+      + (Number.parseFloat(rowStyles.columnGap) || 0)
+      + (Number.parseFloat(rowStyles.paddingLeft) || 0)
+      + (Number.parseFloat(rowStyles.paddingRight) || 0)
+      + (Number.parseFloat(rowStyles.marginLeft) || 0)
+      + (Number.parseFloat(rowStyles.marginRight) || 0);
+  }));
+  const surfaceLeft = folderDropdown.getBoundingClientRect().left;
+  const availableWidth = Math.max(closedWidth, window.innerWidth - surfaceLeft - 12);
+  const contentWidth = Math.min(
+    Math.max(closedWidth, textWidth),
+    availableWidth - menuPadding - inlineInset - borderWidth - shadowClearance,
+  );
+  const visibleOptionCount = Math.min(options.length, visibleRows);
+  const firstVisibleOption = options[0];
+  const lastVisibleOption = options[visibleOptionCount - 1];
+  const listRect = folderMenuOptions.getBoundingClientRect();
+  const lastVisibleRect = lastVisibleOption?.getBoundingClientRect();
+  const visibleRowsBottom = firstVisibleOption && lastVisibleRect
+    ? lastVisibleRect.bottom - listRect.top + folderMenuOptions.scrollTop
+    : 0;
+  // Keep the option shadows inside the scroll viewport's trailing edges.
+  const listInlineInset = menuPadding + inlineInset + shadowClearance;
+  const visibleListHeight = Math.max(0, visibleRowsBottom + bottomInset - 4);
+  folderMenuOptions.style.height = `${visibleListHeight}px`;
+  folderMenuOptions.style.maxHeight = `${visibleListHeight}px`;
+  folderMenuOptions.style.overflowY = options.length > visibleRows ? 'auto' : 'visible';
+  folderMenuOptions.style.overflowX = 'hidden';
+  folderDropdown.style.setProperty('--menu-expanding-open-width', `${Math.ceil(contentWidth + listInlineInset + borderWidth)}px`);
+  // Let the expanded grid lay itself out, then use its full content height.
+  folderDropdown.style.setProperty('--menu-expanding-open-height', 'auto');
+  void folderDropdown.offsetHeight;
+  // Use the scroll viewport's rendered box, not scrollHeight (which includes rows beyond the five-row viewport).
+  const openHeight = folderMenuOptions.getBoundingClientRect().height + borderHeight;
+  folderDropdown.style.setProperty(
+    '--menu-expanding-open-height',
+    `${openHeight}px`,
+  );
+}
+
+/** Capture the surface's actual in-flow position relative to its positioned nav group. */
+function syncFolderMenuAnchor() {
+  if (!folderDropdown) return;
+  const navGroup = folderDropdown.parentElement;
+  if (!navGroup) return;
+
+  const surfaceRect = folderDropdown.getBoundingClientRect();
+  const groupRect = navGroup.getBoundingClientRect();
+  // Absolute offsets are measured from the containing block's padding edge, not
+  // its outer border; use rendered geometry so the open surface starts exactly
+  // where the centered, in-flow folder button currently sits.
+  folderDropdown.style.setProperty(
+    '--folder-menu-anchor-top',
+    `${surfaceRect.top - groupRect.top - navGroup.clientTop}px`,
+  );
+  folderDropdown.style.setProperty(
+    '--folder-menu-anchor-left',
+    `${surfaceRect.left - groupRect.left - navGroup.clientLeft}px`,
+  );
+  folderDropdown.setAttribute('data-anchor-ready', '');
+}
+
+// Measure once while the menu is still in normal flow; after that the nav-group
+// spacer preserves its slot and the shared menu surface only animates its size.
+syncFolderMenuAnchor();
+
+/** Apply the shared opening cadence used by every expanding menu. */
+function setMenuOptionOpenDelays(options, animationScale) {
+  options.forEach((option, index) => {
+    option.style.setProperty('--menu-option-open-delay', `${(90 + index * 80) * animationScale}ms`);
+  });
+}
+
+/** Stagger workspace filter choices in the same diagonal wave as entry cards. */
+function setWorkspaceMenuOptionOpenDelays(options, columns) {
+  options.forEach((option, index) => {
+    const row = Math.floor(index / columns);
+    const column = index % columns;
+    option.style.setProperty('--menu-option-open-delay', `${(row + column) * 78}ms`);
+  });
+}
+
+/** Keep the anchored folder trigger still and stagger its choices like the type menu. */
+function prepareFolderOptionReveal() {
+  if (!folderDropdown || !folderMenuOptions) return;
+  const styles = getComputedStyle(folderDropdown);
+  const animationScale = Number.parseFloat(styles.getPropertyValue('--nav-menu-animation-scale')) || 1;
+  const options = [...folderMenuOptions.querySelectorAll(':scope > .menu-option:not(:first-child, [hidden])')];
+  setMenuOptionOpenDelays(options, animationScale);
+}
+
+/** Reverse the type-menu exit cadence for only the folder rows currently in view. */
+function prepareFolderOptionClose() {
+  if (!folderDropdown || !folderMenuOptions) return 0;
+  const styles = getComputedStyle(folderDropdown);
+  const animationScale = Number.parseFloat(styles.getPropertyValue('--nav-menu-animation-scale')) || 1;
+  const viewport = folderMenuOptions.getBoundingClientRect();
+  const visibleOptions = [...folderMenuOptions.querySelectorAll(':scope > .menu-option:not(:first-child, [hidden])')]
+    .filter((option) => {
+      const rect = option.getBoundingClientRect();
+      return rect.bottom > viewport.top && rect.top < viewport.bottom;
+    });
+  const allOptions = folderMenuOptions.querySelectorAll(':scope > .menu-option:not(:first-child)');
+  allOptions.forEach((option) => {
+    option.classList.remove('is-closing-visible');
+    option.style.removeProperty('--menu-option-close-delay');
+  });
+  visibleOptions.forEach((option, index) => {
+    option.classList.add('is-closing-visible');
+    option.style.setProperty(
+      '--menu-option-close-delay',
+      `${((visibleOptions.length - 1 - index) * 85 - 8) * animationScale}ms`,
+    );
+  });
+  if (document.documentElement.dataset.reduceAnimations === 'on') return 0;
+  // Keep the closing state alive until the last visible folder row finishes fading.
+  return Math.max(0, visibleOptions.length * 85 - 8) * animationScale
+    + 85 * animationScale;
+}
+
+function clearFolderOptionClose() {
+  folderMenuOptions?.querySelectorAll(':scope > .menu-option:not(:first-child)').forEach((option) => {
+    option.classList.remove('is-closing-visible');
+    option.style.removeProperty('--menu-option-close-delay');
+  });
+}
+
+/** Prime dimensions while closed so the first user-open has real transition endpoints. */
+function primeFolderMenuOpenSize() {
+  if (!folderDropdown || !folderMenuOptions
+    || folderDropdown.classList.contains('is-open')
+    || folderDropdown.classList.contains('is-closing')) return null;
+  const preserveInlineStyle = (element, property) => ({
+    value: element.style.getPropertyValue(property),
+    priority: element.style.getPropertyPriority(property),
+  });
+  const restoreInlineStyle = (element, property, previous) => {
+    if (previous.value) element.style.setProperty(property, previous.value, previous.priority);
+    else element.style.removeProperty(property);
+  };
+  const previousSurfaceTransition = preserveInlineStyle(folderDropdown, 'transition');
+  const previousSurfaceAnimation = preserveInlineStyle(folderDropdown, 'animation');
+  const previousOptionsTransition = preserveInlineStyle(folderMenuOptions, 'transition');
+  const previousOptionsAnimation = preserveInlineStyle(folderMenuOptions, 'animation');
+  const previousOptionsHeight = preserveInlineStyle(folderMenuOptions, 'height');
+  const previousOptionAnimations = [...folderMenuOptions.querySelectorAll(':scope > .menu-option')]
+    .map((option) => [option, preserveInlineStyle(option, 'animation')]);
+  const folderIcon = folderButton?.querySelector('.icon-button');
+  const previousIconTransition = folderIcon ? preserveInlineStyle(folderIcon, 'transition') : null;
+
+  // Measure the real open rows without letting the temporary state paint or animate.
+  folderDropdown.style.setProperty('transition', 'none', 'important');
+  folderDropdown.style.setProperty('animation', 'none', 'important');
+  folderMenuOptions.style.setProperty('transition', 'none', 'important');
+  folderMenuOptions.style.setProperty('animation', 'none', 'important');
+  previousOptionAnimations.forEach(([option]) => option.style.setProperty('animation', 'none', 'important'));
+  folderIcon?.style.setProperty('transition', 'none', 'important');
+  folderDropdown.classList.add('is-open');
+  updateFolderMenuOpenSize();
+  const openOptionsHeight = folderMenuOptions.style.height;
+  const openOptionsMaxHeight = folderMenuOptions.style.maxHeight;
+  const openOptionsOverflowY = folderMenuOptions.style.overflowY;
+  void folderDropdown.offsetHeight;
+  folderDropdown.classList.remove('is-open');
+  folderMenuOptions.style.overflowY = 'visible';
+  folderMenuOptions.style.overflowX = 'visible';
+  void folderDropdown.offsetHeight;
+  restoreInlineStyle(folderDropdown, 'transition', previousSurfaceTransition);
+  restoreInlineStyle(folderDropdown, 'animation', previousSurfaceAnimation);
+  restoreInlineStyle(folderMenuOptions, 'transition', previousOptionsTransition);
+  restoreInlineStyle(folderMenuOptions, 'animation', previousOptionsAnimation);
+  restoreInlineStyle(folderMenuOptions, 'height', previousOptionsHeight);
+  previousOptionAnimations.forEach(([option, previous]) => restoreInlineStyle(option, 'animation', previous));
+  if (folderIcon && previousIconTransition) restoreInlineStyle(folderIcon, 'transition', previousIconTransition);
+  return { openOptionsHeight, openOptionsMaxHeight, openOptionsOverflowY };
+}
+
+/** Finish the icon shrink while the folder panel continues expanding. */
+function finishFolderTriggerShrink() {
+  if (!folderDropdown?.classList.contains('is-trigger-shrinking')) return;
+  const folderIcon = folderButton?.querySelector('.icon-button');
+  if (folderIcon && folderMenuOpenHandler) {
+    folderIcon.removeEventListener('transitionend', folderMenuOpenHandler);
+  }
+  window.clearTimeout(folderMenuOpenTimer);
+  folderMenuOpenHandler = null;
+  folderMenuOpenTimer = 0;
+  folderDropdown.classList.remove('is-trigger-shrinking');
+}
+
+/** Open or close the folder menu using the shared expanding-menu surface. */
 function setFolderMenuOpen(isOpen) {
-  if (!folderPicker || !folderButton) return;
-  folderPicker.hidden = !isOpen;
-  folderDropdown?.classList.toggle('is-open', isOpen);
+  if (!folderDropdown || !folderMenuOptions || !folderButton) return;
+  if (isOpen) {
+    window.clearTimeout(folderMenuCloseTimer);
+    if (folderMenuCloseHandler) {
+      folderDropdown.removeEventListener('transitionend', folderMenuCloseHandler);
+      folderMenuCloseHandler = null;
+    }
+    // If reopened mid-close, clear the closing guard before rebuilding active folder rows.
+    folderDropdown.classList.remove('is-closing');
+    folderDropdown.classList.remove('is-squeezing');
+    closeWorkspaceFilterMenus();
+    renderCollectionPicker();
+    clearFolderOptionClose();
+    prepareFolderOptionReveal();
+    syncFolderMenuAnchor();
+    const openSize = primeFolderMenuOpenSize();
+    folderMenuOptions.scrollTop = 0;
+    folderDropdown.classList.add('is-open', 'is-trigger-shrinking');
+    if (openSize) {
+      folderMenuOptions.style.height = openSize.openOptionsHeight;
+      folderMenuOptions.style.maxHeight = openSize.openOptionsMaxHeight;
+      folderMenuOptions.style.overflowY = openSize.openOptionsOverflowY;
+      folderMenuOptions.style.overflowX = 'hidden';
+    }
+    const folderIcon = folderButton.querySelector('.icon-button');
+    folderMenuOpenHandler = (event) => {
+      if (event.target !== folderIcon || event.propertyName !== 'width') return;
+      finishFolderTriggerShrink();
+    };
+    folderIcon.addEventListener('transitionend', folderMenuOpenHandler);
+    folderMenuOpenTimer = window.setTimeout(
+      finishFolderTriggerShrink,
+      getFolderMenuTransitionDuration(folderIcon) + 50,
+    );
+  } else if (folderDropdown.classList.contains('is-open')) {
+    const optionCloseDuration = prepareFolderOptionClose();
+    const closeStartedAt = performance.now();
+    const closeCompletionDuration = Math.max(
+      getFolderMenuTransitionDuration(),
+      optionCloseDuration,
+    );
+    folderDropdown.classList.add('is-closing');
+    folderDropdown.classList.remove('is-open');
+    // Keep the scroll viewport clipped so offscreen folders do not spill out while closing.
+    folderMenuOptions.style.overflowY = 'hidden';
+    folderMenuOptions.style.overflowX = 'hidden';
+    const finishClosing = (event) => {
+      if (event && (event.target !== folderDropdown || event.propertyName !== 'height')) return;
+      if (event && performance.now() - closeStartedAt < closeCompletionDuration) return;
+      if (folderDropdown.classList.contains('is-open')) return;
+      folderDropdown.classList.remove('is-closing', 'is-trigger-shrinking');
+      folderMenuOptions.style.removeProperty('height');
+      folderMenuOptions.style.removeProperty('overflow-y');
+      folderMenuOptions.style.removeProperty('overflow-x');
+      clearFolderOptionClose();
+      folderDropdown.removeEventListener('transitionend', finishClosing);
+      window.clearTimeout(folderMenuCloseTimer);
+      folderMenuCloseHandler = null;
+      renderCollectionPicker();
+      folderDropdown.classList.add('is-squeezing');
+      document.body.classList.toggle(
+        'workspace-filter-menu-open',
+        workspaceFilterMenus.some(isWorkspaceFilterMenuOpen),
+      );
+    };
+    folderDropdown.addEventListener('transitionend', finishClosing);
+    folderMenuCloseHandler = finishClosing;
+    window.clearTimeout(folderMenuCloseTimer);
+    folderMenuCloseTimer = window.setTimeout(finishClosing, closeCompletionDuration + 20);
+  }
   folderButton.setAttribute('aria-expanded', String(isOpen));
-  if (isOpen) positionFolderMenu();
+  document.body.classList.toggle(
+    'workspace-filter-menu-open',
+    isOpen || folderDropdown.classList.contains('is-closing') || workspaceFilterMenus.some(isWorkspaceFilterMenuOpen),
+  );
 }
 
-folderButton?.addEventListener('click', () => setFolderMenuOpen(folderPicker.hidden));
+function selectFolderFromMenu(folderId) {
+  if (!folderId) return;
+  if (typeof setAppPage === 'function') setAppPage('folders');
+  selectCollection(folderId);
+  if (typeof setNavbarPage === 'function') setNavbarPage(folderButton);
+}
+
+folderButton?.addEventListener('click', (event) => {
+  if (!folderDropdown?.classList.contains('is-open')) {
+    setFolderMenuOpen(true);
+    return;
+  }
+
+  // While expanded, the trigger is the first folder option, not a close control.
+  if (folderButton.dataset.folderId) {
+    selectFolderFromMenu(folderButton.dataset.folderId);
+  }
+});
 
 document.addEventListener('click', (event) => {
-  if (folderDropdown && !folderDropdown.contains(event.target)) setFolderMenuOpen(false);
+  // Selecting a folder rerenders the list synchronously and detaches the clicked
+  // option before this document-level listener runs. Use the original event path
+  // so that click still counts as inside the menu after that rerender.
+  const clickedInsideFolderMenu = event.composedPath().includes(folderDropdown);
+  if (folderDropdown && !clickedInsideFolderMenu) {
+    setFolderMenuOpen(false);
+  }
 });
 
 /* Open entry-card tools with the context menu; keep the panel styled through its closing transition. */
@@ -119,53 +483,552 @@ document.addEventListener('keydown', (event) => {
 });
 
 window.addEventListener('resize', () => {
-  if (folderPicker && !folderPicker.hidden) positionFolderMenu();
+  if (folderDropdown?.classList.contains('is-open')) {
+    updateFolderMenuOpenSize();
+  }
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key !== 'Escape' || !folderPicker || folderPicker.hidden) return;
+  if (event.key !== 'Escape' || !folderDropdown?.classList.contains('is-open')) return;
   event.preventDefault();
   setFolderMenuOpen(false);
   folderButton?.focus();
 });
 
-const workspaceFilterMenuSelector = '.workspace-type-menu-wrapper, .workspace-ratings-menu-wrapper, .workspace-year-menu-wrapper, .workspace-sort-menu-wrapper';
+const workspaceFilterMenuSelector = '.nav-type-menu, .workspace-ratings-menu, .workspace-year-menu, .workspace-sort-menu';
 const workspaceFilterMenus = [...document.querySelectorAll(workspaceFilterMenuSelector)];
 let hasPendingWorkspaceMenuChanges = false;
 
+function isMixedWorkspaceTypeSelection(types = activeFilters) {
+  return types.length === workspaceMediaTypes.length
+    && workspaceMediaTypes.every((type) => types.includes(type));
+}
+
 function getWorkspaceFilterButton(wrapper) {
-  return wrapper.classList.contains('workspace-sort-menu-wrapper')
-    ? wrapper.querySelector(':scope > .workspace-sort-menu-button')
-    : wrapper.querySelector(':scope > button');
+  return wrapper.querySelector(':scope > button');
+}
+
+function isWorkspaceFilterMenuOpen(wrapper) {
+  return wrapper.classList.contains('is-open');
+}
+
+/** Lift a workspace menu above scrolling card layers while preserving its row slot. */
+function prepareWorkspaceFilterMenuOverlay(wrapper) {
+  const layout = wrapper.closest('.workspace-filter-layout');
+  const group = wrapper.closest('.workspace-control-group');
+  if (!layout || !group || wrapper.previousElementSibling?.hasAttribute('data-menu-spacer')) return;
+
+  const menus = [...layout.querySelectorAll(':scope > .menu-expanding-container')];
+  const menuRects = menus.map((menu) => [menu, menu.getBoundingClientRect()]);
+  const wrapperRect = menuRects.find(([menu]) => menu === wrapper)?.[1];
+  if (!wrapperRect) return;
+
+  menuRects.forEach(([menu, rect]) => {
+    menu.style.setProperty('--workspace-menu-closed-width', `${rect.width}px`);
+  });
+  layout.dataset.menuOpen = 'true';
+
+  const spacer = document.createElement('span');
+  spacer.dataset.menuSpacer = '';
+  spacer.setAttribute('aria-hidden', 'true');
+  Object.assign(spacer.style, {
+    flex: `0 0 ${wrapperRect.width}px`,
+    width: `${wrapperRect.width}px`,
+    height: `${wrapperRect.height}px`,
+    pointerEvents: 'none',
+    visibility: 'hidden',
+  });
+  wrapper.before(spacer);
+
+  wrapper.style.setProperty(
+    '--workspace-menu-anchor-left',
+    `${wrapperRect.left}px`,
+  );
+  wrapper.style.setProperty(
+    '--workspace-menu-anchor-top',
+    `${wrapperRect.top}px`,
+  );
+  wrapper.style.setProperty('--menu-expanding-closed-width', `${wrapperRect.width}px`);
+  wrapper.style.setProperty('--menu-expanding-closed-height', `${wrapperRect.height}px`);
+  // Lift the same visible surface before exposing its options, so measuring
+  // intrinsic content cannot temporarily resize the surrounding flex row.
+  wrapper.classList.add('is-opening');
+  void wrapper.offsetWidth;
+}
+
+/** Return the trigger to the filter row after its closing animation finishes. */
+function finishWorkspaceFilterMenuOverlay(wrapper) {
+  wrapper.classList.remove('is-opening');
+  wrapper.classList.add('level-3-styling');
+  if (wrapper.matches('.workspace-ratings-menu, .workspace-year-menu, .workspace-sort-menu')) {
+    getWorkspaceFilterButton(wrapper)?.classList.remove('level-4-styling');
+  }
+  if (wrapper.previousElementSibling?.hasAttribute('data-menu-spacer')) {
+    wrapper.previousElementSibling.remove();
+  }
+  [
+    '--workspace-menu-anchor-left',
+    '--workspace-menu-anchor-top',
+    '--menu-expanding-closed-width',
+    '--menu-expanding-open-width',
+    '--menu-expanding-closed-height',
+    '--menu-expanding-open-height',
+  ].forEach((property) => wrapper.style.removeProperty(property));
+
+  const layout = wrapper.closest('.workspace-filter-layout');
+  if (!layout?.querySelector(':scope > .menu-expanding-container.is-open, :scope > .menu-expanding-container.is-closing')) {
+    layout?.removeAttribute('data-menu-open');
+    layout?.querySelectorAll(':scope > .menu-expanding-container').forEach((menu) => {
+      menu.style.removeProperty('--workspace-menu-closed-width');
+    });
+  }
+}
+
+/** Keep the collapsed type-picker width synced to its current label. */
+function updateNavTypeMenuClosedWidth(wrapper, labelOverride = null) {
+  const menu = wrapper;
+  const trigger = menu.querySelector(':scope > button');
+  const currentLabel = trigger.querySelector(':scope > .menu-option-label');
+  const triggerStyles = getComputedStyle(trigger);
+  const menuStyles = getComputedStyle(menu);
+  const iconBox = trigger.querySelector(':scope > .icon-button');
+  const text = currentLabel;
+  let textWidth = text.getBoundingClientRect().width;
+  if (labelOverride !== null) {
+    const previousLabel = text.textContent;
+    text.textContent = labelOverride;
+    textWidth = text.getBoundingClientRect().width;
+    text.textContent = previousLabel;
+  }
+  const closedWidth = iconBox.getBoundingClientRect().width
+    + Number.parseFloat(triggerStyles.columnGap)
+    + textWidth
+    + Number.parseFloat(triggerStyles.paddingLeft)
+    + Number.parseFloat(triggerStyles.paddingRight)
+    + Number.parseFloat(menuStyles.borderLeftWidth)
+    + Number.parseFloat(menuStyles.borderRightWidth);
+  menu.style.setProperty('--menu-expanding-closed-width', `${Math.ceil(closedWidth)}px`);
+  return closedWidth;
+}
+
+/** Carry the selected type into the trigger as the menu closes. */
+function animateNavTypeSelection(wrapper, option, onComplete) {
+  if (document.documentElement.dataset.reduceAnimations === 'on') return false;
+  const trigger = getWorkspaceFilterButton(wrapper);
+  const menu = wrapper;
+  const options = menu.querySelector('.menu-content-layout');
+  const visibleRows = [...options.querySelectorAll('.menu-option:not([hidden])')];
+  const exitingRows = visibleRows.filter((row) => row !== option).reverse();
+  const animationScale = Number.parseFloat(
+    getComputedStyle(wrapper).getPropertyValue('--nav-menu-animation-scale'),
+  ) || 1;
+  const sourceRect = option.getBoundingClientRect();
+  // Use layout height rather than the transformed visual rect. The squeeze animation
+  // scales the menu surface and must not distort the selected row's travel progress.
+  const menuHeight = menu.offsetHeight;
+  const closedMenuHeight = Number.parseFloat(
+    getComputedStyle(menu).getPropertyValue('--menu-expanding-closed-height'),
+  ) || trigger.getBoundingClientRect().height;
+  const collapsingHeight = Math.max(1, menuHeight - closedMenuHeight);
+  const lastOptionBottom = visibleRows.at(-1)?.getBoundingClientRect().bottom ?? sourceRect.bottom;
+  const travelSync = Number.parseFloat(
+    getComputedStyle(wrapper).getPropertyValue('--nav-type-selection-travel-sync'),
+  ) || 1;
+  const shrinkProgressAtOption = Math.min(0.95, Math.max(
+    0,
+    ((lastOptionBottom - sourceRect.bottom) / collapsingHeight) * travelSync,
+  ));
+  const sourceIconRect = option.querySelector('.icon-button').getBoundingClientRect();
+  const ghost = option.cloneNode(true);
+  ghost.classList.add('nav-type-selection-ghost');
+  const copyComputedStyles = (source, target) => {
+    const styles = getComputedStyle(source);
+    for (let index = 0; index < styles.length; index++) {
+      const property = styles.item(index);
+      target.style.setProperty(property, styles.getPropertyValue(property));
+    }
+    [...source.children].forEach((child, index) => {
+      if (target.children[index]) copyComputedStyles(child, target.children[index]);
+    });
+  };
+  copyComputedStyles(option, ghost);
+  const sourceIconStyles = getComputedStyle(option.querySelector('.icon-button'));
+  const ghostIcon = ghost.querySelector('.icon-button');
+  // The moving copy leaves the menu, so carry its resolved glyph color with it.
+  ghostIcon.style.setProperty('--nav-type-icon-color', getComputedStyle(option.querySelector('.icon-button'), '::after').backgroundColor);
+  for (const property of [
+    '--nav-type-icon-mask', '--nav-type-icon-glow-color',
+    '--nav-type-icon-size', '--glow-halo-color', '--glow-halo-opacity',
+  ]) {
+    const value = sourceIconStyles.getPropertyValue(property).trim();
+    if (value) ghostIcon.style.setProperty(property, value);
+  }
+  ghost.setAttribute('aria-hidden', 'true');
+  ghost.querySelectorAll('button').forEach((button) => button.setAttribute('tabindex', '-1'));
+  exitingRows.forEach((row, index) => {
+    row.style.setProperty('--menu-option-close-delay', `${(index * 85 - 8) * animationScale}ms`);
+  });
+  const triggerFadeDelay = Math.max(0, ((exitingRows.length - 1) * 85 - 8 + 85) * animationScale);
+  const triggerContents = [...trigger.querySelectorAll(':scope > .icon-button, :scope > .menu-option-label')];
+  triggerContents.forEach((element) => element.style.setProperty('--nav-type-trigger-close-delay', `${triggerFadeDelay}ms`));
+  Object.assign(ghost.style, {
+    position: 'fixed',
+    zIndex: '9999',
+    left: `${sourceRect.left}px`,
+    top: `${sourceRect.top}px`,
+    width: `${sourceRect.width}px`,
+    height: `${sourceRect.height}px`,
+    margin: '0',
+    pointerEvents: 'none',
+    transform: 'none',
+    transformOrigin: 'top left',
+    animation: 'none',
+  });
+  document.body.append(ghost);
+  option.classList.add('is-selection-source');
+  menu.classList.add('is-selecting-option');
+  const selectedLabel = option.querySelector('.menu-option-label')?.textContent.trim() || '';
+  setWorkspaceFilterMenuOpen(wrapper, false, selectedLabel);
+  const targetIconRect = trigger.querySelector(':scope > .icon-button').getBoundingClientRect();
+  const dx = targetIconRect.left - sourceIconRect.left;
+  const dy = targetIconRect.top - sourceIconRect.top;
+  const transitionDuration = getComputedStyle(menu).transitionDuration.split(',')[0].trim();
+  const closeDuration = transitionDuration.endsWith('ms')
+    ? Number.parseFloat(transitionDuration)
+    : Number.parseFloat(transitionDuration) * 1000;
+  const removeAnimationListeners = [];
+  let frameId = 0;
+  let completed = false;
+  const cleanUp = () => {
+    if (completed) return;
+    completed = true;
+    cancelAnimationFrame(frameId);
+    removeAnimationListeners.forEach((removeListener) => removeListener());
+    // Hide the collapsed option list before revealing its original selected row.
+    options.hidden = true;
+    ghost.remove();
+    onComplete();
+    menu.classList.remove('is-selecting-option');
+    option.classList.remove('is-selection-source');
+    options.querySelectorAll('.menu-option').forEach((row) => {
+      row.style.removeProperty('--menu-option-close-delay');
+    });
+    triggerContents.forEach((element) => element.style.removeProperty('--nav-type-trigger-close-delay'));
+  };
+  const finishWhenClosed = (event) => {
+    if (event.target !== menu || event.propertyName !== 'height') return;
+    // Ignore an early transition end/cancel; the selected row must finish traveling
+    // with the collapsing surface before the trigger label is replaced.
+    if (menu.offsetHeight <= closedMenuHeight + 1) cleanUp();
+  };
+  menu.addEventListener('transitionend', finishWhenClosed);
+  removeAnimationListeners.push(
+    () => menu.removeEventListener('transitionend', finishWhenClosed),
+  );
+  const closeStartedAt = performance.now();
+  const followMenuShrink = () => {
+    if (completed) return;
+    const currentHeight = menu.offsetHeight;
+    const shrinkProgress = Math.min(1, Math.max(0, (menuHeight - currentHeight) / collapsingHeight));
+    if (shrinkProgress >= shrinkProgressAtOption) {
+      const travelProgress = Math.min(1, (shrinkProgress - shrinkProgressAtOption) / (1 - shrinkProgressAtOption));
+      ghost.style.transform = `translate(${dx * travelProgress}px, ${dy * travelProgress}px)`;
+    }
+    if (shrinkProgress >= 1 || performance.now() - closeStartedAt >= closeDuration + 100) {
+      cleanUp();
+      return;
+    }
+    frameId = requestAnimationFrame(followMenuShrink);
+  };
+  frameId = requestAnimationFrame(followMenuShrink);
+  return true;
 }
 
 /** Opens one workspace filter menu and closes the others. */
-function setWorkspaceFilterMenuOpen(wrapper, isOpen) {
-  const menu = wrapper.querySelector('.menu-container');
+function setWorkspaceFilterMenuOpen(wrapper, isOpen, closedLabel = null) {
   const trigger = getWorkspaceFilterButton(wrapper);
-  menu.hidden = !isOpen;
+  if (wrapper.classList.contains('nav-type-menu')) {
+    const menu = wrapper;
+    const options = menu.querySelector('.menu-content-layout');
+    if (isOpen) {
+      menu.classList.remove('is-closing');
+      menu.classList.remove('is-squeezing');
+      const visibleOptions = [...options.querySelectorAll('.menu-option:not([hidden])')];
+      const animationScale = Number.parseFloat(
+        getComputedStyle(wrapper).getPropertyValue('--nav-menu-animation-scale'),
+      ) || 1;
+      setMenuOptionOpenDelays(visibleOptions, animationScale);
+      visibleOptions.forEach((option, index) => {
+        option.style.setProperty('--menu-option-close-delay', `${((visibleOptions.length - 1 - index) * 85 - 8) * animationScale}ms`);
+      });
+      const closedWidth = updateNavTypeMenuClosedWidth(wrapper);
+      void menu.offsetWidth;
+      options.hidden = false;
+      const menuStyles = getComputedStyle(menu);
+      const menuInlineBorders = Number.parseFloat(menuStyles.borderLeftWidth)
+        + Number.parseFloat(menuStyles.borderRightWidth);
+      const triggerHeight = trigger.getBoundingClientRect().height;
+      const iconHeight = trigger.querySelector(':scope > .icon-button').getBoundingClientRect().height;
+      const menuRightPadding = Math.max(0, (triggerHeight - iconHeight) / 2);
+      const widestOption = Math.max(0, ...visibleOptions.map((option) => {
+        const styles = getComputedStyle(option);
+        const iconWidth = option.querySelector('.icon-button').getBoundingClientRect().width;
+        const labelWidth = option.querySelector('.menu-option-label').scrollWidth;
+        return iconWidth + labelWidth
+          + (Number.parseFloat(styles.columnGap) || 0)
+          + Number.parseFloat(styles.paddingLeft)
+          + Number.parseFloat(styles.paddingRight)
+          + menuRightPadding
+          + menuInlineBorders;
+      }));
+      menu.style.setProperty('--menu-expanding-open-width', `${Math.ceil(Math.max(closedWidth, widestOption))}px`);
+      const wrapperStyles = getComputedStyle(wrapper);
+      const shadowClearance = Number.parseFloat(wrapperStyles.getPropertyValue('--nav-type-menu-shadow-clearance')) || 0;
+      const menuPadding = menuRightPadding + shadowClearance;
+      const optionsRowGap = Number.parseFloat(getComputedStyle(options).rowGap) || 0;
+      const triggerOptionsGap = Math.max(0, optionsRowGap - menuRightPadding);
+      const menuBorders = Number.parseFloat(menuStyles.borderTopWidth)
+        + Number.parseFloat(menuStyles.borderBottomWidth);
+      const openHeight = triggerHeight
+        + options.scrollHeight
+        + triggerOptionsGap
+        + menuPadding
+        + menuBorders;
+      menu.style.setProperty('--menu-expanding-open-height', `${openHeight}px`);
+      menu.classList.add('is-open');
+      void menu.offsetWidth;
+    } else if (menu.classList.contains('is-open')) {
+      updateNavTypeMenuClosedWidth(wrapper, closedLabel);
+      const visibleOptions = [...options.querySelectorAll('.menu-option:not([hidden])')];
+      menu.classList.remove('is-squeezing');
+      menu.classList.add('is-closing');
+      menu.classList.remove('is-open');
+      menu.classList.add('is-squeezing');
+      const finishClosingMenu = (event) => {
+        if (event.target !== menu || event.propertyName !== 'height') return;
+        menu.removeEventListener('transitionend', finishClosingMenu);
+        if (!menu.classList.contains('is-open')) {
+          options.hidden = true;
+          menu.classList.remove('is-closing');
+          if (!menu.classList.contains('is-selecting-option')) {
+            menu.querySelectorAll('.menu-option').forEach((option) => {
+              option.style.removeProperty('--menu-option-close-delay');
+            });
+          }
+        }
+      };
+      menu.addEventListener('transitionend', finishClosingMenu);
+      if (getComputedStyle(menu).transitionDuration === '0s') {
+        options.hidden = true;
+        menu.classList.remove('is-closing');
+        menu.classList.remove('is-squeezing');
+        menu.removeEventListener('transitionend', finishClosingMenu);
+      }
+    }
+  } else {
+    const menu = wrapper;
+    const options = menu.querySelector(':scope > .menu-content-layout');
+    const visibleOptions = [...options.querySelectorAll('.menu-option:not([hidden])')];
+    if (isOpen) {
+      menu.classList.remove('is-closing', 'is-squeezing');
+      menu.classList.add('level-3-styling');
+      prepareWorkspaceFilterMenuOverlay(menu);
+      const animationScale = Number.parseFloat(
+        getComputedStyle(menu).getPropertyValue('--nav-menu-animation-scale'),
+      ) || 1;
+      const columns = menu.classList.contains('workspace-sort-menu') ? 2 : 3;
+      setWorkspaceMenuOptionOpenDelays(visibleOptions, columns);
+      visibleOptions.forEach((option, index) => {
+        option.style.setProperty(
+          '--menu-option-close-delay',
+          `${((visibleOptions.length - 1 - index) * 85 - 8) * animationScale}ms`,
+        );
+      });
+      options.hidden = false;
+      const triggerHeight = trigger.getBoundingClientRect().height;
+      // The closed menu constrains the grid to a few pixels. Its scroll height
+      // still contains every option, so use that for the expanded target.
+      const optionsMaxHeight = Number.parseFloat(getComputedStyle(options).maxHeight);
+      const contentHeight = Math.min(
+        options.scrollHeight,
+        Number.isFinite(optionsMaxHeight) ? optionsMaxHeight : Infinity,
+      );
+      const menuStyles = getComputedStyle(menu);
+      const menuPadding = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--spacing-level-2')) || 8;
+      const menuBorders = Number.parseFloat(menuStyles.borderTopWidth)
+        + Number.parseFloat(menuStyles.borderBottomWidth);
+      const inlineBorders = Number.parseFloat(menuStyles.borderLeftWidth)
+        + Number.parseFloat(menuStyles.borderRightWidth);
+      const menuLeft = menu.getBoundingClientRect().left;
+      // Measure the option grid at intrinsic width so the opened surface can
+      // grow beyond the toolbar group instead of squeezing its labels into the
+      // trigger's old flex slot.
+      options.style.width = 'max-content';
+      options.style.gridTemplateColumns = `repeat(${columns}, max-content)`;
+      const intrinsicContentWidth = options.getBoundingClientRect().width;
+      options.style.removeProperty('width');
+      options.style.removeProperty('grid-template-columns');
+      const closedWidth = Number.parseFloat(
+        menu.style.getPropertyValue('--menu-expanding-closed-width'),
+      ) || trigger.getBoundingClientRect().width;
+      const availableViewportWidth = Math.max(
+        closedWidth,
+        window.innerWidth - menuLeft - 12,
+      );
+      const openWidth = Math.min(
+        Math.max(closedWidth, intrinsicContentWidth + (menuPadding * 2) + inlineBorders),
+        availableViewportWidth,
+      );
+      menu.style.setProperty('--menu-expanding-open-width', `${openWidth}px`);
+      const openHeight = triggerHeight + contentHeight + (menuPadding * 2) + menuBorders;
+      menu.style.setProperty('--menu-expanding-open-height', `${openHeight}px`);
+      menu.style.setProperty('--menu-expanding-closed-height', `${triggerHeight}px`);
+      void menu.offsetHeight;
+      menu.classList.remove('is-opening');
+      if (menu.matches('.workspace-ratings-menu, .workspace-year-menu, .workspace-sort-menu')) {
+        trigger.classList.add('level-4-styling');
+      }
+      menu.classList.add('is-open');
+    } else if (menu.classList.contains('is-open')) {
+      menu.classList.remove('is-squeezing');
+      menu.classList.add('is-closing');
+      menu.classList.remove('is-open');
+      const clearMenuSqueeze = (event) => {
+        if (event.target !== menu || event.animationName !== 'menu-expanding-close-squeeze') return;
+        menu.removeEventListener('animationend', clearMenuSqueeze);
+        menu.classList.remove('is-squeezing');
+      };
+      menu.addEventListener('animationend', clearMenuSqueeze);
+      menu.classList.add('is-squeezing');
+      const finishClosingMenu = (event) => {
+        if (event.target !== menu || event.propertyName !== 'height') return;
+        menu.removeEventListener('transitionend', finishClosingMenu);
+        if (!menu.classList.contains('is-open')) {
+          options.hidden = true;
+          menu.classList.remove('is-closing');
+          menu.querySelectorAll('.menu-option').forEach((option) => {
+            option.style.removeProperty('--menu-option-close-delay');
+          });
+          finishWorkspaceFilterMenuOverlay(menu);
+        }
+      };
+      menu.addEventListener('transitionend', finishClosingMenu);
+      if (getFolderMenuTransitionDuration(menu) === 0) {
+        options.hidden = true;
+        menu.classList.remove('is-closing');
+        menu.classList.remove('is-squeezing');
+        menu.removeEventListener('animationend', clearMenuSqueeze);
+        menu.removeEventListener('transitionend', finishClosingMenu);
+        finishWorkspaceFilterMenuOverlay(menu);
+      }
+    }
+  }
   wrapper.classList.toggle('is-open', isOpen);
   trigger.setAttribute('aria-expanded', String(isOpen));
   document.body.classList.toggle(
     'workspace-filter-menu-open',
-    workspaceFilterMenus.some((item) => !item.querySelector('.menu-container').hidden),
+    workspaceFilterMenus.some(isWorkspaceFilterMenuOpen),
   );
 }
 
 function closeWorkspaceFilterMenus() {
-  const wasOpen = workspaceFilterMenus.some((wrapper) => !wrapper.querySelector('.menu-container').hidden);
-  workspaceFilterMenus.forEach((wrapper) => setWorkspaceFilterMenuOpen(wrapper, false));
+  const wasOpen = workspaceFilterMenus.some(isWorkspaceFilterMenuOpen);
   if (wasOpen && hasPendingWorkspaceMenuChanges) {
     hasPendingWorkspaceMenuChanges = false;
     renderCollection();
   }
+  workspaceFilterMenus.forEach((wrapper) => setWorkspaceFilterMenuOpen(wrapper, false));
 }
 
 workspaceFilterMenus.forEach((wrapper) => {
   const trigger = getWorkspaceFilterButton(wrapper);
   const select = wrapper.querySelector('select');
-  const resetButton = wrapper.querySelector('.workspace-filter-reset-button, .workspace-sort-reset-button');
-  const directionButton = wrapper.querySelector('.workspace-sort-direction-button');
+  let ratingDrag = null;
+  let suppressRatingClick = false;
+  let yearDrag = null;
+  let suppressYearClick = false;
+
+  const applyRatingSelection = (values) => {
+    ratingFilter = [...new Set(values.map(Number))].slice(0, 2);
+    [...select.options].forEach((item) => {
+      item.selected = ratingFilter.includes(Number(item.value));
+    });
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+
+  if (wrapper.classList.contains('workspace-ratings-menu') && select) {
+    wrapper.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0 || !event.isPrimary) return;
+      const option = event.target.closest('.menu-content-layout > .menu-option[data-filter-value]');
+      if (!option || !wrapper.contains(option)) return;
+      const value = Number(option.dataset.filterValue);
+      ratingDrag = { pointerId: event.pointerId, start: value, current: value, changed: false };
+    });
+
+    document.addEventListener('pointermove', (event) => {
+      if (!ratingDrag || event.pointerId !== ratingDrag.pointerId) return;
+      const option = document.elementFromPoint(event.clientX, event.clientY)
+        ?.closest('.menu-content-layout > .menu-option[data-filter-value]');
+      if (!option || !wrapper.contains(option)) return;
+      const value = Number(option.dataset.filterValue);
+      if (value === ratingDrag.current) return;
+      ratingDrag.current = value;
+      ratingDrag.changed ||= value !== ratingDrag.start;
+      applyRatingSelection(ratingDrag.changed ? [ratingDrag.start, value] : [ratingDrag.start]);
+    });
+
+    const finishRatingDrag = (event) => {
+      if (!ratingDrag || event.pointerId !== ratingDrag.pointerId) return;
+      if (ratingDrag.changed) {
+        suppressRatingClick = true;
+        setTimeout(() => { suppressRatingClick = false; }, 0);
+      }
+      ratingDrag = null;
+    };
+    document.addEventListener('pointerup', finishRatingDrag);
+    document.addEventListener('pointercancel', finishRatingDrag);
+  }
+
+  const applyYearSelection = (years) => {
+    releaseYearFilter = [...new Set(years.map(String))].slice(0, 2);
+    [...select.options].forEach((item) => {
+      item.selected = releaseYearFilter.includes(item.value);
+    });
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+
+  if (wrapper.classList.contains('workspace-year-menu') && select) {
+    wrapper.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0 || !event.isPrimary) return;
+      const option = event.target.closest('.menu-content-layout > .menu-option[data-filter-value]');
+      if (!option || !wrapper.contains(option)) return;
+      const year = option.dataset.filterValue;
+      yearDrag = { pointerId: event.pointerId, start: year, current: year, changed: false };
+    });
+
+    document.addEventListener('pointermove', (event) => {
+      if (!yearDrag || event.pointerId !== yearDrag.pointerId) return;
+      const option = document.elementFromPoint(event.clientX, event.clientY)
+        ?.closest('.menu-content-layout > .menu-option[data-filter-value]');
+      if (!option || !wrapper.contains(option)) return;
+      const year = option.dataset.filterValue;
+      if (year === yearDrag.current) return;
+      yearDrag.current = year;
+      yearDrag.changed ||= year !== yearDrag.start;
+      applyYearSelection(yearDrag.changed ? [yearDrag.start, year] : [yearDrag.start]);
+    });
+
+    const finishYearDrag = (event) => {
+      if (!yearDrag || event.pointerId !== yearDrag.pointerId) return;
+      if (yearDrag.changed) {
+        suppressYearClick = true;
+        setTimeout(() => { suppressYearClick = false; }, 0);
+      }
+      yearDrag = null;
+    };
+    document.addEventListener('pointerup', finishYearDrag);
+    document.addEventListener('pointercancel', finishYearDrag);
+  }
 
   select?.addEventListener('change', () => {
     if (select.id === 'collection-value-filter') {
@@ -215,21 +1078,9 @@ workspaceFilterMenus.forEach((wrapper) => {
   });
 
   trigger.addEventListener('click', (event) => {
-    const willOpen = wrapper.querySelector('.menu-container').hidden;
+    const willOpen = !isWorkspaceFilterMenuOpen(wrapper);
     closeWorkspaceFilterMenus();
     setWorkspaceFilterMenuOpen(wrapper, willOpen);
-  });
-
-  directionButton?.addEventListener('click', (event) => {
-    event.stopPropagation();
-    const [sortKey, direction] = collectionSort.split('-');
-    if (!['watched', 'recent', 'rating', 'priority', 'title', 'release'].includes(sortKey)) return;
-    collectionSort = `${sortKey}-${direction === 'desc' ? 'asc' : 'desc'}`;
-    collectionPage = 0;
-    hasPendingWorkspaceMenuChanges = true;
-    select.value = collectionSort;
-    syncWorkspaceFilterMenu(select);
-    directionButton.focus();
   });
 
   trigger.addEventListener('keydown', (event) => {
@@ -237,48 +1088,81 @@ workspaceFilterMenus.forEach((wrapper) => {
     event.preventDefault();
     closeWorkspaceFilterMenus();
     setWorkspaceFilterMenuOpen(wrapper, true);
-    const options = [...wrapper.querySelectorAll('.menu-option')];
-    const selectedOption = options.find((option) => option.classList.contains('active'));
+    const options = wrapper.classList.contains('nav-type-menu')
+      ? [...wrapper.querySelectorAll('.menu-option > button')].filter((option) => !option.closest('.menu-option')?.hidden)
+      : [...wrapper.querySelectorAll(':scope > .menu-content-layout > .menu-option')].filter((option) => !option.hidden);
+    const selectedOption = options.find((option) => (
+      option.classList.contains('active') || option.classList.contains('is-selected')
+    ));
     (selectedOption || (event.key === 'ArrowDown' ? options[0] : options[options.length - 1]))?.focus();
   });
 
-  if (!select) return;
-
-  resetButton?.addEventListener('click', (event) => {
-    event.stopPropagation();
-    if (wrapper.classList.contains('workspace-sort-menu-wrapper')) {
-      collectionSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
-      select.value = collectionSort;
-    } else {
-      [...select.options].forEach((option) => { option.selected = false; });
-      if (select.id === 'collection-value-filter') {
-        if (activeCollectionView === 'watchlist') priorityFilter = [];
-        else {
-          ratingFilter = [100, 0];
-          [...select.options].forEach((option) => {
-            option.selected = ratingFilter.includes(Number(option.value));
-          });
-        }
+  if (!select && wrapper.classList.contains('nav-type-menu')) {
+    wrapper.addEventListener('click', (event) => {
+      const option = event.target.closest('.menu-option');
+      if (!option || option === trigger || !option.closest('.menu-content-layout') || !wrapper.contains(option)) return;
+      event.stopPropagation();
+      const selectedType = option.dataset.filter;
+      if (selectedType !== 'mixed' && !workspaceMediaTypes.includes(selectedType)) return;
+      const applySelectedType = () => {
+        activeFilters = selectedType === 'mixed'
+          ? [...workspaceMediaTypes]
+          : [selectedType];
+        collectionPage = 0;
+        hasPendingWorkspaceMenuChanges = false;
+        animateWorkspaceEntryRefresh = true;
+        renderCollection();
+        trigger.focus();
+      };
+      if (!animateNavTypeSelection(wrapper, option, applySelectedType)) {
+        setWorkspaceFilterMenuOpen(wrapper, false);
+        applySelectedType();
       }
-      if (select.id === 'release-year-filter') releaseYearFilter = [];
-    }
-    collectionPage = 0;
-    hasPendingWorkspaceMenuChanges = true;
-    syncWorkspaceFilterMenu(select);
-    resetButton.focus();
-  });
+    });
+    return;
+  }
+
+  if (!select) return;
 
   wrapper.addEventListener('click', (event) => {
     const option = event.target.closest('.menu-option');
-    if (!option || !wrapper.contains(option)) return;
+    if (!option || option === trigger || !option.closest('.menu-content-layout') || !wrapper.contains(option)) return;
     event.stopPropagation();
-    if (wrapper.classList.contains('workspace-sort-menu-wrapper')) {
-      collectionSort = option.dataset.filterValue;
+    if (wrapper.classList.contains('workspace-ratings-menu')) {
+      if (suppressRatingClick) {
+        suppressRatingClick = false;
+        return;
+      }
+      const selectedRating = Number(option.dataset.filterValue);
+      applyRatingSelection([selectedRating]);
+      wrapper.querySelector(`.menu-content-layout > .menu-option[data-filter-value="${selectedRating}"]`)?.focus();
+      return;
+    }
+    if (wrapper.classList.contains('workspace-year-menu')) {
+      if (suppressYearClick) {
+        suppressYearClick = false;
+        return;
+      }
+      const selectedYear = option.dataset.filterValue;
+      applyYearSelection([selectedYear]);
+      wrapper.querySelector(`.menu-content-layout > .menu-option[data-filter-value="${selectedYear}"]`)?.focus();
+      return;
+    }
+    if (wrapper.classList.contains('workspace-sort-menu')) {
+      const [nextSortKey, nextDirection] = option.dataset.filterValue.split('-');
+      const [currentSortKey, currentDirection] = collectionSort.split('-');
+      collectionSort = nextSortKey === currentSortKey
+        ? `${nextSortKey}-${currentDirection === 'desc' ? 'asc' : 'desc'}`
+        : `${nextSortKey}-${nextDirection}`;
       collectionPage = 0;
       hasPendingWorkspaceMenuChanges = true;
+      const sortOption = [...select.options].find((item) => item.value.split('-')[0] === nextSortKey);
+      if (sortOption) sortOption.value = collectionSort;
       select.value = collectionSort;
+      const defaultSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
+      select.classList.toggle('active', collectionSort !== defaultSort);
       syncWorkspaceFilterMenu(select);
-      wrapper.querySelector('.menu-option.active')?.focus();
+      wrapper.querySelector('.menu-content-layout > .menu-option.active')?.focus();
       return;
     }
     const isMultiSelect = select.multiple;
@@ -291,7 +1175,7 @@ workspaceFilterMenus.forEach((wrapper) => {
     }
     select.dispatchEvent(new Event('change', { bubbles: true }));
     if (isMultiSelect) {
-      setWorkspaceFilterMenuOpen(wrapper, true);
+      if (!isWorkspaceFilterMenuOpen(wrapper)) setWorkspaceFilterMenuOpen(wrapper, true);
       [...wrapper.querySelectorAll('.menu-option')]
         .find((item) => item.dataset.filterValue === option.dataset.filterValue)
         ?.focus();
@@ -301,21 +1185,9 @@ workspaceFilterMenus.forEach((wrapper) => {
   });
 });
 
-const resetCollectionFiltersButton = $('.workspace-reset-button');
-resetCollectionFiltersButton?.addEventListener('click', () => {
-  hasPendingWorkspaceMenuChanges = false;
-  activeFilters = [...workspaceMediaTypes];
-  releaseYearFilter = [];
-  ratingFilter = [100, 0];
-  priorityFilter = [];
-  collectionSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
-  collectionPage = 0;
-  renderCollection();
-});
-
 document.addEventListener('click', (event) => {
-  const openMenu = workspaceFilterMenus.find((wrapper) => !wrapper.querySelector('.menu-container').hidden);
-  if (!openMenu || openMenu.querySelector('.menu-container').contains(event.target)) return;
+  const openMenu = workspaceFilterMenus.find(isWorkspaceFilterMenuOpen);
+  if (!openMenu || openMenu.contains(event.target)) return;
 
   event.preventDefault();
   event.stopImmediatePropagation();
@@ -324,7 +1196,7 @@ document.addEventListener('click', (event) => {
 
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape') return;
-  const openMenu = workspaceFilterMenus.find((wrapper) => !wrapper.querySelector('.menu-container').hidden);
+  const openMenu = workspaceFilterMenus.find(isWorkspaceFilterMenuOpen);
   if (!openMenu) return;
   event.preventDefault();
   closeWorkspaceFilterMenus();
@@ -337,30 +1209,13 @@ function syncWorkspaceFilterMenu(select) {
   if (!wrapper) return;
 
   const trigger = getWorkspaceFilterButton(wrapper);
-  const menu = wrapper.querySelector('.menu-container');
-  const triggerLabel = trigger.querySelector('.menu-button-text');
-  const directionButton = select.id === 'collection-sort'
-    ? wrapper.querySelector('.workspace-sort-direction-button')
-    : null;
-  const directionIcon = directionButton?.querySelector('.masked-icon');
-  const optionsContainer = wrapper.querySelector('[data-menu-options]');
+  const optionsContainer = wrapper.querySelector(':scope > .menu-content-layout');
+  const triggerLabel = trigger.querySelector(':scope > .menu-option-label');
   const selectedOptions = [...select.selectedOptions];
   const selectedOption = selectedOptions[0];
   const filterLabel = select.getAttribute('aria-label');
   const isValueFilter = select.id === 'collection-value-filter';
   const isPriorityFilter = isValueFilter && select.getAttribute('aria-label') === 'Filter by priority';
-  const resetButton = wrapper.querySelector('.workspace-filter-reset-button, .workspace-sort-reset-button');
-  if (resetButton) {
-    const defaultSort = activeCollectionView === 'watchlist' ? 'priority-desc' : 'watched-desc';
-    const hasActiveSetting = select.id === 'collection-sort'
-      ? collectionSort !== defaultSort
-      : select.id === 'release-year-filter'
-        ? releaseYearFilter.length > 0
-        : isPriorityFilter
-          ? priorityFilter.length > 0
-          : !isDefaultRatingRange(ratingFilter);
-    resetButton.disabled = !hasActiveSetting;
-  }
   const rangeValues = isValueFilter && !isPriorityFilter
     ? selectedOptions.map((option) => Number(option.value))
     : select.id === 'release-year-filter'
@@ -369,7 +1224,7 @@ function syncWorkspaceFilterMenu(select) {
   const rangeBounds = rangeValues.length === 2
     ? [Math.min(...rangeValues), Math.max(...rangeValues)]
     : null;
-  menu.setAttribute('aria-label', filterLabel);
+  optionsContainer.setAttribute('aria-label', filterLabel);
   const selectedText = select.multiple
     ? selectedOptions.length === 0
       ? isValueFilter
@@ -389,17 +1244,64 @@ function syncWorkspaceFilterMenu(select) {
     : selectedOption?.textContent ?? '';
   const directionalSort = select.id === 'collection-sort' && /^(watched|recent|rating|priority|title|release)-(asc|desc)$/.exec(selectedOption?.value ?? '');
   triggerLabel.textContent = selectedText;
-  if (directionButton) {
-    directionButton.disabled = !directionalSort;
-    if (directionalSort) {
-      const direction = directionalSort[2];
-      directionIcon.dataset.direction = direction;
-      directionButton.setAttribute('aria-label', `Change to ${direction === 'desc' ? 'ascending' : 'descending'} sort order`);
-      directionButton.title = `Change to ${direction === 'desc' ? 'ascending' : 'descending'} order`;
-    }
-  }
-  trigger.setAttribute('aria-label', `${filterLabel}: ${triggerLabel.textContent}`);
+  if (directionalSort) wrapper.dataset.sortDirection = directionalSort[2];
+  const sortDirectionLabel = directionalSort
+    ? `, ${directionalSort[2] === 'desc' ? 'descending' : 'ascending'}`
+    : '';
+  trigger.setAttribute('aria-label', `${filterLabel}: ${triggerLabel.textContent}${sortDirectionLabel}`);
   trigger.classList.toggle('active', select.classList.contains('active'));
+
+  const existingRatingOptions = isValueFilter && !isPriorityFilter
+    ? [...optionsContainer.querySelectorAll(':scope > .menu-option[data-filter-value]')]
+    : [];
+  const canUpdateRatingOptionsInPlace = existingRatingOptions.length === select.options.length
+    && existingRatingOptions.every((button, index) => button.dataset.filterValue === select.options[index].value);
+  if (canUpdateRatingOptionsInPlace) {
+    [...select.options].forEach((selectOption, index) => {
+      const button = existingRatingOptions[index];
+      const optionValue = Number(selectOption.value);
+      const isInSelectedRange = rangeBounds
+        && optionValue >= rangeBounds[0]
+        && optionValue <= rangeBounds[1];
+      const isOptionActive = selectOption.selected || isInSelectedRange;
+      button.setAttribute('aria-pressed', String(isOptionActive));
+      button.classList.toggle('active', isOptionActive);
+      if (isOptionActive) {
+        let valueChip = button.querySelector(':scope > .rating-value-chip');
+        if (!valueChip) {
+          valueChip = document.createElement('span');
+          valueChip.className = 'value-chip-styling rating-value-chip';
+          button.replaceChildren(valueChip);
+        }
+        valueChip.textContent = selectOption.textContent;
+        valueChip.style.setProperty('--rating-color', ratingColorForScore(optionValue / 10));
+      } else if (button.firstElementChild || button.textContent !== selectOption.textContent) {
+        button.textContent = selectOption.textContent;
+      }
+    });
+    return;
+  }
+
+  const existingYearOptions = select.id === 'release-year-filter'
+    ? [...optionsContainer.querySelectorAll(':scope > .menu-option[data-filter-value]')]
+    : [];
+  const canUpdateYearOptionsInPlace = existingYearOptions.length === select.options.length
+    && existingYearOptions.every((button, index) => button.dataset.filterValue === select.options[index].value);
+  if (canUpdateYearOptionsInPlace) {
+    [...select.options].forEach((selectOption, index) => {
+      const button = existingYearOptions[index];
+      const year = Number(selectOption.value);
+      const isInSelectedRange = rangeBounds
+        && year >= rangeBounds[0]
+        && year <= rangeBounds[1];
+      const isOptionActive = selectOption.selected || isInSelectedRange;
+      button.classList.remove('level-3-styling');
+      button.classList.add('level-4-styling');
+      button.setAttribute('aria-pressed', String(isOptionActive));
+      button.classList.toggle('active', isOptionActive);
+    });
+    return;
+  }
 
   optionsContainer.replaceChildren(...[...select.options].map((selectOption) => {
     const button = document.createElement('button');
@@ -409,9 +1311,11 @@ function syncWorkspaceFilterMenu(select) {
       && optionValue <= rangeBounds[1];
     const isOptionActive = selectOption.selected || isInSelectedRange;
     button.type = 'button';
-    button.className = isValueFilter
-      ? 'menu-option menu-option-value level-3-styling'
-      : 'menu-option level-3-styling';
+    const menuOptionLevel = wrapper.classList.contains('workspace-year-menu')
+      || wrapper.classList.contains('workspace-sort-menu')
+      ? 'level-4-styling'
+      : 'level-3-styling';
+    button.className = `menu-option${isValueFilter ? ' menu-option-value' : ''} ${menuOptionLevel}`;
     button.dataset.filterValue = selectOption.value;
     if (isValueFilter) {
       if (isOptionActive) {
@@ -448,17 +1352,40 @@ function priorityColorForValue(priority) {
   return getComputedStyle(document.documentElement).getPropertyValue(token).trim();
 }
 
-/** Updates active styling for the Log and Backlog view controls. */
+/** Updates active styling for the Logged and Backlogged view controls. */
 function updateViewTabs() {
   const folderSelected = activeCollectionView === 'logged' && activeCollectionId !== 'all';
   const collapsedView = folderSelected ? folderReturnView : activeCollectionView;
-  document.querySelectorAll('.workspace-controls-container :is(.library-view-switcher, .collection-view-switcher) > [data-view]').forEach((button) => {
+  document.querySelectorAll('.workspace-controls-container .collection-view-switcher > [data-view]').forEach((button) => {
     const selected = !folderSelected && button.dataset.view === activeCollectionView;
     button.classList.toggle('is-collapsed-current', folderSelected && button.dataset.view === collapsedView);
     button.classList.toggle('active', selected);
     button.setAttribute('aria-selected', selected ? 'true' : 'false');
   });
 }
+
+const workspaceViewToggle = document.querySelector('.workspace-view-toggle');
+
+function updateWorkspaceViewToggle() {
+  if (!workspaceViewToggle) return;
+  const isListView = collection.classList.contains('is-list-view');
+  const nextView = isListView ? 'gallery' : 'list';
+  const currentView = isListView ? 'list' : 'gallery';
+  const label = `Switch to ${nextView} view`;
+  workspaceViewToggle.setAttribute('aria-label', label);
+  workspaceViewToggle.title = label;
+  workspaceViewToggle.setAttribute('aria-pressed', String(isListView));
+  workspaceViewToggle.innerHTML = appIconMarkup(currentView, 'icon');
+}
+
+workspaceViewToggle?.addEventListener('click', () => {
+  collection.classList.toggle('is-list-view');
+  collectionPage = 0;
+  animateWorkspaceEntryRefresh = true;
+  renderCollection();
+  updateWorkspaceViewToggle();
+});
+updateWorkspaceViewToggle();
 
 /** Renders collection changes without collapsing its scroll position. */
 function renderWithoutScrollCollapse() {
@@ -474,45 +1401,97 @@ function renderWithoutScrollCollapse() {
 function renderCollectionPicker() {
   const list = folderList;
   if (!list || !folderButton) return;
+  // Keep the exiting rows mounted until their reverse stagger has completed.
+  if (folderDropdown?.classList.contains('is-closing')) return;
+  const getFolderMenuContentSignature = () => [...list.children]
+    .map((option) => `${option.dataset.folderId || ''}:${option.title || ''}`)
+    .join('|');
+  const previousContentSignature = getFolderMenuContentSignature();
   const selectedFolder = activeCollectionView === 'logged'
     ? customCollections.find((folder) => folder.id === activeCollectionId)
     : null;
-  if (!isReworkedCollection) folderDropdown?.classList.toggle('folder-active', Boolean(selectedFolder));
-  folderButton.setAttribute('aria-label', selectedFolder ? `Folder: ${selectedFolder.name}` : 'Choose a folder');
-  folderButton.title = selectedFolder ? `Folder: ${selectedFolder.name}` : 'Choose a folder';
-  if (isReworkedCollection) folderButton.classList.toggle('is-active', Boolean(selectedFolder));
-  const folderButtonLabel = !isReworkedCollection && folderButton.lastElementChild;
-  if (folderButtonLabel && folderButtonLabel.tagName !== 'IMG') {
-    folderButtonLabel.textContent = selectedFolder?.name ?? '';
-  }
-  list.replaceChildren();
+
+  const formatFolderMenuLabel = (name) => {
+    const characters = Array.from(name);
+    return characters.length > 10 ? `${characters.slice(0, 10).join('')}…` : name;
+  };
+
+  const setTriggerFolder = (folder) => {
+    const label = folderButton.querySelector('.menu-option-label') || document.createElement('span');
+    label.className = 'menu-option-label';
+    const labelText = formatFolderMenuLabel(folder?.name || 'No folders yet');
+    if (folderButton.dataset.folderId !== (folder?.id || '')) folderButton.dataset.folderId = folder?.id || '';
+    const isSelected = Boolean(folder && selectedFolder?.id === folder.id);
+    if (folderButton.getAttribute('aria-pressed') !== String(isSelected)) {
+      folderButton.setAttribute('aria-pressed', String(isSelected));
+    }
+    const ariaLabel = folder ? `Open ${folder.name} folder` : 'Choose a folder';
+    if (folderButton.getAttribute('aria-label') !== ariaLabel) folderButton.setAttribute('aria-label', ariaLabel);
+    if (folderButton.title !== (folder?.name || 'Choose a folder')) folderButton.title = folder?.name || 'Choose a folder';
+    if (label.textContent !== labelText) label.textContent = labelText;
+    if (!label.parentElement) folderButton.append(label);
+    folderButton.classList.toggle('is-selected', isSelected);
+    folderButton.classList.toggle('is-active', Boolean(selectedFolder));
+  };
+
+  const existingOptions = new Map(
+    [...list.querySelectorAll(':scope > .menu-option:not(.nav-folders-button)')]
+      .map((option) => [option.dataset.folderId, option]),
+  );
+  const expectedIds = new Set(customCollections.slice(1).map((folder) => folder.id));
+  existingOptions.forEach((option, id) => {
+    if (!expectedIds.has(id)) option.remove();
+  });
+
+  const updateFolderOption = (option, folder) => {
+    const selected = selectedFolder?.id === folder.id;
+    if (!option) {
+      option = document.createElement('button');
+      option.type = 'button';
+      option.className = 'menu-option';
+      option.dataset.folderId = folder.id;
+      const icon = document.createElement('span');
+      icon.className = 'icon-button glow-halo level-3-styling';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.append(createFilledIconElement('folder'));
+      const label = document.createElement('span');
+      label.className = 'menu-option-label';
+      option.append(icon, label);
+      option.addEventListener('click', () => selectFolderFromMenu(folder.id));
+    }
+    const label = option.querySelector('.menu-option-label');
+    const labelText = formatFolderMenuLabel(folder.name);
+    if (label.textContent !== labelText) label.textContent = labelText;
+    if (option.getAttribute('aria-pressed') !== String(selected)) option.setAttribute('aria-pressed', String(selected));
+    if (option.getAttribute('aria-label') !== `Open ${folder.name} folder`) {
+      option.setAttribute('aria-label', `Open ${folder.name} folder`);
+    }
+    if (option.title !== folder.name) option.title = folder.name;
+    option.classList.toggle('is-selected', selected);
+    return option;
+  };
 
   if (!customCollections.length) {
-    const empty = document.createElement('div');
-    empty.textContent = 'No folders yet';
-    list.append(empty);
+    setTriggerFolder(null);
+    if (folderDropdown.classList.contains('is-open')
+      && getFolderMenuContentSignature() !== previousContentSignature) {
+      updateFolderMenuOpenSize();
+    }
     return;
   }
 
-  customCollections.forEach((folder) => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = document.documentElement.dataset.cssReworkPreview === 'true'
-      ? 'menu-option level-3-styling'
-      : 'entry-folder-choice';
-    button.dataset.folderId = folder.id;
-    button.textContent = folder.name;
-    const selected = selectedFolder?.id === folder.id;
-    button.classList.toggle('active', selected);
-    button.setAttribute('aria-pressed', selected ? 'true' : 'false');
-    button.setAttribute('aria-label', `Open ${folder.name} folder`);
-    button.title = folder.name;
-    button.addEventListener('click', () => {
-      setFolderMenuOpen(false);
-      selectCollection(folder.id);
-    });
-    list.append(button);
+  const [firstFolder, ...remainingFolders] = customCollections;
+  // The navigation trigger is the first actual folder row in the scrollable list.
+  setTriggerFolder(firstFolder);
+  remainingFolders.forEach((folder, index) => {
+    const option = updateFolderOption(existingOptions.get(folder.id), folder);
+    const expectedPosition = list.children[index + 1] || null;
+    if (option !== expectedPosition) list.insertBefore(option, expectedPosition);
   });
+  if (folderDropdown.classList.contains('is-open')
+    && getFolderMenuContentSignature() !== previousContentSignature) {
+    updateFolderMenuOpenSize();
+  }
 }
 
 /** Preserves control order during expansion, then applies the compact order. */
@@ -547,6 +1526,7 @@ function selectCollection(collectionId) {
   activeCollectionId = collectionId;
   activeCollectionView = 'logged';
   collectionPage = 0;
+  animateWorkspaceEntryRefresh = true;
   updateViewTabs();
   renderWithoutScrollCollapse();
   if (typeof updateNavbarPageContext === 'function') updateNavbarPageContext();
@@ -554,7 +1534,7 @@ function selectCollection(collectionId) {
 
 /** Deletes a folder and removes its ID from entries. */
 function deleteCollection(folder) {
-  if (!confirm(`Delete the “${folder.name}” collection? Its titles will remain in Library.`)) return;
+  if (!confirm(`Delete the “${folder.name}” collection? Its titles will remain in Logged.`)) return;
   customCollections = customCollections.filter((item) => item.id !== folder.id);
   [entries, watchlist].forEach((items) => {
     items.forEach((entry) => {
@@ -612,7 +1592,7 @@ function openFolderPicker(entry) {
   list.replaceChildren();
   if (!customCollections.length) {
     const empty = document.createElement('p');
-    empty.textContent = 'Create a collection above the library first.';
+    empty.textContent = 'Create a collection from Logged first.';
     list.append(empty);
   } else {
     const selectedIds = entryCollectionIds(entry);
@@ -693,65 +1673,52 @@ function matchesCollectionSearch(entry, query) {
 
 /** Refreshes filter and sort controls for the active collection. */
 function updateCollectionTools(isWatchlist) {
-  const typeWrapper = $('.workspace-type-menu-wrapper');
+  const typeWrapper = $('.nav-type-menu');
   if (typeWrapper) {
     const trigger = getWorkspaceFilterButton(typeWrapper);
     const activeTypes = activeFilters;
+    const mixedTypesSelected = isMixedWorkspaceTypeSelection(activeTypes);
     typeWrapper.querySelectorAll('.menu-option').forEach((button) => {
-      const selected = activeTypes.includes(button.dataset.filter);
-      button.classList.toggle('active', selected);
-      button.setAttribute('aria-pressed', String(selected));
-      const iconName = mediaTypeIconName(button.dataset.filter);
-      let optionIcon = button.querySelector(':scope > .icon, :scope > .masked-icon');
-      if (optionIcon && !optionIcon.classList.contains('masked-icon')) {
-        optionIcon.classList.add('masked-icon', 'workspace-type-option-icon');
-        optionIcon.removeAttribute('src');
-      }
+      const isMixedOption = button.dataset.filter === 'mixed';
+      const selected = !isMixedOption && activeTypes.includes(button.dataset.filter);
+      button.hidden = isMixedOption ? mixedTypesSelected : (!mixedTypesSelected && selected);
+      button.classList.remove('active');
+      button.setAttribute('aria-pressed', 'false');
+      const iconName = isMixedOption ? 'all' : mediaTypeIconName(button.dataset.filter);
+      const optionIcon = button.querySelector(':scope > button');
       if (optionIcon) {
-        const iconUrl = appIconUrl(iconName);
-        optionIcon.dataset.icon = iconName;
-        optionIcon.style.webkitMaskImage = `url("${iconUrl}")`;
-        optionIcon.style.maskImage = `url("${iconUrl}")`;
-        optionIcon.style.setProperty(
-          '--app-icon-state-color',
-          selected ? 'var(--workspace-type-highlight, var(--color-text-secondary))' : 'var(--color-text-secondary)',
-        );
+        optionIcon.dataset.typeIcon = iconName;
+        const iconMask = `url("${appIconUrl(iconName)}")`;
+        optionIcon.style.setProperty('--nav-type-icon-mask', iconMask);
       }
     });
     const selectedOptions = [...typeWrapper.querySelectorAll('.menu-option')]
       .filter((button) => activeTypes.includes(button.dataset.filter));
-    const selectedLabels = selectedOptions.map((button) => button.querySelector('.menu-option-label')?.textContent.trim());
-    const allTypesSelected = workspaceMediaTypes.every((type) => activeTypes.includes(type));
-    const accessibleLabel = allTypesSelected
-      ? 'All'
-      : selectedLabels.length ? selectedLabels.join(', ') : 'No types';
-    const selectedIcons = allTypesSelected
-      ? ['all']
-      : selectedOptions.map((button) => mediaTypeIconName(button.dataset.filter));
+    const accessibleLabel = mixedTypesSelected
+      ? 'Mixed'
+      : selectedOptions[0]?.querySelector('.menu-option-label')?.textContent.trim() || 'Mixed';
     const typeStateClass = activeTypes.length === 1 ? `is-${String(activeTypes[0]).toLowerCase()}` : '';
     trigger.classList.remove('is-movie', 'is-show', 'is-game', 'is-book');
     if (typeStateClass) trigger.classList.add(typeStateClass);
-    trigger.querySelector('.menu-button-text').innerHTML = allTypesSelected
-      ? `<span class="icon workspace-type-icon masked-icon" data-icon="all" style="--app-icon-state-color: var(--color-text-secondary); -webkit-mask-image: url('${appIconUrl('all')}'); mask-image: url('${appIconUrl('all')}')" aria-hidden="true"></span>`
-      : selectedIcons.map((iconName) => {
-      const matchingOption = selectedOptions.find((button) => mediaTypeIconName(button.dataset.filter) === iconName);
-      const type = matchingOption?.dataset.filter;
-      const colorToken = {
-        Movie: '--color-media-film',
-        Show: '--color-media-show',
-        Game: '--color-media-game',
-        Book: '--color-media-book',
-      }[type];
-      let markup = appIconMarkup(iconName, 'icon workspace-type-icon');
-      if (colorToken) {
-        markup = markup.includes('style="')
-          ? markup.replace('style="', `style="--app-icon-state-color: var(${colorToken}); `)
-          : markup.replace(' aria-hidden="true"', ` style="--app-icon-state-color: var(${colorToken})" aria-hidden="true"`);
-      }
-      return markup;
-    }).join('');
+    trigger.classList.toggle('is-mixed', mixedTypesSelected);
+    const typeButtonText = trigger;
+    const selectedOption = selectedOptions[0];
+    const iconName = mixedTypesSelected ? 'all' : mediaTypeIconName(selectedOption?.dataset.filter);
+    const colorToken = mixedTypesSelected ? null : {
+      Movie: '--color-media-film',
+      Show: '--color-media-show',
+      Game: '--color-media-game',
+      Book: '--color-media-book',
+    }[selectedOption?.dataset.filter];
+    const selectedIcon = typeButtonText.querySelector(':scope > .icon-button');
+    selectedIcon.dataset.typeIcon = iconName;
+    selectedIcon.style.setProperty('--nav-type-icon-mask', `url("${appIconUrl(iconName)}")`);
+    if (colorToken) selectedIcon.style.setProperty('--nav-type-icon-color', `var(${colorToken})`);
+    else selectedIcon.style.setProperty('--nav-type-icon-color', 'var(--palette-white)');
+    typeButtonText.querySelector(':scope > .menu-option-label').textContent = accessibleLabel;
+    updateNavTypeMenuClosedWidth(typeWrapper);
     trigger.setAttribute('aria-label', `Entry type: ${accessibleLabel}`);
-    trigger.classList.toggle('active', !allTypesSelected);
+    trigger.classList.toggle('active', !mixedTypesSelected);
   }
   document.querySelectorAll('.logged-collection-tool').forEach((control) => {
     control.hidden = isWatchlist;
@@ -769,11 +1736,8 @@ function updateCollectionTools(isWatchlist) {
   releaseYearFilter = releaseYearFilter.filter((year) => availableYears.includes(year));
   yearSelect.replaceChildren(...availableYears.map((year) => new Option(year, year, false, releaseYearFilter.includes(year))));
   yearSelect.classList.toggle('active', releaseYearFilter.length > 0);
-  const yearReset = $('.workspace-year-menu-wrapper .workspace-filter-reset-button');
-  if (yearReset) yearReset.disabled = releaseYearFilter.length === 0;
   syncWorkspaceFilterMenu(yearSelect);
   const valueSelect = $('#collection-value-filter');
-  const activeValueFilter = isWatchlist ? priorityFilter : ratingFilter;
   const hasActiveValueFilter = isWatchlist ? priorityFilter.length > 0 : !isDefaultRatingRange(ratingFilter);
   const valueOptions = isWatchlist
     ? [5, 4, 3, 2, 1].map((priority) => new Option(`P${priority}`, String(priority), false, priorityFilter.includes(priority)))
@@ -783,12 +1747,6 @@ function updateCollectionTools(isWatchlist) {
   valueSelect.setAttribute('aria-label', `Filter by ${valueLabel}`);
   valueSelect.replaceChildren(...valueOptions);
   valueSelect.classList.toggle('active', hasActiveValueFilter);
-  const valueReset = $('.workspace-ratings-menu-wrapper .workspace-filter-reset-button');
-  if (valueReset) {
-    valueReset.disabled = !hasActiveValueFilter;
-    valueReset.setAttribute('aria-label', `Clear ${valueLabel} filter`);
-    valueReset.title = `Clear ${valueLabel} filter`;
-  }
   syncWorkspaceFilterMenu(valueSelect);
 
   const sortSelect = $('#collection-sort');
@@ -804,12 +1762,10 @@ function updateCollectionTools(isWatchlist) {
   sortSelect.value = collectionSort;
   const defaultSort = isWatchlist ? 'priority-desc' : 'watched-desc';
   sortSelect.classList.toggle('active', collectionSort !== defaultSort);
-  const sortReset = $('.workspace-sort-menu-wrapper .workspace-sort-reset-button');
-  if (sortReset) sortReset.disabled = collectionSort === defaultSort;
-  const resetAll = $('.workspace-reset-button');
+  const resetAll = $('#workspace-reset-button');
   if (resetAll) {
     const hasActiveSettings = Boolean(
-      activeFilters.length < workspaceMediaTypes.length || releaseYearFilter.length || hasActiveValueFilter || collectionSort !== defaultSort
+      releaseYearFilter.length || hasActiveValueFilter || collectionSort !== defaultSort
     );
     resetAll.disabled = !hasActiveSettings;
     resetAll.classList.toggle('is-active', hasActiveSettings);
@@ -874,7 +1830,7 @@ function getFilteredCollectionItems() {
   const items = isWatchlist ? watchlist : showingFolder
     ? [...entries, ...watchlist.filter((entry) => entryCollectionIds(entry).includes(activeCollectionId))]
     : entries;
-  const query = $('.library-search-container > .search-input').value.trim().toLocaleLowerCase();
+  const query = $('.collection-search-container > .search-input').value.trim().toLocaleLowerCase();
 
   return sortCollectionItems(
     items.filter((entry) => {
@@ -885,9 +1841,43 @@ function getFilteredCollectionItems() {
   );
 }
 
+/** Updates type counts from the active search, filters, and collection view. */
+function updateWorkspaceTypeCounts(items) {
+  const counts = new Map(workspaceMediaTypes.map((type) => [type, 0]));
+  items.forEach((entry) => {
+    const matchingType = workspaceMediaTypes.find(
+      (type) => type.toLocaleLowerCase() === String(entry.type || '').toLocaleLowerCase(),
+    );
+    if (matchingType) counts.set(matchingType, counts.get(matchingType) + 1);
+  });
+
+  const visibleTypeCount = [...counts.values()].filter((count) => count > 0).length;
+  const countItems = document.querySelectorAll('.workspace-type-count');
+  let hasVisibleCounts = false;
+  countItems.forEach((item) => {
+    const type = item.dataset.mediaType;
+    const count = type === 'Mixed'
+      ? (visibleTypeCount > 1 ? items.length : 0)
+      : (counts.get(type) || 0);
+    hasVisibleCounts ||= count > 0;
+    item.hidden = count === 0;
+    item.querySelector('.workspace-type-count-value').textContent = String(count);
+    item.querySelector('.workspace-type-count-icon').innerHTML = appIconMarkup(
+      type === 'Mixed' ? 'all' : mediaTypeIconName(type),
+      'icon',
+    );
+  });
+  const countGroup = document.querySelector('.workspace-type-counts-layout')?.closest('.workspace-control-group');
+  const controls = countGroup?.parentElement;
+  if (countGroup) {
+    countGroup.hidden = !hasVisibleCounts;
+    controls.classList.toggle('has-type-counts', hasVisibleCounts);
+  }
+}
+
 /** Updates page controls and counts for the visible collection. */
 function updateCollectionPaginationControls() {
-  const pagination = $('.workspace-pagination-container > .pagination-container');
+  const pagination = $('.workspace-controls-container > .workspace-control-group > .pagination-container');
   const status = pagination.querySelector('.pagination-text-container');
   pagination.hidden = false;
   status.firstElementChild.textContent = `${collectionPage + 1}`;
@@ -938,13 +1928,15 @@ function changeCollectionPage(direction) {
 /** Recalculates collection layout and paging after a resize. */
 function handleCollectionResize() {
   const columns = getCollectionColumnCount();
+  const rows = getCollectionRowCount();
   const viewportWidth = collection.clientWidth;
   if (!collectionColumnCount) {
     collectionColumnCount = columns;
+    collectionRowCount = rows;
     collectionViewportWidth = viewportWidth;
     return;
   }
-  if (columns === collectionColumnCount) {
+  if (columns === collectionColumnCount && rows === collectionRowCount) {
     if (isReworkedCollection && viewportWidth !== collectionViewportWidth) {
       collectionViewportWidth = viewportWidth;
       collection.scrollLeft = collectionPage * viewportWidth;
@@ -953,6 +1945,7 @@ function handleCollectionResize() {
   }
 
   collectionColumnCount = columns;
+  collectionRowCount = rows;
   collectionViewportWidth = viewportWidth;
   collectionPage = 0;
   const pageScroll = collection.scrollTop;
@@ -964,12 +1957,27 @@ function handleCollectionResize() {
   });
 }
 
+// Recompute list capacity when the app-content viewport settles or changes size.
+const collectionResizeObserver = new ResizeObserver(handleCollectionResize);
+collectionResizeObserver.observe(collection);
+
 /** Builds the card markup and actions for one entry. */
 function createEntryCard(entry, isBacklogged, sourceView = activeCollectionView) {
   const watch = isBacklogged ? null : latest(entry);
   const isReworkPreview = document.documentElement.dataset.cssReworkPreview === 'true';
   const cardLayout = document.createElement('div');
   cardLayout.className = 'entry-card-layout';
+  cardLayout.addEventListener('pointerenter', () => cardLayout.classList.remove('is-hover-leaving'));
+  cardLayout.addEventListener('pointerleave', () => {
+    if (reduceAnimationsEnabled || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    cardLayout.classList.add('is-hover-leaving');
+  });
+  cardLayout.addEventListener('animationend', (event) => {
+    if (event.animationName === 'workspace-entry-hover-out') cardLayout.classList.remove('is-hover-leaving');
+  });
+  cardLayout.addEventListener('animationcancel', (event) => {
+    if (event.animationName === 'workspace-entry-hover-out') cardLayout.classList.remove('is-hover-leaving');
+  });
   const card = document.createElement('article');
   card.className = `${isReworkPreview ? 'entry-container banner-container' : 'workspace-content-entry'} level-2-styling entry ${isBacklogged ? 'is-backlogged' : 'is-logged'}`;
   if (isReworkPreview && entry.poster) {
@@ -1209,7 +2217,7 @@ function openEntryFromCard(card, destination) {
 }
 
 /** Opens the first visible result when Enter is pressed in the collection search. */
-$('.library-search-container > .search-input').addEventListener('keydown', (event) => {
+$('.collection-search-container > .search-input').addEventListener('keydown', (event) => {
   if (event.key !== 'Enter' || event.isComposing) return;
   const firstCard = collection.querySelector('.entry');
   if (!firstCard) return;
@@ -1243,16 +2251,28 @@ collection.addEventListener('keydown', (event) => {
 
 /** Filters, sorts, pages, and renders the active collection. */
 function renderCollection() {
-  $('.library-section').hidden = false;
-  collection.replaceChildren();
+  const appPage = document.documentElement.dataset.appPage || 'home';
+  const isWorkspacePage = ['logged', 'backlogged', 'folders'].includes(appPage);
+$('.workspace-section').hidden = document.documentElement.dataset.appPage === 'statistics';
   const isWatchlist = activeCollectionView === 'watchlist';
   renderCollectionPicker();
   updateCollectionTools(isWatchlist);
-  const query = $('.library-search-container > .search-input').value.trim().toLocaleLowerCase();
+  const query = $('.collection-search-container > .search-input').value.trim().toLocaleLowerCase();
   const sourceItems = isWatchlist ? watchlist : activeCollectionId === 'all'
     ? entries
     : [...entries, ...watchlist.filter((entry) => entryCollectionIds(entry).includes(activeCollectionId))];
   const shown = getFilteredCollectionItems();
+  updateWorkspaceTypeCounts(shown);
+  const enteringWorkspacePage = isReworkedCollection
+    && (
+      (isWorkspacePage && appPage !== lastRenderedAppPage)
+      || animateWorkspaceEntryRefresh
+      || (isWorkspacePage && lastRenderedWorkspaceEntryCount === 0 && shown.length > 0)
+    )
+    && !reduceAnimationsEnabled;
+  animateWorkspaceEntryRefresh = false;
+  lastRenderedAppPage = appPage;
+  if (isWorkspacePage) lastRenderedWorkspaceEntryCount = shown.length;
   const watchlistEmpty = $('#watchlist-empty');
   const empty = $('#empty');
   const hasCollectionFilter = activeFilters.length < workspaceMediaTypes.length
@@ -1274,19 +2294,35 @@ function renderCollection() {
 
   const columns = getCollectionColumnCount();
   collectionColumnCount = columns;
-  const pageSize = columns * collectionRowsPerPage;
+  const rows = getCollectionRowCount();
+  collectionRowCount = rows;
+  const pageSize = columns * rows;
   updateCollectionPagination(shown.length, pageSize);
-  const appendEntryCard = (target, entry) => {
+  collection.replaceChildren();
+  const enteringCards = [];
+  const appendEntryCard = (target, entry, revealDelay = null) => {
     const entryIsWatchlist = watchlist.includes(entry);
     const sourceView = entryIsWatchlist ? 'watchlist' : 'logged';
-    target.append(createEntryCard(entry, entryIsWatchlist, sourceView));
+    const cardLayout = createEntryCard(entry, entryIsWatchlist, sourceView);
+    if (revealDelay !== null) {
+      cardLayout.classList.add('is-enter-pending');
+      cardLayout.style.setProperty('--entry-reveal-delay', `${revealDelay}ms`);
+      enteringCards.push(cardLayout);
+    }
+    target.append(cardLayout);
   };
   if (isReworkedCollection) {
     for (let pageIndex = 0; pageIndex < collectionPageCount; pageIndex++) {
       const page = document.createElement('div');
       page.className = 'workspace-content-page';
       shown.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
-        .forEach((entry) => appendEntryCard(page, entry));
+        .forEach((entry, index) => appendEntryCard(
+          page,
+          entry,
+          enteringWorkspacePage && pageIndex === collectionPage
+            ? (Math.floor(index / columns) + (index % columns)) * 78
+            : null,
+        ));
       collection.append(page);
     }
     collection.scrollLeft = collectionPage * collection.clientWidth;
@@ -1294,6 +2330,14 @@ function renderCollection() {
     const pageStart = collectionPage * pageSize;
     shown.slice(pageStart, pageStart + pageSize)
       .forEach((entry) => appendEntryCard(collection, entry));
+  }
+
+  if (enteringCards.length) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      enteringCards.forEach((card) => {
+        if (card.isConnected) card.classList.replace('is-enter-pending', 'is-entering');
+      });
+    }));
   }
 
   collection.classList.remove('page-enter-forward', 'page-enter-backward');
@@ -1316,7 +2360,7 @@ function renderCollection() {
 }
 
 // Listen on the whole library card so trackpad swipes work over the toolbar and cards.
-$('.library-section').addEventListener('wheel', (event) => {
+$('.workspace-section').addEventListener('wheel', (event) => {
   if (isReworkedCollection) return;
   if (collectionPageCount < 2) return;
 

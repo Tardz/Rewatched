@@ -1,124 +1,120 @@
-/* Shared popup menus. */
+/* Shared expanding menus. */
 
-/* SECTION menu-wrapper */
-/* Position a popup menu relative to its trigger. */
-.menu-wrapper {
+/* Use one shared surface for a trigger that unfolds into its menu options. */
+.menu-expanding-container {
+  --menu-icon-box-size: var(--nav-icon-container-size);
+  --menu-expanding-option-font-size: var(--nav-page-name-font-size, 14px);
+  --menu-expanding-row-gap: calc(var(--spacing-level-3) + 2px);
+  --menu-expanding-trigger-gap: max(
+    0px,
+    calc(var(--menu-expanding-row-gap) - ((var(--nav-horizontal-control-size) - 2px - var(--nav-icon-container-size)) / 2))
+  );
   position: relative;
-  z-index: 5;
-}
-.menu-wrapper.is-open { z-index: 6; }
-
-/* Match the navigation halo and icon glow while keeping menu surfaces unchanged. */
-.menu-wrapper > button > .glow-halo:not([hidden]) {
   display: grid;
-  flex: 0 0 auto;
-  place-items: center;
-}
-
-.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo {
-  --glow-halo-color: white;
-  --glow-halo-opacity: 0.3;
-  color: white;
-}
-
-.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo.masked-icon {
-  --app-icon-state-color: white;
-  filter: drop-shadow(0 0 2px color-mix(in srgb, white 88%, transparent));
-}
-
-.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo > .masked-icon {
-  --app-icon-state-color: white;
-  filter: drop-shadow(0 0 2px color-mix(in srgb, white 88%, transparent));
-}
-
-.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo.icon:not(.masked-icon) {
-  filter: brightness(0) invert(1)
-    drop-shadow(0 0 2px color-mix(in srgb, white 88%, transparent));
-}
-
-.menu-wrapper > button:is(:hover, :focus-visible) > .glow-halo > .icon {
-  filter: brightness(0) invert(1)
-    drop-shadow(0 0 2px color-mix(in srgb, white 88%, transparent));
-}
-
-.menu-wrapper > button:is(:hover, :focus-visible) > .menu-button-text {
-  color: white;
-}
-
-/* SECTION menu-container */
-/* Base class: .level-1-styling */
-/* Position and clip the scrolling popup beneath its trigger. */
-.menu-container {
-  box-sizing: border-box;
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  z-index: 30;
-  display: grid;
-  gap: var(--spacing-level-2);
-  width: max-content;
-  min-width: 140px;
-  max-width: min(280px, calc(100vw - 32px));
-  max-height: none;
-  padding: 8px;
-  border-radius: calc(var(--radius-surface-level-2) + 4px);
-  overflow: hidden;
-  color: var(--color-text-primary);
-}
-
-/* ANCHOR menu-title */
-/* Base class: .level-2-styling */
-/* Label a popup menu above its option list. */
-.menu-container .menu-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: max-content;
-  max-width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 0;
+  width: var(--menu-expanding-closed-width, max-content);
+  height: var(--menu-expanding-closed-height, auto);
   min-width: 0;
-  min-height: 30px;
-  padding: var(--spacing-level-1);
-  color: var(--color-text-primary);
-  font: var(--font-weight-app) 12px/1 var(--font-family-app);
-  text-align: center;
+  padding: 0;
+  overflow: visible;
+  interpolate-size: allow-keywords;
+  transition:
+    width var(--menu-expanding-duration, var(--ui-expand-duration)) cubic-bezier(.35, .1, .65, .9),
+    height var(--menu-expanding-duration, var(--ui-expand-duration)) cubic-bezier(.35, .1, .65, .9),
+    padding var(--menu-expanding-duration, var(--ui-expand-duration)) ease,
+    top var(--menu-expanding-duration, var(--ui-expand-duration)) ease,
+    left var(--menu-expanding-duration, var(--ui-expand-duration)) ease,
+    margin-top var(--menu-expanding-duration, var(--ui-expand-duration)) ease,
+    margin-left var(--menu-expanding-duration, var(--ui-expand-duration)) ease,
+    margin-bottom var(--menu-expanding-duration, var(--ui-expand-duration)) cubic-bezier(.35, .1, .65, .9),
+    border-radius var(--menu-expanding-duration, var(--ui-expand-duration)) cubic-bezier(.35, .1, .65, .9);
+  transition-timing-function: cubic-bezier(.35, .1, .65, .9);
 }
 
-/* Keep a menu title and its optional actions together in one header row. */
-.menu-container > .menu-header-layout {
+.menu-expanding-container.is-open {
+  width: var(--menu-expanding-open-width, max-content);
+  height: var(--menu-expanding-open-height, auto);
+  gap: var(--spacing-level-2);
+  padding: var(--spacing-level-2);
+}
+
+/* Keep the shared trigger reset low-specificity so each menu can tune its own trigger. */
+.menu-expanding-container > :where(button:not(.level-1-styling, .level-2-styling, .level-3-styling, .level-4-styling, .level-5-styling)) {
   display: flex;
   align-items: center;
-  gap: calc(var(--spacing-level-1) - 4px);
-  width: max-content;
-  max-width: 100%;
+  justify-content: flex-start;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  text-align: left;
 }
 
-/* Keep compact level surfaces in menu headers less rounded than their panels. */
-.menu-container > .menu-header-layout > .level-2-styling {
-  border-radius: var(--radius-control-small);
-}
-
-/* SECTION menu-options-container */
-/* Base class: .level-2-styling */
-/* Scroll the choices without moving any separate menu actions. */
-.menu-wrapper > .menu-container > .menu-options-container.level-2-styling {
+.menu-expanding-container > .menu-content-layout {
   display: grid;
-  gap: calc(var(--spacing-level-3) + 1px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--menu-expanding-row-gap);
   width: 100%;
   min-width: 0;
   min-height: 0;
-  max-height: 116px;
-  padding: 8px;
-  border-radius: calc(var(--radius-surface-level-2) - 2px);
-  box-shadow: var(--shadow-surface-inset);
-  overflow-y: auto;
-  scroll-padding: 8px;
-  scroll-snap-type: y proximity;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.menu-expanding-container > .menu-content-layout::-webkit-scrollbar {
+  display: none;
+}
+
+.menu-expanding-container > .menu-content-layout[hidden] { display: none; }
+
+/* Keep every expanding menu's icon box on the same shared dimensions and surface class. */
+.menu-expanding-container .icon-button {
+  position: relative;
+  border-radius: var(--radius-icon-button-compact);
+  flex: 0 0 var(--menu-icon-box-size);
+  width: var(--menu-icon-box-size);
+  height: var(--menu-icon-box-size);
+  min-width: var(--menu-icon-box-size);
+  min-height: var(--menu-icon-box-size);
+  padding: 0;
+}
+
+/* Share masked glyph drawing; each menu supplies only its icon color, mask, size, and glow. */
+.menu-expanding-container .icon-button:empty::after,
+.nav-type-selection-ghost .icon-button:empty::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--nav-type-icon-size, var(--nav-icon-size, 14px));
+  height: var(--nav-type-icon-size, var(--nav-icon-size, 14px));
+  transform: translate(-50%, -50%);
+  background-color: var(--nav-type-icon-color, var(--nav-icon-color));
+  content: "";
+  -webkit-mask: var(--nav-type-icon-mask, var(--nav-icon-mask)) center / contain no-repeat;
+  mask: var(--nav-type-icon-mask, var(--nav-icon-mask)) center / contain no-repeat;
+  filter: drop-shadow(0 0 2px var(--nav-type-icon-glow-color, var(--nav-icon-glow-color, transparent)));
+}
+
+.menu-expanding-container > :where(button:not(.level-1-styling, .level-2-styling, .level-3-styling, .level-4-styling, .level-5-styling):is(:hover, :focus-visible)) {
+  color: white;
 }
 
 /* ANCHOR menu-option */
 /* Base class: .level-3-styling */
 /* Style a menu choice and its selected state. */
-.menu-container .menu-option {
+.menu-expanding-container .menu-option {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,22 +127,12 @@
   border-radius: var(--radius-control-small);
   appearance: none;
   color: var(--color-text-secondary);
-  font: var(--font-weight-app) 12px var(--font-family-app);
-  line-height: 16px;
+  font: var(--font-weight-app) var(--menu-expanding-option-font-size) / 1 var(--font-family-app);
   text-align: center;
   scroll-snap-align: center;
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
-.menu-container .menu-option.active:not(.menu-option-value):not([data-filter]):not([data-filter-value]) {
-  border-color: var(--color-border-accent-muted);
-  background: var(--color-surface-hover);
-  color: var(--color-text-accent);
-}
-.menu-container .menu-option:not([data-filter]):is(:hover, :focus-visible) {
+.menu-expanding-container .menu-option:is(:hover, :focus-visible) {
   color: white;
 }
-
-/* !SECTION */
-/* !SECTION */
-/* !SECTION */
